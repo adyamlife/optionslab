@@ -1,0 +1,11 @@
+[
+  {
+    "action_type": "close",
+    "desc": "test",
+    "structure": "Put Credit Spread",
+    "expiry": "2026-06-19",
+    "timestamp": "2026-06-16T00:00:00Z",
+    "exit_value": 0.15,
+    "note": "test"
+  }
+]

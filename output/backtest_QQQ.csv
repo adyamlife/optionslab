@@ -1,0 +1,86 @@
+date,structure,iv_env,trend,S,S_T,details,pnl,max_risk,win,flags
+2024-07-31,Iron Condor,High,Range-bound,466.69,430.73,SELL 456P/BUY 454P + SELL 479C/BUY 481C  (credit $0.72),-1.2783,1.2783,False,max loss
+2024-08-07,Call Credit Spread,High,Downtrend,430.73,458.43,SELL 444C / BUY 446C  (credit $0.34),-1.6605,1.6605,False,max loss
+2024-08-14,Iron Condor,High,Range-bound,458.43,478.02,SELL 445P/BUY 443P + SELL 474C/BUY 476C  (credit $0.74),-1.2647,1.2647,False,max loss
+2024-08-21,Iron Condor,High,Range-bound,478.02,466.97,SELL 464P/BUY 462P + SELL 495C/BUY 497C  (credit $0.75),0.7479,1.2521,True,max profit
+2024-08-28,Iron Condor,High,Range-bound,466.97,456.76,SELL 453P/BUY 451P + SELL 483C/BUY 485C  (credit $0.71),0.7099,1.2901,True,max profit
+2024-09-05,Call Credit Spread,High,Downtrend,456.76,468.82,SELL 471C / BUY 473C  (credit $0.36),0.3623,1.6377,True,max profit
+2024-09-12,Iron Condor,High,Range-bound,468.82,478.87,SELL 455P/BUY 453P + SELL 484C/BUY 486C  (credit $0.73),0.7262,1.2738,True,max profit
+2024-09-19,Put Credit Spread,High,Uptrend,478.87,485.6,SELL 467P / BUY 465P  (credit $0.38),0.3776,1.6224,True,max profit
+2024-09-26,Put Credit Spread,High,Uptrend,485.6,477.79,SELL 475P / BUY 473P  (credit $0.38),0.3782,1.6218,True,max profit
+2024-10-03,Put Credit Spread,High,Uptrend,477.79,488.7,SELL 468P / BUY 466P  (credit $0.38),0.3792,1.6208,True,max profit
+2024-10-10,Put Credit Spread,High,Uptrend,488.7,487.37,SELL 479P / BUY 477P  (credit $0.39),0.3855,1.6145,True,max profit
+2024-10-17,Put Credit Spread,High,Uptrend,487.37,488.43,SELL 479P / BUY 477P  (credit $0.38),0.3846,1.6154,True,max profit
+2024-10-24,Call Debit Spread,Low,Uptrend,488.43,480.03,"BUY 490C / SELL 498C  (debit $2.34, width $8)",-2.3362,2.3362,False,max loss
+2024-11-07,Put Credit Spread,High,Uptrend,509.48,504.67,SELL 500P / BUY 498P  (credit $0.36),0.3622,1.6378,True,max profit
+2024-11-14,Put Credit Spread,High,Uptrend,504.67,500.99,SELL 496P / BUY 494P  (credit $0.38),0.3798,1.6202,True,max profit
+2024-11-21,Put Credit Spread,High,Uptrend,500.99,505.71,SELL 492P / BUY 490P  (credit $0.38),0.3787,1.6213,True,max profit
+2024-11-29,Put Credit Spread,High,Uptrend,505.71,522.32,SELL 497P / BUY 495P  (credit $0.39),0.3883,1.6117,True,max profit
+2024-12-06,Put Credit Spread,High,Uptrend,522.32,526.34,SELL 513P / BUY 511P  (credit $0.37),0.3681,1.6319,True,max profit
+2024-12-13,Call Debit Spread,Low,Uptrend,526.34,514.56,"BUY 528C / SELL 537C  (debit $2.77, width $9)",-2.7665,2.7665,False,max loss
+2024-12-20,Iron Condor,High,Range-bound,514.56,512.36,SELL 505P/BUY 503P + SELL 526C/BUY 528C  (credit $0.70),0.7033,1.2967,True,max profit
+2024-12-30,Iron Condor,High,Range-bound,512.36,511.93,SELL 502P/BUY 500P + SELL 524C/BUY 526C  (credit $0.73),0.7313,1.2687,True,max profit
+2025-01-07,Iron Condor,High,Range-bound,511.93,513.45,SELL 501P/BUY 499P + SELL 524C/BUY 526C  (credit $0.70),0.7026,1.2974,True,max profit
+2025-01-15,Iron Condor,High,Range-bound,513.45,529.28,SELL 502P/BUY 500P + SELL 526C/BUY 528C  (credit $0.73),-1.2656,1.2656,False,max loss
+2025-01-23,Put Credit Spread,High,Uptrend,529.28,519.76,SELL 517P / BUY 515P  (credit $0.36),0.3629,1.6371,True,max profit
+2025-01-30,Put Credit Spread,High,Uptrend,519.76,526.26,SELL 507P / BUY 505P  (credit $0.37),0.3687,1.6313,True,max profit
+2025-02-06,Put Credit Spread,High,Uptrend,526.26,532.52,SELL 515P / BUY 513P  (credit $0.36),0.3562,1.6438,True,max profit
+2025-02-13,Put Credit Spread,High,Uptrend,532.52,522.77,SELL 522P / BUY 520P  (credit $0.38),0.3819,1.6181,True,max profit
+2025-02-21,Iron Condor,High,Range-bound,522.77,504.97,SELL 513P/BUY 511P + SELL 534C/BUY 536C  (credit $0.75),-1.2477,1.2477,False,max loss
+2025-02-28,Iron Condor,High,Range-bound,504.97,488.69,SELL 494P/BUY 492P + SELL 517C/BUY 519C  (credit $0.71),-1.2923,1.2923,False,max loss
+2025-03-07,Call Credit Spread,High,Downtrend,488.69,476.64,SELL 501C / BUY 503C  (credit $0.36),0.3634,1.6366,True,max profit
+2025-03-14,Call Credit Spread,High,Downtrend,476.64,477.81,SELL 491C / BUY 493C  (credit $0.34),0.3397,1.6603,True,max profit
+2025-03-21,Call Credit Spread,High,Downtrend,477.81,466.68,SELL 492C / BUY 494C  (credit $0.35),0.3538,1.6462,True,max profit
+2025-03-28,Call Credit Spread,High,Downtrend,466.68,420.63,SELL 482C / BUY 484C  (credit $0.33),0.3346,1.6654,True,max profit
+2025-04-04,Call Credit Spread,High,Downtrend,420.63,452.21,SELL 439C / BUY 441C  (credit $0.34),-1.6636,1.6636,False,max loss
+2025-04-11,Call Credit Spread,High,Downtrend,452.21,431.02,SELL 481C / BUY 483C  (credit $0.34),0.3436,1.6564,True,max profit
+2025-04-21,Call Credit Spread,High,Downtrend,431.02,470.13,SELL 458C / BUY 460C  (credit $0.35),-1.6497,1.6497,False,max loss
+2025-04-28,Iron Condor,High,Range-bound,470.13,483.59,SELL 445P/BUY 443P + SELL 500C/BUY 502C  (credit $0.76),0.7627,1.2373,True,max profit
+2025-05-05,Iron Condor,High,Range-bound,483.59,505.4,SELL 458P/BUY 456P + SELL 514C/BUY 516C  (credit $0.77),0.7718,1.2282,True,max profit
+2025-05-12,Iron Condor,High,Range-bound,505.4,519.5,SELL 479P/BUY 477P + SELL 537C/BUY 539C  (credit $0.78),0.7819,1.2181,True,max profit
+2025-05-19,Put Credit Spread,High,Uptrend,519.5,518.71,SELL 496P / BUY 494P  (credit $0.41),0.4114,1.5886,True,max profit
+2025-05-27,Put Credit Spread,High,Uptrend,518.71,524.76,SELL 505P / BUY 503P  (credit $0.37),0.373,1.627,True,max profit
+2025-06-03,Put Credit Spread,High,Uptrend,524.76,531.64,SELL 514P / BUY 512P  (credit $0.39),0.3857,1.6143,True,max profit
+2025-06-10,Call Debit Spread,Low,Uptrend,531.64,526.53,"BUY 533C / SELL 544C  (debit $3.37, width $11)",-3.3702,3.3702,False,max loss
+2025-06-17,Call Debit Spread,Low,Uptrend,526.53,539.16,"BUY 528C / SELL 539C  (debit $3.39, width $11)",7.612,3.388,True,max profit
+2025-06-25,Call Debit Spread,Low,Uptrend,539.16,548.76,"BUY 540C / SELL 549C  (debit $2.89, width $9)",5.8713,2.891,True,-
+2025-07-02,Call Debit Spread,Low,Uptrend,548.76,553.4,"BUY 550C / SELL 559C  (debit $2.80, width $9)",0.5901,2.805,True,-
+2025-07-10,Call Debit Spread,Low,Uptrend,553.4,559.72,"BUY 555C / SELL 562C  (debit $2.12, width $7)",2.5984,2.1233,True,-
+2025-07-17,Call Debit Spread,Low,Uptrend,559.72,562.92,"BUY 561C / SELL 568C  (debit $2.20, width $7)",-0.2834,2.2032,False,-
+2025-07-24,Call Debit Spread,Low,Uptrend,562.92,562.92,"BUY 564C / SELL 571C  (debit $2.23, width $7)",-2.2287,2.2287,False,max loss
+2025-07-31,Call Debit Spread,Low,Uptrend,562.92,567.13,"BUY 564C / SELL 570C  (debit $1.84, width $6)",1.2948,1.8392,True,-
+2025-08-07,Call Debit Spread,Low,Uptrend,567.13,577.74,"BUY 568C / SELL 576C  (debit $2.56, width $8)",5.4392,2.5608,True,max profit
+2025-08-14,Call Debit Spread,Low,Uptrend,577.74,561.2,"BUY 579C / SELL 587C  (debit $2.47, width $8)",-2.4666,2.4666,False,max loss
+2025-08-28,Call Debit Spread,Low,Uptrend,574.95,573.93,"BUY 576C / SELL 585C  (debit $2.83, width $9)",-2.8255,2.8255,False,max loss
+2025-09-05,Call Debit Spread,Low,Uptrend,573.93,584.49,"BUY 575C / SELL 585C  (debit $3.09, width $10)",6.3977,3.092,True,-
+2025-09-12,Call Debit Spread,Low,Uptrend,584.49,597.13,"BUY 586C / SELL 596C  (debit $2.99, width $10)",7.0086,2.9914,True,max profit
+2025-09-19,Call Debit Spread,Low,Uptrend,597.13,594.45,"BUY 598C / SELL 606C  (debit $2.56, width $8)",-2.5611,2.5611,False,max loss
+2025-09-26,Call Debit Spread,Low,Uptrend,594.45,601.65,"BUY 596C / SELL 603C  (debit $2.15, width $7)",3.4937,2.1516,True,-
+2025-10-03,Call Debit Spread,Low,Uptrend,601.65,588.0,"BUY 603C / SELL 610C  (debit $2.06, width $7)",-2.0638,2.0638,False,max loss
+2025-10-24,Call Debit Spread,Low,Uptrend,615.53,627.47,"BUY 617C / SELL 629C  (debit $3.67, width $12)",6.7957,3.6736,True,-
+2025-10-31,Call Debit Spread,Low,Uptrend,627.47,608.19,"BUY 629C / SELL 642C  (debit $4.01, width $13)",-4.0137,4.0137,False,max loss
+2025-11-07,Iron Condor,High,Range-bound,608.19,607.31,SELL 596P/BUY 594P + SELL 622C/BUY 624C  (credit $0.75),0.7532,1.2468,True,max profit
+2025-11-14,Iron Condor,High,Range-bound,607.31,588.57,SELL 594P/BUY 592P + SELL 623C/BUY 625C  (credit $0.75),-1.2544,1.2544,False,max loss
+2025-11-21,Iron Condor,High,Range-bound,588.57,615.6,SELL 576P/BUY 574P + SELL 603C/BUY 605C  (credit $0.72),-1.2806,1.2806,False,max loss
+2025-12-01,Put Credit Spread,High,Uptrend,615.6,622.69,SELL 602P / BUY 600P  (credit $0.37),0.3719,1.6281,True,max profit
+2025-12-08,Put Credit Spread,High,Uptrend,622.69,608.99,SELL 610P / BUY 608P  (credit $0.39),-0.6248,1.6113,False,-
+2025-12-15,Iron Condor,High,Range-bound,608.99,618.43,SELL 597P/BUY 595P + SELL 623C/BUY 625C  (credit $0.74),0.744,1.256,True,max profit
+2025-12-22,Iron Condor,High,Range-bound,618.43,618.65,SELL 606P/BUY 604P + SELL 633C/BUY 635C  (credit $0.72),0.7159,1.2841,True,max profit
+2026-01-07,Call Debit Spread,Low,Uptrend,623.23,618.77,"BUY 625C / SELL 635C  (debit $3.07, width $10)",-3.0743,3.0743,False,max loss
+2026-01-29,Call Debit Spread,Low,Uptrend,628.64,596.28,"BUY 630C / SELL 640C  (debit $3.15, width $10)",-3.1489,3.1489,False,max loss
+2026-02-12,Put Debit Spread,Low,Downtrend,599.88,608.04,"BUY 600P / SELL 588P  (debit $3.94, width $12)",-3.94,3.94,False,max loss
+2026-02-20,Put Debit Spread,Low,Downtrend,608.04,606.53,"BUY 608P / SELL 596P  (debit $3.90, width $12)",-2.425,3.8998,False,-
+2026-02-27,Iron Condor,High,Range-bound,606.53,598.99,SELL 595P/BUY 593P + SELL 620C/BUY 622C  (credit $0.72),0.7199,1.2801,True,max profit
+2026-03-06,Call Credit Spread,High,Downtrend,598.99,592.97,SELL 612C / BUY 614C  (credit $0.34),0.3449,1.6551,True,max profit
+2026-03-13,Call Credit Spread,High,Downtrend,592.97,581.33,SELL 606C / BUY 608C  (credit $0.36),0.3578,1.6422,True,max profit
+2026-03-20,Call Credit Spread,High,Downtrend,581.33,562.58,SELL 594C / BUY 596C  (credit $0.35),0.3503,1.6497,True,max profit
+2026-03-27,Call Credit Spread,High,Downtrend,562.58,588.5,SELL 575C / BUY 577C  (credit $0.35),-1.648,1.648,False,max loss
+2026-04-06,Iron Condor,High,Range-bound,588.5,617.39,SELL 575P/BUY 573P + SELL 604C/BUY 606C  (credit $0.72),-1.281,1.281,False,max loss
+2026-04-13,Iron Condor,High,Range-bound,617.39,646.79,SELL 603P/BUY 601P + SELL 634C/BUY 636C  (credit $0.74),-1.2568,1.2568,False,max loss
+2026-04-20,Iron Condor,High,Range-bound,646.79,664.23,SELL 632P/BUY 630P + SELL 664C/BUY 666C  (credit $0.75),0.5246,1.2454,True,-
+2026-04-27,Put Credit Spread,High,Uptrend,664.23,672.88,SELL 649P / BUY 647P  (credit $0.39),0.3922,1.6078,True,max profit
+2026-05-04,Put Credit Spread,High,Uptrend,672.88,713.29,SELL 658P / BUY 656P  (credit $0.38),0.3752,1.6248,True,max profit
+2026-05-11,Put Credit Spread,High,Uptrend,713.29,705.88,SELL 700P / BUY 698P  (credit $0.38),0.3756,1.6244,True,max profit
+2026-05-18,Put Credit Spread,High,Uptrend,705.88,730.28,SELL 693P / BUY 691P  (credit $0.38),0.3771,1.6229,True,max profit
+2026-05-26,Call Debit Spread,Low,Uptrend,730.28,746.16,"BUY 732C / SELL 747C  (debit $4.58, width $15)",9.5796,4.5804,True,-
+2026-06-02,Call Debit Spread,Low,Uptrend,746.16,707.83,"BUY 748C / SELL 762C  (debit $4.30, width $14)",-4.3045,4.3045,False,max loss

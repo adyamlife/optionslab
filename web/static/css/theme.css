@@ -1,0 +1,215 @@
+/*
+ * theme.css — single source of truth for all design tokens
+ * Options Strategy Lab
+ *
+ * Every color, font, gradient, border-radius, and key size lives here.
+ * style.css references only var() calls — no raw values.
+ */
+
+:root {
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     BRAND PALETTE
+     ═══════════════════════════════════════════════════════════════════════ */
+  --clr-primary:          #1f4e78;
+  --clr-primary-dark:     #163a59;
+  --clr-primary-mid:      #2563a8;
+  --clr-primary-faint:    #eef4ff;
+  --clr-primary-border:   #c5d9f5;
+  --clr-primary-text:     #1a3a5c;
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     NEUTRAL / SURFACE
+     ═══════════════════════════════════════════════════════════════════════ */
+  --clr-bg:               #f4f6f8;
+  --clr-surface:          #ffffff;
+  --clr-surface-alt:      #f8faff;
+  --clr-surface-hover:    #eeeeee;
+  --clr-white:            #ffffff;
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     BORDERS
+     ═══════════════════════════════════════════════════════════════════════ */
+  --clr-border:           #d8dee4;
+  --clr-border-mid:       #aaaaaa;
+  --clr-border-light:     #cccccc;
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     TEXT
+     ═══════════════════════════════════════════════════════════════════════ */
+  --clr-text:             #222222;
+  --clr-text-dark:        #2a2a2a;
+  --clr-text-darker:      #444444;
+  --clr-text-mid:         #555555;
+  --clr-text-muted:       #666666;
+  --clr-text-subtle:      #888888;
+  --clr-text-deep:        #333344;
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     SEMANTIC — PASS / SUCCESS
+     ═══════════════════════════════════════════════════════════════════════ */
+  --clr-pass:             #1a7f37;
+  --clr-pass-dark:        #2e7d32;
+  --clr-pass-mid:         #4caf50;
+  --clr-pass-light:       #81c784;
+  --clr-pass-lighter:     #a5d6a7;
+  --clr-pass-bg:          #e8f5e9;
+  --clr-pass-bg-light:    #f0faf3;
+  --clr-pass-text:        #1a4a1a;
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     SEMANTIC — FAIL / ERROR
+     ═══════════════════════════════════════════════════════════════════════ */
+  --clr-fail:             #c0392b;
+  --clr-fail-dark:        #b71c1c;
+  --clr-danger:           #ef5350;
+  --clr-danger-dark:      #e53935;
+  --clr-danger-light:     #ff6b7a;
+  --clr-fail-bg:          #fde8e8;
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     SEMANTIC — WARN / CAUTION
+     ═══════════════════════════════════════════════════════════════════════ */
+  --clr-warn:             #b7791f;
+  --clr-warn-mid:         #d69e2e;
+  --clr-warn-text:        #856404;
+  --clr-warn-light:       #ffa500;
+  --clr-warn-accent:      #f9a825;
+  --clr-warn-accent-2:    #ffc107;
+  --clr-warn-border:      #ffb74d;
+  --clr-warn-urgent:      #e8a020;
+  --clr-warn-bg:          #fff8e1;
+  --clr-warn-bg-2:        #fff8ed;
+  --clr-warn-bg-3:        #fff3cd;
+  --clr-warn-bg-urgent:   #fff3e0;
+  --clr-warn-bg-deep:     #fde8c0;
+  --clr-warn-deep-text:   #8a4f00;
+  --clr-warn-dark-text:   #6b3900;
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     SEMANTIC — INFO / LINK
+     ═══════════════════════════════════════════════════════════════════════ */
+  --clr-link:             #3a7bd5;
+  --clr-link-mid:         #7ab3f7;
+  --clr-link-light:       #4a9eff;
+  --clr-link-lighter:     #7ec8ff;
+  --clr-info-bg:          #ddeeff;
+  --clr-info-bg-alt:      #edf3fb;
+  --clr-info-bg-2:        #e8eeff;
+  --clr-info-border:      #c5d9f0;
+  --clr-info-text:        #2255aa;
+  --clr-info-deep:        #6c8ebf;
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     COMPONENT — HEDGE WIDGET
+     ═══════════════════════════════════════════════════════════════════════ */
+  --clr-hedge-bg:         #eceff1;
+  --clr-hedge-text:       #37474f;
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     COMPONENT — UNUSUAL ACTIVITY BADGE
+     ═══════════════════════════════════════════════════════════════════════ */
+  --clr-unusual-bg:       #fff3cd;
+  --clr-unusual-text:     #856404;
+  --clr-unusual-border:   #ffc107;
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     COMPONENT — SIGNAL PILLS
+     ═══════════════════════════════════════════════════════════════════════ */
+  --clr-sig-strong-bg:    #22c55e;
+  --clr-sig-strong-text:  #052e16;
+  --clr-sig-moderate-bg:  #86efac;
+  --clr-sig-moderate-text:#052e16;
+  --clr-sig-neutral-bg:   rgba(255,255,255,0.25);
+  --clr-sig-neutral-text: #ffffff;
+  --clr-sig-weak-bg:      #fbbf24;
+  --clr-sig-weak-text:    #451a03;
+  --clr-sig-conflict-bg:  #f87171;
+  --clr-sig-conflict-text:#450a0a;
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     COMPONENT — MARKET BIAS
+     ═══════════════════════════════════════════════════════════════════════ */
+  --clr-bias-confirmed:   #1a7f37;
+  --clr-bias-favorable:   #2e7d32;
+  --clr-bias-neutral:     #555555;
+  --clr-bias-caution:     #b7791f;
+  --clr-bias-opposed:     #c0392b;
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     COMPONENT — PAPER TRADES (dark-card theme)
+     ═══════════════════════════════════════════════════════════════════════ */
+  --clr-pt-surface:       #1e1e2e;
+  --clr-pt-border:        rgba(255,255,255,0.08);
+  --clr-pt-text-dim:      #888888;
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     COMPONENT — POSITION ALERTS (dark overlay)
+     ═══════════════════════════════════════════════════════════════════════ */
+  --clr-pos-danger-bg:    rgba(220,53,69,0.15);
+  --clr-pos-danger-bdr:   rgba(220,53,69,0.45);
+  --clr-pos-warn-bg:      rgba(255,165,0,0.12);
+  --clr-pos-warn-bdr:     rgba(255,165,0,0.35);
+  --clr-pos-close-bg:     rgba(220,53,69,0.12);
+  --clr-pos-close-bdr:    rgba(220,53,69,0.40);
+  --clr-pos-roll-bg:      rgba(58,123,213,0.12);
+  --clr-pos-roll-bdr:     rgba(58,123,213,0.40);
+  --clr-pos-roll-text:    #7ab3f7;
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     GRADIENTS
+     ═══════════════════════════════════════════════════════════════════════ */
+  --gradient-header:      linear-gradient(135deg, var(--clr-primary) 0%, var(--clr-primary-mid) 100%);
+  --gradient-lp-header:   linear-gradient(135deg, #1a3a5c 0%, #1e5a96 100%);
+  --gradient-scan:        linear-gradient(90deg, var(--clr-link-light), var(--clr-link-lighter));
+  --gradient-nav:         var(--clr-primary-dark);
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     COMPONENT — NAVIGATION
+     ═══════════════════════════════════════════════════════════════════════ */
+  --clr-nav-link:         #cfe0ee;
+  --clr-nav-logout:       #7aadcc;
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     TYPOGRAPHY
+     ═══════════════════════════════════════════════════════════════════════ */
+  --font-sans:            Arial, Helvetica, sans-serif;
+  --font-mono:            monospace;
+
+  --text-xs:              0.65rem;
+  --text-sm:              0.72rem;
+  --text-base:            0.82rem;
+  --text-md:              0.85rem;
+  --text-body:            0.95rem;
+  --text-lg:              1.2rem;
+  --text-xl:              1.4rem;
+  --text-2xl:             1.5rem;
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     BORDER RADIUS
+     ═══════════════════════════════════════════════════════════════════════ */
+  --r-sm:                 4px;
+  --r-md:                 6px;
+  --r-lg:                 8px;
+  --r-xl:                 10px;
+  --r-pill:               20px;
+  --r-full:               50%;
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     LAYOUT
+     ═══════════════════════════════════════════════════════════════════════ */
+  --container-max:        900px;
+  --container-wide:       1400px;
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     LEGACY ALIASES — keep existing var() refs in style.css working
+     ═══════════════════════════════════════════════════════════════════════ */
+  --primary:              var(--clr-primary);
+  --bg:                   var(--clr-bg);
+  --panel-bg:             var(--clr-surface);
+  --border:               var(--clr-border);
+  --text:                 var(--clr-text);
+  --muted:                var(--clr-text-muted);
+  --pass:                 var(--clr-pass);
+  --fail:                 var(--clr-fail);
+}

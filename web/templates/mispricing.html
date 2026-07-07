@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+{% block title %}Option Mispricing — Options Strategy Lab{% endblock %}
+
+{% block body %}
+<main class="main-content">
+  <h2>Option Mispricing</h2>
+  <p class="muted" style="margin-top:-.4rem;margin-bottom:1rem;font-size:.9rem">
+    SVI volatility surface fit per expiry slice. Mispricing = Market IV − Model IV (vol points).
+    Positive = expensive vs surface &nbsp;·&nbsp; Negative = cheap vs surface.
+  </p>
+
+  <!-- Controls -->
+  <div style="display:flex;gap:.6rem;align-items:flex-end;flex-wrap:wrap;margin-bottom:1rem">
+    <div>
+      <label class="sched-label">Ticker</label>
+      <input id="mp-ticker" type="text" placeholder="AAPL" maxlength="8"
+             list="mp-ticker-list" autocomplete="off"
+             style="width:110px;padding:.3rem .5rem;font-size:1rem;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:4px;text-transform:uppercase">
+      <datalist id="mp-ticker-list"></datalist>
+    </div>
+    <div>
+      <label class="sched-label">Options</label>
+      <select id="mp-opt-type" style="padding:.3rem .5rem;font-size:.9rem;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:4px">
+        <option value="both">Both (avg)</option>
+        <option value="call">Calls</option>
+        <option value="put">Puts</option>
+      </select>
+    </div>
+    <div>
+      <label class="sched-label">Max DTE</label>
+      <select id="mp-max-dte" style="padding:.3rem .5rem;font-size:.9rem;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:4px">
+        <option value="30">30d</option>
+        <option value="60">60d</option>
+        <option value="90" selected>90d</option>
+        <option value="180">180d</option>
+      </select>
+    </div>
+    <button class="btn-sm" id="mp-run-btn" style="height:2rem">Analyze</button>
+    <span id="mp-status" class="muted" style="font-size:.85rem;align-self:center"></span>
+  </div>
+
+  <div id="mp-error" class="alert fail" style="display:none"></div>
+  <div id="mp-no-data" style="display:none;background:var(--surface1);border:1px solid var(--border);border-radius:6px;padding:1rem 1.2rem;margin-bottom:1rem">
+    <strong id="mp-no-data-title">No chain snapshots found</strong>
+    <p style="margin:.5rem 0 .4rem;font-size:.88rem;color:var(--text-muted)">
+      Chain snapshots are collected by the scheduled <strong>Data Collect</strong> job (runs on the server during market hours).
+      They are not available on the local dev machine unless you run a manual collection.
+    </p>
+    <div id="mp-available-tickers" style="display:none;font-size:.85rem;margin-top:.4rem">
+      <span class="muted">Available tickers with snapshots: </span>
+      <span id="mp-ticker-chips" style="display:inline-flex;flex-wrap:wrap;gap:.3rem;margin-top:.25rem"></span>
+    </div>
+  </div>
+
+  <!-- Top mispriced summary -->
+  <section id="mp-top-section" class="card" style="display:none;margin-bottom:1rem">
+    <h3>Most Mispriced Strikes</h3>
+    <p class="muted" style="font-size:.82rem;margin-bottom:.6rem">
+      Strikes furthest from the fitted SVI surface (min 1 vol-point gap).
+    </p>
+    <table class="sched-table" id="mp-top-table">
+      <thead><tr>
+        <th>Expiry</th><th>DTE</th><th>Strike</th><th>Moneyness</th>
+        <th>Market IV</th><th>Model IV</th><th>Mispricing</th><th>% of Model</th>
+      </tr></thead>
+      <tbody id="mp-top-body"></tbody>
+    </table>
+  </section>
+
+  <!-- Per-expiry slices -->
+  <div id="mp-slices"></div>
+
+  <!-- Surface meta -->
+  <div id="mp-meta" style="display:none;margin-top:.5rem" class="muted" style="font-size:.8rem"></div>
+</main>
+
+<style>
+.sched-label { display:block;font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.2rem }
+.card { background:var(--surface1);border:1px solid var(--border);border-radius:6px;padding:1rem 1.2rem }
+.sched-table { width:100%;border-collapse:collapse;font-size:.88rem }
+.sched-table th { text-align:left;padding:.35rem .55rem;border-bottom:1px solid var(--border);color:var(--text-muted);font-weight:600;font-size:.78rem }
+.sched-table td { padding:.4rem .55rem;border-bottom:1px solid var(--border-faint,#2a2a2a);font-variant-numeric:tabular-nums }
+.sched-table tr:last-child td { border-bottom:none }
+.mp-expensive { color:var(--err,#e05);font-weight:600 }
+.mp-cheap     { color:var(--pass,#3a5);font-weight:600 }
+.mp-neutral   { color:var(--text-muted) }
+.btn-sm { padding:.3rem .75rem;font-size:.85rem;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--text);border-radius:4px }
+.btn-sm:hover { background:var(--surface3) }
+.slice-hdr { display:flex;gap:1rem;align-items:baseline;margin-bottom:.5rem;flex-wrap:wrap }
+.slice-hdr h4 { margin:0 }
+.param-pills { display:flex;gap:.4rem;flex-wrap:wrap }
+.param-pill { font-size:.75rem;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:.1rem .55rem;color:var(--text-muted) }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function mispriceCls(vp) {
+  if (vp >  1.5) return "mp-expensive";
+  if (vp < -1.5) return "mp-cheap";
+  return "mp-neutral";
+}
+function sign(v) { return v > 0 ? "+" : ""; }
+
+function renderTopTable(rows) {
+  const tbody = document.getElementById("mp-top-body");
+  tbody.innerHTML = "";
+  rows.forEach(r => {
+    const cls = mispriceCls(r.mispricing);
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${r.expiry}</td>
+      <td>${r.dte}d</td>
+      <td>${r.strike.toFixed(2)}</td>
+      <td>${(r.moneyness * 100).toFixed(1)}%</td>
+      <td>${r.market_iv.toFixed(1)}%</td>
+      <td>${r.model_iv.toFixed(1)}%</td>
+      <td class="${cls}">${sign(r.mispricing)}${r.mispricing.toFixed(1)} vp</td>
+      <td class="${cls}">${sign(r.misprice_pct)}${r.misprice_pct.toFixed(1)}%</td>
+    `;
+    tbody.appendChild(tr);
+  });
+  document.getElementById("mp-top-section").style.display = "";
+}
+
+function renderSlices(slices, spot) {
+  const container = document.getElementById("mp-slices");
+  container.innerHTML = "";
+  slices.forEach(sl => {
+    const p = sl.params;
+    const section = document.createElement("section");
+    section.className = "card";
+    section.style.marginBottom = "1rem";
+
+    const paramStr = `a=${p.a.toFixed(4)} b=${p.b.toFixed(4)} ρ=${p.rho.toFixed(3)} m=${p.m.toFixed(3)} σ=${p.sigma.toFixed(3)}`;
+
+    let rows = "";
+    sl.strikes.forEach(r => {
+      const cls = mispriceCls(r.mispricing);
+      const atmFlag = Math.abs(r.moneyness - 1) < 0.03
+        ? ' <span class="muted" style="font-size:.75rem">ATM</span>' : "";
+      rows += `<tr>
+        <td>${r.strike.toFixed(2)}${atmFlag}</td>
+        <td>${(r.moneyness * 100).toFixed(1)}%</td>
+        <td>${r.market_iv.toFixed(1)}%</td>
+        <td>${r.model_iv.toFixed(1)}%</td>
+        <td class="${cls}">${sign(r.mispricing)}${r.mispricing.toFixed(1)}</td>
+        <td class="${cls}">${sign(r.misprice_pct)}${r.misprice_pct.toFixed(1)}%</td>
+      </tr>`;
+    });
+
+    section.innerHTML = `
+      <div class="slice-hdr">
+        <h4>${sl.expiry} <span class="muted" style="font-weight:400;font-size:.85rem">${sl.dte}d · ${sl.n_points} strikes · RMSE ${sl.rmse.toFixed(2)} vp</span></h4>
+        <div class="param-pills">
+          ${paramStr.split(" ").map(s => `<span class="param-pill">${s}</span>`).join("")}
+        </div>
+      </div>
+      <table class="sched-table">
+        <thead><tr>
+          <th>Strike</th><th>Moneyness</th><th>Market IV</th><th>Model IV</th>
+          <th>Misprice (vp)</th><th>% of Model</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    `;
+    container.appendChild(section);
+  });
+}
+
+// ── Load available tickers for autocomplete ───────────────────────────────────
+let _availableTickers = [];
+
+async function loadAvailableTickers() {
+  try {
+    const r = await fetch("/api/mispricing/tickers");
+    const d = await r.json();
+    if (!d.ok || !d.tickers.length) return;
+    _availableTickers = d.tickers;
+    const dl = document.getElementById("mp-ticker-list");
+    dl.innerHTML = d.tickers.map(t => `<option value="${t}">`).join("");
+  } catch(e) { /* silent — autocomplete is non-critical */ }
+}
+
+function showNoDataPanel(ticker) {
+  const panel = document.getElementById("mp-no-data");
+  document.getElementById("mp-no-data-title").textContent =
+    `No chain snapshots found for "${ticker}"`;
+  panel.style.display = "";
+
+  const chipsEl   = document.getElementById("mp-ticker-chips");
+  const chipsWrap = document.getElementById("mp-available-tickers");
+  if (_availableTickers.length) {
+    chipsEl.innerHTML = _availableTickers.map(t =>
+      `<span style="cursor:pointer;background:var(--surface2);border:1px solid var(--border);
+       border-radius:12px;padding:.1rem .55rem;font-size:.8rem"
+       onclick="document.getElementById('mp-ticker').value='${t}';runAnalysis()">${t}</span>`
+    ).join("");
+    chipsWrap.style.display = "";
+  } else {
+    chipsWrap.style.display = "none";
+  }
+}
+
+// ── Main analysis ─────────────────────────────────────────────────────────────
+async function runAnalysis() {
+  const ticker  = document.getElementById("mp-ticker").value.trim().toUpperCase();
+  const optType = document.getElementById("mp-opt-type").value;
+  const maxDte  = document.getElementById("mp-max-dte").value;
+
+  if (!ticker) { document.getElementById("mp-ticker").focus(); return; }
+
+  const btn    = document.getElementById("mp-run-btn");
+  const status = document.getElementById("mp-status");
+  const errEl  = document.getElementById("mp-error");
+  const noData = document.getElementById("mp-no-data");
+
+  btn.disabled = true;
+  btn.textContent = "Fitting…";
+  status.textContent = "Running SVI fit…";
+  errEl.style.display = "none";
+  noData.style.display = "none";
+  document.getElementById("mp-top-section").style.display = "none";
+  document.getElementById("mp-slices").innerHTML = "";
+  document.getElementById("mp-meta").style.display = "none";
+
+  try {
+    const r = await fetch(`/api/mispricing/${encodeURIComponent(ticker)}?opt_type=${optType}&max_dte=${maxDte}`);
+    const d = await r.json();
+
+    if (!d.ok) {
+      const isNoData = d.error && d.error.toLowerCase().includes("no chain snapshots");
+      if (isNoData) {
+        showNoDataPanel(ticker);
+      } else {
+        errEl.textContent = d.error;
+        errEl.style.display = "";
+      }
+      status.textContent = "";
+    } else {
+      if (d.top_mispriced?.length) renderTopTable(d.top_mispriced);
+      renderSlices(d.slices, d.spot);
+      const meta = document.getElementById("mp-meta");
+      meta.textContent = `${ticker} · spot $${d.spot.toFixed(2)} · as of ${d.as_of} · source: ${d.source} · ${d.slices.length} expiry slice(s) fitted`;
+      meta.style.display = "";
+      status.textContent = `Done — ${d.slices.length} slices`;
+    }
+  } catch(e) {
+    errEl.textContent = "Request failed: " + e.message;
+    errEl.style.display = "";
+    status.textContent = "";
+  }
+
+  btn.disabled = false;
+  btn.textContent = "Analyze";
+}
+
+document.getElementById("mp-run-btn").addEventListener("click", runAnalysis);
+document.getElementById("mp-ticker").addEventListener("keydown", e => {
+  if (e.key === "Enter") runAnalysis();
+});
+document.getElementById("mp-ticker").addEventListener("input", e => {
+  e.target.value = e.target.value.toUpperCase();
+});
+
+loadAvailableTickers();
+</script>
+{% endblock %}

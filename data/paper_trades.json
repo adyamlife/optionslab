@@ -1,0 +1,4045 @@
+[
+  {
+    "id": "20260616_AI_CAL_1",
+    "rank": 1,
+    "entered_at": "2026-06-16T15:38:16.980480-04:00",
+    "ticker": "AI",
+    "structure": "Call Debit Spread",
+    "expiry": "2026-07-02",
+    "strikes": {
+      "short": 14.0,
+      "long": 10.5
+    },
+    "width": 3.5,
+    "entry_credit": 2.66,
+    "entry_mid": 2.66,
+    "entry_legs": {
+      "long": {
+        "strike": 10.5,
+        "bid": 0.65,
+        "ask": 0.89,
+        "mid": 0.77,
+        "iv": 61.1,
+        "volume": 7,
+        "oi": 732
+      },
+      "short": {
+        "strike": 14.0,
+        "bid": 0.05,
+        "ask": 0.11,
+        "mid": 0.08,
+        "iv": 83.2,
+        "volume": 18,
+        "oi": 785
+      }
+    },
+    "max_profit": 2.66,
+    "max_loss": 0.84,
+    "dte_at_entry": 16,
+    "spot_at_entry": 10.86,
+    "signal_rating": "Moderate",
+    "signal_score": 3,
+    "profit_target": 1.33,
+    "stop_loss": 7.98,
+    "status": "expired_loss",
+    "snapshots": [
+      {
+        "ts": "2026-06-19T08:48:14.303954-04:00",
+        "mark": 0.34,
+        "ul_price": 10.319999694824219,
+        "unrealized": 2.32
+      },
+      {
+        "ts": "2026-06-19T17:41:01.547041-04:00",
+        "mark": 0.34,
+        "ul_price": 10.319999694824219,
+        "unrealized": -0.5
+      },
+      {
+        "ts": "2026-06-22T17:00:02.683119-04:00",
+        "mark": 0.12,
+        "ul_price": 9.6850004196167,
+        "unrealized": -0.72
+      },
+      {
+        "ts": "2026-06-23T17:00:10.723283-04:00",
+        "mark": 0.08,
+        "ul_price": 9.68,
+        "unrealized": -0.76
+      },
+      {
+        "ts": "2026-06-24T17:06:23.227158-04:00",
+        "mark": 0.01,
+        "ul_price": 9.319999694824219,
+        "unrealized": -0.83
+      },
+      {
+        "ts": "2026-06-24T17:41:06.931513-04:00",
+        "mark": 0.01,
+        "ul_price": 9.319999694824219,
+        "unrealized": -0.83
+      },
+      {
+        "ts": "2026-06-25T17:00:02.443256-04:00",
+        "mark": 0.0,
+        "ul_price": 8.75,
+        "unrealized": -0.84
+      },
+      {
+        "ts": "2026-06-25T18:07:34.619279-04:00",
+        "mark": 0.0,
+        "ul_price": 8.75,
+        "unrealized": -0.84
+      },
+      {
+        "ts": "2026-06-25T18:17:20.850300-04:00",
+        "mark": 0.0,
+        "ul_price": 8.75,
+        "unrealized": -0.84
+      },
+      {
+        "ts": "2026-06-26T17:03:04.724282-04:00",
+        "mark": 0.0,
+        "ul_price": 8.899999618530273,
+        "unrealized": -0.84
+      },
+      {
+        "ts": "2026-06-29T17:00:02.344636-04:00",
+        "mark": 0.0,
+        "ul_price": 8.854999542236328,
+        "unrealized": -0.84
+      },
+      {
+        "ts": "2026-06-30T17:13:51.637526-04:00",
+        "mark": 0.0,
+        "ul_price": null,
+        "unrealized": -0.84
+      },
+      {
+        "ts": "2026-07-01T17:13:54.253267-04:00",
+        "mark": 0.0,
+        "ul_price": null,
+        "unrealized": -0.84
+      }
+    ],
+    "exit": {
+      "ts": "2026-07-02T17:00:00.225168-04:00",
+      "reason": "expired",
+      "spread_val": 0.0,
+      "ul_price": 9.06,
+      "pnl_per_share": -0.84,
+      "pnl_total": -84.0,
+      "pnl_pct_of_max": -31.6,
+      "win": false
+    }
+  },
+  {
+    "id": "20260616_SMR_PUT_2",
+    "rank": 2,
+    "entered_at": "2026-06-16T15:38:17.241265-04:00",
+    "ticker": "SMR",
+    "structure": "Put Debit Spread",
+    "expiry": "2026-07-02",
+    "strikes": {
+      "short": 8.0,
+      "long": 10.5
+    },
+    "width": 2.5,
+    "entry_credit": 1.52,
+    "entry_mid": 1.52,
+    "entry_legs": {
+      "long": {
+        "strike": 10.5,
+        "bid": 1.04,
+        "ask": 1.07,
+        "mid": 1.055,
+        "iv": 84.0,
+        "volume": 20,
+        "oi": 469
+      },
+      "short": {
+        "strike": 8.0,
+        "bid": 0.09,
+        "ask": 0.12,
+        "mid": 0.105,
+        "iv": 87.5,
+        "volume": 30,
+        "oi": 175
+      }
+    },
+    "max_profit": 1.52,
+    "max_loss": 0.98,
+    "dte_at_entry": 16,
+    "spot_at_entry": 9.94,
+    "signal_rating": "Moderate",
+    "signal_score": 3,
+    "profit_target": 0.76,
+    "stop_loss": 4.56,
+    "status": "expired_loss",
+    "snapshots": [
+      {
+        "ts": "2026-06-19T08:48:14.303954-04:00",
+        "mark": 0.28,
+        "ul_price": 11.710000038146973,
+        "unrealized": 1.24
+      },
+      {
+        "ts": "2026-06-19T17:41:01.547041-04:00",
+        "mark": 0.28,
+        "ul_price": 11.710000038146973,
+        "unrealized": -0.7
+      },
+      {
+        "ts": "2026-06-22T17:00:02.683119-04:00",
+        "mark": 0.1,
+        "ul_price": 11.225000381469727,
+        "unrealized": -0.88
+      },
+      {
+        "ts": "2026-06-23T17:00:10.723283-04:00",
+        "mark": 0.4,
+        "ul_price": 10.86,
+        "unrealized": -0.58
+      },
+      {
+        "ts": "2026-06-24T17:06:23.227158-04:00",
+        "mark": 0.7,
+        "ul_price": 10.21500015258789,
+        "unrealized": -0.28
+      },
+      {
+        "ts": "2026-06-24T17:41:06.931513-04:00",
+        "mark": 0.7,
+        "ul_price": 10.21500015258789,
+        "unrealized": -0.28
+      },
+      {
+        "ts": "2026-06-25T17:00:02.443256-04:00",
+        "mark": 0.7,
+        "ul_price": 10.079999923706055,
+        "unrealized": -0.28
+      },
+      {
+        "ts": "2026-06-25T18:07:34.619279-04:00",
+        "mark": 0.7,
+        "ul_price": 10.079999923706055,
+        "unrealized": -0.28
+      },
+      {
+        "ts": "2026-06-25T18:17:20.850300-04:00",
+        "mark": 0.7,
+        "ul_price": 10.079999923706055,
+        "unrealized": -0.28
+      },
+      {
+        "ts": "2026-06-26T17:03:04.724282-04:00",
+        "mark": 0.65,
+        "ul_price": 10.09000015258789,
+        "unrealized": -0.33
+      },
+      {
+        "ts": "2026-06-29T17:00:02.344636-04:00",
+        "mark": 0.45,
+        "ul_price": 10.255000114440918,
+        "unrealized": -0.53
+      },
+      {
+        "ts": "2026-06-30T17:13:51.637526-04:00",
+        "mark": 0.57,
+        "ul_price": 10.020000457763672,
+        "unrealized": -0.41
+      },
+      {
+        "ts": "2026-07-01T17:13:54.253267-04:00",
+        "mark": 0.41,
+        "ul_price": 10.154999732971191,
+        "unrealized": -0.57
+      }
+    ],
+    "exit": {
+      "ts": "2026-07-02T17:00:00.225168-04:00",
+      "reason": "expired",
+      "spread_val": 0.74,
+      "ul_price": 9.76,
+      "pnl_per_share": -0.24,
+      "pnl_total": -24.0,
+      "pnl_pct_of_max": -15.8,
+      "win": false
+    }
+  },
+  {
+    "id": "20260616_ARQQ_CAL_3",
+    "rank": 3,
+    "entered_at": "2026-06-16T15:38:17.662384-04:00",
+    "ticker": "ARQQ",
+    "structure": "Call Debit Spread",
+    "expiry": "2026-06-18",
+    "strikes": {
+      "short": 22.5,
+      "long": 20.0
+    },
+    "width": 2.5,
+    "entry_credit": 1.5,
+    "entry_mid": 1.5,
+    "entry_legs": {
+      "long": {
+        "strike": 20.0,
+        "bid": 1.25,
+        "ask": 1.4,
+        "mid": 1.325,
+        "iv": 156.6,
+        "volume": 1328,
+        "oi": 1611
+      },
+      "short": {
+        "strike": 22.5,
+        "bid": 0.4,
+        "ask": 0.5,
+        "mid": 0.45,
+        "iv": 160.2,
+        "volume": 280,
+        "oi": 349
+      }
+    },
+    "max_profit": 1.5,
+    "max_loss": 1.0,
+    "dte_at_entry": 2,
+    "spot_at_entry": 20.35,
+    "signal_rating": "Moderate",
+    "signal_score": 3,
+    "profit_target": 0.75,
+    "stop_loss": 4.5,
+    "status": "expired_profit",
+    "snapshots": [],
+    "exit": {
+      "ts": "2026-06-19T08:48:14.303954-04:00",
+      "reason": "expired",
+      "spread_val": 2.5,
+      "ul_price": 24.315000534057617,
+      "pnl_per_share": 1.5,
+      "pnl_total": 150.0,
+      "pnl_pct_of_max": 100.0,
+      "win": true
+    }
+  },
+  {
+    "id": "20260617_ARQQ_CAL_1",
+    "rank": 1,
+    "entered_at": "2026-06-17T10:48:52.351616-04:00",
+    "ticker": "ARQQ",
+    "structure": "Call Debit Spread",
+    "expiry": "2026-07-17",
+    "strikes": {
+      "short": 35.0,
+      "long": 30.0
+    },
+    "width": 5.0,
+    "entry_credit": 4.15,
+    "entry_mid": 4.15,
+    "entry_legs": {
+      "long": {
+        "strike": 30.0,
+        "bid": 1.6,
+        "ask": 1.95,
+        "mid": 1.775,
+        "iv": 153.1,
+        "volume": 366,
+        "oi": 610
+      },
+      "short": {
+        "strike": 35.0,
+        "bid": 1.1,
+        "ask": 1.25,
+        "mid": 1.175,
+        "iv": 160.2,
+        "volume": 264,
+        "oi": 130
+      }
+    },
+    "max_profit": 4.15,
+    "max_loss": 0.85,
+    "dte_at_entry": 30,
+    "spot_at_entry": 22.45,
+    "signal_rating": "Strong",
+    "signal_score": 5,
+    "profit_target": 3.735,
+    "stop_loss": 12.45,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-06-19T08:48:14.303954-04:00",
+        "mark": 0.6,
+        "ul_price": 24.315000534057617,
+        "unrealized": 3.55
+      },
+      {
+        "ts": "2026-06-19T17:41:01.547041-04:00",
+        "mark": 0.6,
+        "ul_price": 24.315000534057617,
+        "unrealized": -0.25
+      },
+      {
+        "ts": "2026-06-22T17:00:02.683119-04:00",
+        "mark": 0.3,
+        "ul_price": 21.479999542236328,
+        "unrealized": -0.55
+      },
+      {
+        "ts": "2026-06-23T17:00:10.723283-04:00",
+        "mark": 1.2,
+        "ul_price": 29.04,
+        "unrealized": 0.35
+      },
+      {
+        "ts": "2026-06-24T17:06:23.227158-04:00",
+        "mark": 1.0,
+        "ul_price": 28.729999542236328,
+        "unrealized": 0.15
+      },
+      {
+        "ts": "2026-06-24T17:41:06.931513-04:00",
+        "mark": 1.0,
+        "ul_price": 28.729999542236328,
+        "unrealized": 0.15
+      },
+      {
+        "ts": "2026-06-25T17:00:02.443256-04:00",
+        "mark": 0.7,
+        "ul_price": 27.389999389648438,
+        "unrealized": -0.15
+      },
+      {
+        "ts": "2026-06-25T18:07:34.619279-04:00",
+        "mark": 0.7,
+        "ul_price": 27.389999389648438,
+        "unrealized": -0.15
+      },
+      {
+        "ts": "2026-06-25T18:17:20.850300-04:00",
+        "mark": 0.7,
+        "ul_price": 27.389999389648438,
+        "unrealized": -0.15
+      },
+      {
+        "ts": "2026-06-26T17:03:04.724282-04:00",
+        "mark": 0.4,
+        "ul_price": 24.350000381469727,
+        "unrealized": -0.45
+      },
+      {
+        "ts": "2026-06-29T17:00:02.344636-04:00",
+        "mark": 1.0,
+        "ul_price": 27.5,
+        "unrealized": 0.15
+      },
+      {
+        "ts": "2026-06-30T17:13:51.637526-04:00",
+        "mark": 1.2,
+        "ul_price": 29.75,
+        "unrealized": 0.35
+      },
+      {
+        "ts": "2026-07-01T17:13:54.253267-04:00",
+        "mark": 0.95,
+        "ul_price": 28.790000915527344,
+        "unrealized": 0.1
+      },
+      {
+        "ts": "2026-07-02T10:12:46.175642-04:00",
+        "mark": 0.65,
+        "ul_price": 27.91,
+        "unrealized": -0.2
+      },
+      {
+        "ts": "2026-07-02T10:45:45.205150-04:00",
+        "mark": 0.0,
+        "ul_price": 25.9,
+        "unrealized": -0.85
+      },
+      {
+        "ts": "2026-07-02T17:00:00.225168-04:00",
+        "mark": 0.3,
+        "ul_price": 23.515,
+        "unrealized": -0.55
+      },
+      {
+        "ts": "2026-07-02T17:02:09.105340-04:00",
+        "mark": 0.3,
+        "ul_price": 23.515,
+        "unrealized": -0.55
+      },
+      {
+        "ts": "2026-07-06T17:01:49.648638-04:00",
+        "mark": 0.0,
+        "ul_price": 22.13,
+        "unrealized": -0.85
+      }
+    ],
+    "exit": null
+  },
+  {
+    "id": "20260617_PLTR_PUT_2",
+    "rank": 2,
+    "entered_at": "2026-06-17T10:48:52.702764-04:00",
+    "ticker": "PLTR",
+    "structure": "Put Debit Spread",
+    "expiry": "2026-07-02",
+    "strikes": {
+      "short": 129.0,
+      "long": 132.0
+    },
+    "width": 3.0,
+    "entry_credit": 1.85,
+    "entry_mid": 1.85,
+    "entry_legs": {
+      "long": {
+        "strike": 132.0,
+        "bid": 3.4,
+        "ask": 3.65,
+        "mid": 3.525,
+        "iv": 40.9,
+        "volume": 8,
+        "oi": 873
+      },
+      "short": {
+        "strike": 129.0,
+        "bid": 2.39,
+        "ask": 2.55,
+        "mid": 2.47,
+        "iv": 41.7,
+        "volume": 15,
+        "oi": 551
+      }
+    },
+    "max_profit": 1.85,
+    "max_loss": 1.15,
+    "dte_at_entry": 15,
+    "spot_at_entry": 133.91,
+    "signal_rating": "Moderate",
+    "signal_score": 2,
+    "profit_target": 1.665,
+    "stop_loss": 5.55,
+    "status": "expired_profit",
+    "snapshots": [
+      {
+        "ts": "2026-06-19T08:48:14.303954-04:00",
+        "mark": 1.45,
+        "ul_price": 128.49000549316406,
+        "unrealized": 0.4
+      },
+      {
+        "ts": "2026-06-19T17:41:01.547041-04:00",
+        "mark": 1.45,
+        "ul_price": 128.49000549316406,
+        "unrealized": 0.3
+      },
+      {
+        "ts": "2026-06-22T17:00:02.683119-04:00",
+        "mark": 1.85,
+        "ul_price": 119.4801025390625,
+        "unrealized": 0.7
+      },
+      {
+        "ts": "2026-06-23T17:00:10.723283-04:00",
+        "mark": 2.1,
+        "ul_price": 116.7,
+        "unrealized": 0.95
+      },
+      {
+        "ts": "2026-06-24T17:06:23.227158-04:00",
+        "mark": 2.4,
+        "ul_price": 113.44999694824219,
+        "unrealized": 1.25
+      },
+      {
+        "ts": "2026-06-24T17:41:06.931513-04:00",
+        "mark": 2.4,
+        "ul_price": 113.44999694824219,
+        "unrealized": 1.25
+      },
+      {
+        "ts": "2026-06-25T17:00:02.443256-04:00",
+        "mark": 2.25,
+        "ul_price": 107.30999755859375,
+        "unrealized": 1.1
+      },
+      {
+        "ts": "2026-06-25T18:07:34.619279-04:00",
+        "mark": 2.25,
+        "ul_price": 107.30999755859375,
+        "unrealized": 1.1
+      },
+      {
+        "ts": "2026-06-25T18:17:20.850300-04:00",
+        "mark": 2.25,
+        "ul_price": 107.30999755859375,
+        "unrealized": 1.1
+      },
+      {
+        "ts": "2026-06-26T17:03:04.724282-04:00",
+        "mark": 1.95,
+        "ul_price": 112.83000183105469,
+        "unrealized": 0.8
+      },
+      {
+        "ts": "2026-06-29T17:00:02.344636-04:00",
+        "mark": 2.65,
+        "ul_price": 115.66999816894531,
+        "unrealized": 1.5
+      },
+      {
+        "ts": "2026-06-30T17:13:51.637526-04:00",
+        "mark": 2.5,
+        "ul_price": 116.62999725341797,
+        "unrealized": 1.35
+      },
+      {
+        "ts": "2026-07-01T17:13:54.253267-04:00",
+        "mark": 2.35,
+        "ul_price": 125.69000244140625,
+        "unrealized": 1.2
+      }
+    ],
+    "exit": {
+      "ts": "2026-07-02T17:00:00.225168-04:00",
+      "reason": "expired",
+      "spread_val": 2.7,
+      "ul_price": 129.3,
+      "pnl_per_share": 1.55,
+      "pnl_total": 155.0,
+      "pnl_pct_of_max": 83.8,
+      "win": true
+    }
+  },
+  {
+    "id": "20260617_SERV_PUT_3",
+    "rank": 3,
+    "entered_at": "2026-06-17T10:48:52.957724-04:00",
+    "ticker": "SERV",
+    "structure": "Put Debit Spread",
+    "expiry": "2026-07-02",
+    "strikes": {
+      "short": 6.0,
+      "long": 7.0
+    },
+    "width": 1.0,
+    "entry_credit": 0.3,
+    "entry_mid": 0.3,
+    "entry_legs": {
+      "long": {
+        "strike": 7.0,
+        "bid": 0.56,
+        "ask": 0.87,
+        "mid": 0.715,
+        "iv": 96.5,
+        "volume": 7,
+        "oi": 339
+      },
+      "short": {
+        "strike": 6.0,
+        "bid": 0.17,
+        "ask": 0.28,
+        "mid": 0.225,
+        "iv": 94.1,
+        "volume": 15,
+        "oi": 85
+      }
+    },
+    "max_profit": 0.3,
+    "max_loss": 0.7,
+    "dte_at_entry": 15,
+    "spot_at_entry": 6.7,
+    "signal_rating": "Moderate",
+    "signal_score": 2,
+    "profit_target": 0.27,
+    "stop_loss": 0.9,
+    "status": "expired_loss",
+    "snapshots": [
+      {
+        "ts": "2026-06-19T08:48:14.303954-04:00",
+        "mark": 0.12,
+        "ul_price": 7.010000228881836,
+        "unrealized": 0.18
+      },
+      {
+        "ts": "2026-06-19T17:41:01.547041-04:00",
+        "mark": 0.12,
+        "ul_price": 7.010000228881836,
+        "unrealized": -0.58
+      },
+      {
+        "ts": "2026-06-22T17:00:02.683119-04:00",
+        "mark": 0.41,
+        "ul_price": 6.789999961853027,
+        "unrealized": -0.29
+      },
+      {
+        "ts": "2026-06-23T17:00:10.723283-04:00",
+        "mark": 0.5,
+        "ul_price": 6.41,
+        "unrealized": -0.2
+      },
+      {
+        "ts": "2026-06-24T17:06:23.227158-04:00",
+        "mark": 0.4,
+        "ul_price": 6.139999866485596,
+        "unrealized": -0.3
+      },
+      {
+        "ts": "2026-06-24T17:41:06.931513-04:00",
+        "mark": 0.4,
+        "ul_price": 6.139999866485596,
+        "unrealized": -0.3
+      },
+      {
+        "ts": "2026-06-25T17:00:02.443256-04:00",
+        "mark": 0.67,
+        "ul_price": 5.909999847412109,
+        "unrealized": -0.03
+      },
+      {
+        "ts": "2026-06-25T18:07:34.619279-04:00",
+        "mark": 0.67,
+        "ul_price": 5.909999847412109,
+        "unrealized": -0.03
+      },
+      {
+        "ts": "2026-06-25T18:17:20.850300-04:00",
+        "mark": 0.67,
+        "ul_price": 5.909999847412109,
+        "unrealized": -0.03
+      },
+      {
+        "ts": "2026-06-26T17:03:04.724282-04:00",
+        "mark": 0.62,
+        "ul_price": 5.980000019073486,
+        "unrealized": -0.08
+      },
+      {
+        "ts": "2026-06-29T17:00:02.344636-04:00",
+        "mark": 0.52,
+        "ul_price": 6.349999904632568,
+        "unrealized": -0.18
+      },
+      {
+        "ts": "2026-06-30T17:13:51.637526-04:00",
+        "mark": 0.43,
+        "ul_price": 6.585000038146973,
+        "unrealized": -0.27
+      },
+      {
+        "ts": "2026-07-01T17:13:54.253267-04:00",
+        "mark": 0.36,
+        "ul_price": 6.519999980926514,
+        "unrealized": -0.34
+      }
+    ],
+    "exit": {
+      "ts": "2026-07-02T17:00:00.225168-04:00",
+      "reason": "expired",
+      "spread_val": 0.69,
+      "ul_price": 6.31,
+      "pnl_per_share": -0.01,
+      "pnl_total": -1.0,
+      "pnl_pct_of_max": -3.3,
+      "win": false
+    }
+  },
+  {
+    "id": "20260618_CVNA_PUT_1",
+    "rank": 1,
+    "entered_at": "2026-06-18T10:01:02.159706-04:00",
+    "ticker": "CVNA",
+    "structure": "Put Debit Spread",
+    "expiry": "2026-07-02",
+    "strikes": {
+      "short": 60.0,
+      "long": 62.0
+    },
+    "width": 2.0,
+    "entry_credit": 1.08,
+    "entry_mid": 1.08,
+    "entry_legs": {
+      "long": {
+        "strike": 62.0,
+        "bid": 0.0,
+        "ask": 0.0,
+        "mid": 3.25,
+        "iv": 6.3,
+        "volume": 18,
+        "oi": 201
+      },
+      "short": {
+        "strike": 60.0,
+        "bid": 0.0,
+        "ask": 0.0,
+        "mid": 2.45,
+        "iv": 12.5,
+        "volume": 49,
+        "oi": 139
+      }
+    },
+    "max_profit": 1.08,
+    "max_loss": 0.92,
+    "dte_at_entry": 14,
+    "spot_at_entry": 65.82,
+    "signal_rating": "Moderate",
+    "signal_score": 3,
+    "profit_target": 0.972,
+    "stop_loss": 3.24,
+    "status": "expired_loss",
+    "snapshots": [
+      {
+        "ts": "2026-06-19T08:48:14.303954-04:00",
+        "mark": 0.28,
+        "ul_price": 66.55500030517578,
+        "unrealized": 0.8
+      },
+      {
+        "ts": "2026-06-19T17:41:01.547041-04:00",
+        "mark": 0.28,
+        "ul_price": 66.55500030517578,
+        "unrealized": -0.64
+      },
+      {
+        "ts": "2026-06-22T17:00:02.683119-04:00",
+        "mark": 0.33,
+        "ul_price": 66.66000366210938,
+        "unrealized": -0.59
+      },
+      {
+        "ts": "2026-06-23T17:00:10.723283-04:00",
+        "mark": 0.47,
+        "ul_price": 64.83,
+        "unrealized": -0.45
+      },
+      {
+        "ts": "2026-06-24T17:06:23.227158-04:00",
+        "mark": 0.21,
+        "ul_price": 67.93000030517578,
+        "unrealized": -0.71
+      },
+      {
+        "ts": "2026-06-24T17:41:06.931513-04:00",
+        "mark": 0.21,
+        "ul_price": 67.93000030517578,
+        "unrealized": -0.71
+      },
+      {
+        "ts": "2026-06-25T17:00:02.443256-04:00",
+        "mark": 0.31,
+        "ul_price": 66.22000122070312,
+        "unrealized": -0.61
+      },
+      {
+        "ts": "2026-06-25T18:07:34.619279-04:00",
+        "mark": 0.31,
+        "ul_price": 66.22000122070312,
+        "unrealized": -0.61
+      },
+      {
+        "ts": "2026-06-25T18:17:20.850300-04:00",
+        "mark": 0.31,
+        "ul_price": 66.22000122070312,
+        "unrealized": -0.61
+      },
+      {
+        "ts": "2026-06-26T17:03:04.724282-04:00",
+        "mark": 0.65,
+        "ul_price": 62.29999923706055,
+        "unrealized": -0.27
+      },
+      {
+        "ts": "2026-06-29T17:00:02.344636-04:00",
+        "mark": 0.47,
+        "ul_price": 63.7400016784668,
+        "unrealized": -0.45
+      },
+      {
+        "ts": "2026-06-30T17:13:51.637526-04:00",
+        "mark": 0.14,
+        "ul_price": 65.80000305175781,
+        "unrealized": -0.78
+      },
+      {
+        "ts": "2026-07-01T17:13:54.253267-04:00",
+        "mark": 0.0,
+        "ul_price": 67.88500213623047,
+        "unrealized": -0.92
+      }
+    ],
+    "exit": {
+      "ts": "2026-07-02T17:00:00.225168-04:00",
+      "reason": "expired",
+      "spread_val": 0.0,
+      "ul_price": 68.6,
+      "pnl_per_share": -0.92,
+      "pnl_total": -92.0,
+      "pnl_pct_of_max": -85.2,
+      "win": false
+    }
+  },
+  {
+    "id": "20260618_BTC_PUT_2",
+    "rank": 2,
+    "entered_at": "2026-06-18T10:01:02.551353-04:00",
+    "ticker": "BTC",
+    "structure": "Put Debit Spread",
+    "expiry": "2026-07-17",
+    "strikes": {
+      "short": 25.0,
+      "long": 28.0
+    },
+    "width": 3.0,
+    "entry_credit": 2.21,
+    "entry_mid": 2.21,
+    "entry_legs": {
+      "long": {
+        "strike": 28.0,
+        "bid": 0.0,
+        "ask": 0.0,
+        "mid": 1.0,
+        "iv": 0.8,
+        "volume": 104,
+        "oi": 143
+      },
+      "short": {
+        "strike": 25.0,
+        "bid": 0.0,
+        "ask": 0.0,
+        "mid": 0.23,
+        "iv": 12.5,
+        "volume": 1,
+        "oi": 270
+      }
+    },
+    "max_profit": 2.21,
+    "max_loss": 0.79,
+    "dte_at_entry": 29,
+    "spot_at_entry": 28.24,
+    "signal_rating": "Moderate",
+    "signal_score": 2,
+    "profit_target": 1.989,
+    "stop_loss": 6.63,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-06-19T08:48:14.303954-04:00",
+        "mark": 0.85,
+        "ul_price": 27.81999969482422,
+        "unrealized": 1.36
+      },
+      {
+        "ts": "2026-06-19T17:41:01.547041-04:00",
+        "mark": 0.85,
+        "ul_price": 27.81999969482422,
+        "unrealized": 0.06
+      },
+      {
+        "ts": "2026-06-22T17:00:02.683119-04:00",
+        "mark": 0.15,
+        "ul_price": 28.489999771118164,
+        "unrealized": -0.64
+      },
+      {
+        "ts": "2026-06-23T17:00:10.723283-04:00",
+        "mark": 0.8,
+        "ul_price": 27.56,
+        "unrealized": 0.01
+      },
+      {
+        "ts": "2026-06-24T17:06:23.227158-04:00",
+        "mark": 0.95,
+        "ul_price": 26.475000381469727,
+        "unrealized": 0.16
+      },
+      {
+        "ts": "2026-06-24T17:41:06.931513-04:00",
+        "mark": 0.95,
+        "ul_price": 26.475000381469727,
+        "unrealized": 0.16
+      },
+      {
+        "ts": "2026-06-25T17:00:02.443256-04:00",
+        "mark": 1.05,
+        "ul_price": 26.18000030517578,
+        "unrealized": 0.26
+      },
+      {
+        "ts": "2026-06-25T18:07:34.619279-04:00",
+        "mark": 1.05,
+        "ul_price": 26.18000030517578,
+        "unrealized": 0.26
+      },
+      {
+        "ts": "2026-06-25T18:17:20.850300-04:00",
+        "mark": 1.05,
+        "ul_price": 26.18000030517578,
+        "unrealized": 0.26
+      },
+      {
+        "ts": "2026-06-26T17:03:04.724282-04:00",
+        "mark": 0.75,
+        "ul_price": 26.40999984741211,
+        "unrealized": -0.04
+      },
+      {
+        "ts": "2026-06-29T17:00:02.344636-04:00",
+        "mark": 0.6,
+        "ul_price": 26.68000030517578,
+        "unrealized": -0.19
+      },
+      {
+        "ts": "2026-06-30T17:13:51.637526-04:00",
+        "mark": 0.85,
+        "ul_price": 25.959999084472656,
+        "unrealized": 0.06
+      },
+      {
+        "ts": "2026-07-01T17:13:54.253267-04:00",
+        "mark": 1.05,
+        "ul_price": 26.5,
+        "unrealized": 0.26
+      },
+      {
+        "ts": "2026-07-02T10:12:46.175642-04:00",
+        "mark": 0.7,
+        "ul_price": 27.45,
+        "unrealized": -0.09
+      },
+      {
+        "ts": "2026-07-02T10:45:45.205150-04:00",
+        "mark": 0.7,
+        "ul_price": 27.185,
+        "unrealized": -0.09
+      },
+      {
+        "ts": "2026-07-02T17:00:00.225168-04:00",
+        "mark": 0.55,
+        "ul_price": 27.18,
+        "unrealized": -0.24
+      },
+      {
+        "ts": "2026-07-02T17:02:09.105340-04:00",
+        "mark": 0.55,
+        "ul_price": 27.18,
+        "unrealized": -0.24
+      },
+      {
+        "ts": "2026-07-06T17:01:49.648638-04:00",
+        "mark": 0.4,
+        "ul_price": 28.18,
+        "unrealized": -0.39
+      }
+    ],
+    "exit": null
+  },
+  {
+    "id": "20260619_INTC_CAL_1",
+    "rank": 1,
+    "entered_at": "2026-06-19T10:01:32.952450-04:00",
+    "ticker": "INTC",
+    "structure": "Call Debit Spread",
+    "expiry": "2026-07-02",
+    "strikes": {
+      "short": 147.0,
+      "long": 145.0
+    },
+    "width": 2.0,
+    "entry_credit": 0.9,
+    "entry_mid": 0.9,
+    "entry_legs": {
+      "long": {
+        "strike": 145.0,
+        "bid": 4.8,
+        "ask": 5.25,
+        "mid": 5.025,
+        "iv": 87.6,
+        "volume": 997,
+        "oi": 2006
+      },
+      "short": {
+        "strike": 147.0,
+        "bid": 4.15,
+        "ask": 4.6,
+        "mid": 4.375,
+        "iv": 86.7,
+        "volume": 80,
+        "oi": 111
+      }
+    },
+    "max_profit": 0.9,
+    "max_loss": 1.1,
+    "dte_at_entry": 13,
+    "spot_at_entry": 133.99,
+    "signal_rating": "Strong",
+    "signal_score": 2.145,
+    "profit_target": 0.81,
+    "stop_loss": 2.7,
+    "status": "expired_loss",
+    "snapshots": [
+      {
+        "ts": "2026-06-19T17:41:01.547041-04:00",
+        "mark": 0.2,
+        "ul_price": 133.8000030517578,
+        "unrealized": -0.9
+      },
+      {
+        "ts": "2026-06-22T17:00:02.683119-04:00",
+        "mark": 0.45,
+        "ul_price": 140.86000061035156,
+        "unrealized": -0.65
+      },
+      {
+        "ts": "2026-06-23T17:00:10.723283-04:00",
+        "mark": 0.1,
+        "ul_price": 132.28,
+        "unrealized": -1.0
+      },
+      {
+        "ts": "2026-06-24T17:06:23.227158-04:00",
+        "mark": 0.06,
+        "ul_price": 131.74000549316406,
+        "unrealized": -1.04
+      },
+      {
+        "ts": "2026-06-24T17:41:06.931513-04:00",
+        "mark": 0.06,
+        "ul_price": 131.74000549316406,
+        "unrealized": -1.04
+      },
+      {
+        "ts": "2026-06-25T17:00:02.443256-04:00",
+        "mark": 0.25,
+        "ul_price": 133.0,
+        "unrealized": -0.85
+      },
+      {
+        "ts": "2026-06-25T18:07:34.619279-04:00",
+        "mark": 0.25,
+        "ul_price": 133.0,
+        "unrealized": -0.85
+      },
+      {
+        "ts": "2026-06-25T18:17:20.850300-04:00",
+        "mark": 0.25,
+        "ul_price": 133.0,
+        "unrealized": -0.85
+      },
+      {
+        "ts": "2026-06-26T17:03:04.724282-04:00",
+        "mark": 0.03,
+        "ul_price": 127.66000366210938,
+        "unrealized": -1.07
+      },
+      {
+        "ts": "2026-06-29T17:00:02.344636-04:00",
+        "mark": 0.17,
+        "ul_price": 131.7100067138672,
+        "unrealized": -0.93
+      },
+      {
+        "ts": "2026-06-30T17:13:51.637526-04:00",
+        "mark": 0.45,
+        "ul_price": 139.52999877929688,
+        "unrealized": -0.65
+      },
+      {
+        "ts": "2026-07-01T17:13:54.253267-04:00",
+        "mark": 0.0,
+        "ul_price": 127.0199966430664,
+        "unrealized": -1.1
+      }
+    ],
+    "exit": {
+      "ts": "2026-07-02T17:00:00.225168-04:00",
+      "reason": "expired",
+      "spread_val": 0.0,
+      "ul_price": 120.35,
+      "pnl_per_share": -1.1,
+      "pnl_total": -110.0,
+      "pnl_pct_of_max": -122.2,
+      "win": false
+    }
+  },
+  {
+    "id": "20260619_ARQQ_CAL_2",
+    "rank": 2,
+    "entered_at": "2026-06-19T10:01:33.282126-04:00",
+    "ticker": "ARQQ",
+    "structure": "Call Debit Spread",
+    "expiry": "2026-07-17",
+    "strikes": {
+      "short": 35.0,
+      "long": 30.0
+    },
+    "width": 5.0,
+    "entry_credit": 4.0,
+    "entry_mid": 4.0,
+    "entry_legs": {
+      "long": {
+        "strike": 30.0,
+        "bid": 2.35,
+        "ask": 2.5,
+        "mid": 2.425,
+        "iv": 155.9,
+        "volume": 366,
+        "oi": 657
+      },
+      "short": {
+        "strike": 35.0,
+        "bid": 1.5,
+        "ask": 1.75,
+        "mid": 1.625,
+        "iv": 163.0,
+        "volume": 821,
+        "oi": 487
+      }
+    },
+    "max_profit": 4.0,
+    "max_loss": 1.0,
+    "dte_at_entry": 28,
+    "spot_at_entry": 24.38,
+    "signal_rating": "Moderate",
+    "signal_score": 1.761,
+    "profit_target": 3.6,
+    "stop_loss": 12.0,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-06-19T17:41:01.547041-04:00",
+        "mark": 0.6,
+        "ul_price": 24.315000534057617,
+        "unrealized": -0.4
+      },
+      {
+        "ts": "2026-06-22T17:00:02.683119-04:00",
+        "mark": 0.3,
+        "ul_price": 21.479999542236328,
+        "unrealized": -0.7
+      },
+      {
+        "ts": "2026-06-23T17:00:10.723283-04:00",
+        "mark": 1.2,
+        "ul_price": 29.04,
+        "unrealized": 0.2
+      },
+      {
+        "ts": "2026-06-24T17:06:23.227158-04:00",
+        "mark": 1.0,
+        "ul_price": 28.729999542236328,
+        "unrealized": 0.0
+      },
+      {
+        "ts": "2026-06-24T17:41:06.931513-04:00",
+        "mark": 1.0,
+        "ul_price": 28.729999542236328,
+        "unrealized": 0.0
+      },
+      {
+        "ts": "2026-06-25T17:00:02.443256-04:00",
+        "mark": 0.7,
+        "ul_price": 27.389999389648438,
+        "unrealized": -0.3
+      },
+      {
+        "ts": "2026-06-25T18:07:34.619279-04:00",
+        "mark": 0.7,
+        "ul_price": 27.389999389648438,
+        "unrealized": -0.3
+      },
+      {
+        "ts": "2026-06-25T18:17:20.850300-04:00",
+        "mark": 0.7,
+        "ul_price": 27.389999389648438,
+        "unrealized": -0.3
+      },
+      {
+        "ts": "2026-06-26T17:03:04.724282-04:00",
+        "mark": 0.4,
+        "ul_price": 24.350000381469727,
+        "unrealized": -0.6
+      },
+      {
+        "ts": "2026-06-29T17:00:02.344636-04:00",
+        "mark": 1.0,
+        "ul_price": 27.5,
+        "unrealized": 0.0
+      },
+      {
+        "ts": "2026-06-30T17:13:51.637526-04:00",
+        "mark": 1.2,
+        "ul_price": 29.75,
+        "unrealized": 0.2
+      },
+      {
+        "ts": "2026-07-01T17:13:54.253267-04:00",
+        "mark": 0.95,
+        "ul_price": 28.790000915527344,
+        "unrealized": -0.05
+      },
+      {
+        "ts": "2026-07-02T10:12:46.175642-04:00",
+        "mark": 0.65,
+        "ul_price": 27.91,
+        "unrealized": -0.35
+      },
+      {
+        "ts": "2026-07-02T10:45:45.205150-04:00",
+        "mark": 0.0,
+        "ul_price": 25.9,
+        "unrealized": -1.0
+      },
+      {
+        "ts": "2026-07-02T17:00:00.225168-04:00",
+        "mark": 0.3,
+        "ul_price": 23.515,
+        "unrealized": -0.7
+      },
+      {
+        "ts": "2026-07-02T17:02:09.105340-04:00",
+        "mark": 0.3,
+        "ul_price": 23.515,
+        "unrealized": -0.7
+      },
+      {
+        "ts": "2026-07-06T17:01:49.648638-04:00",
+        "mark": 0.0,
+        "ul_price": 22.06999969482422,
+        "unrealized": -1.0
+      }
+    ],
+    "exit": null
+  },
+  {
+    "id": "20260619_CVNA_PUT_3",
+    "rank": 3,
+    "entered_at": "2026-06-19T10:01:33.534963-04:00",
+    "ticker": "CVNA",
+    "structure": "Put Debit Spread",
+    "expiry": "2026-07-02",
+    "strikes": {
+      "short": 62.0,
+      "long": 64.0
+    },
+    "width": 2.0,
+    "entry_credit": 0.94,
+    "entry_mid": 0.94,
+    "entry_legs": {
+      "long": {
+        "strike": 64.0,
+        "bid": 2.35,
+        "ask": 2.74,
+        "mid": 2.545,
+        "iv": 72.3,
+        "volume": 13,
+        "oi": 178
+      },
+      "short": {
+        "strike": 62.0,
+        "bid": 1.68,
+        "ask": 2.04,
+        "mid": 1.86,
+        "iv": 73.8,
+        "volume": 9,
+        "oi": 201
+      }
+    },
+    "max_profit": 0.94,
+    "max_loss": 1.06,
+    "dte_at_entry": 13,
+    "spot_at_entry": 66.56,
+    "signal_rating": "Moderate",
+    "signal_score": 1.183,
+    "profit_target": 0.846,
+    "stop_loss": 2.82,
+    "status": "expired_loss",
+    "snapshots": [
+      {
+        "ts": "2026-06-19T17:41:01.547041-04:00",
+        "mark": 0.31,
+        "ul_price": 66.55500030517578,
+        "unrealized": -0.75
+      },
+      {
+        "ts": "2026-06-22T17:00:02.683119-04:00",
+        "mark": 0.46,
+        "ul_price": 66.66000366210938,
+        "unrealized": -0.6
+      },
+      {
+        "ts": "2026-06-23T17:00:10.723283-04:00",
+        "mark": 0.65,
+        "ul_price": 64.83,
+        "unrealized": -0.41
+      },
+      {
+        "ts": "2026-06-24T17:06:23.227158-04:00",
+        "mark": 0.27,
+        "ul_price": 67.93000030517578,
+        "unrealized": -0.79
+      },
+      {
+        "ts": "2026-06-24T17:41:06.931513-04:00",
+        "mark": 0.27,
+        "ul_price": 67.93000030517578,
+        "unrealized": -0.79
+      },
+      {
+        "ts": "2026-06-25T17:00:02.443256-04:00",
+        "mark": 0.46,
+        "ul_price": 66.22000122070312,
+        "unrealized": -0.6
+      },
+      {
+        "ts": "2026-06-25T18:07:34.619279-04:00",
+        "mark": 0.46,
+        "ul_price": 66.22000122070312,
+        "unrealized": -0.6
+      },
+      {
+        "ts": "2026-06-25T18:17:20.850300-04:00",
+        "mark": 0.46,
+        "ul_price": 66.22000122070312,
+        "unrealized": -0.6
+      },
+      {
+        "ts": "2026-06-26T17:03:04.724282-04:00",
+        "mark": 0.86,
+        "ul_price": 62.29999923706055,
+        "unrealized": -0.2
+      },
+      {
+        "ts": "2026-06-29T17:00:02.344636-04:00",
+        "mark": 0.75,
+        "ul_price": 63.7400016784668,
+        "unrealized": -0.31
+      },
+      {
+        "ts": "2026-06-30T17:13:51.637526-04:00",
+        "mark": 0.31,
+        "ul_price": 65.80000305175781,
+        "unrealized": -0.75
+      },
+      {
+        "ts": "2026-07-01T17:13:54.253267-04:00",
+        "mark": 0.03,
+        "ul_price": 67.88500213623047,
+        "unrealized": -1.03
+      }
+    ],
+    "exit": {
+      "ts": "2026-07-02T17:00:00.225168-04:00",
+      "reason": "expired",
+      "spread_val": 0.0,
+      "ul_price": 68.6,
+      "pnl_per_share": -1.06,
+      "pnl_total": -106.0,
+      "pnl_pct_of_max": -112.8,
+      "win": false
+    }
+  },
+  {
+    "id": "20260622_BTC_PUT_1",
+    "rank": 1,
+    "entered_at": "2026-06-22T10:37:14.971237-04:00",
+    "ticker": "BTC",
+    "structure": "Put Debit Spread",
+    "expiry": "2026-07-17",
+    "strikes": {
+      "short": 25.0,
+      "long": 28.0
+    },
+    "width": 3.0,
+    "entry_credit": 1.85,
+    "entry_mid": 1.85,
+    "entry_legs": {
+      "long": {
+        "strike": 28.0,
+        "bid": 0.5,
+        "ask": 1.25,
+        "mid": 0.875,
+        "iv": 41.9,
+        "volume": 0,
+        "oi": 146
+      },
+      "short": {
+        "strike": 25.0,
+        "bid": 0.1,
+        "ask": 0.65,
+        "mid": 0.375,
+        "iv": 56.6,
+        "volume": 2,
+        "oi": 297
+      }
+    },
+    "max_profit": 1.85,
+    "max_loss": 1.15,
+    "dte_at_entry": 25,
+    "spot_at_entry": 28.72,
+    "signal_rating": "Moderate",
+    "signal_score": 1.86,
+    "profit_target": 1.665,
+    "stop_loss": 5.55,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-06-22T17:00:02.683119-04:00",
+        "mark": 0.15,
+        "ul_price": 28.489999771118164,
+        "unrealized": -1.0
+      },
+      {
+        "ts": "2026-06-23T17:00:10.723283-04:00",
+        "mark": 0.8,
+        "ul_price": 27.56,
+        "unrealized": -0.35
+      },
+      {
+        "ts": "2026-06-24T17:06:23.227158-04:00",
+        "mark": 0.95,
+        "ul_price": 26.475000381469727,
+        "unrealized": -0.2
+      },
+      {
+        "ts": "2026-06-24T17:41:06.931513-04:00",
+        "mark": 0.95,
+        "ul_price": 26.475000381469727,
+        "unrealized": -0.2
+      },
+      {
+        "ts": "2026-06-25T17:00:02.443256-04:00",
+        "mark": 1.05,
+        "ul_price": 26.18000030517578,
+        "unrealized": -0.1
+      },
+      {
+        "ts": "2026-06-25T18:07:34.619279-04:00",
+        "mark": 1.05,
+        "ul_price": 26.18000030517578,
+        "unrealized": -0.1
+      },
+      {
+        "ts": "2026-06-25T18:17:20.850300-04:00",
+        "mark": 1.05,
+        "ul_price": 26.18000030517578,
+        "unrealized": -0.1
+      },
+      {
+        "ts": "2026-06-26T17:03:04.724282-04:00",
+        "mark": 0.75,
+        "ul_price": 26.40999984741211,
+        "unrealized": -0.4
+      },
+      {
+        "ts": "2026-06-29T17:00:02.344636-04:00",
+        "mark": 0.6,
+        "ul_price": 26.68000030517578,
+        "unrealized": -0.55
+      },
+      {
+        "ts": "2026-06-30T17:13:51.637526-04:00",
+        "mark": 0.85,
+        "ul_price": 25.959999084472656,
+        "unrealized": -0.3
+      },
+      {
+        "ts": "2026-07-01T17:13:54.253267-04:00",
+        "mark": 1.05,
+        "ul_price": 26.5,
+        "unrealized": -0.1
+      },
+      {
+        "ts": "2026-07-02T10:12:46.175642-04:00",
+        "mark": 0.7,
+        "ul_price": 27.39,
+        "unrealized": -0.45
+      },
+      {
+        "ts": "2026-07-02T10:45:45.205150-04:00",
+        "mark": 0.7,
+        "ul_price": 27.19,
+        "unrealized": -0.45
+      },
+      {
+        "ts": "2026-07-02T17:00:00.225168-04:00",
+        "mark": 0.55,
+        "ul_price": 27.18,
+        "unrealized": -0.6
+      },
+      {
+        "ts": "2026-07-02T17:02:09.105340-04:00",
+        "mark": 0.55,
+        "ul_price": 27.18,
+        "unrealized": -0.6
+      },
+      {
+        "ts": "2026-07-06T17:01:49.648638-04:00",
+        "mark": 0.4,
+        "ul_price": 28.18,
+        "unrealized": -0.75
+      }
+    ],
+    "exit": null
+  },
+  {
+    "id": "20260622_ACHR_PUT_2",
+    "rank": 2,
+    "entered_at": "2026-06-22T10:37:17.337125-04:00",
+    "ticker": "ACHR",
+    "structure": "Put Debit Spread",
+    "expiry": "2026-07-10",
+    "strikes": {
+      "short": 4.5,
+      "long": 6.0
+    },
+    "width": 1.5,
+    "entry_credit": 0.79,
+    "entry_mid": 0.79,
+    "entry_legs": {
+      "long": {
+        "strike": 6.0,
+        "bid": 0.66,
+        "ask": 0.76,
+        "mid": 0.71,
+        "iv": 76.2,
+        "volume": 15,
+        "oi": 224
+      },
+      "short": {
+        "strike": 4.5,
+        "bid": 0.05,
+        "ask": 0.07,
+        "mid": 0.06,
+        "iv": 80.2,
+        "volume": 160,
+        "oi": 338
+      }
+    },
+    "max_profit": 0.79,
+    "max_loss": 0.71,
+    "dte_at_entry": 18,
+    "spot_at_entry": 5.48,
+    "signal_rating": "Moderate",
+    "signal_score": 1.615,
+    "profit_target": 0.711,
+    "stop_loss": 2.37,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-06-22T17:00:02.683119-04:00",
+        "mark": 0.64,
+        "ul_price": 5.414999961853027,
+        "unrealized": -0.07
+      },
+      {
+        "ts": "2026-06-23T17:00:10.723283-04:00",
+        "mark": 0.53,
+        "ul_price": 5.25,
+        "unrealized": -0.18
+      },
+      {
+        "ts": "2026-06-24T17:06:23.227158-04:00",
+        "mark": 0.64,
+        "ul_price": 5.059999942779541,
+        "unrealized": -0.07
+      },
+      {
+        "ts": "2026-06-24T17:41:06.931513-04:00",
+        "mark": 0.64,
+        "ul_price": 5.059999942779541,
+        "unrealized": -0.07
+      },
+      {
+        "ts": "2026-06-25T17:00:02.443256-04:00",
+        "mark": 1.0,
+        "ul_price": 4.795000076293945,
+        "unrealized": 0.29
+      },
+      {
+        "ts": "2026-06-25T18:07:34.619279-04:00",
+        "mark": 1.0,
+        "ul_price": 4.795000076293945,
+        "unrealized": 0.29
+      },
+      {
+        "ts": "2026-06-25T18:17:20.850300-04:00",
+        "mark": 1.0,
+        "ul_price": 4.795000076293945,
+        "unrealized": 0.29
+      },
+      {
+        "ts": "2026-06-26T17:03:04.724282-04:00",
+        "mark": 0.98,
+        "ul_price": 4.869999885559082,
+        "unrealized": 0.27
+      },
+      {
+        "ts": "2026-06-29T17:00:02.344636-04:00",
+        "mark": 1.05,
+        "ul_price": 4.690000057220459,
+        "unrealized": 0.34
+      },
+      {
+        "ts": "2026-06-30T17:13:51.637526-04:00",
+        "mark": 1.06,
+        "ul_price": 4.730000019073486,
+        "unrealized": 0.35
+      },
+      {
+        "ts": "2026-07-01T17:13:54.253267-04:00",
+        "mark": 0.93,
+        "ul_price": 4.934999942779541,
+        "unrealized": 0.22
+      },
+      {
+        "ts": "2026-07-02T10:12:46.175642-04:00",
+        "mark": 0.62,
+        "ul_price": 5.17,
+        "unrealized": -0.09
+      },
+      {
+        "ts": "2026-07-02T10:45:45.205150-04:00",
+        "mark": 0.61,
+        "ul_price": 5.03,
+        "unrealized": -0.1
+      },
+      {
+        "ts": "2026-07-02T17:00:00.225168-04:00",
+        "mark": 0.94,
+        "ul_price": 4.98,
+        "unrealized": 0.23
+      },
+      {
+        "ts": "2026-07-02T17:02:09.105340-04:00",
+        "mark": 0.94,
+        "ul_price": 4.98,
+        "unrealized": 0.23
+      },
+      {
+        "ts": "2026-07-06T17:01:49.648638-04:00",
+        "mark": 0.59,
+        "ul_price": 5.37,
+        "unrealized": -0.12
+      }
+    ],
+    "exit": null
+  },
+  {
+    "id": "20260622_PLTR_PUT_3",
+    "rank": 3,
+    "entered_at": "2026-06-22T10:37:19.341296-04:00",
+    "ticker": "PLTR",
+    "structure": "Put Debit Spread",
+    "expiry": "2026-07-10",
+    "strikes": {
+      "short": 118.0,
+      "long": 120.0
+    },
+    "width": 2.0,
+    "entry_credit": 1.18,
+    "entry_mid": 1.18,
+    "entry_legs": {
+      "long": {
+        "strike": 120.0,
+        "bid": 3.35,
+        "ask": 3.55,
+        "mid": 3.45,
+        "iv": 48.9,
+        "volume": 200,
+        "oi": 2092
+      },
+      "short": {
+        "strike": 118.0,
+        "bid": 2.61,
+        "ask": 2.79,
+        "mid": 2.7,
+        "iv": 48.8,
+        "volume": 46,
+        "oi": 2473
+      }
+    },
+    "max_profit": 1.18,
+    "max_loss": 0.82,
+    "dte_at_entry": 18,
+    "spot_at_entry": 124.45,
+    "signal_rating": "Moderate",
+    "signal_score": 1.265,
+    "profit_target": 1.062,
+    "stop_loss": 3.54,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-06-22T17:00:02.683119-04:00",
+        "mark": 0.8,
+        "ul_price": 119.4801025390625,
+        "unrealized": -0.02
+      },
+      {
+        "ts": "2026-06-23T17:00:10.723283-04:00",
+        "mark": 1.0,
+        "ul_price": 116.7,
+        "unrealized": 0.18
+      },
+      {
+        "ts": "2026-06-24T17:06:23.227158-04:00",
+        "mark": 1.1,
+        "ul_price": 113.44999694824219,
+        "unrealized": 0.28
+      },
+      {
+        "ts": "2026-06-24T17:41:06.931513-04:00",
+        "mark": 1.1,
+        "ul_price": 113.44999694824219,
+        "unrealized": 0.28
+      },
+      {
+        "ts": "2026-06-25T17:00:02.443256-04:00",
+        "mark": 1.05,
+        "ul_price": 107.30999755859375,
+        "unrealized": 0.23
+      },
+      {
+        "ts": "2026-06-25T18:07:34.619279-04:00",
+        "mark": 1.05,
+        "ul_price": 107.30999755859375,
+        "unrealized": 0.23
+      },
+      {
+        "ts": "2026-06-25T18:17:20.850300-04:00",
+        "mark": 1.05,
+        "ul_price": 107.30999755859375,
+        "unrealized": 0.23
+      },
+      {
+        "ts": "2026-06-26T17:03:04.724282-04:00",
+        "mark": 0.9,
+        "ul_price": 112.83000183105469,
+        "unrealized": 0.08
+      },
+      {
+        "ts": "2026-06-29T17:00:02.344636-04:00",
+        "mark": 1.0,
+        "ul_price": 115.66999816894531,
+        "unrealized": 0.18
+      },
+      {
+        "ts": "2026-06-30T17:13:51.637526-04:00",
+        "mark": 1.0,
+        "ul_price": 116.62999725341797,
+        "unrealized": 0.18
+      },
+      {
+        "ts": "2026-07-01T17:13:54.253267-04:00",
+        "mark": 0.39,
+        "ul_price": 125.69000244140625,
+        "unrealized": -0.43
+      },
+      {
+        "ts": "2026-07-02T10:12:46.175642-04:00",
+        "mark": 0.18,
+        "ul_price": 131.34,
+        "unrealized": -0.64
+      },
+      {
+        "ts": "2026-07-02T10:45:45.205150-04:00",
+        "mark": 0.13,
+        "ul_price": 129.91,
+        "unrealized": -0.69
+      },
+      {
+        "ts": "2026-07-02T17:00:00.225168-04:00",
+        "mark": 0.2,
+        "ul_price": 129.3,
+        "unrealized": -0.62
+      },
+      {
+        "ts": "2026-07-02T17:02:09.105340-04:00",
+        "mark": 0.2,
+        "ul_price": 129.3,
+        "unrealized": -0.62
+      },
+      {
+        "ts": "2026-07-06T17:01:49.648638-04:00",
+        "mark": 0.08,
+        "ul_price": 132.54,
+        "unrealized": -0.74
+      }
+    ],
+    "exit": null
+  },
+  {
+    "id": "20260623_ACHR_PUT_1",
+    "rank": 1,
+    "entered_at": "2026-06-23T10:08:54.804352-04:00",
+    "ticker": "ACHR",
+    "structure": "Put Debit Spread",
+    "expiry": "2026-07-10",
+    "strikes": {
+      "short": 4.5,
+      "long": 6.0
+    },
+    "width": 1.5,
+    "entry_credit": 0.78,
+    "entry_mid": 0.78,
+    "entry_legs": {
+      "long": {
+        "strike": 6.0,
+        "bid": 0.64,
+        "ask": 0.76,
+        "mid": 0.7,
+        "iv": 77.6,
+        "volume": 7,
+        "oi": 240
+      },
+      "short": {
+        "strike": 4.5,
+        "bid": 0.04,
+        "ask": 0.09,
+        "mid": 0.065,
+        "iv": 85.0,
+        "volume": 2,
+        "oi": 612
+      }
+    },
+    "max_profit": 0.78,
+    "max_loss": 0.72,
+    "dte_at_entry": 17,
+    "spot_at_entry": 5.5,
+    "signal_rating": "Moderate",
+    "signal_score": 1.615,
+    "profit_target": 0.702,
+    "stop_loss": 2.34,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-06-23T17:00:10.723283-04:00",
+        "mark": 0.53,
+        "ul_price": 5.25,
+        "unrealized": -0.19
+      },
+      {
+        "ts": "2026-06-24T17:06:23.227158-04:00",
+        "mark": 0.64,
+        "ul_price": 5.059999942779541,
+        "unrealized": -0.08
+      },
+      {
+        "ts": "2026-06-24T17:41:06.931513-04:00",
+        "mark": 0.64,
+        "ul_price": 5.059999942779541,
+        "unrealized": -0.08
+      },
+      {
+        "ts": "2026-06-25T17:00:02.443256-04:00",
+        "mark": 1.0,
+        "ul_price": 4.795000076293945,
+        "unrealized": 0.28
+      },
+      {
+        "ts": "2026-06-25T18:07:34.619279-04:00",
+        "mark": 1.0,
+        "ul_price": 4.795000076293945,
+        "unrealized": 0.28
+      },
+      {
+        "ts": "2026-06-25T18:17:20.850300-04:00",
+        "mark": 1.0,
+        "ul_price": 4.795000076293945,
+        "unrealized": 0.28
+      },
+      {
+        "ts": "2026-06-26T17:03:04.724282-04:00",
+        "mark": 0.98,
+        "ul_price": 4.869999885559082,
+        "unrealized": 0.26
+      },
+      {
+        "ts": "2026-06-29T17:00:02.344636-04:00",
+        "mark": 1.05,
+        "ul_price": 4.690000057220459,
+        "unrealized": 0.33
+      },
+      {
+        "ts": "2026-06-30T17:13:51.637526-04:00",
+        "mark": 1.06,
+        "ul_price": 4.730000019073486,
+        "unrealized": 0.34
+      },
+      {
+        "ts": "2026-07-01T17:13:54.253267-04:00",
+        "mark": 0.93,
+        "ul_price": 4.934999942779541,
+        "unrealized": 0.21
+      },
+      {
+        "ts": "2026-07-02T10:12:46.175642-04:00",
+        "mark": 0.62,
+        "ul_price": 5.165,
+        "unrealized": -0.1
+      },
+      {
+        "ts": "2026-07-02T10:45:45.205150-04:00",
+        "mark": 0.61,
+        "ul_price": 5.02,
+        "unrealized": -0.11
+      },
+      {
+        "ts": "2026-07-02T17:00:00.225168-04:00",
+        "mark": 0.94,
+        "ul_price": 4.98,
+        "unrealized": 0.22
+      },
+      {
+        "ts": "2026-07-02T17:02:09.105340-04:00",
+        "mark": 0.94,
+        "ul_price": 4.98,
+        "unrealized": 0.22
+      },
+      {
+        "ts": "2026-07-06T17:01:49.648638-04:00",
+        "mark": 0.59,
+        "ul_price": 5.37,
+        "unrealized": -0.13
+      }
+    ],
+    "exit": null
+  },
+  {
+    "id": "20260623_PLTR_PUT_2",
+    "rank": 2,
+    "entered_at": "2026-06-23T10:08:56.627508-04:00",
+    "ticker": "PLTR",
+    "structure": "Put Debit Spread",
+    "expiry": "2026-07-10",
+    "strikes": {
+      "short": 114.0,
+      "long": 116.0
+    },
+    "width": 2.0,
+    "entry_credit": 1.0,
+    "entry_mid": 1.0,
+    "entry_legs": {
+      "long": {
+        "strike": 116.0,
+        "bid": 3.15,
+        "ask": 3.5,
+        "mid": 3.325,
+        "iv": 49.6,
+        "volume": 2,
+        "oi": 56
+      },
+      "short": {
+        "strike": 114.0,
+        "bid": 2.6,
+        "ask": 2.86,
+        "mid": 2.73,
+        "iv": 50.8,
+        "volume": 0,
+        "oi": 67
+      }
+    },
+    "max_profit": 1.0,
+    "max_loss": 1.0,
+    "dte_at_entry": 17,
+    "spot_at_entry": 119.99,
+    "signal_rating": "Moderate",
+    "signal_score": 1.265,
+    "profit_target": 0.9,
+    "stop_loss": 3.0,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-06-23T17:00:10.723283-04:00",
+        "mark": 0.7,
+        "ul_price": 116.7,
+        "unrealized": -0.3
+      },
+      {
+        "ts": "2026-06-24T17:06:23.227158-04:00",
+        "mark": 0.0,
+        "ul_price": 113.44999694824219,
+        "unrealized": -1.0
+      },
+      {
+        "ts": "2026-06-24T17:41:06.931513-04:00",
+        "mark": 0.0,
+        "ul_price": 113.44999694824219,
+        "unrealized": -1.0
+      },
+      {
+        "ts": "2026-06-25T17:00:02.443256-04:00",
+        "mark": 0.0,
+        "ul_price": 107.30999755859375,
+        "unrealized": -1.0
+      },
+      {
+        "ts": "2026-06-25T18:07:34.619279-04:00",
+        "mark": 0.0,
+        "ul_price": 107.30999755859375,
+        "unrealized": -1.0
+      },
+      {
+        "ts": "2026-06-25T18:17:20.850300-04:00",
+        "mark": 0.0,
+        "ul_price": 107.30999755859375,
+        "unrealized": -1.0
+      },
+      {
+        "ts": "2026-06-26T17:03:04.724282-04:00",
+        "mark": 0.0,
+        "ul_price": 112.83000183105469,
+        "unrealized": -1.0
+      },
+      {
+        "ts": "2026-06-29T17:00:02.344636-04:00",
+        "mark": 0.75,
+        "ul_price": 115.66999816894531,
+        "unrealized": -0.25
+      },
+      {
+        "ts": "2026-06-30T17:13:51.637526-04:00",
+        "mark": 0.72,
+        "ul_price": 116.62999725341797,
+        "unrealized": -0.28
+      },
+      {
+        "ts": "2026-07-01T17:13:54.253267-04:00",
+        "mark": 0.14,
+        "ul_price": 125.69000244140625,
+        "unrealized": -0.86
+      },
+      {
+        "ts": "2026-07-02T10:12:46.175642-04:00",
+        "mark": 0.01,
+        "ul_price": 131.165,
+        "unrealized": -0.99
+      },
+      {
+        "ts": "2026-07-02T10:45:45.205150-04:00",
+        "mark": 0.04,
+        "ul_price": 129.9,
+        "unrealized": -0.96
+      },
+      {
+        "ts": "2026-07-02T17:00:00.225168-04:00",
+        "mark": 0.05,
+        "ul_price": 129.3,
+        "unrealized": -0.95
+      },
+      {
+        "ts": "2026-07-02T17:02:09.105340-04:00",
+        "mark": 0.05,
+        "ul_price": 129.3,
+        "unrealized": -0.95
+      },
+      {
+        "ts": "2026-07-06T17:01:49.648638-04:00",
+        "mark": 0.02,
+        "ul_price": 132.54,
+        "unrealized": -0.98
+      }
+    ],
+    "exit": null
+  },
+  {
+    "id": "20260623_BTC_PUT_3",
+    "rank": 3,
+    "entered_at": "2026-06-23T10:08:58.247119-04:00",
+    "ticker": "BTC",
+    "structure": "Put Debit Spread",
+    "expiry": "2026-07-17",
+    "strikes": {
+      "short": 26.0,
+      "long": 27.0
+    },
+    "width": 1.0,
+    "entry_credit": 0.6,
+    "entry_mid": 0.6,
+    "entry_legs": {
+      "long": {
+        "strike": 27.0,
+        "bid": 0.8,
+        "ask": 0.9,
+        "mid": 0.85,
+        "iv": 41.0,
+        "volume": 6,
+        "oi": 225
+      },
+      "short": {
+        "strike": 26.0,
+        "bid": 0.5,
+        "ask": 0.75,
+        "mid": 0.625,
+        "iv": 46.5,
+        "volume": 6,
+        "oi": 162
+      }
+    },
+    "max_profit": 0.6,
+    "max_loss": 0.4,
+    "dte_at_entry": 24,
+    "spot_at_entry": 27.6,
+    "signal_rating": "Moderate",
+    "signal_score": 1.068,
+    "profit_target": 0.54,
+    "stop_loss": 1.8,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-06-23T17:00:10.723283-04:00",
+        "mark": 0.0,
+        "ul_price": 27.56,
+        "unrealized": -0.4
+      },
+      {
+        "ts": "2026-06-24T17:06:23.227158-04:00",
+        "mark": 0.15,
+        "ul_price": 26.475000381469727,
+        "unrealized": -0.25
+      },
+      {
+        "ts": "2026-06-24T17:41:06.931513-04:00",
+        "mark": 0.15,
+        "ul_price": 26.475000381469727,
+        "unrealized": -0.25
+      },
+      {
+        "ts": "2026-06-25T17:00:02.443256-04:00",
+        "mark": 0.0,
+        "ul_price": 26.18000030517578,
+        "unrealized": -0.4
+      },
+      {
+        "ts": "2026-06-25T18:07:34.619279-04:00",
+        "mark": 0.0,
+        "ul_price": 26.18000030517578,
+        "unrealized": -0.4
+      },
+      {
+        "ts": "2026-06-25T18:17:20.850300-04:00",
+        "mark": 0.0,
+        "ul_price": 26.18000030517578,
+        "unrealized": -0.4
+      },
+      {
+        "ts": "2026-06-26T17:03:04.724282-04:00",
+        "mark": 0.0,
+        "ul_price": 26.40999984741211,
+        "unrealized": -0.4
+      },
+      {
+        "ts": "2026-06-29T17:00:02.344636-04:00",
+        "mark": 0.0,
+        "ul_price": 26.68000030517578,
+        "unrealized": -0.4
+      },
+      {
+        "ts": "2026-06-30T17:13:51.637526-04:00",
+        "mark": 0.05,
+        "ul_price": 25.959999084472656,
+        "unrealized": -0.35
+      },
+      {
+        "ts": "2026-07-01T17:13:54.253267-04:00",
+        "mark": 0.35,
+        "ul_price": 26.5,
+        "unrealized": -0.05
+      },
+      {
+        "ts": "2026-07-02T10:12:46.175642-04:00",
+        "mark": 0.0,
+        "ul_price": 27.28,
+        "unrealized": -0.4
+      },
+      {
+        "ts": "2026-07-02T10:45:45.205150-04:00",
+        "mark": 0.0,
+        "ul_price": 27.19,
+        "unrealized": -0.4
+      },
+      {
+        "ts": "2026-07-02T17:00:00.225168-04:00",
+        "mark": 0.05,
+        "ul_price": 27.18,
+        "unrealized": -0.35
+      },
+      {
+        "ts": "2026-07-02T17:02:09.105340-04:00",
+        "mark": 0.05,
+        "ul_price": 27.18,
+        "unrealized": -0.35
+      },
+      {
+        "ts": "2026-07-06T17:01:49.648638-04:00",
+        "mark": 0.0,
+        "ul_price": 28.18,
+        "unrealized": -0.4
+      }
+    ],
+    "exit": null
+  },
+  {
+    "id": "20260624_ACHR_PUT_1",
+    "rank": 1,
+    "entered_at": "2026-06-24T10:08:51.742260-04:00",
+    "ticker": "ACHR",
+    "structure": "Put Debit Spread",
+    "expiry": "2026-07-10",
+    "strikes": {
+      "short": 4.5,
+      "long": 5.5
+    },
+    "width": 1.0,
+    "entry_credit": 0.35,
+    "entry_mid": 0.35,
+    "entry_legs": {
+      "long": {
+        "strike": 5.5,
+        "bid": 0.47,
+        "ask": 0.67,
+        "mid": 0.57,
+        "iv": 73.2,
+        "volume": 0,
+        "oi": 365
+      },
+      "short": {
+        "strike": 4.5,
+        "bid": 0.02,
+        "ask": 0.11,
+        "mid": 0.065,
+        "iv": 71.2,
+        "volume": 10,
+        "oi": 602
+      }
+    },
+    "max_profit": 0.35,
+    "max_loss": 0.65,
+    "dte_at_entry": 16,
+    "spot_at_entry": 5.06,
+    "signal_rating": "Moderate",
+    "signal_score": 1.615,
+    "profit_target": 0.315,
+    "stop_loss": 1.05,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-06-24T17:06:23.227158-04:00",
+        "mark": 0.39,
+        "ul_price": 5.059999942779541,
+        "unrealized": -0.26
+      },
+      {
+        "ts": "2026-06-24T17:41:06.931513-04:00",
+        "mark": 0.39,
+        "ul_price": 5.059999942779541,
+        "unrealized": -0.26
+      },
+      {
+        "ts": "2026-06-25T17:00:02.443256-04:00",
+        "mark": 0.55,
+        "ul_price": 4.795000076293945,
+        "unrealized": -0.1
+      },
+      {
+        "ts": "2026-06-25T18:07:34.619279-04:00",
+        "mark": 0.55,
+        "ul_price": 4.795000076293945,
+        "unrealized": -0.1
+      },
+      {
+        "ts": "2026-06-25T18:17:20.850300-04:00",
+        "mark": 0.55,
+        "ul_price": 4.795000076293945,
+        "unrealized": -0.1
+      },
+      {
+        "ts": "2026-06-26T17:03:04.724282-04:00",
+        "mark": 0.48,
+        "ul_price": 4.869999885559082,
+        "unrealized": -0.17
+      },
+      {
+        "ts": "2026-06-29T17:00:02.344636-04:00",
+        "mark": 0.52,
+        "ul_price": 4.690000057220459,
+        "unrealized": -0.13
+      },
+      {
+        "ts": "2026-06-30T17:13:51.637526-04:00",
+        "mark": 0.59,
+        "ul_price": 4.730000019073486,
+        "unrealized": -0.06
+      },
+      {
+        "ts": "2026-07-01T17:13:54.253267-04:00",
+        "mark": 0.5,
+        "ul_price": 4.934999942779541,
+        "unrealized": -0.15
+      },
+      {
+        "ts": "2026-07-02T10:12:46.175642-04:00",
+        "mark": 0.37,
+        "ul_price": 5.12,
+        "unrealized": -0.28
+      },
+      {
+        "ts": "2026-07-02T10:45:45.205150-04:00",
+        "mark": 0.42,
+        "ul_price": 5.007,
+        "unrealized": -0.23
+      },
+      {
+        "ts": "2026-07-02T17:00:00.225168-04:00",
+        "mark": 0.49,
+        "ul_price": 4.98,
+        "unrealized": -0.16
+      },
+      {
+        "ts": "2026-07-02T17:02:09.105340-04:00",
+        "mark": 0.49,
+        "ul_price": 4.98,
+        "unrealized": -0.16
+      },
+      {
+        "ts": "2026-07-06T17:01:49.648638-04:00",
+        "mark": 0.25,
+        "ul_price": 5.37,
+        "unrealized": -0.4
+      }
+    ],
+    "exit": null
+  },
+  {
+    "id": "20260624_PLTR_PUT_2",
+    "rank": 2,
+    "entered_at": "2026-06-24T10:08:53.920262-04:00",
+    "ticker": "PLTR",
+    "structure": "Put Debit Spread",
+    "expiry": "2026-07-10",
+    "strikes": {
+      "short": 110.0,
+      "long": 113.0
+    },
+    "width": 3.0,
+    "entry_credit": 1.87,
+    "entry_mid": 1.87,
+    "entry_legs": {
+      "long": {
+        "strike": 113.0,
+        "bid": 2.95,
+        "ask": 3.15,
+        "mid": 3.05,
+        "iv": 50.3,
+        "volume": 26,
+        "oi": 117
+      },
+      "short": {
+        "strike": 110.0,
+        "bid": 1.98,
+        "ask": 2.12,
+        "mid": 2.05,
+        "iv": 50.6,
+        "volume": 187,
+        "oi": 1819
+      }
+    },
+    "max_profit": 1.87,
+    "max_loss": 1.13,
+    "dte_at_entry": 16,
+    "spot_at_entry": 116.75,
+    "signal_rating": "Moderate",
+    "signal_score": 1.265,
+    "profit_target": 1.683,
+    "stop_loss": 5.61,
+    "status": "closed_target",
+    "snapshots": [
+      {
+        "ts": "2026-06-24T17:06:23.227158-04:00",
+        "mark": 2.25,
+        "ul_price": 113.44999694824219,
+        "unrealized": 1.12
+      },
+      {
+        "ts": "2026-06-24T17:41:06.931513-04:00",
+        "mark": 2.25,
+        "ul_price": 113.44999694824219,
+        "unrealized": 1.12
+      },
+      {
+        "ts": "2026-06-25T17:00:02.443256-04:00",
+        "mark": 3.0,
+        "ul_price": 107.30999755859375,
+        "unrealized": 1.87
+      },
+      {
+        "ts": "2026-06-25T18:07:34.619279-04:00",
+        "mark": 3.0,
+        "ul_price": 107.30999755859375,
+        "unrealized": 1.87
+      }
+    ],
+    "exit": {
+      "ts": "2026-06-25T18:17:20.850300-04:00",
+      "reason": "max_profit",
+      "spread_val": 3.0,
+      "ul_price": 107.30999755859375,
+      "pnl_per_share": 1.87,
+      "pnl_total": 187.0,
+      "pnl_pct_of_max": 100.0,
+      "win": true
+    }
+  },
+  {
+    "id": "20260624_SMR_PUT_3",
+    "rank": 3,
+    "entered_at": "2026-06-24T10:08:56.172228-04:00",
+    "ticker": "SMR",
+    "structure": "Put Debit Spread",
+    "expiry": "2026-07-10",
+    "strikes": {
+      "short": 8.5,
+      "long": 11.0
+    },
+    "width": 2.5,
+    "entry_credit": 1.34,
+    "entry_mid": 1.34,
+    "entry_legs": {
+      "long": {
+        "strike": 11.0,
+        "bid": 1.17,
+        "ask": 1.3,
+        "mid": 1.235,
+        "iv": 97.3,
+        "volume": 5,
+        "oi": 378
+      },
+      "short": {
+        "strike": 8.5,
+        "bid": 0.15,
+        "ask": 0.21,
+        "mid": 0.18,
+        "iv": 98.3,
+        "volume": 951,
+        "oi": 1014
+      }
+    },
+    "max_profit": 1.34,
+    "max_loss": 1.16,
+    "dte_at_entry": 16,
+    "spot_at_entry": 10.27,
+    "signal_rating": "Moderate",
+    "signal_score": 1.14,
+    "profit_target": 1.206,
+    "stop_loss": 4.02,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-06-24T17:06:23.227158-04:00",
+        "mark": 1.04,
+        "ul_price": 10.21500015258789,
+        "unrealized": -0.12
+      },
+      {
+        "ts": "2026-06-24T17:41:06.931513-04:00",
+        "mark": 1.04,
+        "ul_price": 10.21500015258789,
+        "unrealized": -0.12
+      },
+      {
+        "ts": "2026-06-25T17:00:02.443256-04:00",
+        "mark": 1.11,
+        "ul_price": 10.079999923706055,
+        "unrealized": -0.05
+      },
+      {
+        "ts": "2026-06-25T18:07:34.619279-04:00",
+        "mark": 1.11,
+        "ul_price": 10.079999923706055,
+        "unrealized": -0.05
+      },
+      {
+        "ts": "2026-06-25T18:17:20.850300-04:00",
+        "mark": 1.11,
+        "ul_price": 10.079999923706055,
+        "unrealized": -0.05
+      },
+      {
+        "ts": "2026-06-26T17:03:04.724282-04:00",
+        "mark": 1.06,
+        "ul_price": 10.09000015258789,
+        "unrealized": -0.1
+      },
+      {
+        "ts": "2026-06-29T17:00:02.344636-04:00",
+        "mark": 0.97,
+        "ul_price": 10.255000114440918,
+        "unrealized": -0.19
+      },
+      {
+        "ts": "2026-06-30T17:13:51.637526-04:00",
+        "mark": 1.11,
+        "ul_price": 10.020000457763672,
+        "unrealized": -0.05
+      },
+      {
+        "ts": "2026-07-01T17:13:54.253267-04:00",
+        "mark": 1.0,
+        "ul_price": 10.154999732971191,
+        "unrealized": -0.16
+      },
+      {
+        "ts": "2026-07-02T10:12:46.175642-04:00",
+        "mark": 0.69,
+        "ul_price": 10.645,
+        "unrealized": -0.47
+      },
+      {
+        "ts": "2026-07-02T10:45:45.205150-04:00",
+        "mark": 0.96,
+        "ul_price": 10.18,
+        "unrealized": -0.2
+      },
+      {
+        "ts": "2026-07-02T17:00:00.225168-04:00",
+        "mark": 1.24,
+        "ul_price": 9.76,
+        "unrealized": 0.08
+      },
+      {
+        "ts": "2026-07-02T17:02:09.105340-04:00",
+        "mark": 1.24,
+        "ul_price": 9.76,
+        "unrealized": 0.08
+      },
+      {
+        "ts": "2026-07-06T17:01:49.648638-04:00",
+        "mark": 1.38,
+        "ul_price": 9.61,
+        "unrealized": 0.22
+      }
+    ],
+    "exit": null
+  },
+  {
+    "id": "20260625_ACHR_PUT_1",
+    "rank": 1,
+    "entered_at": "2026-06-25T10:08:36.043466-04:00",
+    "ticker": "ACHR",
+    "structure": "Put Debit Spread",
+    "expiry": "2026-07-10",
+    "strikes": {
+      "short": 4.5,
+      "long": 5.0
+    },
+    "width": 0.5,
+    "entry_credit": 0.23,
+    "entry_mid": 0.23,
+    "entry_legs": {
+      "long": {
+        "strike": 5.0,
+        "bid": 0.27,
+        "ask": 0.34,
+        "mid": 0.305,
+        "iv": 70.7,
+        "volume": 108,
+        "oi": 705
+      },
+      "short": {
+        "strike": 4.5,
+        "bid": 0.08,
+        "ask": 0.17,
+        "mid": 0.125,
+        "iv": 80.7,
+        "volume": 0,
+        "oi": 770
+      }
+    },
+    "max_profit": 0.23,
+    "max_loss": 0.27,
+    "dte_at_entry": 15,
+    "spot_at_entry": 4.92,
+    "signal_rating": "Moderate",
+    "signal_score": 1.735,
+    "profit_target": 0.207,
+    "stop_loss": 0.69,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-06-25T17:00:02.443256-04:00",
+        "mark": 0.17,
+        "ul_price": 4.795000076293945,
+        "unrealized": -0.1
+      },
+      {
+        "ts": "2026-06-25T18:07:34.619279-04:00",
+        "mark": 0.17,
+        "ul_price": 4.795000076293945,
+        "unrealized": -0.1
+      },
+      {
+        "ts": "2026-06-25T18:17:20.850300-04:00",
+        "mark": 0.17,
+        "ul_price": 4.795000076293945,
+        "unrealized": -0.1
+      },
+      {
+        "ts": "2026-06-26T17:03:04.724282-04:00",
+        "mark": 0.14,
+        "ul_price": 4.869999885559082,
+        "unrealized": -0.13
+      },
+      {
+        "ts": "2026-06-29T17:00:02.344636-04:00",
+        "mark": 0.25,
+        "ul_price": 4.690000057220459,
+        "unrealized": -0.02
+      },
+      {
+        "ts": "2026-06-30T17:13:51.637526-04:00",
+        "mark": 0.23,
+        "ul_price": 4.730000019073486,
+        "unrealized": -0.04
+      },
+      {
+        "ts": "2026-07-01T17:13:54.253267-04:00",
+        "mark": 0.16,
+        "ul_price": 4.934999942779541,
+        "unrealized": -0.11
+      },
+      {
+        "ts": "2026-07-02T10:12:46.175642-04:00",
+        "mark": 0.11,
+        "ul_price": 5.115,
+        "unrealized": -0.16
+      },
+      {
+        "ts": "2026-07-02T10:45:45.205150-04:00",
+        "mark": 0.15,
+        "ul_price": 5.005,
+        "unrealized": -0.12
+      },
+      {
+        "ts": "2026-07-02T17:00:00.225168-04:00",
+        "mark": 0.14,
+        "ul_price": 4.98,
+        "unrealized": -0.13
+      },
+      {
+        "ts": "2026-07-02T17:02:09.105340-04:00",
+        "mark": 0.14,
+        "ul_price": 4.98,
+        "unrealized": -0.13
+      },
+      {
+        "ts": "2026-07-06T17:01:49.648638-04:00",
+        "mark": 0.04,
+        "ul_price": 5.37,
+        "unrealized": -0.23
+      }
+    ],
+    "exit": null
+  },
+  {
+    "id": "20260625_SMR_PUT_2",
+    "rank": 2,
+    "entered_at": "2026-06-25T10:08:38.137017-04:00",
+    "ticker": "SMR",
+    "structure": "Put Debit Spread",
+    "expiry": "2026-07-10",
+    "strikes": {
+      "short": 8.5,
+      "long": 10.5
+    },
+    "width": 2.0,
+    "entry_credit": 1.07,
+    "entry_mid": 1.07,
+    "entry_legs": {
+      "long": {
+        "strike": 10.5,
+        "bid": 0.92,
+        "ask": 1.01,
+        "mid": 0.965,
+        "iv": 96.3,
+        "volume": 42,
+        "oi": 718
+      },
+      "short": {
+        "strike": 8.5,
+        "bid": 0.15,
+        "ask": 0.23,
+        "mid": 0.19,
+        "iv": 100.3,
+        "volume": 0,
+        "oi": 659
+      }
+    },
+    "max_profit": 1.07,
+    "max_loss": 0.93,
+    "dte_at_entry": 15,
+    "spot_at_entry": 10.09,
+    "signal_rating": "Moderate",
+    "signal_score": 1.62,
+    "profit_target": 0.963,
+    "stop_loss": 3.21,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-06-25T17:00:02.443256-04:00",
+        "mark": 0.77,
+        "ul_price": 10.079999923706055,
+        "unrealized": -0.16
+      },
+      {
+        "ts": "2026-06-25T18:07:34.619279-04:00",
+        "mark": 0.77,
+        "ul_price": 10.079999923706055,
+        "unrealized": -0.16
+      },
+      {
+        "ts": "2026-06-25T18:17:20.850300-04:00",
+        "mark": 0.77,
+        "ul_price": 10.079999923706055,
+        "unrealized": -0.16
+      },
+      {
+        "ts": "2026-06-26T17:03:04.724282-04:00",
+        "mark": 0.62,
+        "ul_price": 10.09000015258789,
+        "unrealized": -0.31
+      },
+      {
+        "ts": "2026-06-29T17:00:02.344636-04:00",
+        "mark": 0.67,
+        "ul_price": 10.255000114440918,
+        "unrealized": -0.26
+      },
+      {
+        "ts": "2026-06-30T17:13:51.637526-04:00",
+        "mark": 0.76,
+        "ul_price": 10.020000457763672,
+        "unrealized": -0.17
+      },
+      {
+        "ts": "2026-07-01T17:13:54.253267-04:00",
+        "mark": 0.65,
+        "ul_price": 10.154999732971191,
+        "unrealized": -0.28
+      },
+      {
+        "ts": "2026-07-02T10:12:46.175642-04:00",
+        "mark": 0.42,
+        "ul_price": 10.635,
+        "unrealized": -0.51
+      },
+      {
+        "ts": "2026-07-02T10:45:45.205150-04:00",
+        "mark": 0.62,
+        "ul_price": 10.18,
+        "unrealized": -0.31
+      },
+      {
+        "ts": "2026-07-02T17:00:00.225168-04:00",
+        "mark": 0.83,
+        "ul_price": 9.76,
+        "unrealized": -0.1
+      },
+      {
+        "ts": "2026-07-02T17:02:09.105340-04:00",
+        "mark": 0.83,
+        "ul_price": 9.76,
+        "unrealized": -0.1
+      },
+      {
+        "ts": "2026-07-06T17:01:49.648638-04:00",
+        "mark": 0.95,
+        "ul_price": 9.61,
+        "unrealized": 0.02
+      }
+    ],
+    "exit": null
+  },
+  {
+    "id": "20260625_ARQQ_CAL_3",
+    "rank": 3,
+    "entered_at": "2026-06-25T10:08:40.334461-04:00",
+    "ticker": "ARQQ",
+    "structure": "Call Debit Spread",
+    "expiry": "2026-07-17",
+    "strikes": {
+      "short": 40.0,
+      "long": 35.0
+    },
+    "width": 5.0,
+    "entry_credit": 3.95,
+    "entry_mid": 3.95,
+    "entry_legs": {
+      "long": {
+        "strike": 35.0,
+        "bid": 1.9,
+        "ask": 2.15,
+        "mid": 2.025,
+        "iv": 160.2,
+        "volume": 260,
+        "oi": 1449
+      },
+      "short": {
+        "strike": 40.0,
+        "bid": 1.25,
+        "ask": 1.4,
+        "mid": 1.325,
+        "iv": 166.1,
+        "volume": 22,
+        "oi": 71
+      }
+    },
+    "max_profit": 3.95,
+    "max_loss": 1.05,
+    "dte_at_entry": 22,
+    "spot_at_entry": 27.38,
+    "signal_rating": "Moderate",
+    "signal_score": 1.241,
+    "profit_target": 3.555,
+    "stop_loss": 11.85,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-06-25T17:00:02.443256-04:00",
+        "mark": 0.0,
+        "ul_price": 27.389999389648438,
+        "unrealized": -1.05
+      },
+      {
+        "ts": "2026-06-25T18:07:34.619279-04:00",
+        "mark": 0.0,
+        "ul_price": 27.389999389648438,
+        "unrealized": -1.05
+      },
+      {
+        "ts": "2026-06-25T18:17:20.850300-04:00",
+        "mark": 0.0,
+        "ul_price": 27.389999389648438,
+        "unrealized": -1.05
+      },
+      {
+        "ts": "2026-06-26T17:03:04.724282-04:00",
+        "mark": 0.0,
+        "ul_price": 24.350000381469727,
+        "unrealized": -1.05
+      },
+      {
+        "ts": "2026-06-29T17:00:02.344636-04:00",
+        "mark": 0.35,
+        "ul_price": 27.5,
+        "unrealized": -0.7
+      },
+      {
+        "ts": "2026-06-30T17:13:51.637526-04:00",
+        "mark": 0.45,
+        "ul_price": 29.75,
+        "unrealized": -0.6
+      },
+      {
+        "ts": "2026-07-01T17:13:54.253267-04:00",
+        "mark": 0.35,
+        "ul_price": 28.790000915527344,
+        "unrealized": -0.7
+      },
+      {
+        "ts": "2026-07-02T10:12:46.175642-04:00",
+        "mark": 0.35,
+        "ul_price": 27.3,
+        "unrealized": -0.7
+      },
+      {
+        "ts": "2026-07-02T10:45:45.205150-04:00",
+        "mark": 0.05,
+        "ul_price": 25.6616,
+        "unrealized": -1.0
+      },
+      {
+        "ts": "2026-07-02T17:00:00.225168-04:00",
+        "mark": 0.0,
+        "ul_price": 23.515,
+        "unrealized": -1.05
+      },
+      {
+        "ts": "2026-07-02T17:02:09.105340-04:00",
+        "mark": 0.0,
+        "ul_price": 23.515,
+        "unrealized": -1.05
+      },
+      {
+        "ts": "2026-07-06T17:01:49.648638-04:00",
+        "mark": 0.0,
+        "ul_price": 22.13,
+        "unrealized": -1.05
+      }
+    ],
+    "exit": null
+  },
+  {
+    "id": "20260626_SOFI_CAL_1",
+    "rank": 1,
+    "entered_at": "2026-06-26T10:01:22.903964-04:00",
+    "ticker": "SOFI",
+    "structure": "Call Debit Spread",
+    "expiry": "2026-07-10",
+    "strikes": {
+      "short": 20.5,
+      "long": 17.0
+    },
+    "width": 3.5,
+    "entry_credit": 2.59,
+    "entry_mid": 2.59,
+    "entry_legs": {
+      "long": {
+        "strike": 17.0,
+        "bid": 0.93,
+        "ask": 1.0,
+        "mid": 0.965,
+        "iv": 56.4,
+        "iv_raw": 0.5644574804687501,
+        "volume": 3,
+        "oi": 9954
+      },
+      "short": {
+        "strike": 20.5,
+        "bid": 0.09,
+        "ask": 0.1,
+        "mid": 0.095,
+        "iv": 60.9,
+        "iv_raw": 0.6093789062500001,
+        "volume": 227,
+        "oi": 1854
+      }
+    },
+    "max_profit": 2.59,
+    "max_loss": 0.91,
+    "dte_at_entry": 14,
+    "spot_at_entry": 17.38,
+    "signal_rating": "Moderate",
+    "signal_score": 0.833,
+    "profit_target": 2.331,
+    "stop_loss": 7.77,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-06-26T17:03:04.724282-04:00",
+        "mark": 1.13,
+        "ul_price": 17.850200653076172,
+        "unrealized": 0.22
+      },
+      {
+        "ts": "2026-06-29T17:00:02.344636-04:00",
+        "mark": 1.32,
+        "ul_price": 18.174999237060547,
+        "unrealized": 0.41
+      },
+      {
+        "ts": "2026-06-30T17:13:51.637526-04:00",
+        "mark": 1.13,
+        "ul_price": 17.93000030517578,
+        "unrealized": 0.22
+      },
+      {
+        "ts": "2026-07-01T17:13:54.253267-04:00",
+        "mark": 1.45,
+        "ul_price": 18.420000076293945,
+        "unrealized": 0.54
+      },
+      {
+        "ts": "2026-07-02T10:12:46.175642-04:00",
+        "mark": 1.32,
+        "ul_price": 18.3201,
+        "unrealized": 0.41
+      },
+      {
+        "ts": "2026-07-02T10:45:45.205150-04:00",
+        "mark": 1.13,
+        "ul_price": 17.965,
+        "unrealized": 0.22
+      },
+      {
+        "ts": "2026-07-02T17:00:00.225168-04:00",
+        "mark": 1.34,
+        "ul_price": 18.24,
+        "unrealized": 0.43
+      },
+      {
+        "ts": "2026-07-02T17:02:09.105340-04:00",
+        "mark": 1.34,
+        "ul_price": 18.24,
+        "unrealized": 0.43
+      },
+      {
+        "ts": "2026-07-06T17:01:49.648638-04:00",
+        "mark": 1.6,
+        "ul_price": 18.61,
+        "unrealized": 0.69
+      }
+    ],
+    "exit": null
+  },
+  {
+    "id": "20260626_QQQ_IRO_3",
+    "rank": 3,
+    "entered_at": "2026-06-26T10:01:23.425949-04:00",
+    "ticker": "QQQ",
+    "structure": "Iron Condor",
+    "expiry": "2026-07-10",
+    "strikes": {
+      "put_long": 700.0,
+      "put_short": 701.0,
+      "call_short": 731.0,
+      "call_long": 732.5
+    },
+    "width": 1.5,
+    "entry_credit": 0.36,
+    "entry_mid": 0.595,
+    "entry_legs": {
+      "put_short": {
+        "strike": 701.0,
+        "bid": 14.27,
+        "ask": 14.43,
+        "mid": 14.35,
+        "iv": 32.8,
+        "iv_raw": 0.327857063293457,
+        "volume": 1,
+        "oi": 331
+      },
+      "put_long": {
+        "strike": 700.0,
+        "bid": 14.62,
+        "ask": 14.75,
+        "mid": 14.685,
+        "iv": 34.1,
+        "iv_raw": 0.3413151806640625,
+        "volume": 103,
+        "oi": 15053
+      },
+      "call_short": {
+        "strike": 731.0,
+        "bid": 6.69,
+        "ask": 6.77,
+        "mid": 6.73,
+        "iv": 25.6,
+        "iv_raw": 0.2555616436767578,
+        "volume": 76,
+        "oi": 406
+      },
+      "call_long": {
+        "strike": 732.5,
+        "bid": 5.75,
+        "ask": 5.85,
+        "mid": 5.8,
+        "iv": 24.5,
+        "iv_raw": 0.24506370178222658,
+        "volume": 31,
+        "oi": 144
+      }
+    },
+    "max_profit": 0.36,
+    "max_loss": 1.14,
+    "dte_at_entry": 14,
+    "spot_at_entry": 710.45,
+    "signal_rating": "Neutral",
+    "signal_score": 0.636,
+    "profit_target": 0.324,
+    "stop_loss": 1.08,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-06-26T17:03:04.724282-04:00",
+        "mark": 1.02,
+        "ul_price": 705.5399780273438,
+        "unrealized": -0.66
+      },
+      {
+        "ts": "2026-06-29T17:00:02.344636-04:00",
+        "mark": 1.19,
+        "ul_price": 724.030029296875,
+        "unrealized": -0.83
+      },
+      {
+        "ts": "2026-06-30T17:13:51.637526-04:00",
+        "mark": 3.41,
+        "ul_price": 735.760009765625,
+        "unrealized": -3.05
+      },
+      {
+        "ts": "2026-07-01T17:13:54.253267-04:00",
+        "mark": 1.07,
+        "ul_price": 725.1300048828125,
+        "unrealized": -0.71
+      },
+      {
+        "ts": "2026-07-02T10:12:46.175642-04:00",
+        "mark": 1.03,
+        "ul_price": 725.81,
+        "unrealized": -0.67
+      },
+      {
+        "ts": "2026-07-02T10:45:45.205150-04:00",
+        "mark": 0.78,
+        "ul_price": 718.45,
+        "unrealized": -0.42
+      },
+      {
+        "ts": "2026-07-02T17:00:00.225168-04:00",
+        "mark": 0.37,
+        "ul_price": 712.6,
+        "unrealized": -0.01
+      },
+      {
+        "ts": "2026-07-02T17:02:09.105340-04:00",
+        "mark": 0.37,
+        "ul_price": 712.6,
+        "unrealized": -0.01
+      },
+      {
+        "ts": "2026-07-06T17:01:49.648638-04:00",
+        "mark": 0.69,
+        "ul_price": 722.82,
+        "unrealized": -0.33
+      }
+    ],
+    "exit": null
+  },
+  {
+    "id": "20260629_NVDA_PUT_2",
+    "rank": 2,
+    "entered_at": "2026-06-29T10:01:13.177525-04:00",
+    "ticker": "NVDA",
+    "structure": "Put Debit Spread",
+    "expiry": "2026-07-17",
+    "strikes": {
+      "short": 185.0,
+      "long": 187.5
+    },
+    "width": 2.5,
+    "entry_credit": 1.6,
+    "entry_mid": 1.6,
+    "entry_legs": {
+      "long": {
+        "strike": 187.5,
+        "bid": 3.6,
+        "ask": 3.7,
+        "mid": 3.65,
+        "iv": 36.0,
+        "iv_raw": 0.35950347534179683,
+        "volume": 36,
+        "oi": 3854
+      },
+      "short": {
+        "strike": 185.0,
+        "bid": 2.8,
+        "ask": 2.86,
+        "mid": 2.83,
+        "iv": 36.0,
+        "iv_raw": 0.35962554443359374,
+        "volume": 64,
+        "oi": 23234
+      }
+    },
+    "max_profit": 1.6,
+    "max_loss": 0.9,
+    "dte_at_entry": 18,
+    "spot_at_entry": 193.26,
+    "signal_rating": "Neutral",
+    "signal_score": 0.543,
+    "profit_target": 1.44,
+    "stop_loss": 4.8,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-06-29T17:00:02.344636-04:00",
+        "mark": 0.57,
+        "ul_price": 194.89999389648438,
+        "unrealized": -0.33
+      },
+      {
+        "ts": "2026-06-30T17:13:51.637526-04:00",
+        "mark": 0.37,
+        "ul_price": 199.77000427246094,
+        "unrealized": -0.53
+      },
+      {
+        "ts": "2026-07-01T17:13:54.253267-04:00",
+        "mark": 0.43,
+        "ul_price": 197.5800018310547,
+        "unrealized": -0.47
+      },
+      {
+        "ts": "2026-07-02T10:12:46.175642-04:00",
+        "mark": 0.42,
+        "ul_price": 198.325,
+        "unrealized": -0.48
+      },
+      {
+        "ts": "2026-07-02T10:45:45.205150-04:00",
+        "mark": 0.49,
+        "ul_price": 195.94,
+        "unrealized": -0.41
+      },
+      {
+        "ts": "2026-07-02T17:00:00.225168-04:00",
+        "mark": 0.5,
+        "ul_price": 194.83,
+        "unrealized": -0.4
+      },
+      {
+        "ts": "2026-07-02T17:02:09.105340-04:00",
+        "mark": 0.5,
+        "ul_price": 194.83,
+        "unrealized": -0.4
+      },
+      {
+        "ts": "2026-07-06T17:01:49.648638-04:00",
+        "mark": 0.48,
+        "ul_price": 195.55,
+        "unrealized": -0.42
+      }
+    ],
+    "exit": null
+  },
+  {
+    "id": "20260629_SPY_IRO_3",
+    "rank": 3,
+    "entered_at": "2026-06-29T10:01:13.566292-04:00",
+    "ticker": "SPY",
+    "structure": "Iron Condor",
+    "expiry": "2026-07-17",
+    "strikes": {
+      "put_long": 731.0,
+      "put_short": 732.0,
+      "call_short": 748.0,
+      "call_long": 749.0
+    },
+    "width": 1.0,
+    "entry_credit": 0.84,
+    "entry_mid": 1.005,
+    "entry_legs": {
+      "put_short": {
+        "strike": 732.0,
+        "bid": 7.63,
+        "ask": 7.72,
+        "mid": 7.675,
+        "iv": 14.8,
+        "iv_raw": 0.14777463562011722,
+        "volume": 1699,
+        "oi": 3410
+      },
+      "put_long": {
+        "strike": 731.0,
+        "bid": 7.06,
+        "ask": 7.14,
+        "mid": 7.1,
+        "iv": 14.5,
+        "iv_raw": 0.14539428833007811,
+        "volume": 786,
+        "oi": 5257
+      },
+      "call_short": {
+        "strike": 748.0,
+        "bid": 5.55,
+        "ask": 5.64,
+        "mid": 5.595,
+        "iv": 15.3,
+        "iv_raw": 0.15296257202148442,
+        "volume": 9,
+        "oi": 3908
+      },
+      "call_long": {
+        "strike": 749.0,
+        "bid": 5.13,
+        "ask": 5.2,
+        "mid": 5.165,
+        "iv": 15.1,
+        "iv_raw": 0.15091791473388677,
+        "volume": 843,
+        "oi": 2414
+      }
+    },
+    "max_profit": 0.84,
+    "max_loss": 0.16,
+    "dte_at_entry": 18,
+    "spot_at_entry": 736.38,
+    "signal_rating": "Neutral",
+    "signal_score": 0.516,
+    "profit_target": 0.756,
+    "stop_loss": 2.52,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-06-29T17:00:02.344636-04:00",
+        "mark": 0.79,
+        "ul_price": 740.8499755859375,
+        "unrealized": 0.05
+      },
+      {
+        "ts": "2026-06-30T17:13:51.637526-04:00",
+        "mark": 0.84,
+        "ul_price": 746.47998046875,
+        "unrealized": 0.0
+      },
+      {
+        "ts": "2026-07-01T17:13:54.253267-04:00",
+        "mark": 0.81,
+        "ul_price": 745.7000122070312,
+        "unrealized": 0.03
+      },
+      {
+        "ts": "2026-07-02T10:12:46.175642-04:00",
+        "mark": 0.81,
+        "ul_price": 749.53,
+        "unrealized": 0.03
+      },
+      {
+        "ts": "2026-07-02T10:45:45.205150-04:00",
+        "mark": 0.79,
+        "ul_price": 746.451,
+        "unrealized": 0.05
+      },
+      {
+        "ts": "2026-07-02T17:00:00.225168-04:00",
+        "mark": 0.78,
+        "ul_price": 744.78,
+        "unrealized": 0.06
+      },
+      {
+        "ts": "2026-07-02T17:02:09.105340-04:00",
+        "mark": 0.78,
+        "ul_price": 744.78,
+        "unrealized": 0.06
+      },
+      {
+        "ts": "2026-07-06T17:01:49.648638-04:00",
+        "mark": 0.97,
+        "ul_price": 751.28,
+        "unrealized": -0.13
+      }
+    ],
+    "exit": null
+  },
+  {
+    "id": "20260702_ACHR_PUT_1",
+    "rank": 1,
+    "entered_at": "2026-07-02T10:53:13.773010-04:00",
+    "ticker": "ACHR",
+    "structure": "Put Debit Spread",
+    "expiry": "2026-07-17",
+    "strikes": {
+      "short": 4.0,
+      "long": 5.0
+    },
+    "width": 1.0,
+    "entry_credit": 0.69,
+    "entry_mid": 0.69,
+    "entry_legs": {
+      "long": {
+        "strike": 5.0,
+        "bid": 0.29,
+        "ask": 0.33,
+        "mid": 0.31,
+        "iv": 78.2,
+        "iv_raw": 0.78183,
+        "volume": 136,
+        "oi": 6507
+      },
+      "short": {
+        "strike": 4.0,
+        "bid": 0.02,
+        "ask": 0.04,
+        "mid": 0.03,
+        "iv": 82.3,
+        "iv_raw": 0.82288,
+        "volume": 74,
+        "oi": 3285
+      }
+    },
+    "max_profit": 0.69,
+    "max_loss": 0.31,
+    "dte_at_entry": 15,
+    "spot_at_entry": 5.0,
+    "signal_rating": "Moderate",
+    "signal_score": 1.795,
+    "profit_target": 0.621,
+    "stop_loss": 2.07,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-07-02T17:00:00.225168-04:00",
+        "mark": 0.26,
+        "ul_price": 4.98,
+        "unrealized": -0.05
+      },
+      {
+        "ts": "2026-07-02T17:02:09.105340-04:00",
+        "mark": 0.26,
+        "ul_price": 4.98,
+        "unrealized": -0.05
+      },
+      {
+        "ts": "2026-07-06T17:01:49.648638-04:00",
+        "mark": 0.11,
+        "ul_price": 5.37,
+        "unrealized": -0.2
+      }
+    ],
+    "exit": null
+  },
+  {
+    "id": "20260702_ARQQ_CAL_2",
+    "rank": 2,
+    "entered_at": "2026-07-02T10:53:15.383579-04:00",
+    "ticker": "ARQQ",
+    "structure": "Call Debit Spread",
+    "expiry": "2026-07-17",
+    "strikes": {
+      "short": 35.0,
+      "long": 30.0
+    },
+    "width": 5.0,
+    "entry_credit": 3.85,
+    "entry_mid": 3.85,
+    "entry_legs": {
+      "long": {
+        "strike": 30.0,
+        "bid": 1.5,
+        "ask": 1.9,
+        "mid": 1.7,
+        "iv": 151.0,
+        "iv_raw": 1.50989,
+        "volume": 29,
+        "oi": 1015
+      },
+      "short": {
+        "strike": 35.0,
+        "bid": 0.75,
+        "ask": 0.85,
+        "mid": 0.8,
+        "iv": 153.5,
+        "iv_raw": 1.53543,
+        "volume": 128,
+        "oi": 1578
+      }
+    },
+    "max_profit": 3.85,
+    "max_loss": 1.15,
+    "dte_at_entry": 15,
+    "spot_at_entry": 25.48,
+    "signal_rating": "Moderate",
+    "signal_score": 1.721,
+    "profit_target": 3.465,
+    "stop_loss": 11.55,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-07-02T17:00:00.225168-04:00",
+        "mark": 0.3,
+        "ul_price": 23.515,
+        "unrealized": -0.85
+      },
+      {
+        "ts": "2026-07-02T17:02:09.105340-04:00",
+        "mark": 0.3,
+        "ul_price": 23.515,
+        "unrealized": -0.85
+      },
+      {
+        "ts": "2026-07-06T17:01:49.648638-04:00",
+        "mark": 0.0,
+        "ul_price": 22.13,
+        "unrealized": -1.15
+      }
+    ],
+    "exit": null
+  },
+  {
+    "id": "20260702_SPY_CAL_3",
+    "rank": 3,
+    "entered_at": "2026-07-02T10:53:17.120838-04:00",
+    "ticker": "SPY",
+    "structure": "Call Debit Spread",
+    "expiry": "2026-07-17",
+    "strikes": {
+      "short": 757.0,
+      "long": 755.0
+    },
+    "width": 2.0,
+    "entry_credit": 1.22,
+    "entry_mid": 1.22,
+    "entry_legs": {
+      "long": {
+        "strike": 755.0,
+        "bid": 3.85,
+        "ask": 3.88,
+        "mid": 3.865,
+        "iv": 11.1,
+        "iv_raw": 0.11107,
+        "volume": 2894,
+        "oi": 20048
+      },
+      "short": {
+        "strike": 757.0,
+        "bid": 3.07,
+        "ask": 3.1,
+        "mid": 3.085,
+        "iv": 10.9,
+        "iv_raw": 0.10883,
+        "volume": 398,
+        "oi": 3861
+      }
+    },
+    "max_profit": 1.22,
+    "max_loss": 0.78,
+    "dte_at_entry": 15,
+    "spot_at_entry": 747.15,
+    "signal_rating": "Moderate",
+    "signal_score": 1.26,
+    "profit_target": 1.098,
+    "stop_loss": 3.66,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-07-02T17:00:00.225168-04:00",
+        "mark": 0.59,
+        "ul_price": 744.78,
+        "unrealized": -0.19
+      },
+      {
+        "ts": "2026-07-02T17:02:09.105340-04:00",
+        "mark": 0.59,
+        "ul_price": 744.78,
+        "unrealized": -0.19
+      },
+      {
+        "ts": "2026-07-06T17:01:49.648638-04:00",
+        "mark": 0.9,
+        "ul_price": 751.28,
+        "unrealized": 0.12
+      }
+    ],
+    "exit": null
+  },
+  {
+    "id": "20260706_NFLX_CAL_1",
+    "rank": 1,
+    "entered_at": "2026-07-06T10:16:18.849320-04:00",
+    "ticker": "NFLX",
+    "structure": "Call Credit Spread",
+    "expiry": "2026-07-24",
+    "strikes": {
+      "short": 85.0,
+      "long": 86.0
+    },
+    "width": 1.0,
+    "entry_credit": 0.11,
+    "entry_mid": 0.145,
+    "entry_legs": {
+      "short": {
+        "strike": 85.0,
+        "bid": 1.06,
+        "ask": 1.09,
+        "mid": 1.075,
+        "iv": 56.3,
+        "iv_raw": 0.56339,
+        "volume": 647,
+        "oi": 4053
+      },
+      "long": {
+        "strike": 86.0,
+        "bid": 0.91,
+        "ask": 0.95,
+        "mid": 0.93,
+        "iv": 56.8,
+        "iv_raw": 0.56761,
+        "volume": 19,
+        "oi": 833
+      }
+    },
+    "max_profit": 0.11,
+    "max_loss": 0.89,
+    "dte_at_entry": 18,
+    "spot_at_entry": 75.88,
+    "signal_rating": "Moderate",
+    "signal_score": 1.39,
+    "profit_target": 0.099,
+    "stop_loss": 0.33,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-07-06T17:01:49.648638-04:00",
+        "mark": 0.18,
+        "ul_price": 76.02,
+        "unrealized": -0.07
+      }
+    ],
+    "exit": null
+  },
+  {
+    "id": "20260706_QUBT_PUT_2",
+    "rank": 2,
+    "entered_at": "2026-07-06T10:16:21.340784-04:00",
+    "ticker": "QUBT",
+    "structure": "Put Debit Spread",
+    "expiry": "2026-07-24",
+    "strikes": {
+      "short": 7.5,
+      "long": 9.5
+    },
+    "width": 2.0,
+    "entry_credit": 1.1,
+    "entry_mid": 1.1,
+    "entry_legs": {
+      "long": {
+        "strike": 9.5,
+        "bid": 0.81,
+        "ask": 1.02,
+        "mid": 0.915,
+        "iv": 98.1,
+        "iv_raw": 0.9808,
+        "volume": 0,
+        "oi": 209
+      },
+      "short": {
+        "strike": 7.5,
+        "bid": 0.12,
+        "ask": 0.17,
+        "mid": 0.145,
+        "iv": 96.3,
+        "iv_raw": 0.96317,
+        "volume": 2,
+        "oi": 88
+      }
+    },
+    "max_profit": 1.1,
+    "max_loss": 0.9,
+    "dte_at_entry": 18,
+    "spot_at_entry": 9.35,
+    "signal_rating": "Moderate",
+    "signal_score": 1.036,
+    "profit_target": 0.99,
+    "stop_loss": 3.3,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-07-06T17:01:49.648638-04:00",
+        "mark": 0.66,
+        "ul_price": 9.37,
+        "unrealized": -0.24
+      }
+    ],
+    "exit": null
+  },
+  {
+    "id": "20260706_ORCL_PUT_3",
+    "rank": 3,
+    "entered_at": "2026-07-06T10:16:23.964618-04:00",
+    "ticker": "ORCL",
+    "structure": "Put Debit Spread",
+    "expiry": "2026-07-24",
+    "strikes": {
+      "short": 133.0,
+      "long": 135.0
+    },
+    "width": 2.0,
+    "entry_credit": 0.9,
+    "entry_mid": 0.9,
+    "entry_legs": {
+      "long": {
+        "strike": 135.0,
+        "bid": 4.35,
+        "ask": 4.8,
+        "mid": 4.575,
+        "iv": 61.4,
+        "iv_raw": 0.61414,
+        "volume": 43,
+        "oi": 2890
+      },
+      "short": {
+        "strike": 133.0,
+        "bid": 3.5,
+        "ask": 4.1,
+        "mid": 3.8,
+        "iv": 61.2,
+        "iv_raw": 0.61244,
+        "volume": 36,
+        "oi": 59
+      }
+    },
+    "max_profit": 0.9,
+    "max_loss": 1.1,
+    "dte_at_entry": 18,
+    "spot_at_entry": 141.91,
+    "signal_rating": "Moderate",
+    "signal_score": 0.956,
+    "profit_target": 0.81,
+    "stop_loss": 2.7,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-07-06T17:01:49.648638-04:00",
+        "mark": 0.25,
+        "ul_price": 143.76,
+        "unrealized": -0.85
+      }
+    ],
+    "exit": null
+  },
+  {
+    "id": "20260706_SMR_PUT_2",
+    "rank": 2,
+    "entered_at": "2026-07-06T10:28:45.522496-04:00",
+    "ticker": "SMR",
+    "structure": "Put Debit Spread",
+    "expiry": "2026-07-24",
+    "strikes": {
+      "short": 7.5,
+      "long": 10.0
+    },
+    "width": 2.5,
+    "entry_credit": 1.56,
+    "entry_mid": 1.56,
+    "entry_legs": {
+      "long": {
+        "strike": 10.0,
+        "bid": 0.88,
+        "ask": 1.01,
+        "mid": 0.945,
+        "iv": 99.1,
+        "iv_raw": 0.99142,
+        "volume": 0,
+        "oi": 628
+      },
+      "short": {
+        "strike": 7.5,
+        "bid": 0.08,
+        "ask": 0.16,
+        "mid": 0.12,
+        "iv": 105.3,
+        "iv_raw": 1.05292,
+        "volume": 2,
+        "oi": 646
+      }
+    },
+    "max_profit": 1.56,
+    "max_loss": 0.94,
+    "dte_at_entry": 18,
+    "spot_at_entry": 9.77,
+    "signal_rating": "Moderate",
+    "signal_score": 1.233,
+    "profit_target": 1.404,
+    "stop_loss": 4.68,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-07-06T17:01:49.648638-04:00",
+        "mark": 0.86,
+        "ul_price": 9.61,
+        "unrealized": -0.08
+      }
+    ],
+    "exit": null
+  },
+  {
+    "id": "20260706_NVO_CAL_3",
+    "rank": 3,
+    "entered_at": "2026-07-06T10:28:47.606812-04:00",
+    "ticker": "NVO",
+    "structure": "Call Debit Spread",
+    "expiry": "2026-07-24",
+    "strikes": {
+      "short": 54.0,
+      "long": 50.0
+    },
+    "width": 4.0,
+    "entry_credit": 2.87,
+    "entry_mid": 2.87,
+    "entry_legs": {
+      "long": {
+        "strike": 50.0,
+        "bid": 1.27,
+        "ask": 1.42,
+        "mid": 1.345,
+        "iv": 39.5,
+        "iv_raw": 0.39537,
+        "volume": 21,
+        "oi": 860
+      },
+      "short": {
+        "strike": 54.0,
+        "bid": 0.3,
+        "ask": 0.4,
+        "mid": 0.35,
+        "iv": 40.8,
+        "iv_raw": 0.40765,
+        "volume": 1,
+        "oi": 396
+      }
+    },
+    "max_profit": 2.87,
+    "max_loss": 1.13,
+    "dte_at_entry": 18,
+    "spot_at_entry": 49.02,
+    "signal_rating": "Moderate",
+    "signal_score": 0.809,
+    "profit_target": 2.583,
+    "stop_loss": 8.61,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-07-06T17:01:49.648638-04:00",
+        "mark": 0.92,
+        "ul_price": 49.26,
+        "unrealized": -0.21
+      }
+    ],
+    "exit": null
+  },
+  {
+    "id": "20260707_SPY_CAL_1",
+    "rank": 1,
+    "entered_at": "2026-07-07T10:18:11.171709-04:00",
+    "ticker": "SPY",
+    "structure": "Call Debit Spread",
+    "expiry": "2026-07-24",
+    "strikes": {
+      "short": 760.0,
+      "long": 757.0
+    },
+    "width": 3.0,
+    "entry_credit": 1.81,
+    "entry_mid": 1.81,
+    "entry_legs": {
+      "long": {
+        "strike": 757.0,
+        "bid": 3.98,
+        "ask": 4.01,
+        "mid": 3.995,
+        "iv": 11.1,
+        "iv_raw": 0.11146,
+        "volume": 22,
+        "oi": 1671
+      },
+      "short": {
+        "strike": 760.0,
+        "bid": 2.92,
+        "ask": 2.94,
+        "mid": 2.93,
+        "iv": 10.8,
+        "iv_raw": 0.10803,
+        "volume": 240,
+        "oi": 7553
+      }
+    },
+    "max_profit": 1.81,
+    "max_loss": 1.19,
+    "dte_at_entry": 17,
+    "spot_at_entry": 748.75,
+    "signal_rating": "Moderate",
+    "signal_score": 1.445,
+    "profit_target": 1.629,
+    "stop_loss": 5.43,
+    "status": "open",
+    "snapshots": [],
+    "exit": null
+  },
+  {
+    "id": "20260707_COP_PUT_2",
+    "rank": 2,
+    "entered_at": "2026-07-07T10:18:15.021284-04:00",
+    "ticker": "COP",
+    "structure": "Put Debit Spread",
+    "expiry": "2026-07-24",
+    "strikes": {
+      "short": 100.0,
+      "long": 103.0
+    },
+    "width": 3.0,
+    "entry_credit": 1.87,
+    "entry_mid": 1.87,
+    "entry_legs": {
+      "long": {
+        "strike": 103.0,
+        "bid": 1.51,
+        "ask": 1.74,
+        "mid": 1.625,
+        "iv": 30.5,
+        "iv_raw": 0.3054,
+        "volume": 0,
+        "oi": 138
+      },
+      "short": {
+        "strike": 100.0,
+        "bid": 0.66,
+        "ask": 0.93,
+        "mid": 0.795,
+        "iv": 30.9,
+        "iv_raw": 0.30928,
+        "volume": 0,
+        "oi": 455
+      }
+    },
+    "max_profit": 1.87,
+    "max_loss": 1.13,
+    "dte_at_entry": 17,
+    "spot_at_entry": 105.39,
+    "signal_rating": "Moderate",
+    "signal_score": 1.114,
+    "profit_target": 1.683,
+    "stop_loss": 5.61,
+    "status": "open",
+    "snapshots": [],
+    "exit": null
+  },
+  {
+    "id": "20260707_QUBT_PUT_3",
+    "rank": 3,
+    "entered_at": "2026-07-07T10:18:18.813468-04:00",
+    "ticker": "QUBT",
+    "structure": "Put Debit Spread",
+    "expiry": "2026-07-24",
+    "strikes": {
+      "short": 7.5,
+      "long": 9.5
+    },
+    "width": 2.0,
+    "entry_credit": 0.87,
+    "entry_mid": 0.87,
+    "entry_legs": {
+      "long": {
+        "strike": 9.5,
+        "bid": 1.15,
+        "ask": 1.31,
+        "mid": 1.23,
+        "iv": 98.0,
+        "iv_raw": 0.98025,
+        "volume": 0,
+        "oi": 207
+      },
+      "short": {
+        "strike": 7.5,
+        "bid": 0.2,
+        "ask": 0.24,
+        "mid": 0.22,
+        "iv": 92.8,
+        "iv_raw": 0.92841,
+        "volume": 6,
+        "oi": 90
+      }
+    },
+    "max_profit": 0.87,
+    "max_loss": 1.13,
+    "dte_at_entry": 17,
+    "spot_at_entry": 8.77,
+    "signal_rating": "Moderate",
+    "signal_score": 1.036,
+    "profit_target": 0.783,
+    "stop_loss": 2.61,
+    "status": "open",
+    "snapshots": [],
+    "exit": null
+  }
+]

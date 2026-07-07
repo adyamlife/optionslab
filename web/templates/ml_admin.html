@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% set page = "ml-admin" %}
+{% block title %}ML Data - Options Strategy Lab{% endblock %}
+
+{% block body %}
+  <main class="container">
+    <section class="panel">
+      <h2>ML Data Pipeline</h2>
+      <p class="muted">
+        These run automatically on a schedule (hourly snapshot collection during
+        market hours, daily labeling/regime-update at 5pm ET). Use the buttons
+        below to trigger a run on demand or check current dataset status —
+        nothing here trains or wires a model into live decisions.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h3>POP Model Data (training_snapshots.jsonl)</h3>
+      <div class="ml-admin-actions">
+        <button id="ml-collect-btn" type="button">Collect snapshots now</button>
+        <button id="ml-label-btn" type="button">Label pending snapshots</button>
+        <button id="ml-summary-btn" type="button">Refresh summary</button>
+      </div>
+      <div id="ml-collect-status" class="status"></div>
+      <div id="ml-summary-results"></div>
+    </section>
+
+    <section class="panel">
+      <h3>Regime Classifier Data (regime_training.csv)</h3>
+      <p class="muted">
+        The one-time 2-year backfill below is slow (loops every backfill
+        ticker's full history) — it overwrites the existing dataset. The
+        daily incremental update/label already runs on its own; only re-run
+        the full backfill if you've changed the feature set.
+      </p>
+      <div class="ml-admin-actions">
+        <button id="ml-backfill-btn" type="button">Run full 2yr backfill</button>
+        <button id="ml-backfill-status-btn" type="button">Check backfill status</button>
+      </div>
+      <div id="ml-backfill-status" class="status"></div>
+      <div id="ml-backfill-results"></div>
+    </section>
+
+    <section class="panel">
+      <h3>Train Models</h3>
+      <p class="muted">
+        Trains the regime classifier, expected-return regressor, and volatility
+        regressor against <code>regime_training.csv</code>. Run after every
+        backfill or when the feature set changes. Results report accuracy /
+        RMSE per model — nothing is wired into live decisions.
+      </p>
+      <div class="ml-admin-actions">
+        <button id="ml-train-btn" type="button">Train all models</button>
+        <button id="ml-train-status-btn" type="button">Check training status</button>
+      </div>
+      <div id="ml-train-status" class="status"></div>
+      <div id="ml-train-results"></div>
+    </section>
+
+    <section class="panel">
+      <h3>Live ML Predictions</h3>
+      <p class="muted">
+        Fetches today's live features for every watchlist ticker and runs all
+        trained models. Shows predicted regime, expected forward return, and
+        expected forward realized volatility. Read-only — no effect on
+        candidate selection or live decisions.
+      </p>
+      <div class="ml-admin-actions">
+        <button id="ml-predict-btn" type="button">Run predictions (all tickers)</button>
+      </div>
+      <div id="ml-predict-status" class="status"></div>
+      <div id="ml-predict-results"></div>
+    </section>
+  </main>
+{% endblock %}
+
+{% block scripts %}
+  <script src="/static/js/ml_admin.js?v={{ asset_v }}"></script>
+{% endblock %}

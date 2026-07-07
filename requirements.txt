@@ -1,0 +1,17 @@
+yfinance
+pandas
+numpy
+scipy
+openpyxl
+flask
+flask-compress
+gunicorn
+tomli
+apscheduler
+scikit-learn
+xgboost
+duckdb
+joblib
+requests
+oauthlib
+requests-oauthlib

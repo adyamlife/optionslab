@@ -1,0 +1,75 @@
+admin		admin		Iron@Condor77
+trader		trader 		Bull$Strike26
+analyst1	analyst		Analyst!2026
+observer1	observer	Observer!2026
+
+
+zyIMyIxUlw5ep0JV1kqjP7mdL6t3wC5tmSXjGIDxsgE
+
+http://104.55.176.122:8002
+
+sudo systemctl stop optionlab
+sudo systemctl restart optionlab
+sudo journalctl -u optionlab -f    # live logs
+
+
+. Copy project to server
+scp -r "C:/Project Y" user@YOUR_SERVER_IP:/opt/optionlab
+2. Python environment
+cd /opt/optionlab
+python3 -m venv venv
+source venv/bin/activate
+pip install flask gunicorn yfinance tomli requests
+3. Open firewall port
+sudo ufw allow 8001
+4. Systemd service
+sudo nano /etc/systemd/system/optionlab.service
+[Unit]
+Description=Options Strategy Lab
+After=network.target
+
+[Service]
+User=www-data
+WorkingDirectory=/opt/optionlab
+Environment="PATH=/opt/optionlab/venv/bin"
+ExecStart=/opt/optionlab/venv/bin/gunicorn -w 2 -b 0.0.0.0:8001 web.app:app
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+sudo chown -R www-data:www-data /opt/optionlab
+sudo systemctl daemon-reload
+sudo systemctl enable --now optionlab
+5. Access it
+http://YOUR_SERVER_IP:8001
+Quick commands
+sudo systemctl status optionlab    # check running
+sudo systemctl restart optionlab   # after updates
+sudo journalctl -u optionlab -f    # live logs
+Update after code changes
+scp -r "C:/Project Y/web" "C:/Project Y/scripts" "C:/Project Y/config" user@YOUR_SERVER_IP:/opt/optionlab/
+sudo systemctl restart optionlab
+
+
+--------------------------
+
+
+python -m scripts.train_regime_classifier
+python -m scripts.analyze SPY
+
+python -m scripts.regime_backfill
+python -m scripts.train_regime_classifier
+python -m scripts.train_return_model
+python -m scripts.train_volatility_model
+
+python -m scripts.regime_predictor
+python -m scripts.regime_predictor AAPL NVDA MSFT
+
+---latest
+python -m scripts.train_regime_classifier
+python -m scripts.train_return_model
+python -m scripts.train_volatility_model
+python -m scripts.train_direction_model
+python -m scripts.train_iv_direction_model
+python -m scripts.train_meta_ensemble

@@ -1,0 +1,101 @@
+# Central configuration for the options strategy lab.
+# Edit values here - watchlist.py and rules.py load from this file.
+
+watchlist = [
+  # Existing tickers
+  "SPY", "TQQQ", "QQQ", "TSLA", "INTC", "AI", "SOFI", "CVNA", "TEAM",
+  "COST", "SOUN", "SAP", "APLD", "BTC", "ULTA", "PAY", "SPOT", "SPCX",
+  "APP", "ACHR", "SMR", "LMND", "SERV", "RXRX", "QUBT", "QBTS", "IONQ",
+  "ARQQ", "BMNR",
+  # Core 50 watchlist (ranked by long-term thesis)
+  "NVDA", "MSFT", "AMZN", "GOOGL", "META", "AVGO", "AMD", "TSM", "MU", "ARM",
+  "ANET", "PANW", "CRWD", "FTNT", "PLTR", "SNOW", "MDB", "ORCL", "CRM", "NOW",
+  "AAPL", "NFLX", "UBER", "SHOP", "MELI", "V", "MA", "BRK-B", "LLY", "NVO",
+  "ISRG", "ABBV", "BSX", "GE", "ETN", "PH", "TT", "CAT", "DE", "VRT",
+  "CEG", "VST", "NEE", "XOM", "COP", "KLAC", "ASML", "LRCX", "CDNS", "SNPS",
+  "NET"
+]
+
+# Earnings dates are looked up live via yfinance (see
+# scripts/data_fetch.get_next_earnings_date) - no manual config needed.
+
+[capital]
+amount = 1000
+max_risk_pct = 0.12          # max loss per trade as % of capital
+max_concurrent_positions = 2
+
+[dte]
+min_dte = 2
+max_dte = 30
+event_blackout_days = 5  # skip ticker if earnings fall within this many days of expiry
+
+[iv]
+iv_rank_high_threshold = 50  # IV rank >= this -> "High" IV environment
+
+[trend]
+sma_short = 20               # SMA periods for trend classification
+sma_long = 50
+band_pct = 0.005             # price within this % of SMA counts as "range-bound" tiebreak
+
+# Entry criteria - deltas are approximate magnitudes (sign handled by leg type)
+[credit_spread]
+short_delta_lo = 0.15
+short_delta_hi = 0.25
+min_credit_pct_of_width = 0.25   # credit must be >= 25% of spread width
+
+[debit_spread]
+long_delta_lo = 0.40
+long_delta_hi = 0.55
+short_delta_lo = 0.15
+short_delta_hi = 0.20
+
+[liquidity]
+min_open_interest = 50       # min OI required on each leg's strike
+min_profit_amount = 0.20     # min max-profit per share (credit, or width-debit)
+
+# Calendar / diagonal spread: gap (in days) between the front-month expiry
+# already chosen by min_dte/max_dte and the back-month (long) leg's expiry
+[calendar]
+min_gap_days = 5
+max_gap_days = 45
+
+# Jade Lizard: naked short put delta range (wider/further OTM than the
+# defined-risk credit spread short leg, since this leg carries downside risk)
+[jade_lizard]
+put_delta_lo = 0.20
+put_delta_hi = 0.30
+
+# Paper trade managed-exit rules
+[management]
+profit_target_pct = 0.90  # close when spread mark reaches this % of entry credit (70% profit)
+stop_loss_mult    = 3.0    # close when spread mark reaches this multiple of entry credit (200% loss)
+
+# Risk limits (informational - these are checked and surfaced in the UI;
+# the system will warn when these thresholds are approached)
+[risk_limits]
+max_open_positions   = 5       # max simultaneous open trades across the portfolio
+max_daily_loss_pct   = 0.03    # 3% of capital - stop taking new trades if hit
+max_weekly_loss_pct  = 0.06    # 6% of capital
+max_position_pct     = 0.05    # single position max as % of capital (5%)
+max_sector_pct       = 0.20    # single sector max as % of capital (20%)
+
+# Diagonal Spread: buy back-month option, sell front-month option at a different strike.
+# Bullish diagonal: BUY back-month lower-strike call, SELL front-month higher-strike call.
+# Bearish diagonal: BUY back-month higher-strike put, SELL front-month lower-strike put.
+[diagonal]
+long_delta_lo  = 0.40     # back-month long leg delta range
+long_delta_hi  = 0.60
+short_delta_lo = 0.20     # front-month short leg delta range (further OTM)
+short_delta_hi = 0.35
+min_gap_days   = 14       # min days between front and back expiry
+max_gap_days   = 45
+
+# AI assessment: per-ticker trade quality analysis.
+# Primary provider is tried first; if it fails or has no API key,
+# the fallback is used. Set either key to "" to disable that provider.
+# API keys go in config/secrets.toml (never commit that file).
+[ai]
+primary_provider  = "groq"
+primary_model     = "llama-3.3-70b-versatile"
+fallback_provider = "gemini"
+fallback_model    = "gemini-2.0-flash-lite"
