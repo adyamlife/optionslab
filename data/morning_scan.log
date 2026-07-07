@@ -1,0 +1,117 @@
+2026-06-18 10:00:03,464 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-06-18 10:00:06,206 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-06-18 10:00:07,947 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-06-18 10:00:09,118 ERROR $SPX: possibly delisted; no price data found  (period=1y)
+2026-06-18 10:00:38,284 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: BTC"}}}
+2026-06-18 10:00:57,377 ERROR $BKX: possibly delisted; no price data found  (period=1y)
+2026-06-18 10:01:02,159 INFO Paper trade #1: 20260618_CVNA_PUT_1  credit=1.080  expiry=2026-07-02
+2026-06-18 10:01:02,551 INFO Paper trade #2: 20260618_BTC_PUT_2  credit=2.210  expiry=2026-07-17
+2026-06-18 10:01:02,552 INFO Paper trade #3: 20260618_LMND_IRO_3  credit=1.550  expiry=2026-07-02
+2026-06-19 10:00:08,588 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-06-19 10:00:09,424 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-06-19 10:00:11,449 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-06-19 10:00:12,062 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-06-19 10:00:13,965 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-06-19 10:00:14,801 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-06-19 10:00:16,399 ERROR $SPX: possibly delisted; no price data found  (period=1y)
+2026-06-19 10:00:58,966 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: BTC"}}}
+2026-06-19 10:00:59,535 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: BTC"}}}
+2026-06-19 10:01:26,682 ERROR $BKX: possibly delisted; no price data found  (period=1y)
+2026-06-19 10:01:32,952 INFO Paper trade #1: 20260619_INTC_CAL_1  credit=0.900  expiry=2026-07-02
+2026-06-19 10:01:33,282 INFO Paper trade #2: 20260619_ARQQ_CAL_2  credit=4.000  expiry=2026-07-17
+2026-06-19 10:01:33,534 INFO Paper trade #3: 20260619_CVNA_PUT_3  credit=0.940  expiry=2026-07-02
+2026-06-22 10:00:49,738 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-06-22 10:00:50,601 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-06-22 10:01:05,583 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-06-22 10:01:06,480 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-06-22 10:01:22,025 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-06-22 10:01:22,706 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-06-22 10:01:34,062 ERROR $SPX: possibly delisted; no price data found  (period=1y)
+2026-06-23 10:00:14,056 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-06-23 10:00:14,868 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-06-23 10:00:24,364 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-06-23 10:00:24,936 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-06-23 10:00:33,590 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-06-23 10:00:34,262 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-06-23 10:04:48,926 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: BTC"}}}
+2026-06-23 10:04:49,760 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: BTC"}}}
+2026-06-23 10:08:54,804 INFO Paper trade #1: 20260623_ACHR_PUT_1  credit=0.780  expiry=2026-07-10
+2026-06-23 10:08:56,627 INFO Paper trade #2: 20260623_PLTR_PUT_2  credit=1.000  expiry=2026-07-10
+2026-06-23 10:08:58,248 INFO Paper trade #3: 20260623_BTC_PUT_3  credit=0.600  expiry=2026-07-17
+2026-06-24 10:00:14,661 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-06-24 10:00:15,409 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-06-24 10:00:29,120 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-06-24 10:00:29,723 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-06-24 10:00:47,458 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-06-24 10:00:48,119 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-06-24 10:04:48,916 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: BTC"}}}
+2026-06-24 10:04:49,514 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: BTC"}}}
+2026-06-24 10:08:51,742 INFO Paper trade #1: 20260624_ACHR_PUT_1  credit=0.350  expiry=2026-07-10
+2026-06-24 10:08:53,920 INFO Paper trade #2: 20260624_PLTR_PUT_2  credit=1.870  expiry=2026-07-10
+2026-06-24 10:08:56,172 INFO Paper trade #3: 20260624_SMR_PUT_3  credit=1.340  expiry=2026-07-10
+2026-06-25 10:00:40,943 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-06-25 10:00:41,685 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-06-25 10:00:56,139 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-06-25 10:00:56,969 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-06-25 10:01:09,409 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-06-25 10:01:10,131 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-06-25 10:05:03,023 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: BTC"}}}
+2026-06-25 10:05:03,698 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: BTC"}}}
+2026-06-25 10:08:36,043 INFO Paper trade #1: 20260625_ACHR_PUT_1  credit=0.230  expiry=2026-07-10
+2026-06-25 10:08:38,137 INFO Paper trade #2: 20260625_SMR_PUT_2  credit=1.070  expiry=2026-07-10
+2026-06-25 10:08:40,334 INFO Paper trade #3: 20260625_ARQQ_CAL_3  credit=3.950  expiry=2026-07-17
+2026-06-26 10:00:05,478 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-06-26 10:00:06,201 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-06-26 10:00:08,579 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-06-26 10:00:09,105 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-06-26 10:00:11,507 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-06-26 10:00:12,178 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-06-26 10:00:48,895 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: BTC"}}}
+2026-06-26 10:00:49,511 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: BTC"}}}
+2026-06-26 10:01:22,903 INFO Paper trade #1: 20260626_SOFI_CAL_1  credit=2.590  expiry=2026-07-10
+2026-06-26 10:01:22,903 WARNING Skipping SOFI Diagonal Spread — short or long strike is None
+2026-06-26 10:01:23,425 INFO Paper trade #3: 20260626_QQQ_IRO_3  credit=0.360  expiry=2026-07-10
+2026-06-29 10:00:05,474 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-06-29 10:00:06,306 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-06-29 10:00:09,709 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-06-29 10:00:10,407 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-06-29 10:00:13,003 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-06-29 10:00:13,597 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-06-29 10:00:39,355 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: BTC"}}}
+2026-06-29 10:00:39,995 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: BTC"}}}
+2026-06-29 10:01:12,846 WARNING Skipping SOUN Diagonal Spread — short or long strike is None
+2026-06-29 10:01:13,177 INFO Paper trade #2: 20260629_NVDA_PUT_2  credit=1.600  expiry=2026-07-17
+2026-06-29 10:01:13,566 INFO Paper trade #3: 20260629_SPY_IRO_3  credit=0.840  expiry=2026-07-17
+2026-06-30 10:16:53,492 ERROR $^IRX: possibly delisted; no price data found  (period=1y)
+2026-06-30 10:18:05,184 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-06-30 10:18:27,987 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-06-30 10:23:55,154 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-06-30 10:24:15,680 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-06-30 10:26:24,816 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-06-30 10:26:41,704 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-01 10:21:07,684 ERROR $^IRX: possibly delisted; no price data found  (period=1y)
+2026-07-01 10:21:21,892 ERROR $^IRX: possibly delisted; no price data found  (period=5d)
+2026-07-01 10:22:13,239 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-01 10:22:41,995 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-01 10:26:05,024 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-01 10:26:47,663 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-01 10:29:31,673 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-06 10:00:43,552 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-06 10:00:44,610 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-06 10:01:53,401 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-06 10:01:54,906 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-06 10:02:45,985 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-06 10:02:46,813 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-06 10:16:30,337 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: BTC"}}}
+2026-07-06 10:16:31,166 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: BTC"}}}
+2026-07-06 10:20:04,233 WARNING analyze_ticker(AMZN) failed: Expiration `2026-07-20` cannot be found. Available expirations are: [2026-07-06, 2026-07-08, 2026-07-10, 2026-07-13, 2026-07-15, 2026-07-17, 2026-07-24, 2026-07-31, 2026-08-07, 2026-08-14, 2026-08-21, 2026-09-18, 2026-10-16, 2026-11-20, 2026-12-18, 2027-01-15, 2027-03-19, 2027-06-17, 2027-07-16, 2027-12-17, 2028-01-21, 2028-06-16, 2028-12-15]
+2026-07-06 10:28:45,522 INFO Paper trade #2: 20260706_SMR_PUT_2  credit=1.560  expiry=2026-07-24
+2026-07-06 10:28:47,606 INFO Paper trade #3: 20260706_NVO_CAL_3  credit=2.870  expiry=2026-07-24
+2026-07-07 10:01:25,615 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-07 10:01:27,691 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-07 10:04:12,043 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-07 10:04:14,129 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-07 10:05:49,333 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-07 10:05:50,886 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-07 10:19:13,627 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: BTC"}}}
+2026-07-07 10:19:14,633 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: BTC"}}}

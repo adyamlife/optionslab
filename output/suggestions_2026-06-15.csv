@@ -1,0 +1,7 @@
+ticker,spot,expiry,dte,trend,atm_iv,iv_rank_proxy,iv_env,structure,debit_spread,status,put_spread,call_spread
+SPY,756.22,2026-06-22,7,Uptrend,0.1093,39.8,Low,Call Debit Spread,"BUY 758.0C / SELL 766.0C (long delta 0.46, debit ~$2.38)",OK,,
+TQQQ,84.75,2026-06-26,11,Uptrend,0.6497,95.0,High,Put Credit Spread,,OK,"[FAIL] SELL 76.5P / BUY 75.5P (short delta -0.20, credit ~$0.04, width $1, credit/width 4%, need >=25%)",
+QQQ,743.91,2026-06-22,7,Uptrend,0.1963,77.4,High,Put Credit Spread,,OK,"[FAIL] SELL 725.0P / BUY 724.0P (short delta -0.20, credit ~$0.09, width $1, credit/width 9%, need >=25%)",
+AAPL,297.14,2026-06-22,7,Range-bound,0.2006,24.9,Low,No Trade,,No trade - low IV + range-bound,,
+SPOT,480.09,2026-06-26,11,Range-bound,0.4825,57.0,High,Iron Condor,,OK,"[FAIL] SELL 455.0P / BUY 450.0P (short delta -0.22, credit ~$0.05, width $5, credit/width 1%, need >=25%)","[FAIL] SELL 515.0C / BUY 520.0C (short delta 0.20, credit ~$0.35, width $5, credit/width 7%, need >=25%)"
+ULTA,465.76,2026-06-26,11,Downtrend,0.3415,59.7,High,Call Credit Spread,,OK,,"[FAIL] SELL 505.0C / BUY 507.5C (short delta 0.20, credit ~$-1.40, width $2, credit/width -56%, need >=25%)"

@@ -1,0 +1,242 @@
+# config/features.toml
+# Feature flags and role definitions for OptionLab.
+#
+# ── Roles ─────────────────────────────────────────────────────────────────────
+# Define every role here with its privilege level (higher = more access).
+# "any" is a reserved pseudo-role meaning "no restriction — any logged-in user".
+# To add a new role: add it here, assign it in secrets.toml, done.
+#
+# [roles.hierarchy]  name = level
+# [roles.routes]     name = [route prefixes]   (omit or set to [] for full access)
+#
+# ── Features ──────────────────────────────────────────────────────────────────
+# Each feature has at minimum:
+#   enabled       = true/false
+#   role_required = "<role name>" | "any"   (defaults to "any")
+#
+# Add any extra keys you need (cache_seconds, tickers, limits, etc.) —
+# the loader exposes the raw dict so callers can read arbitrary metadata.
+#
+# To add a new feature: add a [features.<name>] block here, then call
+#   ff.enabled("name")         in Python
+#   ff.allowed("name", role)   in Python (enabled AND role satisfied)
+#   {{ features.name.enabled }} in Jinja2
+#   window.__FEATURES__        in JavaScript (injected as JSON on every page)
+
+# ── Role hierarchy ────────────────────────────────────────────────────────────
+# Higher level = more privileged. "any" is implicit (level 0).
+# Add new roles here without touching Python code.
+
+# Role levels — higher number = more privileged.
+# "any" is implicit (level 0, every authenticated user).
+# observer → trader → analyst → admin
+[roles.hierarchy]
+observer = 1    # read-only: live suggestions view only
+trader   = 2    # scan + backtest + paper trades (core structures)
+analyst  = 3    # full view: live positions, reporting, watchlist (no paper trade entry)
+admin    = 10   # unrestricted — all routes, all structures, all admin actions
+
+# Route-prefix allow-lists per role.
+# Omit a role (or set to no entry) to grant full access to all routes.
+# "any" / unauthenticated users always hit the login wall first.
+
+[roles.routes]
+observer = ["/", "/api/analyze", "/api/watchlist", "/api/ticker-validate",
+            "/api/market-context", "/static", "/logout", "/login"]
+trader   = ["/", "/backtest", "/api/analyze", "/api/backtest",
+            "/api/watchlist", "/api/ticker-validate", "/api/market-context",
+            "/static", "/logout", "/login"]
+analyst  = ["/", "/backtest", "/live-positions", "/api/analyze", "/api/backtest",
+            "/api/watchlist", "/api/ticker-validate", "/api/live-positions",
+            "/api/paper-trades", "/api/reporting", "/static", "/logout", "/login"]
+# admin has no entry → full access (None sentinel)
+
+# ── Live Scan ─────────────────────────────────────────────────────────────────
+
+[features.live_scan]
+enabled       = true
+role_required = "any"
+
+[features.live_scan_sse_streaming]
+enabled       = true          # stream results ticker-by-ticker via SSE
+role_required = "any"
+
+[features.live_scan_ai_assessment]
+enabled       = true          # Groq/Gemini AI quality score per ticker
+role_required = "trader"      # costs API credits — keep gated
+
+[features.live_scan_news_headlines]
+enabled       = true          # news modal with Bullish/Bearish/Neutral tags
+role_required = "any"
+
+[features.live_scan_signal_notes]
+enabled       = true          # signal-note tags below each ticker header
+role_required = "any"
+
+[features.live_scan_progress_bar]
+enabled       = true          # scan progress bar with spinner
+role_required = "any"
+
+[features.live_scan_top3]
+enabled       = true          # Top 3 Suggested Trades panel
+role_required = "any"
+
+# ── Market Context (index futures + sector ETFs) ──────────────────────────────
+
+[features.market_context]
+enabled       = true
+role_required = "any"
+cache_seconds = 300           # re-fetch at most once every 5 minutes
+
+[features.market_context_index_futures]
+enabled       = true
+role_required = "any"
+tickers       = ["ES=F", "NQ=F", "YM=F", "RTY=F"]
+labels        = ["S&P 500", "Nasdaq 100", "Dow Jones", "Russell 2000"]
+
+[features.market_context_sector_etfs]
+enabled       = true
+role_required = "any"
+tickers       = ["XLK","XLF","XLE","XLV","XLU","XLI","XLY","XLP","XLB","XLRE","XLC"]
+labels        = ["Tech","Financials","Energy","Health","Utilities","Industrial",
+                 "Cons. Disc","Cons. Staples","Materials","Real Estate","Comm."]
+
+[features.market_context_vix]
+enabled       = true
+role_required = "any"
+ticker        = "^VIX"
+
+[features.market_context_per_ticker_tag]
+enabled       = true          # show sector ETF trend tag on each ticker card
+role_required = "any"
+
+# ── Paper Trades ──────────────────────────────────────────────────────────────
+
+[features.paper_trades]
+enabled       = true
+role_required = "analyst"     # analyst and admin only
+
+[features.paper_trades_morning_scan]
+enabled       = true          # record top-3 at market open via scheduler
+role_required = "admin"       # only admin can trigger / schedule
+
+[features.paper_trades_evening_check]
+enabled       = true          # auto-close expired/target-hit trades
+role_required = "admin"
+
+[features.paper_trades_live_marks]
+enabled       = true          # SSE stream of current option marks on page load
+role_required = "analyst"
+
+[features.paper_trades_daywise_log]
+enabled       = true          # day-by-day grouped trade history tab
+role_required = "analyst"
+
+[features.paper_trades_equity_curve]
+enabled       = true          # cumulative P&L SVG chart
+role_required = "analyst"
+
+[features.paper_trades_performance_breakdown]
+enabled       = true          # by-structure and by-signal breakdown tables
+role_required = "analyst"
+
+# ── E*TRADE data access ───────────────────────────────────────────────────────
+# Controls whether live option chain / quote data is fetched from E*TRADE.
+# Roles below this threshold always use yfinance, even if admin is authenticated.
+
+[features.etrade_data_access]
+enabled       = true
+role_required = "admin"   # only admin uses real-time E*TRADE data
+
+# ── Live Positions ────────────────────────────────────────────────────────────
+
+[features.live_positions]
+enabled       = true
+role_required = "analyst"     # analyst and above can view live positions
+
+[features.live_positions_file_upload]
+enabled       = true          # upload broker CSV to analyse
+role_required = "analyst"
+
+[features.live_positions_hedge_suggestions]
+enabled       = true          # estimated hedge trade per position
+role_required = "analyst"
+
+[features.live_positions_live_hedge_pricing]
+enabled       = true          # fetch live option chain for exact hedge cost
+role_required = "analyst"
+
+[features.live_positions_itm_alerts]
+enabled       = true          # banner when position is at max loss / outside profit zone
+role_required = "analyst"
+
+[features.live_positions_close_roll_actions]
+enabled       = true          # Close / Roll buttons — admin only (destructive)
+role_required = "admin"
+
+# ── Backtest ──────────────────────────────────────────────────────────────────
+
+[features.backtest]
+enabled       = true
+role_required = "trader"
+
+# ── ML Data Admin ──────────────────────────────────────────────────────────────
+
+[features.ml_data_admin]
+enabled       = true
+role_required = "admin"     # operational data-pipeline controls — admin only
+
+# ── Watchlist Editor ──────────────────────────────────────────────────────────
+
+[features.watchlist_editor]
+enabled       = true
+role_required = "analyst"     # analyst can view/edit watchlist; admin can too
+
+# ── Appointments / Booking ────────────────────────────────────────────────────
+
+[features.appointments]
+enabled       = true
+role_required = "any"
+
+[features.appointments_google_calendar]
+enabled       = true          # sync confirmed appointments to Google Calendar
+role_required = "admin"
+
+[features.appointments_email_reminders]
+enabled       = true          # send reminder emails before appointment
+role_required = "admin"
+
+[features.appointments_stripe_payment]
+enabled       = true          # collect payment at booking
+role_required = "any"
+
+# ── Blog ──────────────────────────────────────────────────────────────────────
+
+[features.blog]
+enabled       = true
+role_required = "any"
+
+[features.blog_admin_editor]
+enabled       = true          # create / edit / publish blog posts
+role_required = "admin"
+
+[features.blog_visit_counter]
+enabled       = true          # increment view count on each blog visit
+role_required = "any"
+
+# ── Admin Reporting ───────────────────────────────────────────────────────────
+
+[features.admin_reporting]
+enabled       = true
+role_required = "analyst"     # analyst and above can view reporting
+
+# ── Performance / Infrastructure ──────────────────────────────────────────────
+
+[features.perf_gzip]
+enabled = true                # flask-compress gzip on HTML/CSS/JS responses
+
+[features.perf_css_preload]
+enabled = true                # <link rel="preload"> for style.css in base.html
+
+[features.perf_rate_limiting]
+enabled = true                # per-IP request throttle (RateLimiter middleware)

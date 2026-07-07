@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% set page = "backtest" %}
+{% block title %}Backtest - Options Strategy Lab{% endblock %}
+
+{% block body %}
+  <main class="container">
+    <section class="panel">
+      <h2>Backtest</h2>
+      <form id="backtest-form">
+        <div class="field">
+          <label for="ticker">Ticker</label>
+          <select id="ticker" name="ticker">
+            {% for t in watchlist %}
+            <option value="{{ t }}" {% if t == defaults.ticker %}selected{% endif %}>{{ t }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="period">History period</label>
+          <select id="period" name="period">
+            <option value="1y" {% if defaults.period == '1y' %}selected{% endif %}>1 year</option>
+            <option value="2y" {% if defaults.period == '2y' %}selected{% endif %}>2 years</option>
+            <option value="3y" {% if defaults.period == '3y' %}selected{% endif %}>3 years</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="width">Spread width ($)</label>
+          <input type="number" id="width" name="width" step="0.5" min="0.5" value="{{ defaults.width }}">
+        </div>
+
+        <div class="field">
+          <label for="credit_min_pct">Min credit / width (%)</label>
+          <input type="number" id="credit_min_pct" name="credit_min_pct" step="1" min="0" max="100" value="{{ defaults.credit_min_pct }}">
+        </div>
+
+        <div class="field">
+          <label for="dte">Days to expiry (DTE)</label>
+          <input type="number" id="dte" name="dte" step="1" min="1" max="30" value="{{ defaults.dte }}">
+        </div>
+
+        <button type="submit">Run Backtest</button>
+      </form>
+
+      <div id="backtest-status" class="status"></div>
+      <div id="backtest-results"></div>
+    </section>
+  </main>
+{% endblock %}
+
+{% block scripts %}
+  <script src="/static/js/backtest.js?v={{ asset_v }}"></script>
+{% endblock %}

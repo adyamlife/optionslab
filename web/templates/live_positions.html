@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% set page = "positions" %}
+{% block title %}Live Positions — Options Strategy Lab{% endblock %}
+
+{% block body %}
+  <main class="container wide">
+    <section class="panel lp-control-panel">
+      <div class="lp-toolbar">
+        <h2 class="lp-toolbar-title">
+          Live Position Analysis
+          <button id="lp-refresh-btn" class="btn-icon-sm is-hidden" title="Refresh file list">↺</button>
+        </h2>
+
+        <!-- E*TRADE live import — admin only -->
+        {% if ff.is_top_role(current_role) %}
+        <div class="lp-etrade-bar">
+          <button id="lp-etrade-btn" class="btn-primary">⚡ Load from E*TRADE</button>
+          <span id="lp-etrade-status" class="muted"></span>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- CSV / TSV file picker — collapsed by default to keep the panel compact -->
+      <details class="lp-file-picker">
+        <summary>Or load from a CSV/TSV export…</summary>
+        <p class="hint">
+          Drop your E*TRADE position export (CSV or TSV) into <code>data/live_position/</code>
+          and select a file below.
+        </p>
+        <div id="lp-file-list"><span class="muted">Loading files…</span></div>
+      </details>
+    </section>
+
+    <!-- Filter bar for positions -->
+    <div id="lp-filter-bar" class="lp-filter-bar is-hidden">
+      <span class="lp-filter-label">Filter:</span>
+      <div class="lp-filter-group">
+        <button class="lp-filter-btn lp-filter-active" data-filter="all">All Positions</button>
+        <button class="lp-filter-btn" data-filter="options">Option Positions Only</button>
+      </div>
+    </div>
+
+    <div id="lp-results"></div>
+  </main>
+{% endblock %}
+
+{% block scripts %}
+  <!-- Phase 1: Centralized utilities, config, and event management -->
+  <script src="/static/js/utils.js?v={{ asset_v }}"></script>
+  <script src="/static/js/config.js?v={{ asset_v }}"></script>
+  <script src="/static/js/event-manager.js?v={{ asset_v }}"></script>
+  <script src="/static/js/common.js?v={{ asset_v }}"></script>
+
+  <!-- Phase 3: Advanced patterns libraries (must load before Phase 2) -->
+  <script src="/static/js/lib/state-manager.js?v={{ asset_v }}"></script>
+  <script src="/static/js/lib/component-base.js?v={{ asset_v }}"></script>
+  <script src="/static/js/lib/cache-manager.js?v={{ asset_v }}"></script>
+  <script src="/static/js/lib/performance-monitor.js?v={{ asset_v }}"></script>
+  <script src="/static/js/lib/position-health.js?v={{ asset_v }}"></script>
+  <script src="/static/js/lib/ticker-analysis.js?v={{ asset_v }}"></script>
+  <script src="/static/js/lib/price-badge.js?v={{ asset_v }}"></script>
+  <script src="/static/js/lib/hedge-block.js?v={{ asset_v }}"></script>
+  <script src="/static/js/lib/strike-proximity.js?v={{ asset_v }}"></script>
+  <script src="/static/js/lib/greeks-drift.js?v={{ asset_v }}"></script>
+
+  <!-- Phase 2: Live Positions Modules (State must load first) -->
+  <script src="/static/js/live_positions_state.js?v={{ asset_v }}"></script>
+  <script src="/static/js/live_positions_service.js?v={{ asset_v }}"></script>
+  <script src="/static/js/live_positions_analysis.js?v={{ asset_v }}"></script>
+  <script src="/static/js/live_positions_modal.js?v={{ asset_v }}"></script>
+  <script src="/static/js/live_positions_ui.js?v={{ asset_v }}"></script>
+
+  <!-- Main Orchestrator (depends on all modules above) -->
+  <script src="/static/js/live_positions.js?v={{ asset_v }}"></script>
+{% endblock %}

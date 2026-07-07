@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% set page = "paper" %}
+{% block title %}Paper Trades — Options Strategy Lab{% endblock %}
+
+{% block body %}
+  <main class="container wide">
+
+    <!-- Controls -->
+    <section class="panel">
+      <div class="pt-header-row">
+        <div>
+          <h2>Paper Trade Validator</h2>
+          <p class="hint">
+            Every trading day at <strong>10 AM EDT</strong> the morning scan records the top-3 suggestions as paper trades.
+            At <strong>5 PM EDT</strong> the evening check updates marks, applies the profit&nbsp;/&nbsp;stop-loss rules, and closes expired positions.
+          </p>
+        </div>
+        <div class="pt-controls">
+          <button id="pt-refresh-btn" class="btn-icon-sm" title="Refresh data">↺</button>
+          <button id="pt-morning-btn" class="pt-run-btn" data-scan="/api/paper-trades/morning-scan">▶ Morning Scan</button>
+          <button id="pt-evening-btn" class="pt-run-btn pt-run-btn-eve" data-scan="/api/paper-trades/evening-check">▶ Evening Check</button>
+        </div>
+      </div>
+      <div id="pt-run-status" class="status" style="margin-top:0.4rem"></div>
+    </section>
+
+    <!-- Summary cards -->
+    <div id="pt-summary-cards" class="pt-cards-grid">
+      <div class="pt-card pt-card-loading">Loading…</div>
+    </div>
+
+    <!-- Equity curve -->
+    <section class="panel" id="pt-equity-section" style="display:none">
+      <h3>Cumulative P&amp;L (per contract, 1 contract per trade)</h3>
+      <div id="pt-equity-chart"></div>
+    </section>
+
+    <!-- Breakdown tables -->
+    <div id="pt-breakdowns" class="pt-breakdown-grid" style="display:none">
+      <section class="panel">
+        <h3>By Structure</h3>
+        <div id="pt-by-structure"></div>
+      </section>
+      <section class="panel">
+        <h3>By Signal Rating</h3>
+        <div id="pt-by-signal"></div>
+      </section>
+    </div>
+
+    <!-- Tab nav -->
+    <div class="pt-tab-nav">
+      <button class="pt-tab-btn active" data-tab="open">Open Positions <span id="pt-open-count" class="muted"></span></button>
+      <button class="pt-tab-btn" data-tab="history">Trade History <span id="pt-closed-count" class="muted"></span></button>
+      <button class="pt-tab-btn" data-tab="daywise">Day-wise Log</button>
+    </div>
+
+    <!-- Tab: Open Positions -->
+    <div class="pt-tab-panel active" data-tab="open">
+      <section class="panel" id="pt-open-section">
+        <div id="pt-open-table"><span class="muted">Loading…</span></div>
+        <div id="pt-portfolio-summary"></div>
+      </section>
+    </div>
+
+    <!-- Tab: Trade History (closed) -->
+    <div class="pt-tab-panel" data-tab="history">
+      <section class="panel" id="pt-closed-section">
+        <div id="pt-closed-table"><span class="muted">No closed trades yet.</span></div>
+      </section>
+    </div>
+
+    <!-- Tab: Day-wise Log -->
+    <div class="pt-tab-panel" data-tab="daywise">
+      <section class="panel">
+        <p class="hint" style="margin-bottom:1rem">All trades grouped by the date they were entered. Shows both open and closed positions.</p>
+        <div id="pt-daywise-table"><span class="muted">Loading…</span></div>
+      </section>
+    </div>
+
+  </main>
+{% endblock %}
+
+{% block scripts %}
+  <!-- Phase 1 Refactoring: Centralized utilities, config, and event management -->
+  <script src="/static/js/utils.js?v={{ asset_v }}"></script>
+  <script src="/static/js/config.js?v={{ asset_v }}"></script>
+  <script src="/static/js/event-manager.js?v={{ asset_v }}"></script>
+
+  <!-- Shared libraries: ticker analysis (same /api/analyze call Live Positions uses) -->
+  <script src="/static/js/lib/cache-manager.js?v={{ asset_v }}"></script>
+  <script src="/static/js/lib/position-health.js?v={{ asset_v }}"></script>
+  <script src="/static/js/lib/ticker-analysis.js?v={{ asset_v }}"></script>
+  <script src="/static/js/lib/price-badge.js?v={{ asset_v }}"></script>
+  <script src="/static/js/lib/strike-proximity.js?v={{ asset_v }}"></script>
+  <script src="/static/js/lib/greeks-drift.js?v={{ asset_v }}"></script>
+
+  <!-- Main application script -->
+  <script src="/static/js/paper_trades.js?v={{ asset_v }}"></script>
+{% endblock %}

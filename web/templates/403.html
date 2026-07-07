@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Access Denied — Options Strategy Lab</title>
+  <link rel="stylesheet" href="/static/css/style.css?v={{ asset_v }}">
+  <style>
+    .err-box { text-align:center; padding: 4rem 2rem; }
+    .err-code { font-size: 4rem; font-weight: 800; color: #e53935; margin: 0; }
+    .err-msg  { font-size: 1.1rem; color: #aaa; margin: 0.5rem 0 2rem; }
+  </style>
+</head>
+<body>
+  <div id="header-placeholder"></div>
+  <div id="nav-placeholder"></div>
+  <main class="container">
+    <div class="err-box panel">
+      <p class="err-code">403</p>
+      <p class="err-msg">Your account (<strong>{{ role }}</strong>) does not have access to this page.</p>
+      <a href="/" class="btn-primary" style="display:inline-block;padding:0.6rem 1.4rem;border-radius:6px;text-decoration:none">Go to Live Suggestions</a>
+    </div>
+  </main>
+  <div id="footer-placeholder"></div>
+  <script src="/static/js/common.js?v={{ asset_v }}"></script>
+</body>
+</html>

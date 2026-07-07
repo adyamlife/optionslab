@@ -1,0 +1,372 @@
+{
+  "id:20260624_ACHR_PUT_1": {
+    "iv": 96.3,
+    "net_delta": 0.5658,
+    "net_theta": 0.0152,
+    "net_gamma": -0.578122,
+    "net_vega": -0.0015,
+    "ul_price": 5.32,
+    "ts": "2026-07-06T14:24:22.368161",
+    "date_acquired": null
+  },
+  "id:20260623_PLTR_PUT_2": {
+    "iv": 74.4,
+    "net_delta": 0.0087,
+    "net_theta": 0.0162,
+    "net_gamma": -0.001938,
+    "net_vega": -0.0023,
+    "ul_price": 132.62,
+    "ts": "2026-07-06T14:24:22.568505",
+    "date_acquired": null
+  },
+  "id:20260622_PLTR_PUT_3": {
+    "iv": 67.7,
+    "net_delta": 0.0202,
+    "net_theta": 0.0312,
+    "net_gamma": -0.003899,
+    "net_vega": -0.0044,
+    "ul_price": 132.62,
+    "ts": "2026-07-06T14:24:22.605405",
+    "date_acquired": null
+  },
+  "id:20260624_SMR_PUT_3": {
+    "iv": 109.9,
+    "net_delta": 0.7355,
+    "net_theta": 0.0064,
+    "net_gamma": -0.033514,
+    "net_vega": -0.0004,
+    "ul_price": 9.685,
+    "ts": "2026-07-06T14:24:22.628345",
+    "date_acquired": null
+  },
+  "id:20260623_ACHR_PUT_1": {
+    "iv": 96.5,
+    "net_delta": 0.8372,
+    "net_theta": 0.0031,
+    "net_gamma": -0.180678,
+    "net_vega": -0.0004,
+    "ul_price": 5.32,
+    "ts": "2026-07-06T14:24:22.690837",
+    "date_acquired": null
+  },
+  "id:20260623_BTC_PUT_3": {
+    "iv": 40.5,
+    "net_delta": 0.1158,
+    "net_theta": 0.0068,
+    "net_gamma": -0.067111,
+    "net_vega": -0.0052,
+    "ul_price": 28.2,
+    "ts": "2026-07-06T14:24:22.706796",
+    "date_acquired": null
+  },
+  "id:20260706_QUBT_PUT_2": {
+    "iv": 97.9,
+    "net_delta": 0.3571,
+    "net_theta": 0.01,
+    "net_gamma": -0.091277,
+    "net_vega": -0.0038,
+    "ul_price": 9.31,
+    "ts": "2026-07-06T14:24:35.806702",
+    "date_acquired": null
+  },
+  "id:20260702_ACHR_PUT_1": {
+    "iv": 92.8,
+    "net_delta": 0.2568,
+    "net_theta": 0.0077,
+    "net_gamma": -0.360395,
+    "net_vega": -0.0023,
+    "ul_price": 5.32,
+    "ts": "2026-07-06T14:24:35.835158",
+    "date_acquired": null
+  },
+  "id:20260706_NFLX_CAL_1": {
+    "iv": 58.1,
+    "net_delta": -0.0231,
+    "net_theta": 0.0048,
+    "net_gamma": -0.00222,
+    "net_vega": -0.0033,
+    "ul_price": 75.945,
+    "ts": "2026-07-06T14:24:35.853383",
+    "date_acquired": null
+  },
+  "id:20260702_ARQQ_CAL_2": {
+    "iv": 163.4,
+    "net_delta": 0.1039,
+    "net_theta": -0.0315,
+    "net_gamma": 0.019238,
+    "net_vega": 0.0045,
+    "ul_price": 22.518,
+    "ts": "2026-07-06T14:24:35.879312",
+    "date_acquired": null
+  },
+  "id:20260702_SPY_CAL_3": {
+    "iv": 10.8,
+    "net_delta": 0.057,
+    "net_theta": -0.0199,
+    "net_gamma": 0.000332,
+    "net_vega": 0.019,
+    "ul_price": 751.42,
+    "ts": "2026-07-06T14:24:36.042746",
+    "date_acquired": null
+  },
+  "id:20260625_ACHR_PUT_1": {
+    "iv": 96.4,
+    "net_delta": 0.186,
+    "net_theta": 0.011,
+    "net_gamma": -0.434426,
+    "net_vega": -0.0011,
+    "ul_price": 5.3099,
+    "ts": "2026-07-06T14:25:37.906263",
+    "date_acquired": null
+  },
+  "id:20260626_SOFI_CAL_1": {
+    "iv": 69.2,
+    "net_delta": 0.804,
+    "net_theta": -0.0018,
+    "net_gamma": -0.031094,
+    "net_vega": -0.0004,
+    "ul_price": 18.785,
+    "ts": "2026-07-06T14:25:38.053305",
+    "date_acquired": null
+  },
+  "id:20260625_ARQQ_CAL_3": {
+    "iv": 166.3,
+    "net_delta": 0.0511,
+    "net_theta": -0.024,
+    "net_gamma": 0.012449,
+    "net_vega": 0.0032,
+    "ul_price": 22.518,
+    "ts": "2026-07-06T14:25:38.149712",
+    "date_acquired": null
+  },
+  "id:20260629_NVDA_PUT_2": {
+    "iv": 40.2,
+    "net_delta": 0.0507,
+    "net_theta": 0.021,
+    "net_gamma": -0.00343,
+    "net_vega": -0.014,
+    "ul_price": 196.41,
+    "ts": "2026-07-06T14:25:38.237157",
+    "date_acquired": null
+  },
+  "id:20260706_ORCL_PUT_3": {
+    "iv": 60.6,
+    "net_delta": 0.0362,
+    "net_theta": 0.0104,
+    "net_gamma": -0.001205,
+    "net_vega": -0.0069,
+    "ul_price": 143.675,
+    "ts": "2026-07-06T14:25:43.657441",
+    "date_acquired": null
+  },
+  "id:20260706_NVO_CAL_3": {
+    "iv": 42.4,
+    "net_delta": 0.259,
+    "net_theta": -0.0087,
+    "net_gamma": 0.035855,
+    "net_vega": 0.0122,
+    "ul_price": 49.355,
+    "ts": "2026-07-06T14:25:44.258325",
+    "date_acquired": null
+  },
+  "id:20260706_SMR_PUT_2": {
+    "iv": 97.9,
+    "net_delta": 0.4138,
+    "net_theta": 0.0119,
+    "net_gamma": -0.109786,
+    "net_vega": -0.0047,
+    "ul_price": 9.6718,
+    "ts": "2026-07-06T14:25:44.275932",
+    "date_acquired": null
+  },
+  "id:20260629_SPY_IRO_3": {
+    "iv": 13.3,
+    "net_delta": -0.0128,
+    "net_theta": 0.0096,
+    "net_gamma": -0.000109,
+    "net_vega": -0.0088,
+    "ul_price": 751.37,
+    "ts": "2026-07-06T14:25:46.425973",
+    "date_acquired": null
+  },
+  "id:20260618_BTC_PUT_2": {
+    "iv": 44.6,
+    "net_delta": 0.3554,
+    "net_theta": 0.016,
+    "net_gamma": -0.152965,
+    "net_vega": -0.0121,
+    "ul_price": 28.2193,
+    "ts": "2026-07-06T14:25:57.341248",
+    "date_acquired": null
+  },
+  "id:20260622_ACHR_PUT_2": {
+    "iv": 96.6,
+    "net_delta": 0.8385,
+    "net_theta": 0.0028,
+    "net_gamma": -0.163653,
+    "net_vega": -0.0004,
+    "ul_price": 5.305,
+    "ts": "2026-07-06T14:26:38.239236",
+    "date_acquired": null
+  },
+  "id:20260617_ARQQ_CAL_1": {
+    "iv": 164.2,
+    "net_delta": 0.1023,
+    "net_theta": -0.0314,
+    "net_gamma": 0.01908,
+    "net_vega": 0.0045,
+    "ul_price": 22.4,
+    "ts": "2026-07-06T14:26:38.301711",
+    "date_acquired": null
+  },
+  "id:20260622_BTC_PUT_1": {
+    "iv": 44.9,
+    "net_delta": 0.3588,
+    "net_theta": 0.0162,
+    "net_gamma": -0.150237,
+    "net_vega": -0.0121,
+    "ul_price": 28.1998,
+    "ts": "2026-07-06T14:26:38.537847",
+    "date_acquired": null
+  },
+  "id:20260619_ARQQ_CAL_2": {
+    "iv": 164.2,
+    "net_delta": 0.1023,
+    "net_theta": -0.0314,
+    "net_gamma": 0.01908,
+    "net_vega": 0.0045,
+    "ul_price": 22.4,
+    "ts": "2026-07-06T14:26:38.628669",
+    "date_acquired": null
+  },
+  "id:20260626_QQQ_IRO_3": {
+    "iv": 24.3,
+    "net_delta": -0.0248,
+    "net_theta": 0.0769,
+    "net_gamma": -0.00136,
+    "net_vega": -0.0222,
+    "ul_price": 723.15,
+    "ts": "2026-07-06T14:26:40.692221",
+    "date_acquired": null
+  },
+  "id:20260625_SMR_PUT_2": {
+    "iv": 107.8,
+    "net_delta": 0.6392,
+    "net_theta": 0.0163,
+    "net_gamma": -0.090679,
+    "net_vega": -0.0011,
+    "ul_price": 9.61,
+    "ts": "2026-07-06T17:06:25.061411",
+    "date_acquired": null
+  },
+  "NVO|Call Debit Spread|2026-07-24|56|50|None|None|None|None|None": {
+    "iv": 38.8,
+    "net_delta": 0.3641,
+    "net_theta": -0.0276,
+    "net_gamma": 0.0603,
+    "net_vega": 0.0265,
+    "ul_price": 49.26,
+    "ts": "2026-07-07T08:36:18.772656",
+    "date_acquired": "2026-07-06"
+  },
+  "BTC|Put Debit Spread|2026-07-17|28|25|None|None|None|None|None": {
+    "iv": 7.0,
+    "net_delta": -0.002,
+    "net_theta": -0.0,
+    "net_gamma": 0.088547,
+    "net_vega": 0.0003,
+    "ul_price": 28.18,
+    "ts": "2026-07-07T08:36:31.837774",
+    "date_acquired": "2026-06-22"
+  },
+  "INTC|Call Debit Spread|2026-07-10|135|133|None|None|None|None|None": {
+    "iv": 25.0,
+    "net_delta": 0.0001,
+    "net_theta": -0.0002,
+    "net_gamma": 0.000137,
+    "net_vega": 0.0,
+    "ul_price": 122.2,
+    "ts": "2026-07-07T08:36:47.042276",
+    "date_acquired": "2026-07-02"
+  },
+  "RGTI|Short Call|2028-01-21|None|None|None|None|None|None|65": {
+    "iv": 25.0,
+    "net_delta": -0.0001,
+    "net_theta": 0.0,
+    "net_gamma": -5.2e-05,
+    "net_vega": -0.0001,
+    "ul_price": 17.96,
+    "ts": "2026-07-07T08:37:08.169957",
+    "date_acquired": "2025-10-09"
+  },
+  "SIRI|Long Call|2027-01-15|None|None|None|None|None|None|35": {
+    "iv": 6.3,
+    "net_delta": 0.0082,
+    "net_theta": -0.0001,
+    "net_gamma": 0.01604,
+    "net_vega": 0.005,
+    "ul_price": 30.75,
+    "ts": "2026-07-07T08:37:22.919944",
+    "date_acquired": "2025-08-05"
+  },
+  "STLA|Long Call|2027-01-15|None|None|None|None|None|None|20": {
+    "iv": 50.0,
+    "net_delta": 0.0007,
+    "net_theta": -0.0,
+    "net_gamma": 0.001215,
+    "net_vega": 0.0001,
+    "ul_price": 5.8,
+    "ts": "2026-07-07T08:37:38.871241",
+    "date_acquired": "2024-09-30"
+  },
+  "KEEL|Long Call|2027-01-15|None|None|None|None|None|None|7": {
+    "iv": 12.5,
+    "net_delta": 0.0001,
+    "net_theta": -0.0,
+    "net_gamma": 0.000644,
+    "net_vega": 0.0,
+    "ul_price": 4.84,
+    "ts": "2026-07-07T08:37:52.375921",
+    "date_acquired": "2025-10-10"
+  },
+  "INTC|Call Debit Spread|2026-07-13|140|135|None|None|None|None|None": {
+    "iv": 84.2,
+    "net_delta": 0.0227,
+    "net_theta": -0.0437,
+    "net_gamma": 0.003396,
+    "net_vega": 0.006,
+    "ul_price": 110.709,
+    "ts": "2026-07-07T10:18:52.042684",
+    "date_acquired": "2026-07-06"
+  },
+  "id:20260707_SPY_CAL_1": {
+    "iv": 11.0,
+    "net_delta": 0.0615,
+    "net_theta": -0.0288,
+    "net_gamma": 0.00149,
+    "net_vega": 0.0586,
+    "ul_price": 746.37,
+    "ts": "2026-07-07T10:45:50.388773",
+    "date_acquired": null
+  },
+  "id:20260707_COP_PUT_2": {
+    "iv": 31.5,
+    "net_delta": 0.133,
+    "net_theta": 0.0174,
+    "net_gamma": -0.013249,
+    "net_vega": -0.021,
+    "ul_price": 106.01,
+    "ts": "2026-07-07T10:45:51.517608",
+    "date_acquired": null
+  },
+  "id:20260707_QUBT_PUT_3": {
+    "iv": 98.3,
+    "net_delta": 0.4144,
+    "net_theta": 0.0041,
+    "net_gamma": -0.040626,
+    "net_vega": -0.0014,
+    "ul_price": 8.605,
+    "ts": "2026-07-07T10:45:52.248965",
+    "date_acquired": null
+  }
+}

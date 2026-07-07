@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% set page = "upload" %}
+{% block title %}Portfolio Upload — Options Strategy Lab{% endblock %}
+
+{% block body %}
+  <main class="container wide">
+    <section class="panel">
+      <h2>Portfolio Position Upload</h2>
+      <p class="hint">
+        Export your current positions from E*TRADE (Portfolio → Export) as CSV or TSV.
+        Upload here to get risk analysis, P&amp;L breakdown, probability of profit, and hedge suggestions
+        for each spread position.
+      </p>
+
+      <div id="upload-zone" class="upload-zone">
+        <div class="upload-icon">📂</div>
+        <p class="upload-label">Drag &amp; drop your position file here, or <label for="file-input" class="upload-link">browse</label></p>
+        <p class="upload-hint">Accepts CSV or TSV exports from E*TRADE. Columns required:
+          <code>Position, U/L Price, Qty, U/L Change, Mark, Mark Chg, Cost Value, Market Value</code>
+        </p>
+        <input type="file" id="file-input" accept=".csv,.tsv,.txt" style="display:none">
+      </div>
+
+      <div id="upload-status" class="status" style="margin-top:0.75rem"></div>
+    </section>
+
+    <div id="upload-results"></div>
+  </main>
+{% endblock %}
+
+{% block scripts %}
+  <script src="/static/js/portfolio_upload.js?v={{ asset_v }}"></script>
+{% endblock %}

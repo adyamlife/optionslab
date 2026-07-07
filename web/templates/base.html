@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Options Strategy Lab{% endblock %}</title>
+  <link rel="preload" href="/static/css/theme.css?v={{ asset_v }}" as="style">
+  <link rel="stylesheet" href="/static/css/theme.css?v={{ asset_v }}">
+  <link rel="preload" href="/static/css/style.css?v={{ asset_v }}" as="style">
+  <link rel="stylesheet" href="/static/css/style.css?v={{ asset_v }}">
+  {% block head %}{% endblock %}
+</head>
+<body data-page="{{ page | default('') }}">
+
+  <header class="site-header">
+    <h1>Options Strategy Lab</h1>
+    <p class="subtitle">Project Y - rulebook-driven backtest &amp; live suggestions</p>
+  </header>
+
+  <nav class="site-nav">
+    {% if session.get('user') %}
+      <a href="/" data-nav="live" {% if page == 'live' %}class="active"{% endif %}>Live Suggestions</a>
+      {% if features.live_positions.enabled and ff.role_gte(current_role, features.live_positions.role_required) %}
+        <a href="/live-positions" data-nav="positions" {% if page == 'positions' %}class="active"{% endif %}>Live Positions</a>
+      {% endif %}
+      {% if features.paper_trades.enabled and ff.role_gte(current_role, features.paper_trades.role_required) %}
+        <a href="/paper-trades" data-nav="paper" {% if page == 'paper' %}class="active"{% endif %}>Paper Trades</a>
+      {% endif %}
+      {% if features.backtest.enabled and ff.role_gte(current_role, features.backtest.role_required) %}
+        <a href="/backtest" data-nav="backtest" {% if page == 'backtest' %}class="active"{% endif %}>Backtest</a>
+      {% endif %}
+      {% if features.ml_data_admin.enabled and ff.role_gte(current_role, features.ml_data_admin.role_required) %}
+        <a href="/ml-admin" data-nav="ml-admin" {% if page == 'ml-admin' %}class="active"{% endif %}>ML Data</a>
+        <a href="/scheduler" data-nav="scheduler" {% if page == 'scheduler' %}class="active"{% endif %}>Scheduler</a>
+        <a href="/mispricing" data-nav="mispricing" {% if page == 'mispricing' %}class="active"{% endif %}>Mispricing</a>
+      {% endif %}
+      <a href="/logout" class="nav-logout" title="Sign out">&#x2192; Sign out</a>
+    {% endif %}
+  </nav>
+
+  {% block body %}{% endblock %}
+
+  <footer class="site-footer">
+    <p>Options Strategy Lab &copy; {{ now.year }}</p>
+  </footer>
+
+  <script>window.__FEATURES__ = {{ features | tojson }};</script>
+  <script src="/static/js/common.js?v={{ asset_v }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

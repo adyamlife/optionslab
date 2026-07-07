@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% set page = "live" %}
+{% block title %}Options Strategy Lab{% endblock %}
+
+{% block body %}
+  <div id="etrade-bar"></div>
+
+  <main class="container wide">
+
+    {% if features.market_context.enabled %}
+    <!-- Market Context — shown first -->
+    <section class="panel" id="mkt-ctx-panel">
+      <div class="mkt-ctx-header">
+        <h2>Market Context</h2>
+        <span id="mkt-ctx-age" class="muted text-xs"></span>
+        <button id="mkt-ctx-refresh" class="btn-sm" title="Refresh market data">↻</button>
+      </div>
+      <div id="mkt-ctx-body"><p class="muted hint">Loading…</p></div>
+    </section>
+    {% endif %}
+
+    <!-- Watchlist editor -->
+    <section class="panel" id="wl-panel">
+      <div class="wl-header-row">
+        <div>
+          <h2>Watchlist <span id="wl-count" class="wl-count-badge">0 / 50</span></h2>
+          <p class="hint">Tickers included in Live Analysis. Max 50.</p>
+        </div>
+        <div class="wl-controls">
+          <button id="wl-toggle-btn" class="btn-icon-sm" title="Show / hide watchlist">&#9650;</button>
+        </div>
+      </div>
+
+      <div id="wl-body">
+        <div class="wl-toolbar">
+          <button id="wl-select-all"   class="btn-sm">Select all</button>
+          <button id="wl-deselect-all" class="btn-sm">Deselect all</button>
+          <span class="muted text-sm">Click a ticker to toggle it for this run. Selection resets on page reload.</span>
+        </div>
+        <div id="wl-chips" class="wl-chips"></div>
+        <div class="wl-add-row">
+          <input id="wl-search" type="text" placeholder="Add ticker for this run (e.g. NVDA)…" maxlength="10" autocomplete="off" spellcheck="false">
+          <button id="wl-add-btn" class="btn-sm">Add</button>
+          <span id="wl-search-status" class="wl-search-status"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Live Suggestions -->
+    <section class="panel" id="live-panel">
+      <div class="live-panel-hdr">
+        <div>
+          <h2>Live Suggestions (current chain)</h2>
+          <p class="hint m-0">Runs analyze.py across the full watchlist using live data.</p>
+        </div>
+        <button id="live-panel-toggle" class="btn-icon-sm" title="Collapse / expand">&#9660;</button>
+      </div>
+
+      <div id="live-panel-body">
+        <form id="live-form">
+          <div class="param-grid">
+            {% for param in live_params %}
+            <div class="field">
+              <label for="lp_{{ param.key }}">{{ param.key.replace('_', ' ') }} <span class="info-icon" title="{{ param.description }}">?</span></label>
+              <input type="number" id="lp_{{ param.key }}" name="{{ param.key }}" step="any" value="{{ param.default }}">
+              <p class="param-desc">{{ param.description }}</p>
+            </div>
+            {% endfor %}
+          </div>
+          <button id="run-live" type="submit">Run Live Analysis</button>
+        </form>
+
+        <div id="live-status" class="status"></div>
+        <div id="risk-banner"></div>
+        <div id="live-results"></div>
+      </div>
+    </section>
+
+    <section class="panel" id="journal-panel">
+      <h2>Trade Journal</h2>
+      <p class="hint">Log trades you enter. Tracks P&amp;L, enforces risk limits, and builds your win-rate history for future Kelly sizing.</p>
+      <div id="journal-summary"></div>
+      <div id="journal-open"></div>
+      <div id="journal-closed"></div>
+    </section>
+  </main>
+
+  <!-- News modal -->
+  <div id="news-modal" class="modal-overlay" style="display:none">
+    <div class="modal-box modal-box-wide">
+      <div class="modal-header">
+        <h3 id="news-modal-title">News Headlines</h3>
+        <button id="news-modal-close" class="modal-close">&times;</button>
+      </div>
+      <p id="news-modal-summary" class="hint"></p>
+      <table class="news-table">
+        <thead><tr><th>Headline</th><th>Tone</th></tr></thead>
+        <tbody id="news-modal-rows"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Log-trade modal -->
+  <div id="log-modal" class="modal-overlay" style="display:none">
+    <div class="modal-box">
+      <h3 id="log-modal-title">Log Trade</h3>
+      <p id="log-modal-details" class="hint"></p>
+      <div class="modal-fields">
+        <label>Contracts <input type="number" id="log-contracts" value="1" min="1" max="20" style="width:5rem"></label>
+      </div>
+      <div class="modal-actions">
+        <button id="log-modal-confirm" class="btn-primary">Confirm &amp; Log</button>
+        <button id="log-modal-cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Close-position modal -->
+  <div id="close-modal" class="modal-overlay" style="display:none">
+    <div class="modal-box">
+      <h3>Close Position</h3>
+      <p id="close-modal-info" class="hint"></p>
+      <div class="modal-fields">
+        <label>Current spread value ($ per share)
+          <input type="number" id="close-value-input" step="0.01" min="0" placeholder="e.g. 0.20" style="width:8rem">
+        </label>
+        <p class="hint">Credit spread: cost to buy back. Debit spread: proceeds from selling. Enter 0 to mark expired worthless.</p>
+      </div>
+      <div class="modal-actions">
+        <button id="close-modal-confirm" class="btn-primary">Close Position</button>
+        <button id="close-modal-expire">Expired Worthless</button>
+        <button id="close-modal-cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+  window.__WATCHLIST__ = {{ watchlist | tojson }};
+  const WATCHLIST_SIZE = {{ watchlist | length }};
+</script>
+
+  <!-- Phase 1: Centralized utilities, config, and event management -->
+  <script src="/static/js/utils.js?v={{ asset_v }}"></script>
+  <script src="/static/js/config.js?v={{ asset_v }}"></script>
+  <script src="/static/js/event-manager.js?v={{ asset_v }}"></script>
+  <script src="/static/js/common.js?v={{ asset_v }}"></script>
+
+  <!-- Phase 3: Advanced patterns libraries (must load before Phase 2) -->
+  <script src="/static/js/lib/state-manager.js?v={{ asset_v }}"></script>
+  <script src="/static/js/lib/component-base.js?v={{ asset_v }}"></script>
+  <script src="/static/js/lib/cache-manager.js?v={{ asset_v }}"></script>
+  <script src="/static/js/lib/performance-monitor.js?v={{ asset_v }}"></script>
+  <script src="/static/js/lib/position-health.js?v={{ asset_v }}"></script>
+  <script src="/static/js/lib/price-badge.js?v={{ asset_v }}"></script>
+  <script src="/static/js/lib/hedge-block.js?v={{ asset_v }}"></script>
+  <script src="/static/js/lib/strike-proximity.js?v={{ asset_v }}"></script>
+
+  <!-- Phase 2: Live Suggestions Modules (State must load first) -->
+  <script src="/static/js/live_state.js?v={{ asset_v }}"></script>
+  <script src="/static/js/live_market_context.js?v={{ asset_v }}"></script>
+
+  {% if ff.is_top_role(current_role) %}
+  <script src="/static/js/etrade.js?v={{ asset_v }}"></script>
+  {% endif %}
+
+  <!-- Main Orchestrators (depend on all modules above) -->
+  <script src="/static/js/live.js?v={{ asset_v }}"></script>
+  <script src="/static/js/watchlist_editor.js?v={{ asset_v }}"></script>
+{% endblock %}

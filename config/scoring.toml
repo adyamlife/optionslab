@@ -1,0 +1,160 @@
+# config/scoring.toml
+# Adaptive scoring weights for the live suggestion engine.
+#
+# Rules for editing:
+#   - factor budgets are controlled by regime budget_mult — do NOT edit them here directly
+#   - sub_weights are RELATIVE numbers (don't need to sum to any fixed value — auto-normalized)
+#   - regime_overrides only specify what changes; unspecified sub-factors keep their default
+#   - to add a new sub-factor: add a line here AND wire it in scripts/analyze.py
+#   - changes take effect within 60 seconds (auto-reload, no server restart needed)
+
+# ── Factor budgets ─────────────────────────────────────────────────────────────
+# These are the base pots. Actual budget = base × regime budget_mult (below).
+
+[factors.technical]
+budget = 2.0        # price action, trend, momentum signals
+
+[factors.technical.sub_weights]
+ema200        = 22  # institutional trend filter — strong long-term signal
+weekly_trend  = 18  # higher-timeframe confirmation
+adx           = 13  # trend strength / choppiness
+rsi           = 13  # momentum oscillator
+macd          = 13  # trend + momentum crossover
+vol_skew      = 10  # IV skew alignment (put vs call IV at ±5% OTM)
+iv_premium    = 11  # IV vs HV20 premium/discount — selling edge indicator
+
+[factors.technical.regime_overrides.fear]
+# In fear: trend indicators more decisive, oscillators lag badly
+adx          = 28
+ema200       = 28
+rsi          = 7
+macd         = 7
+weekly_trend = 12
+vol_skew     = 10
+iv_premium   = 8    # IV is almost certainly elevated in fear — less discriminating
+
+[factors.technical.regime_overrides.chop]
+# In chop: no trend to ride — oscillators and IV edge matter more
+adx          = 5    # meaningless when market has no direction
+rsi          = 20
+macd         = 10
+ema200       = 16
+weekly_trend = 16
+vol_skew     = 20
+iv_premium   = 13
+
+# ──────────────────────────────────────────────────────────────────────────────
+
+[factors.market_ctx]
+budget = 1.0        # VIX regime, index futures, sector ETF, risk-on/off
+
+[factors.market_ctx.sub_weights]
+vix_regime   = 35   # absolute VIX level determines option premium environment
+futures_dir  = 30   # index futures consensus direction
+sector_etf   = 20   # sector-specific alignment
+risk_regime  = 15   # HYG/LQD credit-spread + TLT bond-rotation signal
+
+[factors.market_ctx.regime_overrides.fear]
+# In fear VIX IS the regime — it's the primary driver of everything
+vix_regime   = 50
+futures_dir  = 25
+sector_etf   = 10
+risk_regime  = 15   # HYG/TLT signal still important in fear transitions
+
+[factors.market_ctx.regime_overrides.chop]
+# In chop, sector rotation and risk appetite matter more than flat futures
+vix_regime   = 20
+futures_dir  = 25
+sector_etf   = 35
+risk_regime  = 20
+
+# ──────────────────────────────────────────────────────────────────────────────
+
+[factors.flow]
+budget = 0.5        # options flow, sentiment, volume signals
+
+[factors.flow.sub_weights]
+news           = 20  # news sentiment (noisy but directional)
+pcr            = 20  # put/call ratio — institutional hedging signal
+unusual_oi     = 18  # unusual options activity vs open interest
+rel_volume     = 12  # today's volume vs 20-day average
+short_interest = 15  # short float % (squeeze risk)
+analyst        = 15  # buy/hold/sell analyst consensus (last 3 months)
+
+[factors.flow.regime_overrides.fear]
+# In fear, options flow is the clearest real-time signal
+unusual_oi     = 32
+pcr            = 28
+news           = 8   # news is often reactive/already priced in
+rel_volume     = 12
+short_interest = 10
+analyst        = 10  # analyst consensus lags in fast-moving fear regimes
+
+[factors.flow.regime_overrides.chop]
+# In chop, positioning signals (OI, PCR) matter most
+unusual_oi     = 25
+pcr            = 25
+news           = 12
+rel_volume     = 8
+short_interest = 15
+analyst        = 15
+
+# ── Regime detection thresholds ───────────────────────────────────────────────
+
+[regime.fear]
+vix_above      = 25.0   # VIX above this
+futures_below  = -0.3   # AND avg futures change_pct below this %
+
+[regime.calm_trend]
+vix_below      = 18.0   # VIX below this
+adx_above      = 25.0   # AND ticker ADX above this (checked per-ticker)
+
+# "chop" = fallback when neither fear nor calm_trend conditions are met
+
+# ── Regime budget multipliers ─────────────────────────────────────────────────
+# Scale the factor budgets per regime.
+# final_budget = base_budget × mult
+# sub-weights stay as-is (budget change is separate from allocation)
+
+[regime.fear.budget_mult]
+technical    = 1.0    # technicals less reliable — correlations compress
+market_ctx   = 2.0    # macro dominates in fear
+flow         = 0.3    # noise goes up in fear
+
+[regime.calm_trend.budget_mult]
+technical    = 2.0    # price action highly reliable in a trending calm market
+market_ctx   = 0.8    # macro is steady background
+flow         = 0.5
+
+[regime.chop.budget_mult]
+technical    = 1.2    # some signal but less reliable
+market_ctx   = 1.0
+flow         = 1.0    # flow/sentiment matter most when price drifts
+
+# ── Rating thresholds (fraction of max possible score) ────────────────────────
+# e.g. strong_pct = 0.50 means score must be ≥50% of the theoretical max
+
+[rating]
+strong   =  0.50
+moderate =  0.20
+neutral  =  0.0
+weak     = -0.20
+# below weak → Conflicted
+
+# ── Hard gate thresholds (skip trade regardless of score) ─────────────────────
+
+[gates]
+earnings_blackout_days  = 7
+dividend_blackout_days  = 5    # skip if ex-div falls within trade window (future)
+min_open_interest       = 50
+bid_ask_max_pct         = 0.30  # skip leg if (ask-bid)/mid > 30% (future)
+
+# ── Penalty parameters (reduce score, don't block) ────────────────────────────
+
+[penalties]
+bid_ask_base           = 0.3   # per-leg penalty when spread is wide (future)
+gamma_base             = 0.5   # subtracted when gamma risk is high (future)
+near_expiry_dte        = 14    # DTE below this triggers gamma penalty
+strike_proximity_base  = 0.4   # subtracted when spot is already close to the short strike
+strike_danger_pct      = 2.0   # % distance to short strike below which the full penalty applies
+strike_caution_pct     = 5.0   # % distance below which a half penalty applies
