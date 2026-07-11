@@ -1,19 +1,87 @@
 # Central configuration for the options strategy lab.
 # Edit values here - watchlist.py and rules.py load from this file.
 
+# Primary watchlist — used for ML training, paper trades, morning scan, and UI.
+# Criteria: liquid options (OI > 500 on near-money strikes), tight bid-ask,
+# quarterly earnings events, and a meaningful options trading community.
+# Organised by GICS sector; top 2 additions per sector marked with (+).
 watchlist = [
-  # Existing tickers
-  "SPY", "TQQQ", "QQQ", "TSLA", "INTC", "AI", "SOFI", "CVNA", "TEAM",
-  "COST", "SOUN", "SAP", "APLD", "BTC", "ULTA", "PAY", "SPOT", "SPCX",
-  "APP", "ACHR", "SMR", "LMND", "SERV", "RXRX", "QUBT", "QBTS", "IONQ",
-  "ARQQ", "BMNR",
-  # Core 50 watchlist (ranked by long-term thesis)
-  "NVDA", "MSFT", "AMZN", "GOOGL", "META", "AVGO", "AMD", "TSM", "MU", "ARM",
-  "ANET", "PANW", "CRWD", "FTNT", "PLTR", "SNOW", "MDB", "ORCL", "CRM", "NOW",
-  "AAPL", "NFLX", "UBER", "SHOP", "MELI", "V", "MA", "BRK-B", "LLY", "NVO",
-  "ISRG", "ABBV", "BSX", "GE", "ETN", "PH", "TT", "CAT", "DE", "VRT",
-  "CEG", "VST", "NEE", "XOM", "COP", "KLAC", "ASML", "LRCX", "CDNS", "SNPS",
-  "NET"
+  # ── Indices / broad market ────────────────────────────────────────────────
+  "SPY", "QQQ",
+
+  # ── Information Technology ───────────────────────────────────────────────
+  # Mega-cap / semiconductors
+  "NVDA", "MSFT", "AAPL", "AVGO", "AMD", "TSM", "MU", "ARM", "INTC",
+  # Chips (new +)
+  "QCOM", "TXN",
+  # Semi cap equipment
+  "KLAC", "ASML", "LRCX", "CDNS", "SNPS",
+  # Software / cloud
+  "PLTR", "SNOW", "MDB", "ORCL", "CRM", "NOW", "NET", "TEAM", "SAP",
+  # Software (new +)
+  "ADBE", "INTU",
+
+  # ── Communication Services ───────────────────────────────────────────────
+  "GOOGL", "META", "NFLX", "SPOT",
+  # Comm services (new +)
+  "DIS", "TMUS",
+
+  # ── Consumer Discretionary ───────────────────────────────────────────────
+  "TSLA", "AMZN", "UBER", "SHOP", "MELI", "APP", "CVNA",
+  # Retail / consumer (new +)
+  "HD", "NKE", "ULTA",
+
+  # ── Consumer Staples ─────────────────────────────────────────────────────
+  "COST",
+  # Staples (new +)
+  "WMT", "PG",
+
+  # ── Health Care ──────────────────────────────────────────────────────────
+  "LLY", "NVO", "ISRG", "ABBV", "BSX",
+  # Healthcare (new +)
+  "UNH", "AMGN",
+
+  # ── Financials ───────────────────────────────────────────────────────────
+  "V", "MA", "BRK-B", "JPM", "GS",
+  # Financials (new +)
+  "MS", "BAC",
+
+  # ── Industrials ──────────────────────────────────────────────────────────
+  "GE", "ETN", "CAT", "DE", "VRT",
+  # Industrials (new +)
+  "HON", "RTX",
+
+  # ── Energy ───────────────────────────────────────────────────────────────
+  "XOM", "COP",
+  # Energy (new +)
+  "CVX", "OXY",
+
+  # ── Utilities ────────────────────────────────────────────────────────────
+  "NEE", "CEG", "VST",   # already well covered
+
+  # ── Materials ────────────────────────────────────────────────────────────
+  # Materials (new +)
+  "FCX", "NEM",
+
+  # ── Real Estate ──────────────────────────────────────────────────────────
+  # Real estate (new +)
+  "AMT", "EQIX",
+
+  # ── High-vol / fintech ───────────────────────────────────────────────────
+  "SOFI",
+]
+
+# Archive-only watchlist — OI snapshots, intraday bars, and earnings IV collected
+# but NOT used for ML training or paper trades.
+# Reason: thin options liquidity (wide bid-ask, low OI) would contaminate P&L labels
+# with fills that are far from mid-price. Still worth monitoring for IV catalyst patterns.
+watchlist_archive_only = [
+  # Speculative / thin OI
+  "SOUN", "AI", "APLD", "LMND", "SERV", "RXRX",
+  "QUBT", "QBTS", "IONQ", "ARQQ", "BMNR",
+  "ACHR", "SMR",
+  # Leveraged / derived instruments
+  "TQQQ", "BTC", "SPCX", "PAY",
 ]
 
 # Earnings dates are looked up live via yfinance (see
@@ -51,7 +119,7 @@ short_delta_hi = 0.20
 
 [liquidity]
 min_open_interest = 50       # min OI required on each leg's strike
-min_profit_amount = 0.20     # min max-profit per share (credit, or width-debit)
+min_profit_amount = 1.00     # min max-profit per share ($1.00/sh = $100/contract minimum)
 
 # Calendar / diagonal spread: gap (in days) between the front-month expiry
 # already chosen by min_dte/max_dte and the back-month (long) leg's expiry
@@ -67,17 +135,34 @@ put_delta_hi = 0.30
 
 # Paper trade managed-exit rules
 [management]
-profit_target_pct = 0.90  # close when spread mark reaches this % of entry credit (70% profit)
-stop_loss_mult    = 3.0    # close when spread mark reaches this multiple of entry credit (200% loss)
+profit_target_pct = 0.90  # close when spread mark reaches this % of entry credit (90% of max profit)
+stop_loss_mult    = 3.0   # close when spread mark reaches this multiple of entry credit (300% loss)
+early_close_pct   = 100   # also close immediately if unrealized P&L hits 100% of max profit before expiry
+market_close_hour = 16    # ET hour at which the market is considered closed (4pm)
+
+# ML confidence gate + Kelly sizing (paper trades + live suggestions)
+# These thresholds only apply when pred_dist is available (ML models trained).
+# When ML data is absent the gate is bypassed and classic EV ranking is used.
+[ml_gate]
+enabled          = true   # set false to disable the gate entirely (fall back to pure EV ranking)
+min_p_win        = 0.55   # minimum composite win probability (p_win from pred_dist)
+min_confidence   = 0.60   # minimum model-agreement confidence (0–1)
+kelly_fraction   = 0.5    # Half-Kelly by default (1.0 = full Kelly, unsafe for live)
+kelly_max_pct    = 0.05   # hard cap: Kelly fraction never exceeds this % of capital
+kelly_min_pct    = 0.01   # floor: always risk at least this % when gate passes
 
 # Risk limits (informational - these are checked and surfaced in the UI;
 # the system will warn when these thresholds are approached)
 [risk_limits]
-max_open_positions   = 5       # max simultaneous open trades across the portfolio
-max_daily_loss_pct   = 0.03    # 3% of capital - stop taking new trades if hit
-max_weekly_loss_pct  = 0.06    # 6% of capital
-max_position_pct     = 0.05    # single position max as % of capital (5%)
-max_sector_pct       = 0.20    # single sector max as % of capital (20%)
+max_open_positions       = 5     # max simultaneous open trades across the portfolio
+max_daily_loss_pct       = 0.03  # 3% of capital - stop taking new trades if hit
+max_weekly_loss_pct      = 0.06  # 6% of capital
+max_position_pct         = 0.05  # single position max as % of capital (5%)
+max_sector_pct           = 0.20  # single sector max as % of capital (20%)
+max_net_delta            = 0.15  # portfolio-level net delta limit
+max_position_capital_pct = 0.05  # single position max capital allocation
+max_portfolio_vega       = 0.50  # portfolio net vega cap (short-vega negative; exceeding triggers warning)
+breakeven_cushion_iv_scale = 0.25  # proximity danger/caution thresholds scale with atm_iv * this factor
 
 # Diagonal Spread: buy back-month option, sell front-month option at a different strike.
 # Bullish diagonal: BUY back-month lower-strike call, SELL front-month higher-strike call.
@@ -94,6 +179,28 @@ max_gap_days   = 45
 # Primary provider is tried first; if it fails or has no API key,
 # the fallback is used. Set either key to "" to disable that provider.
 # API keys go in config/secrets.toml (never commit that file).
+# Market constants
+[market]
+risk_free_rate = 0.043  # annualised risk-free rate (update periodically with 3-month T-bill)
+
+# Strike/width search grids for the best-EV optimizer (analyze.py).
+# Wider WIDTH_GRID entries suit high-priced underlyings (SPY, NVDA);
+# narrower entries suit low-priced tickers. Deltas are absolute magnitudes.
+[optimize_grid]
+credit_delta_grid      = [0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40]
+width_grid             = [1, 1.5, 2, 3, 5, 7, 10, 15, 20, 30]
+debit_long_delta_grid  = [0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65]
+debit_short_delta_grid = [0.10, 0.15, 0.20, 0.25, 0.30]
+
+# IV edge / vol-surface mispricing thresholds (vega points).
+# skip_vp: skip entering if surface edge is this many vp against us.
+# flag_vp: flag an open position if short strike drifts this many vp expensive/cheap.
+# bonus_scale: maps iv_edge_vp → signal-score adjustment (points per vp, capped).
+[iv_edge]
+skip_vp    = 2.5
+flag_vp    = 2.0
+bonus_scale = 0.15
+
 [ai]
 primary_provider  = "groq"
 primary_model     = "llama-3.3-70b-versatile"

@@ -27,7 +27,7 @@ from pathlib import Path
 import joblib
 import numpy as np
 import pandas as pd
-from sklearn.metrics import (accuracy_score, classification_report,
+from sklearn.metrics import (accuracy_score, brier_score_loss, classification_report,
                              confusion_matrix, roc_auc_score)
 from sklearn.preprocessing import LabelEncoder
 from xgboost import XGBClassifier
@@ -156,7 +156,7 @@ def train(path=_DATA_PATH, out_path=_MODEL_PATH) -> dict:
     cm = confusion_matrix(y_test, y_pred).tolist()
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    joblib.dump({
+    artifact = {
         "model":            model,
         "feature_encoders": encoders,
         "feature_cols":     FEATURE_COLS_ENCODED_ORDER(),
@@ -164,7 +164,23 @@ def train(path=_DATA_PATH, out_path=_MODEL_PATH) -> dict:
         "test_rows":        len(test_df),
         "split_cutoff":     str(cutoff),
         "train_expanding_pct": round(expanding_pct, 4),
-    }, out_path)
+    }
+    joblib.dump(artifact, out_path)
+
+    # ── Calibrate probabilities on the test fold ─────────────────────────────
+    brier_before = brier_after = None
+    try:
+        brier_before = float(brier_score_loss(y_test, model.predict_proba(X_test)[:, 1]))
+        from scripts.calibrate_models import IsotonicCalibrator
+        cal_model = IsotonicCalibrator(model).fit(X_test, y_test)
+        cal_model.fit(X_test, y_test)
+        brier_after = float(brier_score_loss(y_test, cal_model.predict_proba(X_test)[:, 1]))
+        joblib.dump({**artifact, "model": cal_model, "calibrated": True,
+                     "brier_before": round(brier_before, 4),
+                     "brier_after":  round(brier_after, 4)},
+                    out_path.with_name(out_path.stem + "_calibrated.joblib"))
+    except Exception:
+        pass
 
     return {
         "ok":                   True,
@@ -179,6 +195,8 @@ def train(path=_DATA_PATH, out_path=_MODEL_PATH) -> dict:
         "feature_importances":  dict(zip(FEATURE_COLS_ENCODED_ORDER(),
                                          model.feature_importances_.tolist())),
         "model_path":           str(out_path),
+        "brier_before": round(brier_before, 4) if brier_before is not None else None,
+        "brier_after":  round(brier_after, 4)  if brier_after  is not None else None,
     }
 
 

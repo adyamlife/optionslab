@@ -21,6 +21,10 @@ import json
 import logging
 from datetime import date, datetime, timedelta
 from pathlib import Path
+from config.rules import (
+    MARKET_CLOSE_HOUR, EARLY_CLOSE_PCT,
+    IV_EDGE_FLAG_VP,
+)
 try:
     from zoneinfo import ZoneInfo
 except ImportError:
@@ -34,22 +38,34 @@ DATA_DIR   = _ROOT / "data"
 TRADES_PATH = DATA_DIR / "paper_trades.json"
 
 
-def _load_settings():
+_SETTINGS_DEFAULTS = {
+    "profit_target_pct": 0.50,
+    "stop_loss_mult":    3.0,
+    "max_risk_pct":      0.12,
+}
+
+
+def _load_settings() -> dict:
     try:
-        import tomllib          # Python 3.11+
-    except ImportError:
-        import tomli as tomllib # pip install tomli  (Python < 3.11)
-    cfg = tomllib.loads((_ROOT / "config" / "settings.toml").read_text(encoding="utf-8"))
-    mgmt    = cfg.get("management", {})
-    capital = cfg.get("capital", {})
-    return {
-        "profit_target_pct": float(mgmt.get("profit_target_pct", 0.50)),
-        "stop_loss_mult":    float(mgmt.get("stop_loss_mult",    3.0)),
-        "max_risk_pct":      float(capital.get("max_risk_pct",   0.12)),
-    }
+        try:
+            import tomllib
+        except ImportError:
+            import tomli as tomllib
+        cfg  = tomllib.loads((_ROOT / "config" / "settings.toml").read_text(encoding="utf-8"))
+        mgmt    = cfg.get("management", {})
+        capital = cfg.get("capital", {})
+        return {
+            "profit_target_pct": float(mgmt.get("profit_target_pct", 0.50)),
+            "stop_loss_mult":    float(mgmt.get("stop_loss_mult",    3.0)),
+            "max_risk_pct":      float(capital.get("max_risk_pct",   0.12)),
+        }
+    except Exception:
+        return dict(_SETTINGS_DEFAULTS)
 
 
-_SETTINGS = _load_settings()
+# Read at module load for backwards-compat constants; callers that care about
+# live changes should call _load_settings() directly.
+_SETTINGS         = _load_settings()
 PROFIT_TARGET_PCT = _SETTINGS["profit_target_pct"]
 STOP_LOSS_MULT    = _SETTINGS["stop_loss_mult"]
 MAX_RISK_PCT      = _SETTINGS["max_risk_pct"]
@@ -338,67 +354,60 @@ def _expiry_pnl(trade, ul_price):
 
 # ── Select top-3 (mirrors app.py build_top_trades without AI) ────────────────
 
-_IV_EDGE_SKIP_THRESHOLD = 2.5   # skip if surface edge is > 2.5 vp against us
-_IV_EDGE_BONUS_SCALE    = 0.15  # max signal-score boost/penalty from IV edge (±points)
+def _select_top3(rows, ml_snapshot: dict | None = None):
+    """Return top-3 enterable candidates using the shared filter/rank pipeline.
 
-def _select_top3(rows):
-    candidates = []
-    for row in rows:
-        if (row.get("status") or "").startswith("SKIP"):
-            continue
-        for c in row.get("candidates", []):
-            if not c.get("recommended") or c.get("max_profit") is None:
-                continue
-            ev = c.get("ev")
-            if ev is None:
-                pop = c.get("pop")
-                if pop is None:
-                    continue
-                ev = pop / 100 * c["max_profit"]
-            meets_both = bool(c.get("meets_min_profit") and c.get("meets_max_loss"))
+    ml_snapshot: {ticker: pred_result} from predict_all or ml_cache. When
+    provided it is attached to each row as row["ml"] so the confidence gate
+    and Kelly sizing have access to pred_dist. When absent the ML gate is
+    bypassed (backward compatible).
+    """
+    from scripts.candidate_ranker import rank_candidates
+    from scripts.candidate_provider import kelly_from_pred_dist
 
-            iv_edge_vp    = c.get("iv_edge_vp")     # positive = edge in our favour
-            iv_edge_label = c.get("iv_edge_label", "fair")
+    # Attach ML snapshot to rows so filter_candidates can read pred_dist
+    if ml_snapshot:
+        for row in rows:
+            if "ml" not in row or row["ml"] is None:
+                row["ml"] = ml_snapshot.get(row.get("ticker"))
 
-            # Hard skip: surface edge is strongly against us (buying rich / selling cheap)
-            if iv_edge_vp is not None and iv_edge_label in ("overpay", "undersell"):
-                if abs(iv_edge_vp) > _IV_EDGE_SKIP_THRESHOLD:
-                    log.info(f"IV edge skip: {row['ticker']} {c['structure']} "
-                             f"iv_edge={iv_edge_vp:+.1f}vp ({iv_edge_label})")
-                    continue
+    items = rank_candidates(rows, n=3)
+    result = []
+    for item in items:
+        row, c = item["row"], item["candidate"]
 
-            # Soft score adjustment: edge in our favour lifts effective score, against lowers it
-            iv_score_adj = 0.0
-            if iv_edge_vp is not None:
-                iv_score_adj = min(max(iv_edge_vp, -5.0), 5.0) * _IV_EDGE_BONUS_SCALE
+        # Kelly sizing: use candidate POP as p_profit (MC not available here),
+        # scaled by pred_dist.confidence
+        pred_dist = item.get("pred_dist") or (row.get("ml") or {}).get("pred_dist")
+        pop_pct   = c.get("pop")
+        p_profit  = (pop_pct / 100.0) if pop_pct is not None else None
+        kelly = kelly_from_pred_dist(pred_dist, c.get("max_profit"), c.get("max_loss"),
+                                     p_profit=p_profit)
 
-            sig = row.get("signal_score", 0) or 0
-            effective_score = sig + iv_score_adj
-
-            candidates.append({
-                "ticker":           row["ticker"],
-                "structure":        c["structure"],
-                "expiry":           row.get("expiry"),
-                "dte":              row.get("dte"),
-                "max_profit":       c.get("max_profit"),
-                "max_loss":         c.get("max_loss"),
-                "ev":               round(ev, 4),
-                "meets_both":       meets_both,
-                "signal_score":     sig,
-                "signal_rating":    row.get("signal_rating", "Neutral"),
-                "spot_at_entry":    c.get("spot_at_entry") or row.get("spot"),
-                "short_strike":     c.get("short_strike"),
-                "long_strike":      c.get("long_strike"),
-                "put_short_strike": c.get("put_short_strike"),
-                "put_long_strike":  c.get("put_long_strike"),
-                "call_short_strike":c.get("call_short_strike"),
-                "call_long_strike": c.get("call_long_strike"),
-                "iv_edge_vp":       iv_edge_vp,
-                "iv_edge_label":    iv_edge_label,
-                "_eff_score":       effective_score,
-            })
-    candidates.sort(key=lambda c: (not c["meets_both"], -(c["_eff_score"] or 0), -c["ev"]))
-    return candidates[:3]
+        result.append({
+            "ticker":           row["ticker"],
+            "structure":        c["structure"],
+            "expiry":           row.get("expiry"),
+            "dte":              row.get("dte"),
+            "max_profit":       c.get("max_profit"),
+            "max_loss":         c.get("max_loss"),
+            "ev":               item["ev"],
+            "meets_both":       item["meets_both"],
+            "signal_score":     row.get("signal_score", 0) or 0,
+            "signal_rating":    row.get("signal_rating", "Neutral"),
+            "spot_at_entry":    c.get("spot_at_entry") or row.get("spot"),
+            "short_strike":     c.get("short_strike"),
+            "long_strike":      c.get("long_strike"),
+            "put_short_strike": c.get("put_short_strike"),
+            "put_long_strike":  c.get("put_long_strike"),
+            "call_short_strike":c.get("call_short_strike"),
+            "call_long_strike": c.get("call_long_strike"),
+            "iv_edge_vp":       item["iv_edge_vp"],
+            "iv_edge_label":    item["iv_edge_label"],
+            "pred_dist":        pred_dist,
+            "kelly":            kelly,
+        })
+    return result
 
 
 # ── Morning scan ──────────────────────────────────────────────────────────────
@@ -425,7 +434,23 @@ def run_morning_scan(params=None, force=False):
         except Exception as e:
             log.warning(f"analyze_ticker({ticker}) failed: {e}")
 
-    top3      = _select_top3(rows)
+    row_by_ticker = {r["ticker"]: r for r in rows}
+
+    # Fetch ML predictions so the confidence gate and Kelly sizing work.
+    # Uses ml_cache when warm (already populated by the scheduler); falls back
+    # to a fresh synchronous predict_all when cold (e.g. first boot).
+    _ml_snapshot: dict = {}
+    try:
+        from scripts.ml_cache import ml_cache as _mlc
+        _ml_snapshot = _mlc.get_all()
+        if not _ml_snapshot:
+            from scripts.regime_predictor import predict_all as _pa
+            _pr = _pa(list(row_by_ticker.keys()))
+            _ml_snapshot = {p["ticker"]: p for p in _pr.get("predictions", []) if p.get("ok")}
+    except Exception as _mle:
+        log.warning(f"ML snapshot unavailable — confidence gate bypassed: {_mle}")
+
+    top3 = _select_top3(rows, ml_snapshot=_ml_snapshot)
     trades    = load_trades()
     today_str = date.today().strftime("%Y%m%d")
     seen      = {t["id"] for t in trades}
@@ -442,6 +467,7 @@ def run_morning_scan(params=None, force=False):
 
         ec    = ep["credit_bid"]
         width = (c.get("max_profit") or 0) + (c.get("max_loss") or 0)
+        _s    = _load_settings()  # reload so runtime settings.toml changes take effect
 
         from config.structures import get_or_none as _gst
         from config.structures._base import StrikeSchema as _SS
@@ -485,17 +511,32 @@ def run_morning_scan(params=None, force=False):
             "spot_at_entry":c["spot_at_entry"],
             "signal_rating":c["signal_rating"],
             "signal_score": c["signal_score"],
-            "profit_target":round(ec * PROFIT_TARGET_PCT, 4),
-            "stop_loss":    round(ec * STOP_LOSS_MULT, 4),
+            "profit_target":round(ec * _s["profit_target_pct"], 4),
+            "stop_loss":    round(ec * _s["stop_loss_mult"], 4),
             "status":       "open",
             "snapshots":    [],
             "exit":         None,
             "iv_edge_vp":   c.get("iv_edge_vp"),
             "iv_edge_label":c.get("iv_edge_label"),
+            # Kelly sizing from calibrated ML pred_dist
+            "kelly_fraction":  (c.get("kelly") or {}).get("kelly_f"),
+            "kelly_pct":       (c.get("kelly") or {}).get("kelly_pct"),
+            "kelly_contracts": (c.get("kelly") or {}).get("kelly_contracts"),
+            "kelly_capital":   (c.get("kelly") or {}).get("kelly_capital"),
+            "ml_p_win":        (c.get("kelly") or {}).get("p_win"),
+            "ml_confidence":   (c.get("kelly") or {}).get("confidence"),
         }
         trades.append(trade)
         new.append(trade)
         log.info(f"Paper trade #{rank}: {tid}  credit={ec:.3f}  expiry={c['expiry']}")
+
+        # Write a training snapshot at entry so managed-exit outcomes feed POP model
+        try:
+            from scripts.training_data_collector import write_paper_trade_snapshot
+            analyze_row = row_by_ticker.get(c["ticker"], {})
+            write_paper_trade_snapshot(trade, analyze_row)
+        except Exception as _snap_err:
+            log.warning(f"Training snapshot write failed for {tid}: {_snap_err}")
 
     save_trades(trades)
     return {"ok": True, "date": today_str, "recorded": len(new), "trades": new}
@@ -534,7 +575,7 @@ def run_evening_check(force=False):
 
         ul_price = fetch_underlying_price(ticker)
 
-        market_closed_today = now.hour >= 16  # 4pm ET or later
+        market_closed_today = now.hour >= MARKET_CLOSE_HOUR
         if exp_date < today or (exp_date == today and market_closed_today):
             # ── Expired ──────────────────────────────────────────────────────
             if ul_price is None:
@@ -567,7 +608,7 @@ def run_evening_check(force=False):
             unrealized = round(mark - entry_cost, 4) if is_debit else round(ec - mark, 4)
             pnl_pct_of_max = round(unrealized / ec * 100, 1) if ec else None
 
-            if pnl_pct_of_max is not None and pnl_pct_of_max >= 100:
+            if pnl_pct_of_max is not None and pnl_pct_of_max >= EARLY_CLOSE_PCT:
                 # Max profit achieved before expiry — close now rather than risk
                 # giving back gains while waiting for settlement.
                 trade["status"] = "closed_target"
@@ -599,9 +640,9 @@ def run_evening_check(force=False):
                                     for sk in sl["strikes"]:
                                         if abs(sk["strike"] - float(short_s)) <= 1.0:
                                             vp = sk["mispricing"]
-                                            if vp > 2.0:
+                                            if vp > IV_EDGE_FLAG_VP:
                                                 iv_flag = f"short strike {short_s} now +{vp:.1f}vp expensive — consider closing"
-                                            elif vp < -2.0:
+                                            elif vp < -IV_EDGE_FLAG_VP:
                                                 iv_flag = f"short strike {short_s} now {vp:.1f}vp cheap — vol moved against position"
                                             break
                                     break

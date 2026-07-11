@@ -1202,6 +1202,59 @@ span.pt-live-loading {
   min-width: 90px;
 }
 
+/* Overall P&L banner — top of Day-wise Log */
+.pt-overall-banner {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  background: var(--clr-surface2, rgba(255,255,255,0.04));
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  margin-bottom: 1.4rem;
+  overflow: hidden;
+}
+.pt-ob-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.9rem 1.4rem;
+  flex: 1;
+}
+.pt-ob-sep {
+  width: 1px;
+  background: rgba(255,255,255,0.08);
+  flex-shrink: 0;
+}
+.pt-ob-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--clr-text-subtle, #888);
+}
+.pt-ob-value {
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+.pt-ob-sub {
+  font-size: 0.73rem;
+  margin-top: 0.1rem;
+}
+
+/* Running total inline in day header */
+.pt-day-pnl-group {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: auto;
+}
+.pt-day-pnl-label {
+  font-size: 0.72rem;
+}
+.pt-day-pnl-sep {
+  font-size: 0.72rem;
+}
+
 
 
 .signal-notes {

@@ -1,0 +1,98 @@
+2026-07-09 11:20:34 INFO     scripts.ml_cache: ml_cache refreshed: 79 tickers
+2026-07-09 11:26:51 INFO     scripts.ml_cache: ml_cache refreshed: 79 tickers
+2026-07-09 11:56:57 INFO     scripts.ml_cache: ml_cache refreshed: 79 tickers
+2026-07-09 12:27:07 INFO     scripts.ml_cache: ml_cache refreshed: 79 tickers
+2026-07-09 12:37:03 INFO     scripts.ml_cache: ml_cache refreshed: 79 tickers
+2026-07-10 10:00:43 WARNING  scripts.paper_trade_engine: analyze_ticker(ACHR) failed: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Project Y\\web\\..\\data\\oi_cache.json.tmp' -> 'C:\\Project Y\\web\\..\\data\\oi_cache.json'
+2026-07-10 10:01:14 INFO     scripts.ml_cache: ml_cache refreshed: 79 tickers
+2026-07-10 10:01:33 INFO     scripts.ml_cache: ml_cache refreshed: 79 tickers
+2026-07-10 10:01:54 WARNING  scripts.paper_trade_engine: analyze_ticker(UBER) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:54 WARNING  scripts.paper_trade_engine: analyze_ticker(SHOP) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:54 WARNING  scripts.paper_trade_engine: analyze_ticker(MELI) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:54 WARNING  scripts.paper_trade_engine: analyze_ticker(V) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:54 WARNING  scripts.paper_trade_engine: analyze_ticker(MELI) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:54 WARNING  scripts.paper_trade_engine: analyze_ticker(MA) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:54 WARNING  scripts.paper_trade_engine: analyze_ticker(V) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:54 WARNING  scripts.paper_trade_engine: analyze_ticker(BRK-B) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:54 WARNING  scripts.paper_trade_engine: analyze_ticker(MA) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:54 WARNING  scripts.paper_trade_engine: analyze_ticker(LLY) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:54 WARNING  scripts.paper_trade_engine: analyze_ticker(BRK-B) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:54 WARNING  scripts.paper_trade_engine: analyze_ticker(NVO) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55 WARNING  scripts.paper_trade_engine: analyze_ticker(ISRG) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55 WARNING  scripts.paper_trade_engine: analyze_ticker(NVO) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55 WARNING  scripts.paper_trade_engine: analyze_ticker(ABBV) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55 WARNING  scripts.paper_trade_engine: analyze_ticker(ISRG) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55 WARNING  scripts.paper_trade_engine: analyze_ticker(ABBV) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55 WARNING  scripts.paper_trade_engine: analyze_ticker(BSX) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55 WARNING  scripts.paper_trade_engine: analyze_ticker(BSX) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55 WARNING  scripts.paper_trade_engine: analyze_ticker(GE) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55 WARNING  scripts.paper_trade_engine: analyze_ticker(GE) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55 WARNING  scripts.paper_trade_engine: analyze_ticker(ETN) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55 WARNING  scripts.paper_trade_engine: analyze_ticker(ETN) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55 WARNING  scripts.paper_trade_engine: analyze_ticker(PH) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55 WARNING  scripts.paper_trade_engine: analyze_ticker(PH) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55 WARNING  scripts.paper_trade_engine: analyze_ticker(TT) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55 WARNING  scripts.paper_trade_engine: analyze_ticker(TT) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55 WARNING  scripts.paper_trade_engine: analyze_ticker(CAT) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55 WARNING  scripts.paper_trade_engine: analyze_ticker(CAT) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55 WARNING  scripts.paper_trade_engine: analyze_ticker(DE) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55 WARNING  scripts.paper_trade_engine: analyze_ticker(DE) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55 WARNING  scripts.paper_trade_engine: analyze_ticker(VRT) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55 WARNING  scripts.paper_trade_engine: analyze_ticker(VRT) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55 WARNING  scripts.paper_trade_engine: analyze_ticker(CEG) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55 WARNING  scripts.paper_trade_engine: analyze_ticker(CEG) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55 WARNING  scripts.paper_trade_engine: analyze_ticker(VST) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55 WARNING  scripts.paper_trade_engine: analyze_ticker(VST) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55 WARNING  scripts.paper_trade_engine: analyze_ticker(NEE) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55 WARNING  scripts.paper_trade_engine: analyze_ticker(NEE) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55 WARNING  scripts.paper_trade_engine: analyze_ticker(XOM) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55 WARNING  scripts.paper_trade_engine: analyze_ticker(XOM) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:56 WARNING  scripts.paper_trade_engine: analyze_ticker(COP) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:56 WARNING  scripts.paper_trade_engine: analyze_ticker(COP) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:56 WARNING  scripts.paper_trade_engine: analyze_ticker(KLAC) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:56 WARNING  scripts.paper_trade_engine: analyze_ticker(KLAC) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:56 WARNING  scripts.paper_trade_engine: analyze_ticker(ASML) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:56 WARNING  scripts.paper_trade_engine: analyze_ticker(ASML) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:56 WARNING  scripts.paper_trade_engine: analyze_ticker(LRCX) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:56 WARNING  scripts.paper_trade_engine: analyze_ticker(LRCX) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:56 WARNING  scripts.paper_trade_engine: analyze_ticker(CDNS) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:56 WARNING  scripts.paper_trade_engine: analyze_ticker(CDNS) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:56 WARNING  scripts.paper_trade_engine: analyze_ticker(SNPS) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:56 WARNING  scripts.paper_trade_engine: analyze_ticker(SNPS) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:56 WARNING  scripts.paper_trade_engine: analyze_ticker(NET) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:56 WARNING  scripts.paper_trade_engine: analyze_ticker(NET) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:56 WARNING  scripts.paper_trade_engine: option_chain(SPY, 2026-07-24) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:56 WARNING  scripts.paper_trade_engine: option_chain(SPY, 2026-07-24) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:56 INFO     scripts.paper_trade_engine: Paper trade #1: 20260710_SPY_CAL_1  credit=1.240  expiry=2026-07-24
+2026-07-10 10:01:56 WARNING  scripts.paper_trade_engine: option_chain(SPY, 2026-07-24) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:56 WARNING  scripts.paper_trade_engine: option_chain(SPY, 2026-07-24) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:56 INFO     scripts.paper_trade_engine: Paper trade #1: 20260710_SPY_CAL_1  credit=1.240  expiry=2026-07-24
+2026-07-10 10:01:57 WARNING  scripts.paper_trade_engine: Training snapshot write failed for 20260710_SPY_CAL_1: name 'log' is not defined
+2026-07-10 10:01:57 WARNING  scripts.paper_trade_engine: option_chain(AAPL, 2026-07-24) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:57 WARNING  scripts.paper_trade_engine: option_chain(AAPL, 2026-07-24) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:57 INFO     scripts.paper_trade_engine: Paper trade #2: 20260710_AAPL_CAL_2  credit=1.320  expiry=2026-07-24
+2026-07-10 10:01:57 WARNING  scripts.paper_trade_engine: Training snapshot write failed for 20260710_SPY_CAL_1: name 'log' is not defined
+2026-07-10 10:01:57 WARNING  scripts.paper_trade_engine: Training snapshot write failed for 20260710_AAPL_CAL_2: name 'log' is not defined
+2026-07-10 10:01:57 WARNING  scripts.paper_trade_engine: option_chain(AAPL, 2026-07-24) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:57 WARNING  scripts.paper_trade_engine: option_chain(SOFI, 2026-07-24) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:57 WARNING  scripts.paper_trade_engine: option_chain(AAPL, 2026-07-24) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:57 INFO     scripts.paper_trade_engine: Paper trade #2: 20260710_AAPL_CAL_2  credit=1.320  expiry=2026-07-24
+2026-07-10 10:01:57 WARNING  scripts.paper_trade_engine: option_chain(SOFI, 2026-07-24) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:57 INFO     scripts.paper_trade_engine: Paper trade #3: 20260710_SOFI_CAL_3  credit=1.510  expiry=2026-07-24
+2026-07-10 10:01:58 WARNING  scripts.paper_trade_engine: Training snapshot write failed for 20260710_AAPL_CAL_2: name 'log' is not defined
+2026-07-10 10:01:58 WARNING  scripts.paper_trade_engine: Training snapshot write failed for 20260710_SOFI_CAL_3: name 'log' is not defined
+2026-07-10 10:01:58 WARNING  scripts.paper_trade_engine: option_chain(SOFI, 2026-07-24) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:58 WARNING  scripts.paper_trade_engine: option_chain(SOFI, 2026-07-24) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:58 INFO     scripts.paper_trade_engine: Paper trade #3: 20260710_SOFI_CAL_3  credit=1.920  expiry=2026-07-24
+2026-07-10 10:01:58 WARNING  scripts.paper_trade_engine: Training snapshot write failed for 20260710_SOFI_CAL_3: name 'log' is not defined
+2026-07-10 10:14:23 INFO     scripts.ml_cache: ml_cache refreshed: 79 tickers
+2026-07-10 10:27:25 INFO     scripts.ml_cache: ml_cache refreshed: 79 tickers
+2026-07-10 10:27:28 INFO     scripts.ml_cache: ml_cache refreshed: 79 tickers
+2026-07-10 10:58:12 INFO     scripts.ml_cache: ml_cache refreshed: 79 tickers
+2026-07-10 10:58:24 INFO     scripts.ml_cache: ml_cache refreshed: 79 tickers
+2026-07-10 15:36:31 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers
+2026-07-10 15:36:31 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers
+2026-07-10 15:57:04 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers
+2026-07-10 16:10:09 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers
+2026-07-10 17:25:03 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers
+2026-07-10 17:31:49 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers

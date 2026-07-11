@@ -24,7 +24,7 @@ def set_force_yfinance(val: bool) -> None:
 _rfr_cache: float | None = None
 _rfr_cached_at: float = 0.0
 _RFR_TTL = 3600.0   # re-fetch at most once per hour
-_RFR_FALLBACK = 0.05
+from config.rules import RISK_FREE_RATE as _RFR_FALLBACK
 
 
 def get_risk_free_rate() -> float:
@@ -128,7 +128,7 @@ def _implied_vol(price, S, K, T, r, option_type):
         return None
 
 
-def _fill_bid_ask(df, spot, dte, option_type, r=0.05):
+def _fill_bid_ask(df, spot, dte, option_type, r=_RFR_FALLBACK):
     """Synthesise bid/ask and IV when missing.
 
     Two passes:

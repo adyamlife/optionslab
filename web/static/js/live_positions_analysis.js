@@ -72,14 +72,34 @@ function _buildMlSection(ml) {
   }
 
   if (ml.meta_score != null) {
-    const m = ml.meta_score;
+    const m   = ml.meta_score;
     const mCls = cls(m, 65, 35);
+    const pd  = ml.pred_dist;
+    const agr = pd ? pd.model_agreement : null;
+    const agrCls = agr === "High" ? "pass" : agr === "Low" ? "fail" : "warn";
+    const agrStr = agr ? ` <span class="${agrCls}" style="font-size:.75rem;font-weight:600">${agr} agr.</span>` : "";
+    const confStr = pd && pd.confidence != null ? ` Confidence ${(pd.confidence*100).toFixed(0)}%.` : "";
     const desc = m >= 65
       ? "Strong bullish consensus across all 5 ML models."
       : m <= 35
       ? "Strong bearish consensus across all 5 ML models — review long-delta exposure."
       : "Models disagree — no strong composite signal. Trade defensively.";
-    rows.push(["ML Meta", `${m.toFixed(0)}/100`, mCls, `Composite of all models (0–100). ${desc}`]);
+    rows.push(["ML Meta", `${m.toFixed(0)}/100${agrStr}`, mCls, `Composite of all models (0–100).${confStr} ${desc}`]);
+  }
+
+  if (ml.pred_dist) {
+    const pd = ml.pred_dist;
+    if (pd.p10_pnl != null && pd.p90_pnl != null) {
+      const p10Cls = pd.p10_pnl >= 0 ? "pass" : "fail";
+      const p90Cls = pd.p90_pnl >= 0 ? "pass" : "fail";
+      const evStr  = pd.ev_per_share != null ? ` EV ${pd.ev_per_share >= 0 ? "+" : ""}$${pd.ev_per_share.toFixed(2)}/sh.` : "";
+      const srcStr = pd.vol_source ? ` (${pd.vol_source})` : "";
+      rows.push(["MC P10/P90",
+        `<span class="pass">${pd.p10_pnl >= 0 ? "+" : ""}$${pd.p10_pnl.toFixed(2)}</span> – <span class="${p90Cls}">+$${pd.p90_pnl.toFixed(2)}</span>`,
+        "",
+        `Monte Carlo P&L range per share${srcStr}.${evStr} Tighter range = more predictable outcome.`
+      ]);
+    }
   }
 
   if (ml.anomaly_score != null) {

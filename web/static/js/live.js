@@ -255,15 +255,37 @@ function buildMlExplainBlock(ml, rowCls = "tc-ml-row", signalCls = "tc-ml-signal
   }
 
   if (ml.meta_score != null) {
-    const m = ml.meta_score;
+    const m    = ml.meta_score;
     const mCls = cls(m, 65, 35);
+    const pd   = ml.pred_dist;
+    const conf = pd ? pd.confidence : null;
+    const agr  = pd ? pd.model_agreement : null;
+    const agrCls = agr === "High" ? "pass" : agr === "Low" ? "fail" : "warn";
+    const agrBadge = agr ? ` <span class="${agrCls}" style="font-size:.75rem;font-weight:600">${agr} agreement</span>` : "";
     const mDesc = m >= 65
       ? `Strong bullish consensus across all ML models. High-conviction setup.`
       : m <= 35
       ? `Strong bearish consensus across all ML models. Avoid bullish structures.`
       : `Models disagree or show no strong signal. Rely on rulebook signals and be cautious with size.`;
-    rows.push([`<span class="${valCls} ${mCls}">${m.toFixed(0)}/100</span>`,
-      "ML Meta Score", `Stacked score from all 5 models (Regime, Return, Vol, POP, Anomaly). ${mDesc}`]);
+    const confStr = conf != null ? ` · Confidence ${(conf * 100).toFixed(0)}%` : "";
+    rows.push([`<span class="${valCls} ${mCls}">${m.toFixed(0)}/100</span>${agrBadge}`,
+      "ML Meta Score", `Stacked score from all 5 models (Regime, Return, Vol, POP, Anomaly).${confStr} ${mDesc}`]);
+  }
+
+  if (ml.pred_dist) {
+    const pd = ml.pred_dist;
+    if (pd.p10_pnl != null && pd.p90_pnl != null) {
+      const p10Cls = pd.p10_pnl >= 0 ? "pass" : "fail";
+      const p90Cls = pd.p90_pnl >= 0 ? "pass" : "fail";
+      const evStr  = pd.ev_per_share != null ? ` · EV ${pd.ev_per_share >= 0 ? "+" : ""}$${pd.ev_per_share.toFixed(2)}/sh` : "";
+      const srcStr = pd.vol_source ? ` (${pd.vol_source} engine)` : "";
+      rows.push([
+        `<span class="${valCls} ${p10Cls}">${pd.p10_pnl >= 0 ? "+" : ""}$${pd.p10_pnl.toFixed(2)}</span>` +
+        ` — <span class="${valCls} ${p90Cls}">+$${pd.p90_pnl.toFixed(2)}</span>`,
+        "MC P10/P90",
+        `Monte Carlo 10th–90th percentile P&L per share${srcStr}.${evStr} A tighter range signals more predictable outcome; a wide range means high tail uncertainty.`
+      ]);
+    }
   }
 
   if (ml.anomaly_score != null) {
@@ -350,8 +372,22 @@ function renderTopTrades(topTrades) {
       }
       if (ml.meta_score != null) {
         const metaCls = ml.meta_score >= 65 ? "pass" : ml.meta_score <= 35 ? "fail" : "";
-        chips.push(mkChip("ML Meta", `${ml.meta_score.toFixed(0)}/100`, metaCls,
-          `Meta-ensemble score (0–100): stacked output of all 5 ML models. ≥65 bullish, ≤35 bearish.`));
+        const pd  = ml.pred_dist;
+        const agr = pd ? pd.model_agreement : null;
+        const agrSuffix = agr ? ` · ${agr} agr.` : "";
+        const conf = pd && pd.confidence != null ? ` Confidence ${(pd.confidence*100).toFixed(0)}%.` : "";
+        chips.push(mkChip("ML Meta", `${ml.meta_score.toFixed(0)}/100${agrSuffix}`, metaCls,
+          `Meta-ensemble (0–100): all 5 ML models stacked.${conf} ≥65 bullish, ≤35 bearish.`));
+      }
+      // MC distribution chip: p10/p90 range from GARCH Monte Carlo
+      const pd = ml.pred_dist;
+      if (pd && pd.p10_pnl != null && pd.p90_pnl != null) {
+        const rangeStr = `$${pd.p10_pnl.toFixed(2)}–$${pd.p90_pnl.toFixed(2)}`;
+        const rangeCls = pd.p10_pnl >= 0 ? "pass" : pd.p90_pnl >= 0 ? "warn" : "fail";
+        const src = pd.vol_source ? ` (${pd.vol_source})` : "";
+        chips.push(mkChip("MC P10/P90", rangeStr, rangeCls,
+          `Monte Carlo P&L range per share${src}. P10=${pd.p10_pnl >= 0 ? "+" : ""}$${pd.p10_pnl.toFixed(2)}, P90=+$${pd.p90_pnl.toFixed(2)}.` +
+          (pd.ev_per_share != null ? ` EV ${pd.ev_per_share >= 0 ? "+" : ""}$${pd.ev_per_share.toFixed(2)}/sh.` : "")));
       }
       if (ml.anomaly_score != null) {
         const anom = ml.anomaly_score;
@@ -551,8 +587,12 @@ function buildTickerCard(row) {
       }
       if (ml.meta_score != null) {
         const metaCls = ml.meta_score >= 65 ? "pass" : ml.meta_score <= 35 ? "fail" : "";
-        chips.push(mkChip("ML Meta", `${ml.meta_score.toFixed(0)}/100`, metaCls,
-          `Meta-ensemble score (0–100): stacked output of all 5 ML models. ` +
+        const pd2 = ml.pred_dist;
+        const agr2 = pd2 ? pd2.model_agreement : null;
+        const agrSuffix2 = agr2 ? ` · ${agr2} agr.` : "";
+        const conf2 = pd2 && pd2.confidence != null ? ` Confidence ${(pd2.confidence*100).toFixed(0)}%.` : "";
+        chips.push(mkChip("ML Meta", `${ml.meta_score.toFixed(0)}/100${agrSuffix2}`, metaCls,
+          `Meta-ensemble score (0–100): stacked output of all 5 ML models.${conf2} ` +
           `≥65 = bullish lean, ≤35 = bearish lean, 35–65 = no strong consensus.`));
       }
       if (ml.anomaly_score != null) {

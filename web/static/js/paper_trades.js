@@ -768,25 +768,72 @@ function renderDayWiseLog(allTrades, marksMap) {
     byDate[day].push(t);
   }
 
-  // Render newest date first
-  const sortedDates = Object.keys(byDate).sort().reverse();
+  // ── Overall banner ────────────────────────────────────────────────────────
+  const allClosed  = allTrades.filter(t => t.status !== "open");
+  const allOpen    = allTrades.filter(t => t.status === "open");
+  const totalWins  = allClosed.filter(t => t.exit?.win).length;
+  const totalLosses= allClosed.length - totalWins;
+  const closedTotal= allClosed.reduce((s, t) => s + (t.exit?.pnl_total ?? 0), 0);
+  const liveTotal  = allOpen.reduce((s, t) => {
+    const u = marks[t.id]?.unrealized ?? t.latest_unrealized;
+    return s + (u != null ? parseFloat(u) * 100 : 0);
+  }, 0);
+  const overallPnl = closedTotal + liveTotal;
+  const oCls       = overallPnl >= 0 ? "pass" : "fail";
+  const winRate    = allClosed.length ? Math.round(totalWins / allClosed.length * 100) : null;
 
-  const html = sortedDates.map(day => {
-    const trades = byDate[day];
+  const overallBanner = `
+    <div class="pt-overall-banner">
+      <div class="pt-ob-item">
+        <span class="pt-ob-label">Overall P&amp;L</span>
+        <span class="pt-ob-value ${oCls}">${fmt$(overallPnl)}</span>
+        <span class="pt-ob-sub muted">closed ${fmt$(closedTotal)} · unrealized ${fmt$(liveTotal)}</span>
+      </div>
+      <div class="pt-ob-sep"></div>
+      <div class="pt-ob-item">
+        <span class="pt-ob-label">Closed Trades</span>
+        <span class="pt-ob-value na">${allClosed.length}</span>
+        <span class="pt-ob-sub muted">${totalWins}W / ${totalLosses}L${winRate != null ? " · " + winRate + "% win rate" : ""}</span>
+      </div>
+      <div class="pt-ob-sep"></div>
+      <div class="pt-ob-item">
+        <span class="pt-ob-label">Open Positions</span>
+        <span class="pt-ob-value na">${allOpen.length}</span>
+        <span class="pt-ob-sub muted">unrealized ${fmt$(liveTotal)}</span>
+      </div>
+    </div>`;
 
-    // Day stats — include live unrealized for open trades in totals
-    const closed   = trades.filter(t => t.status !== "open");
-    const openTs   = trades.filter(t => t.status === "open");
-    const wins     = closed.filter(t => t.exit?.win).length;
-    const closedPnl= closed.reduce((s, t) => s + (t.exit?.pnl_total ?? 0), 0);
-    const livePnl  = openTs.reduce((s, t) => {
+  // Render newest date first, with a running cumulative total
+  const sortedDates = Object.keys(byDate).sort(); // oldest first for cumulative calc
+  // Compute per-day P&L in chronological order for running total
+  const dayPnls = sortedDates.map(day => {
+    const trades  = byDate[day];
+    const closed  = trades.filter(t => t.status !== "open");
+    const openTs  = trades.filter(t => t.status === "open");
+    const cPnl    = closed.reduce((s, t) => s + (t.exit?.pnl_total ?? 0), 0);
+    const lPnl    = openTs.reduce((s, t) => {
       const u = marks[t.id]?.unrealized ?? t.latest_unrealized;
       return s + (u != null ? parseFloat(u) * 100 : 0);
     }, 0);
-    const totalPnl = closedPnl + livePnl;
-    const allOpen  = closed.length === 0;
-    const pnlCls   = totalPnl >= 0 ? "pass" : "fail";
-    const pnlStr   = fmt$(totalPnl);
+    return cPnl + lPnl;
+  });
+  // Build running totals (oldest→newest), then reverse to show newest first
+  const running = [];
+  let cum = 0;
+  for (const p of dayPnls) { cum += p; running.push(cum); }
+  // Zip and reverse
+  const daysWithRunning = sortedDates.map((d, i) => ({ day: d, dayPnl: dayPnls[i], running: running[i] }))
+                                     .reverse();
+
+  const html = daysWithRunning.map(({ day, dayPnl, running: runTotal }) => {
+    const trades = byDate[day];
+
+    const closed   = trades.filter(t => t.status !== "open");
+    const openTs   = trades.filter(t => t.status === "open");
+    const wins     = closed.filter(t => t.exit?.win).length;
+    const allClosed_day = closed.length === 0;
+    const pnlCls   = dayPnl >= 0 ? "pass" : "fail";
+    const runCls   = runTotal >= 0 ? "pass" : "fail";
 
     const dayHeader = `
       <div class="pt-day-header">
@@ -794,7 +841,13 @@ function renderDayWiseLog(allTrades, marksMap) {
         <span class="muted" style="font-size:0.8rem">${trades.length} trade${trades.length !== 1 ? "s" : ""}</span>
         ${closed.length ? `<span class="muted" style="font-size:0.8rem">${wins}W/${closed.length - wins}L</span>` : ""}
         ${openTs.length ? `<span class="pt-status-badge pt-status-na" style="font-size:0.7rem">${openTs.length} open</span>` : ""}
-        <span class="${pnlCls}" style="font-size:0.82rem;font-weight:600" title="${allOpen ? "Live unrealized (1 contract each)" : "Closed P&L + live unrealized"}">${pnlStr}</span>
+        <span class="pt-day-pnl-group">
+          <span class="pt-day-pnl-label muted">Day:</span>
+          <span class="${pnlCls}" style="font-size:0.82rem;font-weight:600" title="${allClosed_day ? "Live unrealized (1 contract each)" : "Closed P&L + live unrealized"}">${fmt$(dayPnl)}</span>
+          <span class="pt-day-pnl-sep muted">·</span>
+          <span class="pt-day-pnl-label muted">Running:</span>
+          <span class="${runCls}" style="font-size:0.82rem;font-weight:700">${fmt$(runTotal)}</span>
+        </span>
       </div>`;
 
     const rows = trades.map(t => {
@@ -845,7 +898,7 @@ function renderDayWiseLog(allTrades, marksMap) {
       </div>`;
   }).join("");
 
-  el.innerHTML = html;
+  el.innerHTML = overallBanner + html;
 }
 
 // ── Tab switching ─────────────────────────────────────────────────────────────

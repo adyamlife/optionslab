@@ -31,7 +31,7 @@ $EXCLUDE = @(
     "--exclude=.git",
     "--exclude=node_modules"
 )
-
+Remove-Item $BUNDLE
 Write-Host "==> Bundling project (excluding data/, venv/, .env) ..."
 $tarArgs = @("-czf", $BUNDLE) + $EXCLUDE + @("-C", "C:\Project Y", ".")
 & tar $tarArgs
@@ -52,7 +52,7 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-Remove-Item $BUNDLE
+
 Write-Host "==> Done. Bundle is at $DEST on the server."
 Write-Host ""
 Write-Host "Next steps:"

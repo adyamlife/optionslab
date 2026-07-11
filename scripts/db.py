@@ -98,6 +98,8 @@ def row_count() -> int:
 SNAPSHOTS_TABLE = "training_snapshots"
 CHAIN_TABLE     = "option_chain_snapshots"
 
+_snapshot_tables_ready = False  # guard: ensure DDL runs once per process
+
 _SNAPSHOTS_DDL = f"""
 CREATE TABLE IF NOT EXISTS {SNAPSHOTS_TABLE} (
     snapshot_id      VARCHAR PRIMARY KEY,
@@ -161,7 +163,13 @@ CREATE TABLE IF NOT EXISTS {SNAPSHOTS_TABLE} (
     news_headlines   JSON,
     labeled          BOOLEAN,
     outcome          JSON,
-    labeled_at       VARCHAR
+    labeled_at       VARCHAR,
+    source           VARCHAR,
+    paper_trade_id   VARCHAR,
+    ml_meta_score    DOUBLE,
+    ml_p_win         DOUBLE,
+    ml_confidence    DOUBLE,
+    garch_vol_at_entry DOUBLE
 )
 """
 
@@ -179,14 +187,160 @@ CREATE TABLE IF NOT EXISTS {CHAIN_TABLE} (
 )
 """
 
+# ── Tier 0 Data Flywheel tables ───────────────────────────────────────────────
+
+_INTRADAY_BARS_DDL = """
+CREATE TABLE IF NOT EXISTS intraday_bars (
+    ticker  VARCHAR NOT NULL,
+    date    VARCHAR NOT NULL,
+    time    VARCHAR NOT NULL,
+    open    DOUBLE,
+    high    DOUBLE,
+    low     DOUBLE,
+    close   DOUBLE,
+    volume  BIGINT,
+    vwap    DOUBLE,
+    PRIMARY KEY (ticker, date, time)
+)
+"""
+
+_VIX_TERM_DDL = """
+CREATE TABLE IF NOT EXISTS vix_term_structure (
+    date           VARCHAR PRIMARY KEY,
+    vix            DOUBLE,
+    vix_3m         DOUBLE,
+    vix_6m         DOUBLE,
+    contango_ratio DOUBLE,
+    term_slope     DOUBLE
+)
+"""
+
+_OI_CHANGES_DDL = """
+CREATE TABLE IF NOT EXISTS oi_changes (
+    ticker       VARCHAR NOT NULL,
+    date         VARCHAR NOT NULL,
+    time_of_day  VARCHAR NOT NULL,
+    collected_at VARCHAR,
+    expiry       VARCHAR,
+    strike       DOUBLE,
+    option_type  VARCHAR,
+    oi           BIGINT,
+    iv           DOUBLE,
+    gamma        DOUBLE,
+    volume       BIGINT
+)
+"""
+
+_EARNINGS_IV_DDL = """
+CREATE TABLE IF NOT EXISTS earnings_iv_tracker (
+    ticker           VARCHAR NOT NULL,
+    earnings_date    VARCHAR NOT NULL,
+    snapshot_date    VARCHAR NOT NULL,
+    days_to_earnings INTEGER,
+    atm_iv           DOUBLE,
+    front_iv         DOUBLE,
+    back_iv          DOUBLE,
+    iv_rank          DOUBLE,
+    post_crush_pct   DOUBLE,
+    PRIMARY KEY (ticker, earnings_date, snapshot_date)
+)
+"""
+
+
+def ensure_archive_tables() -> None:
+    """Create the four Tier 0 flywheel tables if they don't exist yet."""
+    with connect() as con:
+        for ddl in (_INTRADAY_BARS_DDL, _VIX_TERM_DDL, _OI_CHANGES_DDL, _EARNINGS_IV_DDL):
+            con.execute(ddl)
+        con.execute("CREATE INDEX IF NOT EXISTS idx_intraday_ticker ON intraday_bars (ticker, date)")
+        con.execute("CREATE INDEX IF NOT EXISTS idx_oi_ticker ON oi_changes (ticker, date, expiry)")
+        con.execute("CREATE INDEX IF NOT EXISTS idx_earnings_ticker ON earnings_iv_tracker (ticker)")
+        con.commit()
+
+
+def _insert_intraday_bars(rows: list[dict]) -> None:
+    if not rows:
+        return
+    with connect() as con:
+        for r in rows:
+            con.execute(
+                "INSERT OR REPLACE INTO intraday_bars "
+                "(ticker, date, time, open, high, low, close, volume, vwap) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                [r["ticker"], r["date"], r["time"],
+                 r["open"], r["high"], r["low"], r["close"],
+                 r["volume"], r.get("vwap")],
+            )
+        con.commit()
+
+
+def _insert_vix_term_structure(record: dict) -> None:
+    with connect() as con:
+        con.execute(
+            "INSERT OR REPLACE INTO vix_term_structure "
+            "(date, vix, vix_3m, vix_6m, contango_ratio, term_slope) "
+            "VALUES (?, ?, ?, ?, ?, ?)",
+            [record["date"], record.get("vix"), record.get("vix_3m"),
+             record.get("vix_6m"), record.get("contango_ratio"), record.get("term_slope")],
+        )
+        con.commit()
+
+
+def _insert_oi_snapshot(rows: list[dict]) -> None:
+    if not rows:
+        return
+    with connect() as con:
+        for r in rows:
+            con.execute(
+                "INSERT INTO oi_changes "
+                "(ticker, date, time_of_day, collected_at, expiry, strike, option_type, oi, iv, gamma, volume) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                [r["ticker"], r["date"], r["time_of_day"], r["collected_at"],
+                 r["expiry"], r["strike"], r["option_type"],
+                 r["oi"], r.get("iv"), r.get("gamma"), r.get("volume", 0)],
+            )
+        con.commit()
+
+
+def _insert_earnings_iv(record: dict) -> None:
+    with connect() as con:
+        con.execute(
+            "INSERT OR REPLACE INTO earnings_iv_tracker "
+            "(ticker, earnings_date, snapshot_date, days_to_earnings, "
+            " atm_iv, front_iv, back_iv, iv_rank, post_crush_pct) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            [record["ticker"], record["earnings_date"], record["snapshot_date"],
+             record.get("days_to_earnings"), record.get("atm_iv"),
+             record.get("front_iv"), record.get("back_iv"),
+             record.get("iv_rank"), record.get("post_crush_pct")],
+        )
+        con.commit()
+
 
 def ensure_snapshot_tables() -> None:
+    global _snapshot_tables_ready
+    if _snapshot_tables_ready:
+        return
     with connect() as con:
         con.execute(_SNAPSHOTS_DDL)
         con.execute(_CHAIN_DDL)
         con.execute(f"CREATE INDEX IF NOT EXISTS idx_snap_ticker ON {SNAPSHOTS_TABLE} (ticker)")
         con.execute(f"CREATE INDEX IF NOT EXISTS idx_chain_ticker ON {CHAIN_TABLE} (ticker, collected_at)")
+        # Migrate existing tables that pre-date these columns
+        for col, typ in [
+            ("source",             "VARCHAR"),
+            ("paper_trade_id",     "VARCHAR"),
+            ("ml_meta_score",      "DOUBLE"),
+            ("ml_p_win",           "DOUBLE"),
+            ("ml_confidence",      "DOUBLE"),
+            ("garch_vol_at_entry", "DOUBLE"),
+        ]:
+            try:
+                con.execute(f"ALTER TABLE {SNAPSHOTS_TABLE} ADD COLUMN {col} {typ}")
+            except Exception:
+                pass  # column already exists
         con.commit()
+    _snapshot_tables_ready = True
 
 
 def insert_snapshot(record: dict) -> None:

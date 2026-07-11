@@ -115,3 +115,95 @@
 2026-07-07 10:05:50,886 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
 2026-07-07 10:19:13,627 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: BTC"}}}
 2026-07-07 10:19:14,633 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: BTC"}}}
+2026-07-09 10:00:05,252 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-09 10:00:05,549 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-09 10:00:08,638 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-09 10:00:09,049 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-09 10:00:11,519 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-09 10:00:11,945 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-09 10:00:36,548 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: BTC"}}}
+2026-07-09 10:00:36,870 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: BTC"}}}
+2026-07-09 10:01:21,373 WARNING analyze_ticker(TSM) failed: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Project Y\\data\\oi_cache.json.tmp' -> 'C:\\Project Y\\data\\oi_cache.json'
+2026-07-09 10:02:29,126 WARNING analyze_ticker(CAT) failed: 'NoneType' object has no attribute 'copy'
+2026-07-09 10:02:58,729 INFO IV edge skip: SPOT Call Debit Spread iv_edge=-7.1vp (overpay)
+2026-07-09 10:02:58,730 INFO IV edge skip: SMR Put Debit Spread iv_edge=+13.3vp (undersell)
+2026-07-09 10:02:58,730 INFO IV edge skip: QBTS Put Debit Spread iv_edge=+15.0vp (undersell)
+2026-07-09 10:02:58,731 INFO IV edge skip: CRWD Call Debit Spread iv_edge=+4.5vp (overpay)
+2026-07-09 10:02:58,731 INFO IV edge skip: MA Call Debit Spread iv_edge=-21.6vp (undersell)
+2026-07-09 10:02:58,732 INFO IV edge skip: NET Call Debit Spread iv_edge=-6.9vp (undersell)
+2026-07-10 10:00:06,572 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-10 10:00:07,081 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-10 10:00:09,922 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-10 10:00:10,312 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-10 10:00:12,259 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-10 10:00:12,643 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-10 10:00:42,878 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: BTC"}}}
+2026-07-10 10:00:43,330 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: BTC"}}}
+2026-07-10 10:01:00,147 WARNING analyze_ticker(LMND) failed: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Project Y\\data\\oi_cache.json.tmp' -> 'C:\\Project Y\\data\\oi_cache.json'
+2026-07-10 10:01:54,804 WARNING analyze_ticker(CRM) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:54,849 WARNING analyze_ticker(NOW) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:54,902 WARNING analyze_ticker(AAPL) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:54,961 WARNING analyze_ticker(NFLX) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55,005 WARNING analyze_ticker(UBER) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55,047 WARNING analyze_ticker(SHOP) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55,090 WARNING analyze_ticker(MELI) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55,143 WARNING analyze_ticker(V) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55,186 WARNING analyze_ticker(MA) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55,234 WARNING analyze_ticker(BRK-B) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55,283 WARNING analyze_ticker(LLY) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55,328 WARNING analyze_ticker(NVO) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55,378 WARNING analyze_ticker(ISRG) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55,432 WARNING analyze_ticker(ABBV) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55,482 WARNING analyze_ticker(BSX) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55,528 WARNING analyze_ticker(GE) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55,578 WARNING analyze_ticker(ETN) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55,624 WARNING analyze_ticker(PH) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55,665 WARNING analyze_ticker(TT) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55,711 WARNING analyze_ticker(CAT) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55,753 WARNING analyze_ticker(DE) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55,799 WARNING analyze_ticker(VRT) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55,843 WARNING analyze_ticker(CEG) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55,887 WARNING analyze_ticker(VST) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55,930 WARNING analyze_ticker(NEE) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:55,985 WARNING analyze_ticker(XOM) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:56,027 WARNING analyze_ticker(COP) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:56,073 WARNING analyze_ticker(KLAC) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:56,116 WARNING analyze_ticker(ASML) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:56,157 WARNING analyze_ticker(LRCX) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:56,209 WARNING analyze_ticker(CDNS) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:56,278 WARNING analyze_ticker(SNPS) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:56,331 WARNING analyze_ticker(NET) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:56,687 INFO Skip SPY Diagonal Spread — required strikes incomplete (no back-month chain?)
+2026-07-10 10:01:56,689 INFO Skip AI Put Debit Spread — max_profit $0.44 < $1.00 min ($44/contract)
+2026-07-10 10:01:56,691 INFO Skip SOFI Diagonal Spread — max_profit $0.24 < $1.00 min ($24/contract)
+2026-07-10 10:01:56,696 INFO Skip SOUN Put Debit Spread — max_profit $0.88 < $1.00 min ($88/contract)
+2026-07-10 10:01:56,696 INFO Skip SOUN Diagonal Spread — max_profit $0.24 < $1.00 min ($24/contract)
+2026-07-10 10:01:56,696 INFO Skip APLD Call Credit Spread — max_profit $0.12 < $1.00 min ($12/contract)
+2026-07-10 10:01:56,696 INFO Skip APLD Diagonal Spread — required strikes incomplete (no back-month chain?)
+2026-07-10 10:01:56,696 INFO Skip SERV Put Debit Spread — max_profit $0.58 < $1.00 min ($58/contract)
+2026-07-10 10:01:56,696 INFO Skip SERV Diagonal Spread — max_profit $0.05 < $1.00 min ($5/contract)
+2026-07-10 10:01:56,696 INFO Skip QBTS Put Debit Spread — IV edge -7.7vp (overpay)
+2026-07-10 10:01:56,706 INFO Skip QBTS Diagonal Spread — max_profit $0.42 < $1.00 min ($42/contract)
+2026-07-10 10:01:56,706 INFO Skip IONQ Put Debit Spread — max_profit $0.94 < $1.00 min ($94/contract)
+2026-07-10 10:01:56,708 INFO Skip IONQ Diagonal Spread — required strikes incomplete (no back-month chain?)
+2026-07-10 10:01:56,708 INFO Skip GOOGL Iron Condor — max_profit $0.27 < $1.00 min ($27/contract)
+2026-07-10 10:01:56,708 INFO Skip AMD Diagonal Spread — required strikes incomplete (no back-month chain?)
+2026-07-10 10:01:56,708 INFO Skip ANET Call Debit Spread — IV edge +16.5vp (undersell)
+2026-07-10 10:01:56,708 INFO Skip ANET Diagonal Spread — max_profit $0.93 < $1.00 min ($93/contract)
+2026-07-10 10:01:56,716 INFO Skip PANW Diagonal Spread — required strikes incomplete (no back-month chain?)
+2026-07-10 10:01:56,718 INFO Skip CRWD Diagonal Spread — required strikes incomplete (no back-month chain?)
+2026-07-10 10:01:56,718 INFO Skip SNOW Diagonal Spread — required strikes incomplete (no back-month chain?)
+2026-07-10 10:01:56,718 INFO Skip MDB Call Debit Spread — IV edge -15.9vp (undersell)
+2026-07-10 10:01:56,726 INFO Skip ORCL Diagonal Spread — required strikes incomplete (no back-month chain?)
+2026-07-10 10:01:56,790 WARNING option_chain(SPY, 2026-07-24) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:56,858 WARNING option_chain(SPY, 2026-07-24) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:56,864 INFO Paper trade #1: 20260710_SPY_CAL_1  credit=1.240  expiry=2026-07-24
+2026-07-10 10:01:58,154 WARNING Training snapshot write failed for 20260710_SPY_CAL_1: name 'log' is not defined
+2026-07-10 10:01:58,206 WARNING option_chain(SOFI, 2026-07-24) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:58,273 WARNING option_chain(SOFI, 2026-07-24) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:58,274 INFO Paper trade #2: 20260710_SOFI_CAL_2  credit=1.920  expiry=2026-07-24
+2026-07-10 10:01:58,367 WARNING Training snapshot write failed for 20260710_SOFI_CAL_2: name 'log' is not defined
+2026-07-10 10:01:58,425 WARNING option_chain(CRWD, 2026-07-24) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:58,478 WARNING option_chain(CRWD, 2026-07-24) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-10 10:01:58,479 INFO Paper trade #3: 20260710_CRWD_CAL_3  credit=19.250  expiry=2026-07-24
+2026-07-10 10:01:58,548 WARNING Training snapshot write failed for 20260710_CRWD_CAL_3: name 'log' is not defined
