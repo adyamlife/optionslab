@@ -48,9 +48,10 @@ sudo systemctl status optionlab    # check running
 sudo systemctl restart optionlab   # after updates
 sudo journalctl -u optionlab -f    # live logs
 Update after code changes
+
 scp -r "C:/Project Y/web" "C:/Project Y/scripts" "C:/Project Y/config" user@YOUR_SERVER_IP:/opt/optionlab/
 sudo systemctl restart optionlab
-
+sudo systemctl restart optionlab
 
 --------------------------
 
@@ -73,3 +74,16 @@ python -m scripts.train_volatility_model
 python -m scripts.train_direction_model
 python -m scripts.train_iv_direction_model
 python -m scripts.train_meta_ensemble
+-----
+
+cd /opt/optionlab
+source venv/bin/activate
+
+# Retrain all models (also triggers calibration inline)
+python3 -m scripts.train_regime_classifier
+python3 -m scripts.train_direction_model
+python3 -m scripts.train_iv_direction_model
+python3 -m scripts.train_return_model
+python3 -m scripts.train_volatility_model
+python3 -m scripts.train_meta_ensemble
+python3 -m scripts.calibrate_models

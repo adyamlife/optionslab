@@ -40,7 +40,7 @@ from pathlib import Path
 import joblib
 import numpy as np
 import pandas as pd
-from sklearn.metrics import accuracy_score, classification_report, roc_auc_score
+from sklearn.metrics import accuracy_score, brier_score_loss, classification_report, roc_auc_score
 from xgboost import XGBClassifier
 
 _ROOT = Path(__file__).resolve().parent.parent
@@ -59,19 +59,25 @@ META_FEATURES = [
 
 
 _BASE_MODEL_PATHS = {
-    "regime":       _MODELS_DIR / "regime_classifier.joblib",
-    "return":       _MODELS_DIR / "return_regressor.joblib",
-    "vol":          _MODELS_DIR / "volatility_regressor.joblib",
-    "direction":    _MODELS_DIR / "direction_classifier.joblib",
-    "iv_direction": _MODELS_DIR / "iv_direction_classifier.joblib",
+    "regime":          _MODELS_DIR / "regime_classifier.joblib",
+    "regime_catboost": _MODELS_DIR / "regime_catboost.joblib",       # optional
+    "return":          _MODELS_DIR / "return_regressor.joblib",
+    "vol":             _MODELS_DIR / "volatility_regressor.joblib",
+    "direction":       _MODELS_DIR / "direction_classifier.joblib",
+    "iv_direction":    _MODELS_DIR / "iv_direction_classifier.joblib",
 }
 
 
+_OPTIONAL_BASE_MODELS = {"regime_catboost"}
+
 def _load_base_models() -> dict:
-    """Load all trained base models. Returns dict of {name: artifact}."""
+    """Load all trained base models. Returns dict of {name: artifact}.
+    Optional models (regime_catboost) are loaded if present but not required."""
     models = {}
     for name, path in _BASE_MODEL_PATHS.items():
         if not path.exists():
+            if name in _OPTIONAL_BASE_MODELS:
+                continue
             raise FileNotFoundError(
                 f"Base model '{name}' not trained yet ({path}). "
                 f"Train all 5 base models before running the meta-ensemble."
@@ -125,11 +131,22 @@ def build_meta_dataset(df: pd.DataFrame, models: dict) -> tuple[pd.DataFrame, pd
     """
     results: dict[str, np.ndarray] = {}
 
-    # Regime classifier — 3 probability columns
+    # Regime classifier — 3 probability columns (averaged with CatBoost if available)
     art = models["regime"]
     X = _build_X_batch(df, art)
-    proba = art["model"].predict_proba(X)
+    proba = art["model"].predict_proba(X).astype(float)
     classes = art["label_encoder"].classes_
+
+    cb_regime = models.get("regime_catboost")
+    if cb_regime is not None:
+        try:
+            from scripts.train_regime_classifier import build_catboost_matrix as _rcb_feat
+            X_rcb  = _rcb_feat(df)
+            cb_proba = cb_regime["model"].predict_proba(X_rcb).astype(float)
+            proba = (proba + cb_proba) / 2.0
+        except Exception:
+            pass
+
     for i, cls in enumerate(classes):
         results[f"p_{cls.lower().replace('-','').replace(' ','')}"] = proba[:, i]
     # Normalise keys to fixed names regardless of class order
@@ -137,10 +154,29 @@ def build_meta_dataset(df: pd.DataFrame, models: dict) -> tuple[pd.DataFrame, pd
     results["p_downtrend"]  = proba[:, list(classes).index("Downtrend")]
     results["p_rangebound"] = proba[:, list(classes).index("Range-bound")]
 
-    # Return regressor
-    art = models["return"]
-    X = _build_X_batch(df, art)
-    results["expected_return"] = art["model"].predict(X).astype(float)
+    # Return regressor — config-gated (same threshold as regime_predictor)
+    art = models.get("return")
+    _use_return = False
+    if art is not None:
+        try:
+            from scripts.regime_predictor import _load_ml_config as _ml_cfg_fn
+            _ml_cfg = _ml_cfg_fn()
+            stored_r2 = art.get("r2", -999.0)
+            _use_return = _ml_cfg["return_regressor_enabled"] or stored_r2 >= _ml_cfg["return_regressor_r2_threshold"]
+        except Exception:
+            pass
+    if _use_return:
+        # v2 return artifact uses dummy_cols (one-hot) — build matrix via train_return_model
+        if "dummy_cols" in art:
+            from scripts.train_return_model import build_feature_matrix as _ret_feat, compute_lag_features
+            df_lag = compute_lag_features(df.copy())
+            X_ret, _ = _ret_feat(df_lag, dummy_cols=art["dummy_cols"], fit=False)
+            results["expected_return"] = art["model"].predict(X_ret).astype(float)
+        else:
+            X = _build_X_batch(df, art)
+            results["expected_return"] = art["model"].predict(X).astype(float)
+    else:
+        results["expected_return"] = np.zeros(len(df))
 
     # Volatility regressor
     art = models["vol"]
@@ -217,13 +253,29 @@ def train(data_path=None, out_path=_MODEL_PATH) -> dict:
     baseline_regime_acc = float(accuracy_score(y_test, (X_test["p_uptrend"] >= 0.5).astype(int)))
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    joblib.dump({
+    artifact = {
         "model":          model,
         "meta_features":  META_FEATURES,
         "meta_cutoff":    str(_META_CUTOFF),
         "train_rows":     len(X_train),
         "test_rows":      len(X_test),
-    }, out_path)
+    }
+    joblib.dump(artifact, out_path)
+
+    # ── Calibrate probabilities on the test fold ─────────────────────────────
+    brier_before = brier_after = None
+    try:
+        brier_before = float(brier_score_loss(y_test, model.predict_proba(X_test)[:, 1]))
+        from scripts.calibrate_models import IsotonicCalibrator
+        cal_model = IsotonicCalibrator(model).fit(X_test, y_test)
+        cal_model.fit(X_test, y_test)
+        brier_after = float(brier_score_loss(y_test, cal_model.predict_proba(X_test)[:, 1]))
+        joblib.dump({**artifact, "model": cal_model, "calibrated": True,
+                     "brier_before": round(brier_before, 4),
+                     "brier_after":  round(brier_after, 4)},
+                    out_path.with_name(out_path.stem + "_calibrated.joblib"))
+    except Exception:
+        pass
 
     return {
         "ok":                True,
@@ -239,6 +291,8 @@ def train(data_path=None, out_path=_MODEL_PATH) -> dict:
         "feature_importances": dict(zip(META_FEATURES, model.feature_importances_.tolist())),
         "classification_report": report,
         "model_path":        str(out_path),
+        "brier_before": round(brier_before, 4) if brier_before is not None else None,
+        "brier_after":  round(brier_after, 4)  if brier_after  is not None else None,
     }
 
 

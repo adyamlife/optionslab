@@ -125,10 +125,15 @@ def train(path=_DATA_PATH, out_path=_MODEL_PATH) -> dict:
     y_train = train_df[TARGET_COL].values
     y_test = test_df[TARGET_COL].values
 
-    model = XGBRegressor(
-        n_estimators=200, max_depth=4, learning_rate=0.05,
-        subsample=0.8, colsample_bytree=0.8, objective="reg:squarederror",
-    )
+    try:
+        from scripts.tune_hyperparams import load_best_params as _lbp
+        _tuned = _lbp("volatility") or {}
+    except Exception:
+        _tuned = {}
+    _xgb_params = {"n_estimators": 200, "max_depth": 4, "learning_rate": 0.05,
+                   "subsample": 0.8, "colsample_bytree": 0.8}
+    _xgb_params.update(_tuned)
+    model = XGBRegressor(**_xgb_params, objective="reg:squarederror")
     model.fit(X_train, y_train)
 
     y_pred = model.predict(X_test)

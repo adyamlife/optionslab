@@ -209,6 +209,7 @@ function renderPredictions(el, result) {
       <th>Exp. Return</th><th>Exp. Vol</th><th title="1-sigma expected move over 10 trading days">Exp. Move (10d)</th>
       <th title="Will IV rank expand or contract over 10 days?">IV Direction</th>
       <th title="Meta-ensemble: stacked score from all 5 models (0=bearish, 100=bullish)">Meta Score</th>
+      <th title="Model agreement: how consistently all signals point the same direction">Agreement</th>
       <th title="Anomaly detector: 100=normal, 0=extreme outlier vs training history">Anomaly</th>
       <th>P(Up)</th><th>RSI</th><th>Trend</th><th>SPY Trend</th>
     </tr></thead><tbody>`;
@@ -239,6 +240,14 @@ function renderPredictions(el, result) {
       <td><strong>${escHtml(em)}</strong></td>
       <td ${ivDirCls}>${escHtml(ivDir)}${escHtml(ivProb)}</td>
       <td>${p.meta_score != null ? `<strong>${p.meta_score.toFixed(0)}</strong>/100` : "—"}</td>
+      <td>${(() => {
+        const pd = p.pred_dist;
+        if (!pd) return "—";
+        const agr = pd.model_agreement;
+        const col = agr === "High" ? "var(--pass)" : agr === "Low" ? "var(--fail)" : "var(--warn)";
+        const conf = pd.confidence != null ? ` ${(pd.confidence*100).toFixed(0)}%` : "";
+        return `<span style="color:${col};font-weight:600">${agr||"—"}${conf}</span>`;
+      })()}</td>
       <td>${p.anomaly_score != null
         ? `${p.anomaly_score.toFixed(0)}${p.is_anomaly ? " ⚠" : ""}`
         : "—"}</td>

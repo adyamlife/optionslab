@@ -40,17 +40,32 @@ CALENDAR_MAX_GAP_DAYS = _settings["calendar"]["max_gap_days"]
 
 JADE_LIZARD_PUT_DELTA_RANGE = (_settings["jade_lizard"]["put_delta_lo"], _settings["jade_lizard"]["put_delta_hi"])
 
-PROFIT_TARGET_PCT = _settings["management"]["profit_target_pct"]
+PROFIT_TARGET_PCT  = _settings["management"]["profit_target_pct"]
+STOP_LOSS_MULT     = _settings["management"]["stop_loss_mult"]
+EARLY_CLOSE_PCT    = _settings["management"]["early_close_pct"]
+MARKET_CLOSE_HOUR  = _settings["management"]["market_close_hour"]
 
 DIAGONAL_LONG_DELTA_RANGE  = (_settings["diagonal"]["long_delta_lo"],  _settings["diagonal"]["long_delta_hi"])
 DIAGONAL_SHORT_DELTA_RANGE = (_settings["diagonal"]["short_delta_lo"], _settings["diagonal"]["short_delta_hi"])
 DIAGONAL_MIN_GAP_DAYS      = _settings["diagonal"]["min_gap_days"]
 DIAGONAL_MAX_GAP_DAYS      = _settings["diagonal"]["max_gap_days"]
 
-RISK_LIMITS = _settings.get("risk_limits", {
-    "max_open_positions": 5,
-    "max_daily_loss_pct": 0.03,
-    "max_weekly_loss_pct": 0.06,
-    "max_position_pct": 0.05,
-    "max_sector_pct": 0.20,
-})
+RISK_LIMITS = _settings["risk_limits"]
+
+# Strike/width search grids for best-EV optimizer
+CREDIT_DELTA_GRID      = _settings["optimize_grid"]["credit_delta_grid"]
+WIDTH_GRID             = _settings["optimize_grid"]["width_grid"]
+DEBIT_LONG_DELTA_GRID  = _settings["optimize_grid"]["debit_long_delta_grid"]
+DEBIT_SHORT_DELTA_GRID = _settings["optimize_grid"]["debit_short_delta_grid"]
+
+# IV edge / vol-surface thresholds
+IV_EDGE_SKIP_VP    = _settings["iv_edge"]["skip_vp"]
+IV_EDGE_FLAG_VP    = _settings["iv_edge"]["flag_vp"]
+IV_EDGE_BONUS_SCALE = _settings["iv_edge"]["bonus_scale"]
+
+# Market constants
+RISK_FREE_RATE = _settings["market"]["risk_free_rate"]
+
+# Portfolio risk caps used in candidate_provider
+MAX_PORTFOLIO_VEGA       = _settings["risk_limits"]["max_portfolio_vega"]
+BREAKEVEN_CUSHION_IV_SCALE = _settings["risk_limits"]["breakeven_cushion_iv_scale"]

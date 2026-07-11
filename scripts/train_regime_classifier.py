@@ -22,7 +22,8 @@ from pathlib import Path
 import joblib
 import numpy as np
 import pandas as pd
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, brier_score_loss, classification_report, confusion_matrix
 from sklearn.preprocessing import LabelEncoder
 from sklearn.utils.class_weight import compute_sample_weight
 from xgboost import XGBClassifier
@@ -30,6 +31,7 @@ from xgboost import XGBClassifier
 _ROOT = Path(__file__).resolve().parent.parent
 _DATA_PATH = _ROOT / "data" / "regime_training.csv"
 _MODEL_PATH = _ROOT / "data" / "models" / "regime_classifier.joblib"
+_CATBOOST_PATH = _ROOT / "data" / "models" / "regime_catboost.joblib"
 
 FEATURE_COLS = ["rsi", "adx", "hv20", "macd_trend", "trend", "vix_close", "rel_strength_spy",
                 # Tier 1 — price-derived (backfillable)
@@ -54,6 +56,8 @@ FEATURE_COLS = ["rsi", "adx", "hv20", "macd_trend", "trend", "vix_close", "rel_s
 TARGET_COL = "regime_label"
 TEST_FRACTION = 0.2
 
+
+CAT_COLS = ["macd_trend", "trend", "spy_trend", "qqq_trend", "iwm_trend", "sector_etf", "sector_trend"]
 
 NUMERIC_FEATURES = ["rsi", "adx", "hv20", "vix_close", "rel_strength_spy",
                     "beta_60d", "atr_pct", "iv_rank_52w",
@@ -91,6 +95,18 @@ def time_based_split(df: pd.DataFrame, test_fraction=TEST_FRACTION):
     train = df[df["date"] < cutoff]
     test = df[df["date"] >= cutoff]
     return train, test, cutoff
+
+
+def build_catboost_matrix(df: pd.DataFrame):
+    """Feature matrix for CatBoost: numerics as float, categoricals as raw strings.
+    CatBoost uses ordered target statistics on the string values directly — no encoding needed."""
+    X = pd.DataFrame(index=df.index)
+    for col in NUMERIC_FEATURES:
+        X[col] = pd.to_numeric(df.get(col), errors="coerce")
+    for col in CAT_COLS:
+        col_vals = df[col].astype(str) if col in df.columns else pd.Series(["unknown"] * len(df), index=df.index)
+        X[col] = col_vals.fillna("unknown")
+    return X
 
 
 def build_feature_matrix(df: pd.DataFrame, encoders: dict = None, fit: bool = False):
@@ -136,12 +152,16 @@ def train(path=_DATA_PATH, out_path=_MODEL_PATH) -> dict:
     y_train = label_enc.fit_transform(train_df[TARGET_COL])
     y_test = label_enc.transform(test_df[TARGET_COL])
 
+    try:
+        from scripts.tune_hyperparams import load_best_params as _lbp
+        _tuned = _lbp("regime") or {}
+    except Exception:
+        _tuned = {}
+    _xgb_params = {"n_estimators": 200, "max_depth": 4, "learning_rate": 0.05,
+                   "subsample": 0.8, "colsample_bytree": 0.8}
+    _xgb_params.update(_tuned)
     model = XGBClassifier(
-        n_estimators=200,
-        max_depth=4,
-        learning_rate=0.05,
-        subsample=0.8,
-        colsample_bytree=0.8,
+        **_xgb_params,
         objective="multi:softprob",
         eval_metric="mlogloss",
     )
@@ -154,7 +174,7 @@ def train(path=_DATA_PATH, out_path=_MODEL_PATH) -> dict:
     cm = confusion_matrix(y_test, y_pred).tolist()
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    joblib.dump({
+    artifact = {
         "model": model,
         "label_encoder": label_enc,
         "feature_encoders": encoders,
@@ -162,7 +182,124 @@ def train(path=_DATA_PATH, out_path=_MODEL_PATH) -> dict:
         "trained_on_rows": len(train_df),
         "test_rows": len(test_df),
         "split_cutoff": str(cutoff),
-    }, out_path)
+    }
+    joblib.dump(artifact, out_path)
+
+    # ── Calibrate probabilities on the test fold ─────────────────────────────
+    brier_before = brier_after = None
+    try:
+        proba_raw = model.predict_proba(X_test)
+        brier_before = float(np.mean([
+            brier_score_loss((y_test == i).astype(int), proba_raw[:, i])
+            for i in range(len(label_enc.classes_))
+        ]))
+        from scripts.calibrate_models import IsotonicCalibrator
+        cal_model = IsotonicCalibrator(model, n_classes=len(label_enc.classes_)).fit(X_test, y_test)
+        proba_cal = cal_model.predict_proba(X_test)
+        brier_after = float(np.mean([
+            brier_score_loss((y_test == i).astype(int), proba_cal[:, i])
+            for i in range(len(label_enc.classes_))
+        ]))
+        joblib.dump({**artifact, "model": cal_model, "calibrated": True,
+                     "brier_before": round(brier_before, 4),
+                     "brier_after":  round(brier_after, 4)},
+                    out_path.with_name(out_path.stem + "_calibrated.joblib"))
+    except Exception:
+        pass
+
+    # ── Random Forest baseline (sanity check — not saved) ────────────────────
+    rf_baseline = None
+    try:
+        rf = RandomForestClassifier(
+            n_estimators=200, max_depth=None, min_samples_leaf=5,
+            class_weight="balanced", n_jobs=-1, random_state=42,
+        )
+        rf.fit(X_train, y_train)
+        rf_pred  = rf.predict(X_test)
+        rf_proba = rf.predict_proba(X_test)
+        rf_acc   = float(accuracy_score(y_test, rf_pred))
+        n = len(label_enc.classes_)
+        rf_brier = float(np.mean([
+            brier_score_loss((y_test == i).astype(int), rf_proba[:, i])
+            for i in range(n)
+        ]))
+        rf_baseline = {
+            "accuracy": round(rf_acc, 4),
+            "brier": round(rf_brier, 4),
+        }
+    except Exception as e:
+        rf_baseline = {"error": str(e)}
+
+    # ── CatBoost (native categoricals — no label encoding) ───────────────────
+    cb_result = None
+    try:
+        from catboost import CatBoostClassifier
+
+        X_cb_train = build_catboost_matrix(train_df)
+        X_cb_test  = build_catboost_matrix(test_df)
+
+        cb = CatBoostClassifier(
+            iterations=500,
+            depth=6,
+            learning_rate=0.05,
+            loss_function="MultiClass",
+            eval_metric="Accuracy",
+            cat_features=CAT_COLS,
+            auto_class_weights="Balanced",
+            random_seed=42,
+            verbose=False,
+        )
+        cb.fit(X_cb_train, y_train)
+
+        cb_pred  = cb.predict(X_cb_test).flatten()
+        cb_proba = cb.predict_proba(X_cb_test)
+        cb_acc   = float(accuracy_score(y_test, cb_pred))
+        n = len(label_enc.classes_)
+        cb_brier = float(np.mean([
+            brier_score_loss((y_test == i).astype(int), cb_proba[:, i])
+            for i in range(n)
+        ]))
+
+        cb_art = {
+            "model":         cb,
+            "label_encoder": label_enc,
+            "cat_cols":      CAT_COLS,
+            "numeric_cols":  NUMERIC_FEATURES,
+            "trained_on_rows": len(train_df),
+            "test_rows":     len(test_df),
+            "split_cutoff":  str(cutoff),
+            "accuracy":      round(cb_acc, 4),
+            "brier":         round(cb_brier, 4),
+        }
+
+        # Calibrate CatBoost
+        try:
+            from scripts.calibrate_models import IsotonicCalibrator
+            cb_cal = IsotonicCalibrator(cb, n_classes=n).fit(X_cb_test, y_test)
+            cb_proba_cal = cb_cal.predict_proba(X_cb_test)
+            cb_brier_after = float(np.mean([
+                brier_score_loss((y_test == i).astype(int), cb_proba_cal[:, i])
+                for i in range(n)
+            ]))
+            joblib.dump({**cb_art, "model": cb_cal, "calibrated": True,
+                         "brier_before": round(cb_brier, 4),
+                         "brier_after":  round(cb_brier_after, 4)},
+                        _CATBOOST_PATH.with_name("regime_catboost_calibrated.joblib"))
+            cb_art["brier_after"] = round(cb_brier_after, 4)
+        except Exception:
+            cb_brier_after = None
+
+        joblib.dump(cb_art, _CATBOOST_PATH)
+        cb_result = {
+            "accuracy": round(cb_acc, 4),
+            "brier":    round(cb_brier, 4),
+            "brier_after": round(cb_brier_after, 4) if cb_brier_after is not None else None,
+            "model_path": str(_CATBOOST_PATH),
+        }
+    except ImportError:
+        cb_result = {"error": "catboost not installed — pip install catboost"}
+    except Exception as e:
+        cb_result = {"error": str(e)}
 
     return {
         "ok": True,
@@ -175,6 +312,10 @@ def train(path=_DATA_PATH, out_path=_MODEL_PATH) -> dict:
         "classification_report": report,
         "feature_importances": dict(zip(FEATURE_COLS_ENCODED_ORDER(), model.feature_importances_.tolist())),
         "model_path": str(out_path),
+        "brier_before": round(brier_before, 4) if brier_before is not None else None,
+        "brier_after":  round(brier_after, 4)  if brier_after  is not None else None,
+        "rf_baseline": rf_baseline,
+        "catboost": cb_result,
     }
 
 
@@ -188,11 +329,18 @@ if __name__ == "__main__":
     if not result.get("ok"):
         print("FAILED:", result.get("error"))
         sys.exit(1)
-    print(f"Accuracy: {result['accuracy']}")
-    print(f"Train rows: {result['train_rows']} | Test rows: {result['test_rows']}")
-    print(f"Split cutoff date: {result['split_cutoff']}")
+    print(f"Train rows: {result['train_rows']} | Test rows: {result['test_rows']} | Cutoff: {result['split_cutoff']}")
     print(f"Classes: {result['classes']}")
-    print(f"Feature importances: {result['feature_importances']}")
+    rf = result.get("rf_baseline") or {}
+    cb = result.get("catboost") or {}
+    fmt = lambda v: f"{v:.4f}" if isinstance(v, float) else (str(v) if v else "—")
+    print(f"\n{'Metric':<26} {'XGBoost':>10} {'CatBoost':>10} {'RandomForest':>13}")
+    print("-" * 63)
+    print(f"  {'Accuracy':<24} {fmt(result['accuracy']):>10} {fmt(cb.get('accuracy')):>10} {fmt(rf.get('accuracy')):>13}")
+    print(f"  {'Brier (raw)':<24} {fmt(result.get('brier_before')):>10} {fmt(cb.get('brier')):>10} {fmt(rf.get('brier')):>13}")
+    print(f"  {'Brier (calibrated)':<24} {fmt(result.get('brier_after')):>10} {fmt(cb.get('brier_after')):>10} {'—':>13}")
+    if cb.get("error"):
+        print(f"  CatBoost error: {cb['error']}")
     print("\nConfusion matrix (rows=actual, cols=predicted):")
     for row in result["confusion_matrix"]:
         print(row)

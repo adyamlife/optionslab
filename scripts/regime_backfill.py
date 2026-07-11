@@ -409,6 +409,24 @@ def build_ticker_features(ticker: str, period="2y", vix_close: pd.Series = None,
         np.nan,
     )
 
+    # GARCH(1,1) per-day conditional variance (annualized vol) — computed inline
+    # from the close series without requiring a saved model file, since we have
+    # the full historical series here. Uses arch if available; falls back to NaN.
+    _garch_series = np.full(len(dates), np.nan)
+    try:
+        from arch import arch_model as _arch_model
+        _ret_pct = np.log(close / close.shift(1)).dropna() * 100
+        _garch_res = _arch_model(_ret_pct, vol="Garch", p=1, q=1, dist="normal", rescale=False).fit(
+            disp="off", show_warning=False
+        )
+        _cond_var_pct_sq = _garch_res.conditional_volatility ** 2  # (% units)^2
+        _cond_vol_ann = np.sqrt(_cond_var_pct_sq / 1e4 * 252)
+        # Align to dates (conditional_volatility index matches ret, which is one shorter)
+        _cv_dict = dict(zip(_cond_vol_ann.index.date, _cond_vol_ann.values))
+        _garch_series = np.array([_cv_dict.get(d, np.nan) for d in dates])
+    except Exception:
+        pass
+
     df = pd.DataFrame({
         "ticker": ticker,
         "date": dates,
@@ -463,6 +481,8 @@ def build_ticker_features(ticker: str, period="2y", vix_close: pd.Series = None,
                          if macro_series and macro_series.get("dollar_index") is not None else np.nan,
         "fed_within_dte": fed_flag,   # backfilled via hardcoded FOMC date list
         "cpi_within_dte": cpi_flag,   # backfilled via hardcoded CPI date list
+        # GARCH(1,1) per-day conditional vol (annualized) — superior to HV20 as vol feature
+        "garch_conditional_var": _garch_series,
         # Tier 4 — chain-snapshot-derived (NOT backfillable; chain collection started ~Jun 26)
         "iv_skew_20d":      np.nan,
         "gex_proxy":        np.nan,
@@ -512,9 +532,11 @@ def build_regime_dataset(period="2y", out_path=None) -> dict:
 
     full = pd.concat(frames, ignore_index=True)
     with connect() as con:
+        con.execute(f"DROP TABLE IF EXISTS {TABLE}_new")
+        con.execute(f"CREATE TABLE {TABLE}_new AS SELECT * FROM full")
+        con.execute(f"CREATE INDEX IF NOT EXISTS idx_ticker_date_new ON {TABLE}_new (ticker, date)")
         con.execute(f"DROP TABLE IF EXISTS {TABLE}")
-        con.execute(f"CREATE TABLE {TABLE} AS SELECT * FROM full")
-        con.execute(f"CREATE INDEX IF NOT EXISTS idx_ticker_date ON {TABLE} (ticker, date)")
+        con.execute(f"ALTER TABLE {TABLE}_new RENAME TO {TABLE}")
         con.commit()
     return {
         "ok": True,
@@ -538,6 +560,32 @@ def build_regime_dataset(period="2y", out_path=None) -> dict:
 #   - label_pending_regime_rows(): each EOD, fill in the label for rows from
 #     FORWARD_DAYS+ trading days ago, now that the future price they need
 #     actually exists.
+
+def _garch_live_vol(ticker: str, hist: pd.DataFrame) -> float | None:
+    """Compute GARCH(1,1) 1-step-ahead conditional vol (annualized) from hist.
+    First checks for a saved model artifact; falls back to quick in-place fit.
+    Returns None if arch is not installed."""
+    try:
+        from scripts.train_garch_model import get_garch_forecast as _saved_fc
+        saved = _saved_fc(ticker)
+        if saved is not None:
+            return saved
+    except Exception:
+        pass
+    try:
+        from arch import arch_model as _arch_model
+        ret_pct = np.log(hist["Close"] / hist["Close"].shift(1)).dropna() * 100
+        if len(ret_pct) < 30:
+            return None
+        res = _arch_model(ret_pct, vol="Garch", p=1, q=1, dist="normal", rescale=False).fit(
+            disp="off", show_warning=False
+        )
+        fc = res.forecast(horizon=1, reindex=False)
+        next_var_pct_sq = float(fc.variance.iloc[-1, 0])
+        return float(np.sqrt(next_var_pct_sq / 1e4 * 252))
+    except Exception:
+        return None
+
 
 def _build_today_row(ticker: str, lookback="6mo", vix_close: pd.Series = None, spy_close: pd.Series = None,
                      qqq_close: pd.Series = None, iwm_close: pd.Series = None,
@@ -660,7 +708,8 @@ def _build_today_row(ticker: str, lookback="6mo", vix_close: pd.Series = None, s
         import yfinance as _yf
         tkr_obj = _yf.Ticker(ticker)
         spot    = float(close.iloc[-1])
-        front_exp = pick_expiry(tkr_obj, target_dte=14)
+        front_exp_result = pick_expiry(tkr_obj, min_dte=7, max_dte=21)
+        front_exp = front_exp_result[0] if front_exp_result else None
         if front_exp:
             calls, puts = get_option_chain(tkr_obj, front_exp, spot=spot)
             if calls is not None and not calls.empty and puts is not None and not puts.empty:
@@ -738,6 +787,8 @@ def _build_today_row(ticker: str, lookback="6mo", vix_close: pd.Series = None, s
         "dollar_index":   macro_ctx.get("dollar_index"),
         "fed_within_dte": macro_ctx.get("fed_within_dte"),
         "cpi_within_dte": macro_ctx.get("cpi_within_dte"),
+        # GARCH(1,1) live conditional vol for today — used as feature in models
+        "garch_conditional_var": _garch_live_vol(ticker, hist),
         "forward_return":  None,
         "regime_label":    None,
         "forward_hv":      None,

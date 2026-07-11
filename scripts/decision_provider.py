@@ -19,6 +19,17 @@ this module returns, so there is exactly one place alignment-scoring logic
 lives, and one place to add a new factor so it's correct everywhere at once.
 """
 from config import scoring as sc
+from config.ml_gates import (
+    RETURN_CONFLICT_THRESHOLD, RETURN_SUPPORT_THRESHOLD,
+    VOL_HIGH_THRESHOLD, VOL_LOW_THRESHOLD,
+    IV_EXPANDING_SHORT_VOL_PENALTY, IV_EXPANDING_LONG_VOL_BONUS,
+    IV_CONTRACTING_SHORT_VOL_BONUS, IV_CONTRACTING_LONG_VOL_PENALTY,
+    P_UP_STRONG_CONFLICT, P_DOWN_STRONG_CONFLICT,
+    P_UP_CONFIRM, P_DOWN_CONFIRM, DIRECTION_CONFLICT_PENALTY,
+    ANOMALY_EXTREME_THRESHOLD, ANOMALY_PENALTY,
+    META_BULLISH_THRESHOLD, META_BEARISH_THRESHOLD,
+    META_CONSENSUS_BONUS, META_CONFLICT_PENALTY,
+)
 from scripts.analyze import compute_signal_alignment
 
 BULLISH_STRUCTURES = ("Put Credit Spread", "Call Debit Spread", "Diagonal Spread", "Jade Lizard", "Long Call", "Short Put")
@@ -82,23 +93,23 @@ def _apply_ml_signals(score: float, reasons: list, ml: dict, structure: str) -> 
     # 10-day return direction vs structure
     if expected_return is not None:
         ret_pct = f"{expected_return:+.1%}"
-        if expected_return < -0.03 and bias == "bullish":
+        if expected_return < -RETURN_CONFLICT_THRESHOLD and bias == "bullish":
             score -= 0.5
             reasons.append(f"ML forecasts {ret_pct} 10d return — conflicts with bullish structure.")
-        elif expected_return > 0.03 and bias == "bearish":
+        elif expected_return > RETURN_CONFLICT_THRESHOLD and bias == "bearish":
             score -= 0.5
             reasons.append(f"ML forecasts {ret_pct} 10d return — conflicts with bearish structure.")
-        elif expected_return < -0.02 and bias == "bearish":
+        elif expected_return < -RETURN_SUPPORT_THRESHOLD and bias == "bearish":
             reasons.append(f"ML forecasts {ret_pct} 10d return — supports bearish bias.")
-        elif expected_return > 0.02 and bias == "bullish":
+        elif expected_return > RETURN_SUPPORT_THRESHOLD and bias == "bullish":
             reasons.append(f"ML forecasts {ret_pct} 10d return — supports bullish bias.")
 
     # Vol context + expected move for strike/DTE sizing
     em_pct = ml.get("expected_move_pct")
     if expected_vol is not None:
-        if expected_vol > 0.60:
+        if expected_vol > VOL_HIGH_THRESHOLD:
             reasons.append(f"ML vol forecast {expected_vol:.0%} ann. — use wider strikes or shorter DTE.")
-        elif expected_vol < 0.20:
+        elif expected_vol < VOL_LOW_THRESHOLD:
             reasons.append(f"ML vol forecast {expected_vol:.0%} ann. — tighter spreads or longer DTE viable.")
     if em_pct is not None:
         reasons.append(f"ML 10d expected move: ±{em_pct:.1%} — size strikes at least that far from spot.")
@@ -111,25 +122,25 @@ def _apply_ml_signals(score: float, reasons: list, ml: dict, structure: str) -> 
         is_short_vol = structure in _SHORT_VOL_STRUCTURES
         is_long_vol  = structure in _LONG_VOL_STRUCTURES
         if iv_direction == "Expanding" and is_short_vol:
-            score -= 1.0
+            score += IV_EXPANDING_SHORT_VOL_PENALTY
             reasons.append(
                 f"ML IV expanding ({prob_str}) — short-vol structure ({structure}) "
                 f"faces headwind. Consider debit spread or wait for IV to peak."
             )
         elif iv_direction == "Expanding" and is_long_vol:
-            score += 0.5
+            score += IV_EXPANDING_LONG_VOL_BONUS
             reasons.append(
                 f"ML IV expanding ({prob_str}) — long-vol structure ({structure}) aligned. "
                 f"Rising IV increases option value."
             )
         elif iv_direction == "Contracting" and is_short_vol:
-            score += 0.5
+            score += IV_CONTRACTING_SHORT_VOL_BONUS
             reasons.append(
                 f"ML IV contracting ({prob_str}) — short-vol structure ({structure}) aligned. "
                 f"Falling IV benefits premium sellers."
             )
         elif iv_direction == "Contracting" and is_long_vol:
-            score -= 0.5
+            score += IV_CONTRACTING_LONG_VOL_PENALTY
             reasons.append(
                 f"ML IV contracting ({prob_str}) — long-vol structure ({structure}) faces "
                 f"headwind. Falling IV erodes option value (vol crush risk)."
@@ -138,15 +149,15 @@ def _apply_ml_signals(score: float, reasons: list, ml: dict, structure: str) -> 
     # Direction model P(up) — independent signal from regime classifier
     p_up = ml.get("p_up")
     if p_up is not None:
-        if p_up >= 0.65 and bias == "bearish":
-            score -= 0.5
+        if p_up >= P_UP_STRONG_CONFLICT and bias == "bearish":
+            score += DIRECTION_CONFLICT_PENALTY
             reasons.append(f"ML P(up)={p_up:.0%} — strong up signal conflicts with bearish structure.")
-        elif p_up <= 0.35 and bias == "bullish":
-            score -= 0.5
+        elif p_up <= P_DOWN_STRONG_CONFLICT and bias == "bullish":
+            score += DIRECTION_CONFLICT_PENALTY
             reasons.append(f"ML P(up)={p_up:.0%} — strong down signal conflicts with bullish structure.")
-        elif p_up >= 0.60 and bias == "bullish":
+        elif p_up >= P_UP_CONFIRM and bias == "bullish":
             reasons.append(f"ML P(up)={p_up:.0%} — direction model supports bullish bias.")
-        elif p_up <= 0.40 and bias == "bearish":
+        elif p_up <= P_DOWN_CONFIRM and bias == "bearish":
             reasons.append(f"ML P(up)={p_up:.0%} — direction model supports bearish bias.")
 
     # Anomaly detector — flag unusual market conditions; caution, not hard veto.
@@ -155,8 +166,8 @@ def _apply_ml_signals(score: float, reasons: list, ml: dict, structure: str) -> 
     anom_flags   = ml.get("anomaly_flags") or []
     if is_anomaly:
         flag_str = "; ".join(anom_flags[:2]) if anom_flags else "multi-feature outlier"
-        if anom_score is not None and anom_score <= 20:
-            score -= 0.5
+        if anom_score is not None and anom_score <= ANOMALY_EXTREME_THRESHOLD:
+            score += ANOMALY_PENALTY
             reasons.append(
                 f"Anomaly detector: extreme outlier (score {anom_score:.0f}/100) — "
                 f"{flag_str}. ML models may be operating outside training distribution."
@@ -170,17 +181,17 @@ def _apply_ml_signals(score: float, reasons: list, ml: dict, structure: str) -> 
     # Meta-ensemble — stacked output of all 5 models; light nudge, no double-counting.
     meta_score = ml.get("meta_score")
     if meta_score is not None:
-        if meta_score >= 70 and bias == "bullish":
-            score += 0.5
+        if meta_score >= META_BULLISH_THRESHOLD and bias == "bullish":
+            score += META_CONSENSUS_BONUS
             reasons.append(f"Meta-ensemble {meta_score:.0f}/100 — strong ML bullish consensus.")
-        elif meta_score <= 30 and bias == "bearish":
-            score += 0.5
+        elif meta_score <= META_BEARISH_THRESHOLD and bias == "bearish":
+            score += META_CONSENSUS_BONUS
             reasons.append(f"Meta-ensemble {meta_score:.0f}/100 — strong ML bearish consensus.")
-        elif meta_score >= 70 and bias == "bearish":
-            score -= 0.5
+        elif meta_score >= META_BULLISH_THRESHOLD and bias == "bearish":
+            score += META_CONFLICT_PENALTY
             reasons.append(f"Meta-ensemble {meta_score:.0f}/100 — ML leans bullish, conflicts with bearish structure.")
-        elif meta_score <= 30 and bias == "bullish":
-            score -= 0.5
+        elif meta_score <= META_BEARISH_THRESHOLD and bias == "bullish":
+            score += META_CONFLICT_PENALTY
             reasons.append(f"Meta-ensemble {meta_score:.0f}/100 — ML leans bearish, conflicts with bullish structure.")
         else:
             reasons.append(f"Meta-ensemble {meta_score:.0f}/100 — no strong ML consensus.")

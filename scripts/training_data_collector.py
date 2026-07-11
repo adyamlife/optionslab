@@ -27,11 +27,14 @@ Storage: DuckDB (data/ml_training.duckdb), tables training_snapshots and
 option_chain_snapshots. JSON columns store nested fields (candidate, strikes,
 outcome). Labeling does in-place SQL UPDATEs — no full-file rewrites.
 """
+import logging
 from datetime import date, datetime
 from pathlib import Path
 
 import numpy as np
 import yfinance as yf
+
+log = logging.getLogger(__name__)
 
 from config.watchlist import WATCHLIST
 from scripts.analyze import analyze_ticker, days_to_earnings
@@ -156,6 +159,15 @@ def enrich_candidate_greeks(record: dict, chain_index: dict) -> dict:
 def _append(record: dict):
     from scripts.db import insert_snapshot
     insert_snapshot(record)
+
+
+def _fetch_garch_vol(ticker: str) -> float | None:
+    """Return GARCH(1,1) conditional vol (annualized) from saved model, or None."""
+    try:
+        from scripts.train_garch_model import get_garch_forecast
+        return get_garch_forecast(ticker)
+    except Exception:
+        return None
 
 
 def _build_snapshot_record(ticker: str, vix_price, spy_hist=None,
@@ -341,6 +353,8 @@ def _build_snapshot_record(ticker: str, vix_price, spy_hist=None,
         "news_sentiment_score":   news_sentiment_score,     # float [-1,+1]: net bullish/bearish
         "analyst_rec_change":     analyst_rec_change,       # int: upgrades - downgrades last 5d
         "short_interest_pct":     short_interest_pct,       # float: % of float short
+        # ── GARCH conditional vol at entry ─────────────────────────────────────
+        "garch_vol_at_entry": _fetch_garch_vol(ticker),
         # ── Tier 4 fields (chain-snapshot-derived; E*TRADE has delta/gamma) ──
         "iv_skew_20d":      tier4.get("iv_skew_20d"),      # 20d put IV - 20d call IV
         "gex_proxy":        tier4.get("gex_proxy"),         # Σ gamma×OI×100 calls - puts
@@ -665,9 +679,41 @@ def label_pending_snapshots() -> dict:
     labeled_count = 0
     price_cache = {}
 
+    # Lazy-load paper trades once for all paper_trade_entry snapshots
+    _paper_trades_cache = None
+
     for r in records:
         if r.get("labeled") or not r.get("expiry") or not r.get("candidate"):
             continue
+
+        # ── Paper trade entry snapshots: label from managed-exit outcome ──────
+        if r.get("source") == "paper_trade_entry" and r.get("paper_trade_id"):
+            if _paper_trades_cache is None:
+                try:
+                    from scripts.paper_trade_engine import load_trades
+                    _paper_trades_cache = {t["id"]: t for t in load_trades()}
+                except Exception:
+                    _paper_trades_cache = {}
+            trade = _paper_trades_cache.get(r["paper_trade_id"])
+            if trade is None or trade.get("status") == "open":
+                continue  # trade still open — try again on a later run
+            exit_data = trade.get("exit") or {}
+            pnl = exit_data.get("pnl_per_share")
+            win = exit_data.get("win")
+            if pnl is None:
+                continue
+            r["labeled"] = True
+            r["outcome"] = {
+                "pnl_per_share": round(pnl, 4),
+                "win": bool(win),
+                "exit_reason": exit_data.get("reason"),
+                "pnl_pct_of_max": exit_data.get("pnl_pct_of_max"),
+            }
+            r["labeled_at"] = datetime.now().isoformat()
+            labeled_count += 1
+            continue
+
+        # ── Regular snapshots: label from hold-to-expiry payoff ──────────────
         try:
             exp_date = date.fromisoformat(str(r["expiry"])[:10])
         except Exception:
@@ -684,9 +730,7 @@ def label_pending_snapshots() -> dict:
 
         pnl_arr = _payoff_per_share(r["candidate"].get("structure"), r["candidate"], np.array([s_t]))
         if pnl_arr is None:
-            # Path-dependent structure (Calendar/Diagonal/Jade Lizard/Covered
-            # Call) — can't be labeled this way. Mark unlabelable so it
-            # stops being retried every run, rather than silently looping.
+            # Path-dependent structure — can't be labeled this way
             r["labeled"] = True
             r["outcome"] = {"unlabelable": True}
             r["labeled_at"] = datetime.now().isoformat()
@@ -703,6 +747,108 @@ def label_pending_snapshots() -> dict:
     labeled_records = [r for r in records if r.get("labeled") and r.get("snapshot_id")]
     update_snapshot_labels(labeled_records)
     return {"labeled": labeled_count, "total_records": len(records)}
+
+
+def _fetch_vix_now() -> float | None:
+    """Quick VIX spot fetch at paper trade entry time. Returns None on any failure."""
+    try:
+        hist = yf.Ticker("^VIX").history(period="2d")
+        if not hist.empty:
+            return round(float(hist["Close"].iloc[-1]), 2)
+    except Exception:
+        pass
+    return None
+
+
+def _ml_scores_at_entry(ticker: str) -> dict:
+    """
+    Read the cached ML predictions for ticker at the moment of trade entry.
+    Returns {ml_meta_score, ml_p_win, ml_confidence} — all None if cache miss.
+    """
+    try:
+        from scripts.ml_cache import ml_cache
+        pred = ml_cache.get(ticker)
+        if not pred:
+            return {"ml_meta_score": None, "ml_p_win": None, "ml_confidence": None}
+        return {
+            "ml_meta_score": pred.get("meta_score"),
+            "ml_p_win":      pred.get("pop_score"),
+            "ml_confidence": pred.get("analogues_win_rate"),
+        }
+    except Exception:
+        return {"ml_meta_score": None, "ml_p_win": None, "ml_confidence": None}
+
+
+def write_paper_trade_snapshot(trade: dict, analyze_row: dict) -> None:
+    """
+    Write a training snapshot at the moment a paper trade is opened.
+
+    Uses the already-fetched analyze_row (no re-fetch) so the morning scan
+    doesn't pay an extra round-trip per trade. Tier 1-5 supplemental fields
+    (beta, atr_pct, etc.) are None — they aren't in analyze_ticker output.
+    Labeling is done by label_pending_snapshots() once the trade closes, using
+    the actual managed-exit P&L from paper_trades.json instead of the
+    hold-to-expiry payoff function.
+    """
+    from scripts.db import insert_snapshot
+    ticker = trade["ticker"]
+    structure = trade["structure"]
+
+    # Find the candidate in the row that matches the opened trade
+    candidates = analyze_row.get("candidates", [])
+    candidate = next((c for c in candidates if c.get("structure") == structure), None)
+
+    record = {
+        "snapshot_id":      f"paper-{trade['id']}",
+        "collected_at":     trade["entered_at"],
+        "ticker":           ticker,
+        "spot":             analyze_row.get("spot"),
+        "iv_env":           analyze_row.get("iv_env"),
+        "trend":            analyze_row.get("trend"),
+        "weekly_trend":     analyze_row.get("weekly_trend"),
+        "regime":           analyze_row.get("regime"),
+        "rsi":              analyze_row.get("rsi"),
+        "macd_trend":       analyze_row.get("macd_trend"),
+        "adx":              analyze_row.get("adx"),
+        "atm_iv":           analyze_row.get("atm_iv"),
+        "iv_rank_proxy":    analyze_row.get("iv_rank_proxy"),
+        "hv20":             analyze_row.get("hv20"),
+        "pcr":              analyze_row.get("pcr"),
+        "vix":              _fetch_vix_now(),
+        "earnings_days_away": None,
+        "news_headlines":   [],
+        "status":           analyze_row.get("status"),
+        "recommended_structure": analyze_row.get("recommended_structure"),
+        "signal_score":     analyze_row.get("signal_score"),
+        "candidate":        candidate,
+        "expiry":           trade.get("expiry"),
+        "dte":              trade.get("dte_at_entry"),
+        # Tier 1-5 fields not available from analyze_ticker — left None
+        "vol_oi_ratio": None, "iv_skew": None, "iv_term_slope": None,
+        "otm_pcr": None, "beta_60d": None, "atr_pct": None, "iv_rank_52w": None,
+        "sector_etf": None, "sector_trend": None, "sector_rsi": None, "sector_iv_ratio": None,
+        "spy_trend": None, "spy_rsi": None, "qqq_trend": None, "qqq_rsi": None,
+        "iwm_trend": None, "iwm_rsi": None, "vvix": None, "vix_3m": None,
+        "vix_term_slope": None, "earnings_inside_expiry": None,
+        "news_sentiment_score": None, "analyst_rec_change": None, "short_interest_pct": None,
+        "iv_skew_20d": None, "gex_proxy": None, "max_pain_strike": None,
+        "oi_concentration": None, "wings_iv_ratio": None,
+        "yield_10y": None, "yield_3m": None, "yield_curve": None,
+        "dollar_index": None, "fed_within_dte": None, "cpi_within_dte": None,
+        # Paper trade tracking fields
+        "source":           "paper_trade_entry",
+        "paper_trade_id":   trade["id"],
+        # ML model state at entry — for post-hoc audit of signal accuracy
+        **_ml_scores_at_entry(ticker),
+        "labeled":          False,
+        "outcome":          None,
+        "labeled_at":       None,
+    }
+    try:
+        insert_snapshot(record)
+        log.info(f"Training snapshot written for paper trade {trade['id']}")
+    except Exception as e:
+        log.warning(f"Failed to write training snapshot for {trade['id']}: {e}")
 
 
 def get_dataset_summary() -> dict:

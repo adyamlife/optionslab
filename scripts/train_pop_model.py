@@ -23,7 +23,8 @@ from pathlib import Path
 import joblib
 import numpy as np
 import pandas as pd
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, roc_auc_score
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, brier_score_loss, classification_report, confusion_matrix, roc_auc_score
 from sklearn.preprocessing import LabelEncoder
 from sklearn.utils.class_weight import compute_sample_weight
 from xgboost import XGBClassifier
@@ -181,14 +182,50 @@ def train(out_path=_MODEL_PATH) -> dict:
     cm = confusion_matrix(y_test, y_pred).tolist()
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    joblib.dump({
+    artifact = {
         "model": model,
         "feature_encoders": encoders,
         "numeric_cols": NUMERIC_COLS + CANDIDATE_NUMERIC_COLS,
         "categorical_cols": CATEGORICAL_COLS + CANDIDATE_CATEGORICAL_COLS,
         "trained_on_rows": len(train_df),
         "test_rows": len(test_df),
-    }, out_path)
+    }
+    joblib.dump(artifact, out_path)
+
+    # ── Calibrate probabilities on the test fold ─────────────────────────────
+    brier_before = brier_after = None
+    try:
+        brier_before = float(brier_score_loss(y_test, model.predict_proba(X_test)[:, 1]))
+        from scripts.calibrate_models import IsotonicCalibrator
+        cal_model = IsotonicCalibrator(model).fit(X_test, y_test)
+        brier_after = float(brier_score_loss(y_test, cal_model.predict_proba(X_test)[:, 1]))
+        joblib.dump({**artifact, "model": cal_model, "calibrated": True,
+                     "brier_before": round(brier_before, 4),
+                     "brier_after":  round(brier_after, 4)},
+                    out_path.with_name(out_path.stem + "_calibrated.joblib"))
+    except Exception:
+        pass
+
+    # ── Random Forest baseline (sanity check — not saved) ────────────────────
+    rf_baseline = None
+    try:
+        rf = RandomForestClassifier(
+            n_estimators=200, max_depth=None, min_samples_leaf=5,
+            class_weight="balanced", n_jobs=-1, random_state=42,
+        )
+        rf.fit(X_train, y_train)
+        rf_pred  = rf.predict(X_test)
+        rf_prob  = rf.predict_proba(X_test)[:, 1]
+        rf_acc   = float(accuracy_score(y_test, rf_pred))
+        rf_auc   = float(roc_auc_score(y_test, rf_prob)) if len(set(y_test)) > 1 else None
+        rf_brier = float(brier_score_loss(y_test, rf_prob))
+        rf_baseline = {
+            "accuracy": round(rf_acc, 4),
+            "auc":   round(rf_auc, 4) if rf_auc is not None else None,
+            "brier": round(rf_brier, 4),
+        }
+    except Exception as e:
+        rf_baseline = {"error": str(e)}
 
     return {
         "ok": True,
@@ -200,6 +237,9 @@ def train(out_path=_MODEL_PATH) -> dict:
         "classification_report": report,
         "feature_importances": dict(zip(NUMERIC_COLS + CANDIDATE_NUMERIC_COLS + CATEGORICAL_COLS + CANDIDATE_CATEGORICAL_COLS, model.feature_importances_.tolist())),
         "model_path": str(out_path),
+        "brier_before": round(brier_before, 4) if brier_before is not None else None,
+        "brier_after":  round(brier_after, 4)  if brier_after  is not None else None,
+        "rf_baseline": rf_baseline,
     }
 
 
@@ -208,10 +248,20 @@ if __name__ == "__main__":
     if not result.get("ok"):
         print("NOT READY:", result.get("error"))
         sys.exit(0)
-    print(f"Accuracy: {result['accuracy']} | AUC: {result['auc']}")
     print(f"Train rows: {result['train_rows']} | Test rows: {result['test_rows']}")
+    rf = result.get("rf_baseline") or {}
+    print(f"\n{'Metric':<26} {'XGBoost':>10} {'RandomForest':>14}")
+    print("-" * 52)
+    print(f"  {'Accuracy':<24} {result['accuracy']:>10.4f} {rf.get('accuracy', 'n/a'):>14}")
+    auc_xgb = result.get('auc')
+    auc_rf  = rf.get('auc')
+    print(f"  {'AUC':<24} {(f'{auc_xgb:.4f}' if auc_xgb else 'n/a'):>10} {(f'{auc_rf:.4f}' if auc_rf else 'n/a'):>14}")
+    brier_xgb = result.get('brier_before')
+    brier_rf  = rf.get('brier')
+    print(f"  {'Brier (raw)':<24} {(f'{brier_xgb:.4f}' if brier_xgb else 'n/a'):>10} {(f'{brier_rf:.4f}' if brier_rf else 'n/a'):>14}")
+    if rf.get("error"):
+        print(f"  RF error: {rf['error']}")
     print("\nConfusion matrix (rows=actual, cols=predicted) [Loss, Win]:")
     for row in result["confusion_matrix"]:
         print(row)
-    print(f"\nFeature importances: {result['feature_importances']}")
     print(f"\nModel saved to {result['model_path']}")

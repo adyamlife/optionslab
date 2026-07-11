@@ -12,7 +12,7 @@ from werkzeug.security import check_password_hash
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
-from config.watchlist import WATCHLIST
+from config.watchlist import WATCHLIST, WATCHLIST_ARCHIVE, WATCHLIST_ALL
 from config.feature_flags import ff
 from scripts.backtest import run_backtest, WIDTH, DTE
 from config import rules
@@ -43,6 +43,46 @@ _USERS, _ROLES, _SECRET_KEY = _load_auth_config()
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or _SECRET_KEY or os.urandom(24)
+
+# ── Logging setup ─────────────────────────────────────────────────────────────
+# Configure once here so all loggers (app.logger + every module's
+# logging.getLogger(__name__)) write to the same files, regardless of
+# whether they're called from a gunicorn worker or a background thread.
+import logging as _logging
+_LOG_DIR = Path(__file__).parent.parent / "data"
+_LOG_DIR.mkdir(exist_ok=True)
+
+_fmt = _logging.Formatter("%(asctime)s %(levelname)-8s %(name)s: %(message)s",
+                           datefmt="%Y-%m-%d %H:%M:%S")
+
+# Main application log — INFO+ from all loggers
+_app_handler = _logging.FileHandler(_LOG_DIR / "optionlab.log")
+_app_handler.setLevel(_logging.INFO)
+_app_handler.setFormatter(_fmt)
+
+# Scheduler/paper-trade log — INFO+ from scheduler-related modules only
+_sched_handler = _logging.FileHandler(_LOG_DIR / "scheduler.log")
+_sched_handler.setLevel(_logging.INFO)
+_sched_handler.setFormatter(_fmt)
+
+# Root logger → optionlab.log (catches everything, including third-party at WARNING+)
+_root = _logging.getLogger()
+_root.setLevel(_logging.INFO)
+_root.addHandler(_app_handler)
+
+# Noisy third-party loggers: keep at WARNING so they don't flood optionlab.log
+for _noisy in ("urllib3", "urllib3.connectionpool", "yfinance", "peewee",
+               "apscheduler.executors", "apscheduler.scheduler"):
+    _logging.getLogger(_noisy).setLevel(_logging.WARNING)
+
+# Scheduler-related modules also write to dedicated scheduler.log
+for _sched_mod in ("scripts.paper_trade_engine", "scripts.training_data_collector",
+                   "scripts.regime_backfill", "scripts.ml_cache", "web.app"):
+    _lg = _logging.getLogger(_sched_mod)
+    _lg.addHandler(_sched_handler)
+
+# Flask's own logger → same root handler; make sure it propagates
+app.logger.setLevel(_logging.INFO)
 app.config["PERMANENT_SESSION_LIFETIME"] = 60 * 60 * 24 * 30   # 30 days
 app.config["SESSION_COOKIE_SAMESITE"]    = "Lax"
 app.config["COMPRESS_ALGORITHM"] = "gzip"
@@ -327,157 +367,223 @@ def build_top_trades(rows, n=3):
     proxy for Jade Lizard, which has undefined downside risk), preferring
     trades that meet both the min-profit and max-loss criteria, then lower
     capital required, then nearer expiry (lower DTE)."""
+    from scripts.candidate_ranker import rank_candidates
+
+    def _ml_iv_bonus(item):
+        """
+        Extra score bonus for Live Suggestions, combining all trained ML signals:
+          meta_score      — meta-ensemble confidence (0–100)
+          iv_expanding    — IV direction vs credit/debit preference
+          expected_return — return regressor: reward direction alignment
+          expected_vol    — vol regressor: reward high vol for debit, low for credit
+          pop_score       — POP model: direct probability of profit
+          analogues       — k-NN historical win rate in similar conditions
+        Each signal is capped so no single model dominates the ranking.
+        """
+        from config.structures import CREDIT_STRUCTURES
+        c  = item["candidate"]
+        ml = item["row"].get("ml") or {}
+        structure  = c.get("structure", "")
+        is_credit  = structure in CREDIT_STRUCTURES
+        is_bullish = structure in ("Call Debit Spread", "Diagonal Spread")
+        is_bearish = structure in ("Put Debit Spread",)
+        bonus = 0.0
+
+        # 0. Confidence multiplier — scale all ML bonuses by model agreement.
+        # High agreement → full bonus weight; low agreement → half weight.
+        pred_dist  = ml.get("pred_dist") or {}
+        confidence = pred_dist.get("confidence")
+        conf_scale = 1.0 if confidence is None else (0.5 + 0.5 * confidence)  # 0.5–1.0
+
+        # 1. Meta-ensemble score (heuristic combination of regime + direction + vol models)
+        meta = ml.get("meta_score")
+        if meta is not None:
+            bonus += (meta - 50.0) / 50.0 * 4.0 * conf_scale   # ±4 pts × conf
+
+        # 2. IV expansion direction vs structure preference
+        iv_prob = ml.get("iv_expanding_prob")
+        if iv_prob is not None:
+            direction = -1 if is_credit else +1            # credit wants contraction
+            bonus += direction * (iv_prob - 0.5) * 3.0 * conf_scale    # ±1.5 pts
+
+        # 3. Return regressor: does predicted 10d move align with structure direction?
+        exp_ret = ml.get("expected_return")
+        if exp_ret is not None:
+            if is_bullish:
+                bonus += min(max(exp_ret * 15, -2.0), 2.0) * conf_scale
+            elif is_bearish:
+                bonus += min(max(-exp_ret * 15, -2.0), 2.0) * conf_scale
+            elif is_credit:
+                bonus += min(max(-abs(exp_ret) * 10, -2.0), 0.0) * conf_scale
+
+        # 4. Vol regressor: high expected vol helps debit, hurts credit
+        exp_vol = ml.get("expected_vol")
+        if exp_vol is not None:
+            vol_edge = (exp_vol - 0.30)                    # 30% annualised as neutral
+            if is_credit:
+                bonus += min(max(-vol_edge * 6, -2.0), 2.0) * conf_scale
+            else:
+                bonus += min(max(vol_edge * 6, -2.0), 2.0) * conf_scale
+
+        # 5. POP model: trained probability of profit on real trade outcomes
+        pop = ml.get("pop_score")
+        if pop is not None:
+            bonus += (pop - 0.5) * 5.0 * conf_scale                    # ±2.5 pts
+
+        # 6. Historical analogues: k-NN win rate in similar market conditions
+        ana_wr = ml.get("analogues_win_rate")
+        ana_k  = ml.get("analogues_k") or 0
+        if ana_wr is not None and ana_k >= 10:
+            bonus += (ana_wr - 0.5) * 3.0 * conf_scale                 # ±1.5 pts
+
+        return bonus
+
+    ranked = rank_candidates(rows, n=n, score_fn=_ml_iv_bonus)
+
+    # Run Monte Carlo per ranked trade (GARCH engine when available) and merge
+    # p10_pnl / p90_pnl / ev_per_share into pred_dist. This is the only place
+    # we have both the candidate (strikes, structure) and the ML row together.
+    from scripts.monte_carlo import run_mc as _run_mc
+    for item in ranked:
+        row, c = item["row"], item["candidate"]
+        try:
+            mc_out = _run_mc(row.get("ticker"), row, c)
+            if mc_out:
+                ml = row.get("ml") or {}
+                pd_obj = ml.get("pred_dist")
+                if pd_obj is not None:
+                    pd_obj["p10_pnl"]      = mc_out.get("p10_pnl")
+                    pd_obj["p90_pnl"]      = mc_out.get("p90_pnl")
+                    pd_obj["ev_per_share"] = mc_out.get("expected_pnl")
+                    pd_obj["vol_source"]   = mc_out.get("vol_source")
+                item["mc"] = mc_out
+        except Exception:
+            item["mc"] = None
+
     candidates = []
-    for row in rows:
-        if row.get("status") and row["status"].startswith("SKIP"):
-            continue
-        for c in row.get("candidates", []):
-            if not c.get("recommended"):
-                continue
-            if c.get("max_profit") is None:
-                continue
-
-            ev = c.get("ev")
-            ev_is_proxy = False
-            if ev is None:
-                if c.get("pop") is not None:
-                    ev = c["pop"] / 100 * c["max_profit"]
-                    ev_is_proxy = True
-                else:
-                    continue
-
-            # meets_max_loss=None means "not applicable" (e.g. CSP — undefined downside),
-            # not a failure. Only False means the check failed.
-            meets_both = bool(c.get("meets_min_profit")) and (c.get("meets_max_loss") is not False)
-            candidates.append({
-                "ticker": row["ticker"],
-                "structure": c["structure"],
-                "details": c["details"],
-                "expiry": row.get("expiry"),
-                "dte": row.get("dte"),
-                "pop": c.get("pop"),
-                "ev": round(ev, 4),
-                "ev_is_proxy": ev_is_proxy,
-                "max_profit": c.get("max_profit"),
-                "max_loss": c.get("max_loss"),
-                "profit_target": c.get("profit_target"),
-                "capital_required": c.get("capital_required"),
-                "meets_min_profit": c.get("meets_min_profit"),
-                "meets_max_loss": c.get("meets_max_loss"),
-                "meets_both": meets_both,
-                "signal_score": c.get("signal_score") or 0,
-                "signal_rating": row.get("signal_rating", "Neutral"),
-                "signal_notes": row.get("signal_notes", []),
-                "news_sentiment": row.get("news_sentiment", "Neutral"),
-                "news_headlines": row.get("news_headlines", []),
-                "news_bullish":   row.get("news_bullish", 0),
-                "news_bearish":   row.get("news_bearish", 0),
-                "adx": row.get("adx"),
-                "rel_volume": row.get("rel_volume"),
-                "pcr": row.get("pcr"),
-                "pcr_sentiment": row.get("pcr_sentiment"),
-                "unusual_activity": row.get("unusual_activity", False),
-                "net_delta": c.get("net_delta"),
-                "net_theta": c.get("net_theta"),
-                "net_gamma": c.get("net_gamma"),
-                "net_vega":  c.get("net_vega"),
-                "gamma_penalty": c.get("gamma_penalty", 0.0),
-                "div_warning":   c.get("div_warning", False),
-                "div_penalty":   c.get("div_penalty", 0.0),
-                "is_credit": c.get("is_credit", True),
-                "ema200":          row.get("ema200"),
-                "ema200_position": row.get("ema200_position"),
-                "iv_term_shape":   row.get("iv_term_shape"),
-                "iv_term_note":    row.get("iv_term_note"),
-                "iv_front_iv":     row.get("iv_front_iv"),
-                "iv_back_iv":      row.get("iv_back_iv"),
-                "iv_edge_pct":     row.get("iv_edge_pct"),
-                "ai_assessment": row.get("ai_assessment"),
-                "ai_confidence": row.get("ai_confidence"),
-                "ai_provider": row.get("ai_provider"),
-                # Strike fields for exact hedge lookup
-                "long_strike":       c.get("long_strike"),
-                "short_strike":      c.get("short_strike"),
-                "put_long_strike":   c.get("put_long_strike"),
-                "put_short_strike":  c.get("put_short_strike"),
-                "call_short_strike": c.get("call_short_strike"),
-                "call_long_strike":  c.get("call_long_strike"),
-                "spot":              row.get("spot"),
-                "spot_at_entry":     c.get("spot_at_entry") or row.get("spot"),
-                "market_bias":       c.get("market_bias"),
-                # Phase B ticker-level fields
-                "short_interest":    row.get("short_interest"),
-                "vol_skew_pct":      row.get("vol_skew_pct"),
-                "div_ex_date":       row.get("div_ex_date"),
-                "div_days_to_ex":    row.get("div_days_to_ex"),
-                "div_yield":         row.get("div_yield"),
-                "price_change":      row.get("price_change"),
-                "price_change_pct":  row.get("price_change_pct"),
-                # Phase C ticker-level fields
-                "hv20":              row.get("hv20"),
-                "iv_premium":        row.get("iv_premium"),
-                "iv_hv_ratio":       row.get("iv_hv_ratio"),
-                "analyst_label":     row.get("analyst_label"),
-                "analyst_buy":       row.get("analyst_buy"),
-                "analyst_hold":      row.get("analyst_hold"),
-                "analyst_sell":      row.get("analyst_sell"),
-                "analyst_net_score": row.get("analyst_net_score"),
-                "risk_free_rate":    row.get("risk_free_rate"),
-                # ML predictions — passed through so top-3 panel can show chips
-                "ml":          row.get("ml"),
-                "meta_score":  (row.get("ml") or {}).get("meta_score"),
-            })
-
-    def _ml_bonus(meta_score):
-        """Convert meta_score (0–100) to a ±5 signal-score bonus.
-        ≥65 bullish → +5 max, ≤35 bearish → −5 max, 50 = neutral."""
-        if meta_score is None:
-            return 0.0
-        return (meta_score - 50.0) / 50.0 * 5.0
-
-    candidates.sort(key=lambda c: (
-        not c["meets_both"],
-        -(  (c["signal_score"] or 0) + _ml_bonus(c.get("meta_score"))  ),
-        -c["ev"],
-        c["capital_required"] if c["capital_required"] is not None else float("inf"),
-        c["dte"] if c["dte"] is not None else float("inf"),
-    ))
+    for item in ranked:
+        row, c = item["row"], item["candidate"]
+        candidates.append({
+            "ticker":          row["ticker"],
+            "structure":       c["structure"],
+            "details":         c["details"],
+            "expiry":          row.get("expiry"),
+            "dte":             row.get("dte"),
+            "pop":             c.get("pop"),
+            "ev":              item["ev"],
+            "ev_is_proxy":     item["ev_is_proxy"],
+            "max_profit":      c.get("max_profit"),
+            "max_loss":        c.get("max_loss"),
+            "profit_target":   c.get("profit_target"),
+            "capital_required":c.get("capital_required"),
+            "meets_min_profit":c.get("meets_min_profit"),
+            "meets_max_loss":  c.get("meets_max_loss"),
+            "meets_both":      item["meets_both"],
+            "signal_score":    c.get("signal_score") or 0,
+            "signal_rating":   row.get("signal_rating", "Neutral"),
+            "signal_notes":    row.get("signal_notes", []),
+            "news_sentiment":  row.get("news_sentiment", "Neutral"),
+            "news_headlines":  row.get("news_headlines", []),
+            "news_bullish":    row.get("news_bullish", 0),
+            "news_bearish":    row.get("news_bearish", 0),
+            "adx":             row.get("adx"),
+            "rel_volume":      row.get("rel_volume"),
+            "pcr":             row.get("pcr"),
+            "pcr_sentiment":   row.get("pcr_sentiment"),
+            "unusual_activity":row.get("unusual_activity", False),
+            "net_delta":       c.get("net_delta"),
+            "net_theta":       c.get("net_theta"),
+            "net_gamma":       c.get("net_gamma"),
+            "net_vega":        c.get("net_vega"),
+            "gamma_penalty":   c.get("gamma_penalty", 0.0),
+            "div_warning":     c.get("div_warning", False),
+            "div_penalty":     c.get("div_penalty", 0.0),
+            "is_credit":       c.get("is_credit", True),
+            "ema200":          row.get("ema200"),
+            "ema200_position": row.get("ema200_position"),
+            "iv_term_shape":   row.get("iv_term_shape"),
+            "iv_term_note":    row.get("iv_term_note"),
+            "iv_front_iv":     row.get("iv_front_iv"),
+            "iv_back_iv":      row.get("iv_back_iv"),
+            "iv_edge_pct":     row.get("iv_edge_pct"),
+            "ai_assessment":   row.get("ai_assessment"),
+            "ai_confidence":   row.get("ai_confidence"),
+            "ai_provider":     row.get("ai_provider"),
+            "long_strike":       c.get("long_strike"),
+            "short_strike":      c.get("short_strike"),
+            "put_long_strike":   c.get("put_long_strike"),
+            "put_short_strike":  c.get("put_short_strike"),
+            "call_short_strike": c.get("call_short_strike"),
+            "call_long_strike":  c.get("call_long_strike"),
+            "spot":              row.get("spot"),
+            "spot_at_entry":     c.get("spot_at_entry") or row.get("spot"),
+            "market_bias":       c.get("market_bias"),
+            "short_interest":    row.get("short_interest"),
+            "vol_skew_pct":      row.get("vol_skew_pct"),
+            "div_ex_date":       row.get("div_ex_date"),
+            "div_days_to_ex":    row.get("div_days_to_ex"),
+            "div_yield":         row.get("div_yield"),
+            "price_change":      row.get("price_change"),
+            "price_change_pct":  row.get("price_change_pct"),
+            "hv20":              row.get("hv20"),
+            "iv_premium":        row.get("iv_premium"),
+            "iv_hv_ratio":       row.get("iv_hv_ratio"),
+            "analyst_label":     row.get("analyst_label"),
+            "analyst_buy":       row.get("analyst_buy"),
+            "analyst_hold":      row.get("analyst_hold"),
+            "analyst_sell":      row.get("analyst_sell"),
+            "analyst_net_score": row.get("analyst_net_score"),
+            "risk_free_rate":    row.get("risk_free_rate"),
+            "ml":                row.get("ml"),
+            "meta_score":        (row.get("ml") or {}).get("meta_score"),
+            "pred_dist":         (row.get("ml") or {}).get("pred_dist"),
+            "mc":                item.get("mc"),
+        })
     top = candidates[:n]
     row_by_ticker = {r["ticker"]: r for r in rows}
 
-    # Call AI only for the final top-N (max 3 API calls per run)
+    # Call AI for the final top-N concurrently (max 3 API calls, run in parallel)
     from concurrent.futures import ThreadPoolExecutor, TimeoutError as _FT
-    with ThreadPoolExecutor(max_workers=1) as _ai_pool:
-      for t in top:
-        row = row_by_ticker.get(t["ticker"], {})
-        ai_ctx = {**row, "recommended_structure": t.get("structure")}
-        try:
-            ai = _ai_pool.submit(get_ai_assessment, t["ticker"], ai_ctx).result(timeout=20)
-        except _FT:
-            ai = {"assessment": None, "confidence": None, "provider": None, "error": "timeout"}
-        except Exception as _e:
-            ai = {"assessment": None, "confidence": None, "provider": None, "error": str(_e)}
-        t["ai_assessment"] = ai["assessment"]
-        t["ai_confidence"]  = ai["confidence"]
-        t["ai_provider"]    = ai["provider"]
-        t["ai_error"]       = ai["error"]
+    with ThreadPoolExecutor(max_workers=3) as _ai_pool:
+        _ai_futs = {}
+        for t in top:
+            row = row_by_ticker.get(t["ticker"], {})
+            ai_ctx = {**row, "recommended_structure": t.get("structure")}
+            _ai_futs[id(t)] = (t, _ai_pool.submit(get_ai_assessment, t["ticker"], ai_ctx))
         from config.structures import get_or_none as _get_st
-        _st = _get_st(t.get("structure", ""))
-        if _st:
-            t["pnl_fn"]        = _st.expiry_pnl_fn
-            t["hedge_urgency"] = _st.hedge.urgency
-        t["hedge"]          = compute_hedge(t)
-        # Exact hedge from live chain
-        ex = pfp.get_hedge_exact(t, t.get("ticker"))
-        if ex and not ex.get("error"):
-            mp  = t.get("max_profit")
-            ml  = t.get("max_loss")
-            cps = ex.get("cost_per_share", 0)
-            ex["primary_max_profit_ps"]  = mp
-            ex["primary_max_loss_ps"]    = ml
-            ex["combined_max_profit_ps"] = round(mp - cps, 4) if mp is not None else None
-            ex["combined_max_loss_ps"]   = round(ml + cps, 4) if ml is not None else None
-        t["hedge_exact"] = ex
+        for t, fut in _ai_futs.values():
+            try:
+                ai = fut.result(timeout=20)
+            except _FT:
+                ai = {"assessment": None, "confidence": None, "provider": None, "error": "timeout"}
+            except Exception as _e:
+                ai = {"assessment": None, "confidence": None, "provider": None, "error": str(_e)}
+            t["ai_assessment"] = ai["assessment"]
+            t["ai_confidence"]  = ai["confidence"]
+            t["ai_provider"]    = ai["provider"]
+            t["ai_error"]       = ai["error"]
+            _st = _get_st(t.get("structure", ""))
+            if _st:
+                t["pnl_fn"]        = _st.expiry_pnl_fn
+                t["hedge_urgency"] = _st.hedge.urgency
+            t["hedge"]          = compute_hedge(t)
+            # Exact hedge from live chain
+            ex = pfp.get_hedge_exact(t, t.get("ticker"))
+            if ex and not ex.get("error"):
+                mp  = t.get("max_profit")
+                ml  = t.get("max_loss")
+                cps = ex.get("cost_per_share", 0)
+                ex["primary_max_profit_ps"]  = mp
+                ex["primary_max_loss_ps"]    = ml
+                ex["combined_max_profit_ps"] = round(mp - cps, 4) if mp is not None else None
+                combined_ml = round(ml + cps, 4) if ml is not None else None
+                ex["combined_max_loss_ps"]   = combined_ml
+                # Flag when adding hedge cost tips a passing trade over its max-loss gate
+                ex["hedge_exceeds_max_loss"] = (
+                    combined_ml is not None and ml is not None and combined_ml > ml
+                    and t.get("meets_max_loss") is True
+                )
+            t["hedge_exact"] = ex
     return top
 
 
@@ -527,7 +633,7 @@ def api_analyze():
 
     def generate():
         from concurrent.futures import ThreadPoolExecutor, TimeoutError as _FuturesTimeout
-        _pool = ThreadPoolExecutor(max_workers=1)
+        _pool = ThreadPoolExecutor(max_workers=3)  # 3 tickers fetched concurrently
         try:
             yield from _generate_inner(_pool, run_list, overrides, _regime,
                                        _etrade_allowed, mkt_ctx, _allowed_structs)
@@ -569,10 +675,14 @@ def api_analyze():
                 app.logger.warning("Synchronous ML fallback failed: %s", _mle)
                 _ml_snapshot = {}
 
+        # Pre-submit all ticker futures so max_workers=3 can overlap fetches.
+        # Results are consumed in original order to preserve streaming order.
+        _futures = {ticker: _pool.submit(_run_ticker, ticker) for ticker in run_list}
+
         rows = []
         for ticker in run_list:
             try:
-                future = _pool.submit(_run_ticker, ticker)
+                future = _futures[ticker]
                 # Poll with keepalive pings so the SSE connection stays alive through slow tickers
                 row = None
                 deadline = 90  # total seconds per ticker
@@ -1255,20 +1365,82 @@ def _start_training_data_scheduler():
 
     sched = BackgroundScheduler(daemon=True)
     if _scheduler_cfg["collect_enabled"]:
+        # Compute start_date so the interval aligns with the last run, not "now".
+        # This prevents restarts from shifting the collection schedule:
+        # next_run = last_run + interval (keep adding interval until > now).
+        import pytz as _pytz
+        from datetime import timedelta as _td
+        _et = _pytz.timezone("America/New_York")
+        _now = datetime.now(_et)
+        _interval_td = _td(minutes=interval)
+
+        # Find last successful collect run from persisted history
+        _last_collect_ts = None
+        for entry in reversed(_run_history):
+            if entry.get("job") in ("collect", "training_collect") and entry.get("state") == "done":
+                try:
+                    _last_collect_ts = datetime.fromisoformat(entry["ts"]).astimezone(_et)
+                except Exception:
+                    pass
+                break
+
+        if _last_collect_ts:
+            _next = _last_collect_ts + _interval_td
+            while _next <= _now:
+                _next += _interval_td
+            _start_date = _next
+            app.logger.info(f"Collect job resuming from last run {_last_collect_ts.strftime('%H:%M')} ET — next run {_start_date.strftime('%H:%M')} ET")
+        else:
+            _start_date = _now + _interval_td
+            app.logger.info(f"Collect job: no prior run found — first run in {interval}m")
+
         sched.add_job(_interval_collect, "interval", minutes=interval,
                       id="collect", name=f"Data Collect ({interval}m)",
+                      start_date=_start_date,
                       timezone="America/New_York")
         app.logger.info(f"Collect job scheduled every {interval}m, window {hour_start}:00-{hour_end}:00 ET")
     else:
         app.logger.info("Collect job disabled via secrets.toml collect_enabled=false")
-    sched.add_job(_morning_scan,  "cron", hour=10, minute=0,
+    _sc = _scheduler_cfg
+    sched.add_job(_morning_scan,  "cron",
+                  hour=_sc.get("morning_scan_hour", 10), minute=_sc.get("morning_scan_minute", 0),
                   day_of_week="mon-fri", id="morning_scan", name="Morning Scan",
                   timezone="America/New_York")
-    sched.add_job(_evening_check, "cron", hour=17, minute=0,
+    sched.add_job(_evening_check, "cron",
+                  hour=_sc.get("evening_check_hour", 17), minute=_sc.get("evening_check_minute", 0),
                   day_of_week="mon-fri", id="evening_check", name="Evening Check",
                   timezone="America/New_York")
+
+    # ── Tier 0 Data Flywheel archive jobs ──────────────────────────────────────
+    from scripts import data_archive as _da
+
+    def _oi_open():
+        _run_in_bg("oi_open", lambda: _da.archive_oi_snapshot("open"))
+
+    def _oi_close():
+        _run_in_bg("oi_close", lambda: _da.archive_oi_snapshot("close"))
+
+    def _daily_archive():
+        _run_in_bg("daily_archive", _da.run_daily_archive)
+
+    sched.add_job(_oi_open, "cron",
+                  hour=_sc.get("oi_open_hour", 9), minute=_sc.get("oi_open_minute", 30),
+                  day_of_week="mon-fri", id="oi_open", name="OI Snapshot (Open)",
+                  timezone="America/New_York")
+    sched.add_job(_oi_close, "cron",
+                  hour=_sc.get("oi_close_hour", 15), minute=_sc.get("oi_close_minute", 55),
+                  day_of_week="mon-fri", id="oi_close", name="OI Snapshot (Close)",
+                  timezone="America/New_York")
+    sched.add_job(_daily_archive, "cron",
+                  hour=_sc.get("daily_archive_hour", 16), minute=_sc.get("daily_archive_minute", 30),
+                  day_of_week="mon-fri", id="daily_archive", name="Daily Archive (T0-A/B/D)",
+                  timezone="America/New_York")
+
     sched.start()
-    app.logger.info("Scheduler started — morning scan 10:00 ET, evening check 17:00 ET")
+    app.logger.info(
+        "Scheduler started — morning scan 10:00, OI open 9:45, OI close 15:55, "
+        "daily archive 16:30, evening check 17:00 ET"
+    )
     return sched
 
 
@@ -1338,6 +1510,9 @@ def api_scheduler_status():
             "training_collect":  _job_status("training_collect"),
             "regime_backfill":   _job_status("regime_backfill"),
             "train_models":      _job_status("train_models"),
+            "oi_open":           _job_status("oi_open"),
+            "oi_close":          _job_status("oi_close"),
+            "daily_archive":     _job_status("daily_archive"),
         },
         "ml_cache": {
             "warm":      _mlc.is_warm(),
@@ -1538,6 +1713,69 @@ def api_train_models_status():
     return jsonify(s)
 
 
+@app.route("/api/ml/audit")
+def api_ml_audit():
+    """Return calibration curves and Brier scores for all trained classifiers."""
+    from scripts.model_audit import run_audit
+    try:
+        return jsonify(run_audit())
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+
+@app.route("/api/ml/calibrate", methods=["POST"])
+def api_ml_calibrate():
+    """Calibrate all trained classifiers without retraining. Runs in background."""
+    def _run():
+        from scripts.calibrate_models import calibrate_all
+        return calibrate_all()
+    _run_in_bg("calibrate_models", _run)
+    return jsonify({"ok": True, "running": True, "message": "Calibration started"})
+
+
+@app.route("/api/archive/run", methods=["POST"])
+def api_archive_run():
+    """
+    Manually trigger all Tier 0 archive jobs — useful for testing or catching up
+    after a server restart. Runs in background; poll /api/scheduler/status for job state.
+    """
+    from scripts import data_archive as _da
+    job = request.json.get("job", "all") if request.is_json else "all"
+
+    if job == "vix":
+        _run_in_bg("daily_archive", _da.archive_vix_term_structure)
+    elif job == "intraday":
+        _run_in_bg("daily_archive", _da.archive_intraday_bars)
+    elif job == "oi":
+        time_of_day = request.json.get("time_of_day", "close") if request.is_json else "close"
+        bg_key = "oi_open" if time_of_day == "open" else "oi_close"
+        _run_in_bg(bg_key, lambda: _da.archive_oi_snapshot(time_of_day))
+    elif job == "earnings":
+        _run_in_bg("daily_archive", _da.archive_earnings_iv)
+    else:
+        _run_in_bg("daily_archive", _da.run_daily_archive)
+
+    return jsonify({"ok": True, "job": job, "status": "started"})
+
+
+@app.route("/api/archive/status")
+def api_archive_status():
+    """Row counts for all four Tier 0 flywheel tables."""
+    from scripts.db import connect, ensure_archive_tables
+    ensure_archive_tables()
+    counts = {}
+    try:
+        with connect() as con:
+            for table in ("intraday_bars", "vix_term_structure", "oi_changes", "earnings_iv_tracker"):
+                try:
+                    counts[table] = con.execute(f"SELECT count(*) FROM {table}").fetchone()[0]
+                except Exception:
+                    counts[table] = 0
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
+    return jsonify({"ok": True, "counts": counts})
+
+
 @app.route("/api/ml/cache/status")
 def api_ml_cache_status():
     """Return age, size, and warm status of the ML prediction cache."""
@@ -1628,7 +1866,12 @@ _WATCHLIST_MAX = 50
 
 @app.route("/api/watchlist")
 def api_get_watchlist():
-    return jsonify({"ok": True, "watchlist": WATCHLIST, "max": _WATCHLIST_MAX})
+    return jsonify({
+        "ok": True,
+        "watchlist": WATCHLIST,
+        "watchlist_archive_only": WATCHLIST_ARCHIVE,
+        "max": _WATCHLIST_MAX,
+    })
 
 
 @app.route("/api/ticker-validate")
