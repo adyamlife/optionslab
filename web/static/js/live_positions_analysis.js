@@ -114,16 +114,24 @@ function _buildMlSection(ml) {
 
   if (!rows.length) return "";
 
-  const rowsHtml = rows.map(([signal, val, vCls, desc]) =>
-    `<div class="lp-ml-row">
-      <span class="lp-ml-signal">${signal}</span>
-      <span class="lp-ml-val${vCls ? " " + vCls : ""}">${escHtml(val)}</span>
-      <span class="lp-ml-desc">${desc}</span>
-    </div>`).join("");
+  // Compact pill row — signal + coloured value only; description goes in modal
+  const pillsHtml = rows.map(([signal, val, vCls]) =>
+    `<span class="lp-ml-pill${vCls ? " " + vCls : ""}"><span class="lp-ml-pill-label">${signal}</span> ${val}</span>`
+  ).join("");
+
+  // Full detail payload for the modal
+  const detail = {
+    title: "ML Analysis",
+    rows: rows.map(([signal, val, vCls, desc]) => ({ signal, val, vCls, desc })),
+  };
+  const detailJson = escHtml(JSON.stringify(detail));
 
   return `<div class="lp-ml-section">
-    <div class="lp-ml-section-title">ML Analysis</div>
-    ${rowsHtml}
+    <div class="lp-ml-section-header">
+      <span class="lp-ml-section-title">ML Analysis</span>
+      <button class="lp-info-btn" data-info-type="ml" data-info='${detailJson}' title="Show ML details">?</button>
+    </div>
+    <div class="lp-ml-pills">${pillsHtml}</div>
   </div>`;
 }
 

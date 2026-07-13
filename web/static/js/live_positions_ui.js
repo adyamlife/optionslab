@@ -268,11 +268,37 @@ function renderGroupCombined(g, filter) {
   );
   if (!visibleSpreads.length) return "";
 
-  const groupHtml = visibleSpreads.map(sp => `
-    <div class="pu-group-item">
-      ${renderSpreadLP(sp, g.ticker)}
-    </div>
-  `).join("");
+  const mergeExpiry = isMergeByExpiry ? isMergeByExpiry() : true;
+  let groupHtml = "";
+
+  if (mergeExpiry) {
+    // Group spreads by expiry; those with the same expiry get a merged card
+    const byExpiry = {};
+    const noExpiry = [];
+    for (const sp of visibleSpreads) {
+      if (sp.expiry) {
+        (byExpiry[sp.expiry] = byExpiry[sp.expiry] || []).push(sp);
+      } else {
+        noExpiry.push(sp);
+      }
+    }
+    for (const [expiry, sps] of Object.entries(byExpiry)) {
+      if (sps.length > 1) {
+        groupHtml += `<div class="pu-group-item">${renderMergedExpiryCard(sps, g.ticker, expiry)}</div>`;
+      } else {
+        groupHtml += `<div class="pu-group-item">${renderSpreadLP(sps[0], g.ticker)}</div>`;
+      }
+    }
+    for (const sp of noExpiry) {
+      groupHtml += `<div class="pu-group-item">${renderSpreadLP(sp, g.ticker)}</div>`;
+    }
+  } else {
+    groupHtml = visibleSpreads.map(sp => `
+      <div class="pu-group-item">
+        ${renderSpreadLP(sp, g.ticker)}
+      </div>
+    `).join("");
+  }
 
   return `
     <div class="pu-group" data-ticker="${escHtml(g.ticker)}">
@@ -281,6 +307,163 @@ function renderGroupCombined(g, filter) {
       ${renderCombinedPnlExplanation(g)}
     </div>
   `;
+}
+
+/**
+ * Render a merged card for multiple positions on the same ticker + expiry
+ * @param {Array} spreads - 2+ spreads sharing the same expiry
+ * @param {string} ticker
+ * @param {string} expiry
+ * @returns {string} HTML
+ */
+function renderMergedExpiryCard(spreads, ticker, expiry) {
+  const totalPnl     = spreads.reduce((s, sp) => s + (sp.unrealized_pnl  ?? 0), 0);
+  const totalProfit  = spreads.reduce((s, sp) => s + (sp.max_profit_ps   ?? 0), 0);
+  const totalLoss    = spreads.reduce((s, sp) => s + (sp.max_loss_ps     ?? 0), 0);
+  const dte          = spreads[0].dte;
+  const ulPrice      = spreads[0].ul_price;
+  const dteC  = dte  == null ? "na" : dte  <= 5 ? "fail" : dte  <= 14 ? "warn" : "na";
+  const pnlC  = totalPnl  > 0 ? "pass" : totalPnl < 0 ? "fail" : "na";
+  const profC = totalProfit > 0 ? "pass" : "na";
+  const lossC = "fail";
+
+  const legs = spreads.map(sp => `
+    <div class="lp-merged-leg">
+      <span class="lp-merged-leg-desc">${escHtml(sp.desc || "Position")}</span>
+      <span class="${sp.unrealized_pnl >= 0 ? "pass" : "fail"}">${fmtMoney(sp.unrealized_pnl)}</span>
+    </div>
+  `).join("");
+
+  // Individual cards inside a <details> for drill-down
+  const individualCards = spreads.map(sp => `
+    <div class="pu-group-item" style="margin-top:.6rem">
+      ${renderSpreadLP(sp, ticker)}
+    </div>
+  `).join("");
+
+  return `
+    <div class="pu-spread-card pu-merged-card" data-ticker="${escHtml(ticker)}">
+      <div class="pu-spread-header">
+        <h3 class="pu-spread-title">${escHtml(ticker)} — ${escHtml(expiry)} <span class="lp-merged-badge">${spreads.length} positions</span></h3>
+      </div>
+
+      <div class="pu-metrics">
+        <div class="pu-metric">
+          <div class="pu-metric-label">Combined P&L</div>
+          <div class="pu-metric-value ${pnlC}">${fmtMoney(totalPnl)}</div>
+        </div>
+        <div class="pu-metric">
+          <div class="pu-metric-label">DTE</div>
+          <div class="pu-metric-value ${dteC}">${dte ?? "—"}</div>
+        </div>
+        <div class="pu-metric">
+          <div class="pu-metric-label">Combined Max Profit</div>
+          <div class="pu-metric-value ${profC}">${fmtMoney(totalProfit)}</div>
+        </div>
+        <div class="pu-metric">
+          <div class="pu-metric-label">Combined Max Loss</div>
+          <div class="pu-metric-value ${lossC}">${fmtMoney(totalLoss)}</div>
+        </div>
+        ${ulPrice != null ? `
+        <div class="pu-metric">
+          <div class="pu-metric-label">Underlying</div>
+          <div class="pu-metric-value na">${fmtMoney(ulPrice)}</div>
+        </div>` : ""}
+      </div>
+
+      <div class="lp-merged-legs">${legs}</div>
+
+      ${renderMergedPnlExplanation(spreads, ticker)}
+
+      <details class="lp-merged-detail">
+        <summary>Analyze positions individually</summary>
+        ${individualCards}
+      </details>
+    </div>
+  `;
+}
+
+/**
+ * Combined expiration P&L table for merged same-expiry positions.
+ * Sums pnlAtExpiry(spy, sp) across all spreads at each price level.
+ * @param {Array} spreads - merged spreads (same expiry)
+ * @param {string} ticker
+ * @returns {string} HTML <details> block, or "" if no strike data
+ */
+function renderMergedPnlExplanation(spreads, ticker) {
+  const validSpreads = spreads.filter(sp => sp.strike != null || sp.strike_lo != null);
+  if (!validSpreads.length) return "";
+
+  const ul = spreads[0].ul_price;
+
+  // Union of all per-spread price levels
+  const allLevels = new Set();
+  for (const sp of validSpreads) {
+    generatePriceLevels(sp).forEach(l => allLevels.add(l));
+  }
+  const levels = Array.from(allLevels).sort((a, b) => a - b);
+  if (!levels.length) return "";
+
+  // Combined P&L at each level
+  const series = levels.map(spy => ({
+    spy,
+    pnl: validSpreads.reduce((s, sp) => s + pnlAtExpiry(spy, sp), 0),
+  }));
+
+  // Breakevens (sign changes)
+  const bes = [];
+  for (let i = 0; i < series.length - 1; i++) {
+    const p0 = series[i].pnl, p1 = series[i+1].pnl;
+    if (p0 * p1 <= 0 && p0 !== p1) {
+      const be = series[i].spy + (series[i+1].spy - series[i].spy) * (-p0 / (p1 - p0));
+      bes.push(Math.round(be * 100) / 100);
+    }
+  }
+
+  const cls  = v => v > 0.01 ? "pass" : v < -0.01 ? "fail" : "na";
+  const sign = v => v >= 0 ? "+" : "";
+
+  const rows = series.map(({ spy, pnl }) => {
+    const isCur  = ul != null && Math.abs(spy - ul) < 0.26;
+    const isBe   = bes.some(b => Math.abs(spy - b) < 0.26);
+    const rowCls = isCur ? "pnl-row-current" : isBe ? "pnl-row-be" : "";
+    return `<tr class="${rowCls}">
+      <td>$${spy.toFixed(2)}${isCur ? " ◀" : ""}</td>
+      <td class="${cls(pnl)}">${sign(pnl)}$${pnl.toFixed(2)}</td>
+    </tr>`;
+  }).join("");
+
+  // Narrative lines
+  const names = spreads.map(sp => escHtml(sp.desc || "Position")).join(" + ");
+  const beLine = bes.length
+    ? `<p class="pnl-narr-line">Breakeven${bes.length > 1 ? "s" : ""}: ${bes.map(b => `<strong>$${b.toFixed(2)}</strong>`).join(" &amp; ")}.</p>`
+    : "";
+  let curLine = "";
+  if (ul != null) {
+    const cur = series.reduce((b, r) => Math.abs(r.spy - ul) < Math.abs(b.spy - ul) ? r : b);
+    curLine = `<p class="pnl-narr-line">At today's price <strong>$${ul.toFixed(2)}</strong>: combined P&amp;L = <span class="${cls(cur.pnl)}">${sign(cur.pnl)}$${cur.pnl.toFixed(2)}</span>.</p>`;
+  }
+
+  return `
+    <details class="pnl-explain-block">
+      <summary class="pnl-explain-summary">📊 Trade + Hedge Expiration P&amp;L</summary>
+      <div class="pnl-explain-body">
+        <div class="pnl-explain-cols">
+          <div class="pnl-narrative">
+            <p class="pnl-narr-line">Combined expiration P&amp;L for <strong>${escHtml(ticker)}</strong>: ${names}</p>
+            ${beLine}
+            ${curLine}
+          </div>
+          <div class="pnl-table-wrap">
+            <table class="pnl-table">
+              <thead><tr><th>${escHtml(ticker)} at expiry</th><th>Combined P&amp;L</th></tr></thead>
+              <tbody>${rows}</tbody>
+            </table>
+            ${bes.length ? `<p class="pnl-be-note">BE: ${bes.map(b => `<strong>$${b.toFixed(2)}</strong>`).join(" &amp; ")}</p>` : ""}
+          </div>
+        </div>
+      </div>
+    </details>`;
 }
 
 /**

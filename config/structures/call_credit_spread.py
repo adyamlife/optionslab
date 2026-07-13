@@ -11,6 +11,7 @@ CALL_CREDIT_SPREAD = OptionStructure(
     short_delta_lo = 0.15,
     short_delta_hi = 0.25,
     min_credit_pct = 0.25,
+    capital_type   = "spread_width",
     hedge = HedgeDef(
         structure    = "Buy OTM Protective Call",
         details      = "Buy a call 1–2 strikes above your long call leg. Limits loss on a gap-up through both spread legs.",

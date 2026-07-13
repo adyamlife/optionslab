@@ -1,0 +1,97 @@
+# Ranking configuration for Live Suggestions and paper-trade morning scan.
+# All constants that control candidate filtering, scoring weights, normalization
+# bounds, and penalties live here. Edit this file to tune ranking behavior
+# without touching Python code.
+#
+# See scripts/candidate_ranker.py for how each value is used.
+
+[gate]
+# Gate 5: ML model must meet this confidence floor to pass
+min_confidence     = 0.70
+# Gate 6: relative volume hard floor — only blocks truly halted/dead markets
+# 0.40-0.80 passes but incurs the low_volume penalty; above 0.80 is clean
+min_rel_volume     = 0.02
+# Gate 0 ML conviction override: non-recommended candidates admitted when
+# abs(meta_score - 50) > ml_conviction_meta AND confidence >= ml_conviction_conf
+ml_conviction_meta = 10
+ml_conviction_conf = 0.80
+# Gate 0 volatility route: candidates admitted if ML expects a large expected move
+expected_move_threshold = 0.12
+
+[weights]
+# Composite score weights — must sum to 1.0
+# 30% ML confidence  — model agreement is the strongest single quality signal
+# 25% EV             — expected value per capital at risk
+# 15% Signal score   — rulebook quality (per-candidate, includes gamma/div penalties)
+# 10% POP            — probability of profit (candidate-level)
+# 10% ML meta_score  — ensemble directional conviction; reduced to avoid double-counting
+#  5% IV edge        — structural IV alignment (credit wants high IV, debit wants low)
+#  5% Liquidity      — relative volume vs 20-day average
+confidence = 0.30
+ev         = 0.25
+meta_score = 0.10
+pop        = 0.10
+signal     = 0.15
+iv_edge    = 0.05
+liquidity  = 0.05
+
+[signal_norm]
+# signal_score natural range is roughly -4 to +4 (not 0-100).
+# These bounds map that range linearly to [0, 100] so every point matters.
+min = -4.0
+max =  4.0
+
+[ev_norm]
+# EV is normalized against capital at risk (per-share):
+#   priority 1: ev / max_loss            (defined-risk structures)
+#   priority 2: ev / (capital_req / 100) (undefined-risk with known margin)
+#   priority 3: ev / fallback_scale      (last resort)
+# Ratio is clipped to [clip_min, clip_max] then mapped to [0, 100].
+fallback_scale = 5.0    # $/sh divisor when no capital or max_loss available
+clip_min       = -1.0   # lower bound before mapping
+clip_max       =  2.0   # upper bound before mapping
+
+[iv_norm]
+# IV edge vp score is clipped to [-clip_vp, +clip_vp] then mapped to [0, 100].
+# Direction is flipped for debit structures (they want low IV).
+clip_vp = 5.0
+
+[liquidity_norm]
+# rel_volume at or above this value maps to liquidity score 100.
+full_volume = 1.5
+
+[anomaly]
+# ML anomaly_score bonuses — unusual setups worth surfacing regardless of rulebook fit.
+# Additive to composite score (not a weight component).
+low_threshold  = 40
+mid_threshold  = 60
+high_threshold = 80
+low_bonus  =  2
+mid_bonus  =  5
+high_bonus =  8
+
+[iv_expansion]
+# iv_expanding_prob (0-1) is multiplied by this weight and added (long-vega structures)
+# or subtracted (short-vega structures) from the composite score.
+weight = 8.0
+
+[penalties]
+# Subtracted from or added to the composite score. These do not eliminate candidates.
+trend_conflict        = 10   # structure directional bias vs ML p_win disagrees
+trend_conflict_regime =  5   # additional hit when ML regime OR rulebook trend also conflicts
+low_volume            =  8   # below confident volume threshold (but above hard gate)
+iv_expensive          =  8   # iv_edge_label is overpay or undersell
+news_per_unit_bearish =  2   # penalty per net bearish article (net = bullish_ct - bearish_ct)
+news_per_unit_bullish =  1   # bonus per net bullish article
+news_max_penalty      = 10   # cap on total news penalty
+news_max_bonus        =  5   # cap on total news bonus
+
+[penalty_triggers]
+p_win_bearish_threshold = 0.45   # p_win below this → ML bearish (penalises Uptrend structures)
+p_win_bullish_threshold = 0.55   # p_win above this → ML bullish (penalises Downtrend structures)
+low_volume_threshold    = 0.80   # rel_volume below this triggers the low_volume penalty
+
+[quality]
+# Minimum composite score for a ticker to appear in top_trades.
+# Tickers whose best candidate scores below this are excluded even if they win their slot.
+min_composite = 55

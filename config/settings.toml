@@ -84,6 +84,34 @@ watchlist_archive_only = [
   "TQQQ", "BTC", "SPCX", "PAY",
 ]
 
+# Paper-trade-only extra tickers — extends WATCHLIST for data collection.
+# Criteria: liquid options (OI > 300), diverse sector/vol profile vs primary list.
+# NOT used for live suggestions; data collected here feeds POP + Return models only.
+paper_trade_extra = [
+  # ── Broad market ETFs ────────────────────────────────────────────────────
+  "IWM",                          # small-cap beta, different vol regime to SPY/QQQ
+  "GLD",                          # gold, low equity correlation
+  "XLE",                          # energy sector ETF
+
+  # ── Financials ───────────────────────────────────────────────────────────
+  "C", "WFC", "SCHW", "AXP",
+
+  # ── Health Care / Pharma ─────────────────────────────────────────────────
+  "PFE", "MRK", "MRNA", "JNJ",
+
+  # ── Consumer Discretionary ───────────────────────────────────────────────
+  "TGT", "LOW",
+
+  # ── Industrials / Transport ───────────────────────────────────────────────
+  "UPS", "FDX",
+
+  # ── Energy ───────────────────────────────────────────────────────────────
+  "SLB",
+
+  # ── Communication Services ───────────────────────────────────────────────
+  "T", "VZ",
+]
+
 # Earnings dates are looked up live via yfinance (see
 # scripts/data_fetch.get_next_earnings_date) - no manual config needed.
 
@@ -133,6 +161,63 @@ max_gap_days = 45
 put_delta_lo = 0.20
 put_delta_hi = 0.30
 
+# Risk Reversal: sell OTM put + buy OTM call.
+# put and call delta ranges are symmetric — put skew in Low IV usually makes
+# the put leg richer, producing a net credit. Requires margin for the short put.
+[risk_reversal]
+put_delta_lo  = 0.20
+put_delta_hi  = 0.30
+call_delta_lo = 0.20
+call_delta_hi = 0.30
+
+# Bear Combo: bear put debit spread + bear call credit spread (4 legs, fully defined risk).
+# put_long is the closer-to-ATM put bought for bearish directional exposure.
+# put_short / call_short share the OTM credit spread delta band.
+# call_long is the far-OTM put bought to cap the short call's upside risk.
+[bear_combo]
+put_long_delta_lo  = 0.35   # long put (ATM-ish, directional)
+put_long_delta_hi  = 0.50
+put_short_delta_lo = 0.15   # short put (OTM, defines max profit floor)
+put_short_delta_hi = 0.25
+call_short_delta_lo = 0.15  # short call (OTM, collects premium)
+call_short_delta_hi = 0.25
+call_long_delta_lo  = 0.05  # long call (far OTM, caps upside risk — defines max loss)
+call_long_delta_hi  = 0.15
+
+# Financed Long Call: put credit spread + standalone long call (moderate bullish + IV contracting).
+# The put spread credit partially or fully pays for the OTM call.
+# put_short = OTM put sold (credit), put_long = further OTM put bought (cap), call = OTM call bought.
+[financed_long_call]
+put_short_delta_lo = 0.20   # short put (OTM, credit leg — same band as credit spreads)
+put_short_delta_hi = 0.30
+call_long_delta_lo = 0.25   # long call (OTM, directional exposure)
+call_long_delta_hi = 0.40
+
+# Financed Long Put: call credit spread + standalone long put (moderate bearish + IV contracting).
+# Mirror of Financed Long Call.
+[financed_long_put]
+call_short_delta_lo = 0.20  # short call (OTM, credit leg)
+call_short_delta_hi = 0.30
+put_long_delta_lo  = 0.25   # long put (OTM, directional exposure)
+put_long_delta_hi  = 0.40
+
+# Ratio Backspread: sell 1 near-ATM option, buy 2 OTM options.
+# Call Backspread: bullish + IV expanding. Put Backspread: bearish + IV expanding.
+# Usually entered for a small credit or near-zero cost — max loss is the dead zone at expiry.
+[ratio_backspread]
+short_delta_lo = 0.40   # short leg (near-ATM, 1×)
+short_delta_hi = 0.55
+long_delta_lo  = 0.20   # long legs (OTM, 2×)
+long_delta_hi  = 0.35
+
+# Long Strangle: buy OTM call + buy OTM put. Pure long-vol / large-move play.
+# Recommended only when debit fits capital limit; shown informational otherwise.
+[long_strangle]
+call_delta_lo = 0.20
+call_delta_hi = 0.35
+put_delta_lo  = 0.20
+put_delta_hi  = 0.35
+
 # Paper trade managed-exit rules
 [management]
 profit_target_pct = 0.90  # close when spread mark reaches this % of entry credit (90% of max profit)
@@ -145,7 +230,7 @@ market_close_hour = 16    # ET hour at which the market is considered closed (4p
 # When ML data is absent the gate is bypassed and classic EV ranking is used.
 [ml_gate]
 enabled          = true   # set false to disable the gate entirely (fall back to pure EV ranking)
-min_p_win        = 0.55   # minimum composite win probability (p_win from pred_dist)
+min_p_win        = 0.55   # minimum composite win probability (p_win from pred_dist, direction-adjusted)
 min_confidence   = 0.60   # minimum model-agreement confidence (0–1)
 kelly_fraction   = 0.5    # Half-Kelly by default (1.0 = full Kelly, unsafe for live)
 kelly_max_pct    = 0.05   # hard cap: Kelly fraction never exceeds this % of capital
@@ -200,6 +285,17 @@ debit_short_delta_grid = [0.10, 0.15, 0.20, 0.25, 0.30]
 skip_vp    = 2.5
 flag_vp    = 2.0
 bonus_scale = 0.15
+
+# Paper trade entry filters.
+# margin_account: set true when your brokerage account has margin approval.
+#   false (default) → structures with requires_margin=True (Naked Put, Jade Lizard)
+#   are skipped entirely in run_morning_scan — no phantom trades for strategies
+#   you cannot actually execute.
+# exclude_structures: additional structure names to always skip in paper trades,
+#   regardless of margin setting (e.g. strategies you are not yet comfortable with).
+[paper_trades]
+margin_account     = false
+exclude_structures = []
 
 [ai]
 primary_provider  = "groq"

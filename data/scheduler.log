@@ -96,3 +96,52 @@
 2026-07-10 16:10:09 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers
 2026-07-10 17:25:03 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers
 2026-07-10 17:31:49 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers
+2026-07-11 14:25:27 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 195.05s
+2026-07-11 14:26:34 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 258.17s
+2026-07-11 15:12:56 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 195.38s
+2026-07-11 15:13:31 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 224.70s
+2026-07-11 15:14:24 WARNING  scripts.paper_trade_engine: option_chain(BTC, 2026-07-17) failed: Expiration `2026-07-17` cannot be found. Available expirations are: []
+2026-07-11 15:14:25 WARNING  scripts.paper_trade_engine: option_chain(ARQQ, 2026-07-17) failed: Expiration `2026-07-17` cannot be found. Available expirations are: []
+2026-07-11 15:14:32 WARNING  scripts.paper_trade_engine: option_chain(QUBT, 2026-07-24) failed: Expiration `2026-07-24` cannot be found. Available expirations are: []
+2026-07-11 15:14:36 WARNING  scripts.paper_trade_engine: option_chain(SPY, 2026-07-24) failed: Expiration `2026-07-24` cannot be found. Available expirations are: []
+2026-07-11 15:14:43 WARNING  scripts.paper_trade_engine: option_chain(AAPL, 2026-07-24) failed: Expiration `2026-07-24` cannot be found. Available expirations are: []
+2026-07-12 08:30:11 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 166.32s
+2026-07-12 08:39:58 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 164.42s
+2026-07-12 08:50:31 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 167.46s
+2026-07-12 11:06:39 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 191.08s
+2026-07-12 11:18:33 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 169.19s
+2026-07-12 11:29:16 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 177.79s
+2026-07-12 12:11:26 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 164.89s
+2026-07-12 12:14:40 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 187.12s
+2026-07-12 12:33:21 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 158.41s
+2026-07-12 12:46:39 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 162.93s
+2026-07-12 12:49:43 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 163.51s
+2026-07-12 12:56:42 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 193.98s
+2026-07-12 14:02:08 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 173.19s
+2026-07-12 14:12:11 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 203.44s
+2026-07-12 14:16:37 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 186.17s
+2026-07-13 08:28:35 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 265.28s
+2026-07-13 08:57:44 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 214.35s
+2026-07-13 09:28:02 INFO     scripts.ml_cache: ml_cache refreshed: 60 tickers in 232.21s
+2026-07-13 09:59:27 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 316.99s
+2026-07-13 10:00:22 WARNING  scripts.paper_trade_engine: analyze_ticker(MU) failed: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Project Y\\web\\..\\data\\oi_cache.json.tmp' -> 'C:\\Project Y\\web\\..\\data\\oi_cache.json'
+2026-07-13 10:03:10 INFO     scripts.paper_trade_engine: Paper trade #1: 20260713_APP_COV_1  credit=6.700  expiry=2026-07-31
+2026-07-13 10:03:11 WARNING  scripts.training_data_collector: Failed to write training snapshot for 20260713_APP_COV_1: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9972)
+2026-07-13 10:03:11 INFO     scripts.paper_trade_engine: Paper trade #2: 20260713_VRT_COV_2  credit=4.500  expiry=2026-07-31
+2026-07-13 10:03:12 INFO     scripts.training_data_collector: Training snapshot written for paper trade 20260713_VRT_COV_2
+2026-07-13 10:03:12 INFO     scripts.paper_trade_engine: Paper trade #3: 20260713_ORCL_COV_3  credit=2.050  expiry=2026-07-31
+2026-07-13 10:03:13 INFO     scripts.training_data_collector: Training snapshot written for paper trade 20260713_ORCL_COV_3
+2026-07-13 10:28:36 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 265.98s
+2026-07-13 10:58:58 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 287.96s
+2026-07-13 11:29:39 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 328.99s
+2026-07-13 11:58:54 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 283.76s
+2026-07-13 12:29:25 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 314.87s
+2026-07-13 12:43:41 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 278.08s
+2026-07-13 12:43:43 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 283.71s
+2026-07-13 12:57:50 INFO     scripts.ml_cache: ml_cache refreshed: 64 tickers in 219.85s
+2026-07-13 12:57:50 INFO     scripts.ml_cache: ml_cache refreshed: 65 tickers in 220.48s
+2026-07-13 13:29:27 INFO     scripts.ml_cache: ml_cache refreshed: 75 tickers in 316.97s
+2026-07-13 13:29:28 INFO     scripts.ml_cache: ml_cache refreshed: 74 tickers in 317.76s

@@ -1,0 +1,67 @@
+/* Mispricing page — all colors from theme.css */
+
+.sched-label {
+  display: block;
+  font-size: .75rem;
+  color: var(--clr-text-muted);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  margin-bottom: .2rem;
+}
+
+.card {
+  background: var(--clr-surface-alt);
+  border: 1px solid var(--clr-border);
+  border-radius: 6px;
+  padding: 1rem 1.2rem;
+}
+
+.sched-table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+.sched-table th {
+  text-align: left;
+  padding: .35rem .55rem;
+  border-bottom: 1px solid var(--clr-border);
+  color: var(--clr-text-muted);
+  font-weight: 600;
+  font-size: .78rem;
+}
+.sched-table td {
+  padding: .4rem .55rem;
+  border-bottom: 1px solid var(--clr-border);
+  font-variant-numeric: tabular-nums;
+}
+.sched-table tr:last-child td { border-bottom: none; }
+
+.mp-expensive { color: var(--clr-fail); font-weight: 600; }
+.mp-cheap     { color: var(--clr-pass); font-weight: 600; }
+.mp-neutral   { color: var(--clr-text-muted); }
+
+.btn-sm {
+  padding: .3rem .75rem;
+  font-size: .85rem;
+  cursor: pointer;
+  border: 1px solid var(--clr-border);
+  background: var(--clr-bg);
+  color: var(--clr-text);
+  border-radius: 4px;
+}
+.btn-sm:hover { background: var(--clr-surface-hover); }
+
+.slice-hdr {
+  display: flex;
+  gap: 1rem;
+  align-items: baseline;
+  margin-bottom: .5rem;
+  flex-wrap: wrap;
+}
+.slice-hdr h4 { margin: 0; }
+
+.param-pills { display: flex; gap: .4rem; flex-wrap: wrap; }
+.param-pill {
+  font-size: .75rem;
+  background: var(--clr-bg);
+  border: 1px solid var(--clr-border);
+  border-radius: 12px;
+  padding: .1rem .55rem;
+  color: var(--clr-text-muted);
+}

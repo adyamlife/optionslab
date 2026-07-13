@@ -130,18 +130,30 @@
   /* ═══════════════════════════════════════════════════════════════════════
      COMPONENT — MARKET BIAS
      ═══════════════════════════════════════════════════════════════════════ */
-  --clr-bias-confirmed:   #1a7f37;
-  --clr-bias-favorable:   #2e7d32;
-  --clr-bias-neutral:     #555555;
-  --clr-bias-caution:     #b7791f;
-  --clr-bias-opposed:     #c0392b;
+  --clr-bias-confirmed:        #1a7f37;
+  --clr-bias-favorable:        #2e7d32;
+  --clr-bias-neutral:          #555555;
+  --clr-bias-caution:          #b7791f;
+  --clr-bias-opposed:          #c0392b;
+  --clr-bias-neutral-text:     #b0bec5;
+  --clr-bias-neutral-border:   #546e7a;
+  --clr-bias-caution-bg:       #4e342e;
+  --clr-bias-caution-text:     #ffccbc;
+  --clr-bias-caution-border:   #bf360c;
+  --clr-bias-opposed-text:     #ffcdd2;
+  --clr-info-text-light:       #c0d4f5;
 
   /* ═══════════════════════════════════════════════════════════════════════
-     COMPONENT — PAPER TRADES (dark-card theme)
+     COMPONENT — PAPER TRADES
      ═══════════════════════════════════════════════════════════════════════ */
-  --clr-pt-surface:       #1e1e2e;
-  --clr-pt-border:        rgba(255,255,255,0.08);
-  --clr-pt-text-dim:      #888888;
+  --clr-pt-surface:       var(--clr-surface);
+  --clr-pt-border:        var(--clr-border);
+  --clr-pt-text-dim:      var(--clr-text-muted);
+  --clr-pt-text-bright:   var(--clr-text-dark);
+  --clr-pt-text-mid:      var(--clr-text-mid);
+  --clr-pt-text-soft:     var(--clr-text-muted);
+  --clr-dark-separator:   var(--clr-border);
+  --clr-pass-on-dark:     var(--clr-pass-dark);
 
   /* ═══════════════════════════════════════════════════════════════════════
      COMPONENT — POSITION ALERTS (dark overlay)
@@ -210,6 +222,14 @@
   --border:               var(--clr-border);
   --text:                 var(--clr-text);
   --muted:                var(--clr-text-muted);
+  --text-muted:           var(--clr-text-muted);
   --pass:                 var(--clr-pass);
   --fail:                 var(--clr-fail);
+  --err:                  var(--clr-fail);
+  --warn:                 var(--clr-warn);
+
+  /* Surface layers (light theme) */
+  --surface1:             var(--clr-surface);
+  --surface2:             var(--clr-bg);
+  --surface3:             var(--clr-surface-hover);
 }

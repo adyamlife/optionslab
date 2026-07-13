@@ -11,6 +11,7 @@ COVERED_CALL = OptionStructure(
     short_delta_lo = 0.20,
     short_delta_hi = 0.35,
     min_credit_pct = 0.0,
+    capital_type   = "shares",
     hedge = HedgeDef(
         structure    = "Roll Call Up or Close Position",
         details      = "If stock rallies sharply, roll the call up to a higher strike for additional credit, or close the position to cap loss.",

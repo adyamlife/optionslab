@@ -69,3 +69,24 @@ class OptionStructure:
     long_delta_lo:   float = 0.0
     long_delta_hi:   float = 0.0
     min_credit_pct:  float = 0.0
+
+    # True when a margin account is required (naked/uncovered positions).
+    # False for cash-secured, share-backed, or fully defined-risk structures.
+    requires_margin: bool  = False
+
+    # How to compute the capital consumed at entry:
+    #   "debit"        — premium paid × 100 × contracts  (long options, debit spreads)
+    #   "spread_width" — (width − net_credit) × 100      (credit spreads, iron condor)
+    #   "margin"       — broker margin formula (~20% notional; Naked Put, Jade Lizard)
+    #   "cash_secured" — strike × 100 × contracts        (Cash Secured Put)
+    #   "shares"       — must already own 100 shares      (Covered Call)
+    capital_type: str = "debit"
+
+    # Target DTE range at entry (0 = not constrained by this structure).
+    # Used for strike/expiry selection and paper trade engine filtering.
+    dte_min: int = 0
+    dte_max: int = 0
+
+    # Profit-target exit threshold as a fraction of max possible gain (0 = no target).
+    # e.g. 0.50 means exit when unrealised P&L reaches 50% of the premium paid.
+    profit_target_pct: float = 0.0

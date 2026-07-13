@@ -2,11 +2,23 @@
 Optuna hyperparameter tuning for all XGBoost models in the pipeline.
 
 Runs TPE search over the XGBoost search space for each model, saves best
-params to data/models/best_params.json, then re-runs training so the
-saved joblib immediately reflects the tuned model.
+params + metadata to data/models/best_params.json, then optionally re-trains
+so the saved joblib immediately reflects the tuned model.
 
-Each training script checks for saved params at startup and uses them when
-present (see _load_best_params() helper imported by each train_*.py).
+Each training script calls load_best_params() at startup and merges the
+result with its own defaults. load_best_params() always injects _XGB_DEFAULTS
+(random_state, tree_method, n_jobs) so callers never have to repeat them.
+
+Tuning methodology — TimeSeriesSplit CV with early stopping:
+  For each trial, we apply sklearn.model_selection.TimeSeriesSplit with
+  _N_CV_FOLDS folds to the full labeled dataset. Early stopping
+  (_EARLY_STOPPING_ROUNDS) is used on every fold's eval_set so XGBoost
+  determines the actual n_estimators automatically — n_estimators in the model
+  is the max cap, not a tuned parameter. Optuna's objective is the mean
+  CV score (log-loss for classifiers, RMSE for regressors) across folds.
+
+  This produces parameters that generalise much better than a single train/test
+  split, and early stopping makes each trial faster and less prone to overfitting.
 
 Usage:
     python -m scripts.tune_hyperparams                    # all models, 50 trials each
@@ -21,22 +33,35 @@ from pathlib import Path
 
 import numpy as np
 import optuna
+from sklearn.model_selection import TimeSeriesSplit
 
 optuna.logging.set_verbosity(optuna.logging.WARNING)
 
 log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
-_ROOT = Path(__file__).resolve().parent.parent
+_ROOT        = Path(__file__).resolve().parent.parent
 _PARAMS_PATH = _ROOT / "data" / "models" / "best_params.json"
 
 MODELS = ["regime", "direction", "return", "volatility"]
+
+_N_CV_FOLDS          = 5
+_N_ESTIMATORS_MAX    = 800
+_EARLY_STOPPING_ROUNDS = 30
+
+# Defaults baked into every XGBoost model regardless of tuning.
+# load_best_params() merges these so callers never have to remember them.
+_XGB_DEFAULTS = {
+    "random_state": 42,
+    "tree_method":  "hist",
+    "n_jobs":       -1,
+    "n_estimators": _N_ESTIMATORS_MAX,
+}
 
 
 # ── Shared helpers ────────────────────────────────────────────────────────────
 
 def _load_best_params() -> dict:
-    """Load saved best params. Returns {} if file absent."""
     if _PARAMS_PATH.exists():
         return json.loads(_PARAMS_PATH.read_text())
     return {}
@@ -47,147 +72,158 @@ def _save_best_params(all_params: dict) -> None:
     _PARAMS_PATH.write_text(json.dumps(all_params, indent=2))
 
 
-def _xgb_search_space(trial: optuna.Trial) -> dict:
-    """Common XGBoost search space used across all models."""
-    return {
-        "n_estimators":      trial.suggest_int("n_estimators", 100, 800),
-        "max_depth":         trial.suggest_int("max_depth", 3, 7),
-        "learning_rate":     trial.suggest_float("learning_rate", 0.01, 0.15, log=True),
-        "subsample":         trial.suggest_float("subsample", 0.6, 1.0),
-        "colsample_bytree":  trial.suggest_float("colsample_bytree", 0.5, 1.0),
-        "min_child_weight":  trial.suggest_int("min_child_weight", 1, 10),
-        "reg_alpha":         trial.suggest_float("reg_alpha", 1e-4, 10.0, log=True),
-        "reg_lambda":        trial.suggest_float("reg_lambda", 1e-4, 10.0, log=True),
+def _xgb_search_space(trial: optuna.Trial, *, classifier: bool = False) -> dict:
+    """XGBoost hyperparameter search space shared across all models.
+    n_estimators is excluded — it is determined by early stopping per fold.
+    """
+    params = {
+        "max_depth":        trial.suggest_int("max_depth", 3, 7),
+        "learning_rate":    trial.suggest_float("learning_rate", 0.01, 0.15, log=True),
+        "subsample":        trial.suggest_float("subsample", 0.6, 1.0),
+        "colsample_bytree": trial.suggest_float("colsample_bytree", 0.5, 1.0),
+        "min_child_weight": trial.suggest_int("min_child_weight", 1, 10),
+        "reg_alpha":        trial.suggest_float("reg_alpha", 1e-4, 10.0, log=True),
+        "reg_lambda":       trial.suggest_float("reg_lambda", 1e-4, 10.0, log=True),
+        "gamma":            trial.suggest_float("gamma", 0.0, 5.0),
+        "grow_policy":      trial.suggest_categorical("grow_policy", ["depthwise", "lossguide"]),
     }
+    if classifier:
+        # max_delta_step helps with class imbalance in binary/multiclass classification
+        params["max_delta_step"] = trial.suggest_int("max_delta_step", 0, 10)
+    return params
+
+
+def _cv_score_classifier(
+    trial: optuna.Trial,
+    X: np.ndarray,
+    y: np.ndarray,
+    objective: str,
+    eval_metric: str,
+    sample_weights: np.ndarray | None = None,
+) -> float:
+    """TimeSeriesSplit CV score (mean log-loss) for a classifier trial."""
+    from xgboost import XGBClassifier
+    from sklearn.metrics import log_loss
+
+    params  = _xgb_search_space(trial, classifier=True)
+    scores  = []
+    for tr_idx, val_idx in TimeSeriesSplit(n_splits=_N_CV_FOLDS).split(X):
+        X_tr, X_val = X[tr_idx], X[val_idx]
+        y_tr, y_val = y[tr_idx], y[val_idx]
+        sw = sample_weights[tr_idx] if sample_weights is not None else None
+
+        model = XGBClassifier(
+            **_XGB_DEFAULTS, **params,
+            objective=objective,
+            eval_metric=eval_metric,
+            early_stopping_rounds=_EARLY_STOPPING_ROUNDS,
+        )
+        model.fit(X_tr, y_tr, sample_weight=sw, eval_set=[(X_val, y_val)], verbose=False)
+        proba = model.predict_proba(X_val)
+        # binary: keep only the positive-class column for log_loss
+        if proba.shape[1] == 2:
+            proba = proba[:, 1]
+        scores.append(log_loss(y_val, proba))
+
+    return float(np.mean(scores))
+
+
+def _cv_score_regressor(trial: optuna.Trial, X: np.ndarray, y: np.ndarray) -> float:
+    """TimeSeriesSplit CV score (mean RMSE) for a regressor trial."""
+    from xgboost import XGBRegressor
+    from sklearn.metrics import mean_squared_error
+
+    params = _xgb_search_space(trial, classifier=False)
+    scores = []
+    for tr_idx, val_idx in TimeSeriesSplit(n_splits=_N_CV_FOLDS).split(X):
+        X_tr, X_val = X[tr_idx], X[val_idx]
+        y_tr, y_val = y[tr_idx], y[val_idx]
+
+        model = XGBRegressor(
+            **_XGB_DEFAULTS, **params,
+            objective="reg:squarederror",
+            eval_metric="rmse",
+            early_stopping_rounds=_EARLY_STOPPING_ROUNDS,
+        )
+        model.fit(X_tr, y_tr, eval_set=[(X_val, y_val)], verbose=False)
+        scores.append(float(np.sqrt(mean_squared_error(y_val, model.predict(X_val)))))
+
+    return float(np.mean(scores))
 
 
 # ── Per-model objective functions ─────────────────────────────────────────────
 
 def _objective_regime(trial: optuna.Trial) -> float:
-    """Minimise validation log-loss for the 3-class regime classifier."""
-    from xgboost import XGBClassifier
-    from sklearn.metrics import log_loss
+    """Mean CV log-loss for the 3-class regime classifier."""
+    from sklearn.preprocessing import LabelEncoder
     from sklearn.utils.class_weight import compute_sample_weight
     from scripts.train_regime_classifier import (
-        load_labeled_data, time_based_split, build_feature_matrix,
-        _DATA_PATH, TARGET_COL,
+        load_labeled_data, build_feature_matrix, TARGET_COL,
     )
-    from sklearn.preprocessing import LabelEncoder
 
-    df = load_labeled_data(_DATA_PATH)
+    df = load_labeled_data()
     if df.empty:
-        raise optuna.exceptions.TrialPruned()
+        raise RuntimeError("No training data for regime model")
 
-    train_df, test_df, _ = time_based_split(df)
-    if train_df.empty or test_df.empty:
-        raise optuna.exceptions.TrialPruned()
+    X, _ = build_feature_matrix(df, fit=True)
+    le   = LabelEncoder()
+    y    = le.fit_transform(df[TARGET_COL].values)
+    sw   = compute_sample_weight("balanced", y)
 
-    X_train, encoders = build_feature_matrix(train_df, fit=True)
-    X_test, _ = build_feature_matrix(test_df, encoders=encoders, fit=False)
-
-    le = LabelEncoder()
-    y_train = le.fit_transform(train_df[TARGET_COL])
-    y_test = le.transform(test_df[TARGET_COL])
-
-    params = _xgb_search_space(trial)
-    model = XGBClassifier(
-        **params,
-        objective="multi:softprob",
-        eval_metric="mlogloss",
-    )
-    w = compute_sample_weight("balanced", y_train)
-    model.fit(X_train, y_train, sample_weight=w, verbose=False)
-    proba = model.predict_proba(X_test)
-    return log_loss(y_test, proba)
+    return _cv_score_classifier(trial, X.values, y,
+                                 objective="multi:softprob",
+                                 eval_metric="mlogloss",
+                                 sample_weights=sw)
 
 
 def _objective_direction(trial: optuna.Trial) -> float:
-    """Minimise validation log-loss for the binary direction classifier."""
-    from xgboost import XGBClassifier
-    from sklearn.metrics import log_loss
+    """Mean CV log-loss for the binary direction classifier."""
     from scripts.train_direction_model import (
-        load_labeled_data, time_based_split, build_feature_matrix, _DATA_PATH,
+        load_labeled_data, build_feature_matrix,
     )
 
     df = load_labeled_data()
     if df.empty:
-        raise optuna.exceptions.TrialPruned()
+        raise RuntimeError("No training data for direction model")
 
-    train_df, test_df, _ = time_based_split(df)
-    if train_df.empty or test_df.empty:
-        raise optuna.exceptions.TrialPruned()
+    X, _ = build_feature_matrix(df, fit=True)
+    y    = df["direction"].values
 
-    X_train, encoders = build_feature_matrix(train_df, fit=True)
-    X_test, _ = build_feature_matrix(test_df, encoders=encoders, fit=False)
-    y_train = train_df["direction"].values
-    y_test = test_df["direction"].values
-
-    params = _xgb_search_space(trial)
-    model = XGBClassifier(
-        **params,
-        objective="binary:logistic",
-        eval_metric="logloss",
-    )
-    model.fit(X_train, y_train, verbose=False)
-    proba = model.predict_proba(X_test)[:, 1]
-    return log_loss(y_test, proba)
+    return _cv_score_classifier(trial, X.values, y,
+                                 objective="binary:logistic",
+                                 eval_metric="logloss")
 
 
 def _objective_return(trial: optuna.Trial) -> float:
-    """Minimise validation RMSE for the expected-return regressor."""
-    from xgboost import XGBRegressor
-    from sklearn.metrics import mean_squared_error
+    """Mean CV RMSE for the expected-return regressor."""
     from scripts.train_return_model import (
-        load_labeled_data, time_based_split, build_feature_matrix, TARGET_COL,
+        load_labeled_data, build_feature_matrix, TARGET_COL,
     )
 
     df = load_labeled_data()
     if df.empty:
-        raise optuna.exceptions.TrialPruned()
+        raise RuntimeError("No training data for return model")
 
-    train_df, test_df, _ = time_based_split(df)
-    if train_df.empty or test_df.empty:
-        raise optuna.exceptions.TrialPruned()
+    X, _ = build_feature_matrix(df, fit=True)
+    y    = df[TARGET_COL].values
 
-    # return model uses dummy_cols (not encoders) as second return value
-    X_train, dummy_cols = build_feature_matrix(train_df, fit=True)
-    X_test, _ = build_feature_matrix(test_df, dummy_cols=dummy_cols, fit=False)
-    y_train = train_df[TARGET_COL].values
-    y_test = test_df[TARGET_COL].values
-
-    params = _xgb_search_space(trial)
-    model = XGBRegressor(**params, objective="reg:squarederror")
-    model.fit(X_train, y_train, verbose=False)
-    y_pred = model.predict(X_test)
-    return float(np.sqrt(mean_squared_error(y_test, y_pred)))
+    return _cv_score_regressor(trial, X.values, y)
 
 
 def _objective_volatility(trial: optuna.Trial) -> float:
-    """Minimise validation RMSE for the volatility regressor."""
-    from xgboost import XGBRegressor
-    from sklearn.metrics import mean_squared_error
+    """Mean CV RMSE for the volatility regressor."""
     from scripts.train_volatility_model import (
-        load_labeled_data, time_based_split, build_feature_matrix, TARGET_COL,
+        load_labeled_data, build_feature_matrix, TARGET_COL,
     )
 
     df = load_labeled_data()
     if df.empty:
-        raise optuna.exceptions.TrialPruned()
+        raise RuntimeError("No training data for volatility model")
 
-    train_df, test_df, _ = time_based_split(df)
-    if train_df.empty or test_df.empty:
-        raise optuna.exceptions.TrialPruned()
+    X, _ = build_feature_matrix(df, fit=True)
+    y    = df[TARGET_COL].values
 
-    X_train, encoders = build_feature_matrix(train_df, fit=True)
-    X_test, _ = build_feature_matrix(test_df, encoders=encoders, fit=False)
-    y_train = train_df[TARGET_COL].values
-    y_test = test_df[TARGET_COL].values
-
-    params = _xgb_search_space(trial)
-    model = XGBRegressor(**params, objective="reg:squarederror")
-    model.fit(X_train, y_train, verbose=False)
-    y_pred = model.predict(X_test)
-    return float(np.sqrt(mean_squared_error(y_test, y_pred)))
+    return _cv_score_regressor(trial, X.values, y)
 
 
 _OBJECTIVES = {
@@ -201,67 +237,65 @@ _OBJECTIVES = {
 # ── Tune one model ────────────────────────────────────────────────────────────
 
 def tune_model(name: str, n_trials: int = 50) -> dict:
-    """Run Optuna study for one model. Returns best params dict."""
-    log.info(f"Tuning {name} ({n_trials} trials)…")
-    objective = _OBJECTIVES[name]
+    """Run Optuna TPE study for one model. Returns {score, params, n_trials}."""
+    log.info("Tuning %s (%d trials)…", name, n_trials)
 
     study = optuna.create_study(
         direction="minimize",
         sampler=optuna.samplers.TPESampler(seed=42),
-        pruner=optuna.pruners.MedianPruner(n_startup_trials=10, n_warmup_steps=0),
+        # No pruner: objectives don't report intermediate values (early stopping
+        # handles over-training within each XGBoost call instead).
     )
-    study.optimize(objective, n_trials=n_trials, show_progress_bar=False)
+    study.optimize(_OBJECTIVES[name], n_trials=n_trials, show_progress_bar=False)
 
     best = study.best_trial
     log.info(
-        f"{name}: best value={best.value:.5f} "
-        f"(trial {best.number}/{n_trials}) — "
-        f"n_estimators={best.params.get('n_estimators')} "
-        f"max_depth={best.params.get('max_depth')} "
-        f"lr={best.params.get('learning_rate', 0):.4f}"
+        "%s: best CV score=%.5f (trial %d/%d) params=%s",
+        name, best.value, best.number, n_trials,
+        json.dumps(best.params),
     )
-    return best.params
+    return {"score": best.value, "params": best.params, "n_trials": n_trials}
 
 
 # ── Main entry point ──────────────────────────────────────────────────────────
 
 def main(models: list[str], n_trials: int, retrain: bool) -> dict:
     all_params = _load_best_params()
-    results = {}
+    results    = {}
 
     for name in models:
         try:
-            params = tune_model(name, n_trials)
-            all_params[name] = params
-            results[name] = {"ok": True, "params": params}
-        except Exception as e:
-            log.error(f"{name} tuning failed: {e}")
-            results[name] = {"ok": False, "error": str(e)}
+            result        = tune_model(name, n_trials)
+            all_params[name] = result
+            results[name] = {"ok": True, **result}
+        except Exception:
+            log.exception("%s tuning failed", name)
+            results[name] = {"ok": False}
 
     _save_best_params(all_params)
-    log.info(f"Best params saved → {_PARAMS_PATH}")
+    log.info("Best params saved → %s", _PARAMS_PATH)
 
     if retrain:
         log.info("Re-training models with tuned params…")
-        train_map = {
-            "regime":     ("scripts.train_regime_classifier",  "train"),
-            "direction":  ("scripts.train_direction_model",    "train"),
-            "return":     ("scripts.train_return_model",       "train"),
-            "volatility": ("scripts.train_volatility_model",   "train"),
+        _train_map = {
+            "regime":     ("scripts.train_regime_classifier", "train"),
+            "direction":  ("scripts.train_direction_model",   "train"),
+            "return":     ("scripts.train_return_model",      "train"),
+            "volatility": ("scripts.train_volatility_model",  "train"),
         }
         for name in models:
             if not results[name].get("ok"):
                 continue
-            mod_name, fn_name = train_map[name]
+            mod_name, fn_name = _train_map[name]
             try:
                 import importlib
                 mod = importlib.import_module(mod_name)
-                r = getattr(mod, fn_name)()
+                r   = getattr(mod, fn_name)()
                 results[name]["retrain"] = r
-                log.info(f"{name} retrain: {r}")
-            except Exception as e:
-                log.error(f"{name} retrain failed: {e}")
-                results[name]["retrain_error"] = str(e)
+                log.info("%s retrain: %s", name, r)
+            except Exception:
+                log.exception("%s retrain failed", name)
+                results[name]["retrain_error"] = "see log"
 
     return results
 
@@ -269,20 +303,27 @@ def main(models: list[str], n_trials: int, retrain: bool) -> dict:
 def load_best_params(model_name: str) -> dict | None:
     """
     Public helper imported by train_*.py scripts.
-    Returns the saved Optuna best params for `model_name`, or None if absent.
+    Returns {**_XGB_DEFAULTS, **tuned_params} so callers get random_state,
+    tree_method, and n_jobs for free, or None if this model hasn't been tuned.
 
     Usage in a training script:
-        from scripts.tune_hyperparams import load_best_params
         tuned = load_best_params("regime") or {}
-        model = XGBClassifier(n_estimators=200, max_depth=4, **tuned)
+        model = XGBClassifier(objective=..., **tuned)
     """
-    return _load_best_params().get(model_name)
+    saved = _load_best_params().get(model_name)
+    if saved is None:
+        return None
+    # Support both new format {score, params, n_trials} and legacy flat dict
+    tuned = saved.get("params") if isinstance(saved, dict) and "params" in saved else saved
+    if not isinstance(tuned, dict):
+        return None
+    return {**_XGB_DEFAULTS, **tuned}
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", choices=MODELS + ["all"], default="all")
-    parser.add_argument("--trials", type=int, default=50)
+    parser.add_argument("--model",   choices=MODELS + ["all"], default="all")
+    parser.add_argument("--trials",  type=int, default=50)
     parser.add_argument("--no-retrain", dest="retrain", action="store_false", default=True)
     args = parser.parse_args()
 
@@ -291,9 +332,12 @@ if __name__ == "__main__":
 
     print("\n=== Tuning Results ===")
     for name, r in results.items():
-        status = "OK" if r.get("ok") else f"FAILED: {r.get('error')}"
-        print(f"  {name:<12} {status}")
-        if r.get("ok") and r.get("params"):
-            p = r["params"]
-            print(f"             n_est={p.get('n_estimators')}  depth={p.get('max_depth')}  "
-                  f"lr={p.get('learning_rate', 0):.4f}  subsample={p.get('subsample', 0):.2f}")
+        if not r.get("ok"):
+            print(f"  {name:<12} FAILED — see log")
+            continue
+        p = r.get("params", {})
+        print(
+            f"  {name:<12} CV score={r['score']:.5f}  "
+            f"depth={p.get('max_depth')}  lr={p.get('learning_rate', 0):.4f}  "
+            f"gamma={p.get('gamma', 0):.2f}  subsample={p.get('subsample', 0):.2f}"
+        )

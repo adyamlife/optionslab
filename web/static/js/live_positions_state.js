@@ -52,6 +52,15 @@ function isCombinedMode() {
 }
 
 /**
+ * Get merge-by-expiry mode
+ */
+function isMergeByExpiry() {
+  return typeof window.StateManager !== 'undefined'
+    ? window.StateManager.getState('livePositions.mergeByExpiry') ?? true
+    : true;
+}
+
+/**
  * Get current action state
  */
 function getCurrentAction() {
@@ -129,6 +138,18 @@ function setCombinedMode(combined) {
 }
 
 /**
+ * Update merge-by-expiry mode
+ */
+function setMergeByExpiry(merge) {
+  if (typeof window.StateManager !== 'undefined') {
+    const current = window.StateManager.getState('livePositions');
+    window.StateManager.setState({
+      livePositions: { ...current, mergeByExpiry: merge }
+    });
+  }
+}
+
+/**
  * Update action state
  */
 function setCurrentAction(action) {
@@ -154,6 +175,7 @@ function resetState() {
         filename: null,
         element: null,
         combinedMode: true,
+        mergeByExpiry: true,
         action: null
       }
     });
@@ -173,6 +195,7 @@ function resetViewState() {
         filename: null,
         element: null,
         combinedMode: true,
+        mergeByExpiry: true,
         action: null
       }
     });

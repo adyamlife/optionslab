@@ -66,19 +66,26 @@ function buildPositionTrackingFeedback(decision, escFn) {
 
   const { verdict, verdict_cls, bias, reasons, action } = decision;
 
-  const reasonsHtml = (reasons || []).length
-    ? `<ul class="lp-tracking-reasons">${reasons.map(r => `<li>${esc(r)}</li>`).join("")}</ul>`
-    : `<p class="muted">Not enough signal data to assess.</p>`;
+  // Encode detail for the modal — stored as JSON in a data attribute
+  const detail = {
+    title: `Position Bias: ${bias}`,
+    reasons: reasons || [],
+    action: action || "",
+    note: "Based on the same alignment engine Live Suggestions uses for new candidates, evaluated against the structure you actually hold.",
+  };
+  const detailJson = esc(JSON.stringify(detail));
+
+  const summaryLine = (reasons || []).length ? esc(reasons[0]) : "Not enough signal data to assess.";
 
   return `
     <div class="lp-tracking-card ${verdict_cls}">
       <div class="lp-tracking-header">
         <span class="lp-tracking-verdict ${verdict_cls}">${esc(verdict)}</span>
-        <span class="lp-tracking-bias">Position bias: ${esc(bias)}</span>
+        <span class="lp-tracking-bias">${esc(bias)}</span>
+        <button class="lp-info-btn" data-info-type="bias" data-info='${detailJson}' title="Show full reasoning">?</button>
       </div>
-      ${reasonsHtml}
-      ${action ? `<div class="lp-tracking-action"><strong>Suggested action:</strong> ${esc(action)}</div>` : ""}
-      <p class="lp-tracking-note">Based on the same alignment engine Live Suggestions uses for new candidates, evaluated against the structure you actually hold.</p>
+      <p class="lp-tracking-summary">${summaryLine}${(reasons || []).length > 1 ? ` <span class="muted lp-more-hint">+${reasons.length - 1} more</span>` : ""}</p>
+      ${action ? `<div class="lp-tracking-action"><strong>→</strong> ${esc(action)}</div>` : ""}
     </div>
   `;
 }
