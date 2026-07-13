@@ -533,6 +533,7 @@ def build_regime_dataset(period="2y", out_path=None) -> dict:
     full = pd.concat(frames, ignore_index=True)
     with connect() as con:
         con.execute(f"DROP TABLE IF EXISTS {TABLE}_new")
+        con.register("full", full)
         con.execute(f"CREATE TABLE {TABLE}_new AS SELECT * FROM full")
         con.execute(f"CREATE INDEX IF NOT EXISTS idx_ticker_date_new ON {TABLE}_new (ticker, date)")
         con.execute(f"DROP TABLE IF EXISTS {TABLE}")

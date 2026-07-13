@@ -11,6 +11,7 @@ PUT_CREDIT_SPREAD = OptionStructure(
     short_delta_lo = 0.15,
     short_delta_hi = 0.25,
     min_credit_pct = 0.25,
+    capital_type   = "spread_width",
     hedge = HedgeDef(
         structure    = "Buy OTM Protective Put",
         details      = "Buy a put 1–2 strikes below your long put leg. Kicks in only if stock gaps down past both spread legs.",

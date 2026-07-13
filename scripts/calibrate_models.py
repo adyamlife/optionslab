@@ -6,11 +6,30 @@ XGBoost's predict_proba is not well-calibrated by default. When the model
 says 70% win probability, the actual win rate may be only 55%. Kelly sizing
 built on uncalibrated probabilities is systematically wrong.
 
-Calibration method: isotonic regression on the held-out test fold.
-  - Fits one IsotonicRegression per class (one-vs-rest for multi-class)
-  - Predictions are raw XGBoost proba → isotonic map → renormalized
-  - Uses the same test fold as model evaluation (never seen during training)
-  - Self-contained wrapper class — no sklearn version dependency
+Calibration method: isotonic regression on a held-out VALIDATION fold.
+
+  Three-way chronological split used throughout:
+
+      ┌─────────────────┬──────────────────┬──────────────────┐
+      │     Train       │    Validation    │      Test        │
+      │ (model trained) │ (cal fitted here)│ (reported Brier) │
+      └─────────────────┴──────────────────┴──────────────────┘
+
+  The reported Brier improvement is therefore a true out-of-sample estimate.
+  Calibrator is never evaluated on the same data it was fitted on.
+
+  When a training artifact stores val_cutoff / test_cutoff (all new-format
+  scripts), those exact cutoffs are reused here. For older artifacts without
+  stored cutoffs the 2-way test fold is split in half: the first half is used
+  as the calibration set and the second half is the held-out evaluation set.
+
+Binary classification: single IsotonicRegression on P(class=1).
+  P(class=0) = 1 - P(class=1). This avoids the artefact of fitting two
+  independent monotone functions and having them fail to sum to 1.
+
+Multi-class: one-vs-rest isotonic per class, outputs clipped to [1e-8, 1-1e-8]
+  and renormalized. Probability ordering is not guaranteed to be preserved
+  — that is expected and acceptable for one-vs-rest calibration.
 
 Models calibrated:
   regime_classifier       → regime_classifier_calibrated.joblib
@@ -20,92 +39,113 @@ Models calibrated:
   pop_classifier          → pop_classifier_calibrated.joblib (when data available)
 
 Models skipped:
-  return_regressor      (regressor — Brier score not applicable)
+  return_regressor      (regressor — Brier not applicable)
   volatility_regressor  (regressor)
-  anomaly_detector      (IsolationForest — uses decision_function not predict_proba)
+  anomaly_detector      (IsolationForest — uses decision_function, not predict_proba)
 
 Run standalone: python -m scripts.calibrate_models
 Also callable via POST /api/ml/calibrate
 """
+import datetime
 from pathlib import Path
 
 import joblib
 import numpy as np
+import pandas as pd
 
-_ROOT = Path(__file__).resolve().parent.parent
+_ROOT       = Path(__file__).resolve().parent.parent
 _MODELS_DIR = _ROOT / "data" / "models"
 
 
-# ── Isotonic calibration wrapper ──────────────────────────────────────────────
+# ── IsotonicCalibrator wrapper ────────────────────────────────────────────────
 
 class IsotonicCalibrator:
     """
-    Wraps a pre-fitted classifier and applies per-class isotonic regression
-    to its predict_proba outputs. Drop-in replacement: exposes predict_proba
-    and predict with the same interface as the raw model.
+    Wraps a pre-fitted classifier and applies isotonic regression to its
+    predict_proba outputs. Drop-in replacement: exposes predict_proba,
+    predict, predict_log_proba, and forwards unknown attributes to the
+    raw model (feature_names_in_, classes_, etc.).
 
-    Multi-class: one isotonic regressor per class (one-vs-rest), outputs
-    are renormalized to sum to 1. Binary: single regressor on class-1 proba.
+    Binary: single IsotonicRegression on P(class=1); P(class=0) = 1-P.
+    Multi-class: one-vs-rest per class, clipped + renormalized.
     """
 
     def __init__(self, raw_model, n_classes: int = 2):
         self.raw_model = raw_model
         self.n_classes = n_classes
-        self._isos = None   # list of IsotonicRegression, one per class
+        self._isos     = None   # set by fit()
 
     def fit(self, X, y):
         from sklearn.isotonic import IsotonicRegression
-        raw_proba = self.raw_model.predict_proba(X)
-        self._isos = []
-        for i in range(self.n_classes):
+        raw_proba  = self.raw_model.predict_proba(X)
+
+        if self.n_classes == 2:
+            # Single regressor on P(class=1); P(class=0) = 1 - P(class=1)
             iso = IsotonicRegression(out_of_bounds="clip")
-            iso.fit(raw_proba[:, i], (y == i).astype(int))
-            self._isos.append(iso)
+            iso.fit(raw_proba[:, 1], (y == 1).astype(int))
+            self._isos = [iso]
+        else:
+            self._isos = []
+            for i in range(self.n_classes):
+                iso = IsotonicRegression(out_of_bounds="clip")
+                iso.fit(raw_proba[:, i], (y == i).astype(int))
+                self._isos.append(iso)
         return self
 
-    def predict_proba(self, X):
+    def predict_proba(self, X) -> np.ndarray:
+        if self._isos is None:
+            raise RuntimeError(
+                "IsotonicCalibrator is not fitted. Call .fit(X_val, y_val) first."
+            )
         raw_proba = self.raw_model.predict_proba(X)
+
+        if self.n_classes == 2:
+            p1 = np.clip(self._isos[0].predict(raw_proba[:, 1]), 1e-8, 1 - 1e-8)
+            return np.column_stack([1.0 - p1, p1])
+
         calibrated = np.column_stack([
             self._isos[i].predict(raw_proba[:, i])
             for i in range(self.n_classes)
         ])
-        # Renormalize rows to sum to 1 (isotonic doesn't guarantee this)
-        row_sums = calibrated.sum(axis=1, keepdims=True)
-        row_sums = np.where(row_sums == 0, 1, row_sums)
+        calibrated  = np.clip(calibrated, 1e-8, 1 - 1e-8)
+        row_sums    = calibrated.sum(axis=1, keepdims=True)
+        row_sums    = np.where(row_sums == 0, 1.0, row_sums)
         return calibrated / row_sums
 
-    def predict(self, X):
+    def predict(self, X) -> np.ndarray:
         return np.argmax(self.predict_proba(X), axis=1)
 
-    # Forward attribute access to raw model (feature_names_in_, classes_, etc.)
+    def predict_log_proba(self, X) -> np.ndarray:
+        return np.log(self.predict_proba(X))   # already clipped to >= 1e-8
+
     def __getattr__(self, name):
-        # Guard against recursion during unpickling: instance dict not yet populated
-        if name in ('raw_model', 'n_classes', '_isos'):
+        # Guard against recursion during unpickling before instance dict is ready
+        if name in ("raw_model", "n_classes", "_isos"):
             raise AttributeError(name)
         return getattr(self.raw_model, name)
 
     def __reduce__(self):
-        # Always pickle with the canonical module so joblib can load from any
-        # entry point (gunicorn, flask, pytest) — not just when run as __main__
+        # Pin the canonical module so joblib can load from any entry point
+        # (gunicorn, flask, pytest) — not just when run as __main__
         return (_load_isotonic_calibrator, (self.raw_model, self.n_classes, self._isos))
 
 
 def _load_isotonic_calibrator(raw_model, n_classes, isos):
-    obj = IsotonicCalibrator.__new__(IsotonicCalibrator)
+    obj           = IsotonicCalibrator.__new__(IsotonicCalibrator)
     obj.raw_model = raw_model
     obj.n_classes = n_classes
-    obj._isos = isos
+    obj._isos     = isos
     return obj
 
 
 # ── Brier score helpers ───────────────────────────────────────────────────────
 
-def _brier_binary(model, X, y):
+def _brier_binary(model, X, y) -> float:
     from sklearn.metrics import brier_score_loss
     return float(brier_score_loss(y, model.predict_proba(X)[:, 1]))
 
 
-def _brier_multiclass(model, X, y, n_classes):
+def _brier_multiclass(model, X, y, n_classes: int) -> float:
     from sklearn.metrics import brier_score_loss
     proba = model.predict_proba(X)
     return float(np.mean([
@@ -114,32 +154,92 @@ def _brier_multiclass(model, X, y, n_classes):
     ]))
 
 
-def _calibrate_and_save(raw_model, X_test, y_test, artifact, raw_path,
-                        n_classes=2):
-    multiclass = n_classes > 2
+# ── Split helpers ─────────────────────────────────────────────────────────────
 
-    if multiclass:
-        brier_before = _brier_multiclass(raw_model, X_test, y_test, n_classes)
-    else:
-        brier_before = _brier_binary(raw_model, X_test, y_test)
+def _val_test_from_artifact(
+    df: pd.DataFrame,
+    art: dict,
+    time_based_split_fn=None,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """
+    Return (val_df, test_df) for calibration.
+
+    Priority:
+      1. Use val_cutoff + test_cutoff stored in the artifact (all new-format
+         training scripts). These are the EXACT same splits the training script
+         used, so the calibrator sees rows the model genuinely never trained on.
+      2. Fallback (old artifacts): apply time_based_split_fn to get the 2-way
+         test fold, then split it in half chronologically — first half calibrates,
+         second half evaluates.
+    """
+    df = df.copy()
+    df["date"] = pd.to_datetime(df["date"])
+
+    if "val_cutoff" in art and "test_cutoff" in art:
+        val_cutoff  = pd.Timestamp(str(art["val_cutoff"]))
+        test_cutoff = pd.Timestamp(str(art["test_cutoff"]))
+        val_df  = df[(df["date"] >= val_cutoff) & (df["date"] < test_cutoff)]
+        test_df = df[df["date"] >= test_cutoff]
+        return val_df, test_df
+
+    if time_based_split_fn is None:
+        raise ValueError("Artifact has no cutoff metadata and no split function supplied")
+
+    _, fold_df, _ = time_based_split_fn(df)
+    mid  = len(fold_df) // 2
+    return fold_df.iloc[:mid].copy(), fold_df.iloc[mid:].copy()
+
+
+# ── Core calibrate-and-save ───────────────────────────────────────────────────
+
+def _calibrate_and_save(
+    raw_model,
+    X_val, y_val,
+    X_test, y_test,
+    artifact: dict,
+    raw_path: Path,
+    n_classes: int = 2,
+) -> dict:
+    """
+    Fit IsotonicCalibrator on (X_val, y_val); report Brier on (X_test, y_test).
+    Saves calibrated artifact to <stem>_calibrated.joblib.
+    """
+    multiclass = n_classes > 2
+    brier_fn   = (_brier_multiclass if multiclass else _brier_binary)
+
+    brier_before = (
+        brier_fn(raw_model, X_test, y_test, n_classes)
+        if multiclass else brier_fn(raw_model, X_test, y_test)
+    )
 
     cal = IsotonicCalibrator(raw_model, n_classes=n_classes)
-    cal.fit(X_test, y_test)
+    cal.fit(X_val, y_val)                  # ← val, not test
 
-    if multiclass:
-        brier_after = _brier_multiclass(cal, X_test, y_test, n_classes)
-    else:
-        brier_after = _brier_binary(cal, X_test, y_test)
+    brier_after = (
+        brier_fn(cal, X_test, y_test, n_classes)
+        if multiclass else brier_fn(cal, X_test, y_test)
+    )
 
     calib_path = Path(raw_path).with_name(Path(raw_path).stem + "_calibrated.joblib")
-    joblib.dump({**artifact, "model": cal, "calibrated": True,
-                 "brier_before": round(brier_before, 4),
-                 "brier_after":  round(brier_after, 4)}, calib_path)
+    calib_meta = {
+        "calibration_method":    "isotonic",
+        "n_calibration_samples": int(len(y_val)),
+        "n_evaluation_samples":  int(len(y_test)),
+        "calibrated_at":         datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        "brier_before":          round(brier_before, 4),
+        "brier_after":           round(brier_after, 4),
+        "brier_improvement":     round(brier_before - brier_after, 4),
+    }
+    joblib.dump({**artifact, "model": cal, "calibrated": True, **calib_meta}, calib_path)
 
-    return {"brier_before": round(brier_before, 4),
-            "brier_after":  round(brier_after, 4),
-            "improvement":  round(brier_before - brier_after, 4),
-            "calibrated_path": str(calib_path)}
+    return {
+        "brier_before":     round(brier_before, 4),
+        "brier_after":      round(brier_after, 4),
+        "improvement":      round(brier_before - brier_after, 4),
+        "n_val_samples":    int(len(y_val)),
+        "n_test_samples":   int(len(y_test)),
+        "calibrated_path":  str(calib_path),
+    }
 
 
 # ── Per-model calibration functions ──────────────────────────────────────────
@@ -150,18 +250,25 @@ def calibrate_regime_classifier():
         return {"ok": False, "error": "Not trained yet"}
     try:
         from scripts.train_regime_classifier import (
-            load_labeled_data, build_feature_matrix, time_based_split, TARGET_COL
+            load_labeled_data, build_feature_matrix, time_based_split, TARGET_COL,
         )
         art = joblib.load(raw_path)
-        df = load_labeled_data()
+        df  = load_labeled_data()
         if df.empty:
             return {"ok": False, "error": "No labeled data"}
-        _, test_df, _ = time_based_split(df)
-        X_test, _ = build_feature_matrix(test_df, encoders=art["feature_encoders"], fit=False)
-        label_enc = art["label_encoder"]
-        y_test = label_enc.transform(test_df[TARGET_COL])
-        result = _calibrate_and_save(art["model"], X_test, y_test, art, raw_path,
-                                     n_classes=len(label_enc.classes_))
+
+        val_df, test_df = _val_test_from_artifact(df, art, time_based_split)
+        enc = art["feature_encoders"]
+        X_val,  _ = build_feature_matrix(val_df,  encoders=enc, fit=False)
+        X_test, _ = build_feature_matrix(test_df, encoders=enc, fit=False)
+        le        = art["label_encoder"]
+        y_val     = le.transform(val_df[TARGET_COL])
+        y_test    = le.transform(test_df[TARGET_COL])
+
+        result = _calibrate_and_save(
+            art["model"], X_val, y_val, X_test, y_test, art, raw_path,
+            n_classes=len(le.classes_),
+        )
         return {"ok": True, "model": "regime_classifier", **result}
     except Exception as e:
         return {"ok": False, "error": str(e)}
@@ -173,16 +280,23 @@ def calibrate_direction_classifier():
         return {"ok": False, "error": "Not trained yet"}
     try:
         from scripts.train_direction_model import (
-            load_labeled_data, build_feature_matrix, time_based_split
+            load_labeled_data, build_feature_matrix, time_based_split,
         )
         art = joblib.load(raw_path)
-        df = load_labeled_data()
+        df  = load_labeled_data()
         if df.empty:
             return {"ok": False, "error": "No labeled data"}
-        _, test_df, _ = time_based_split(df)
-        X_test, _ = build_feature_matrix(test_df, encoders=art["feature_encoders"], fit=False)
+
+        val_df, test_df = _val_test_from_artifact(df, art, time_based_split)
+        enc = art["feature_encoders"]
+        X_val,  _ = build_feature_matrix(val_df,  encoders=enc, fit=False)
+        X_test, _ = build_feature_matrix(test_df, encoders=enc, fit=False)
+        y_val  = (val_df["forward_return"]  > 0).astype(int).values
         y_test = (test_df["forward_return"] > 0).astype(int).values
-        result = _calibrate_and_save(art["model"], X_test, y_test, art, raw_path)
+
+        result = _calibrate_and_save(
+            art["model"], X_val, y_val, X_test, y_test, art, raw_path,
+        )
         return {"ok": True, "model": "direction_classifier", **result}
     except Exception as e:
         return {"ok": False, "error": str(e)}
@@ -194,16 +308,23 @@ def calibrate_iv_direction_classifier():
         return {"ok": False, "error": "Not trained yet"}
     try:
         from scripts.train_iv_direction_model import (
-            load_labeled_data, build_feature_matrix, time_based_split
+            load_labeled_data, build_feature_matrix, time_based_split,
         )
         art = joblib.load(raw_path)
-        df = load_labeled_data()
+        df  = load_labeled_data()
         if df.empty:
             return {"ok": False, "error": "No labeled data"}
-        _, test_df, _ = time_based_split(df)
-        X_test, _ = build_feature_matrix(test_df, encoders=art["feature_encoders"], fit=False)
+
+        val_df, test_df = _val_test_from_artifact(df, art, time_based_split)
+        enc = art.get("feature_encoders") or {}
+        X_val,  _ = build_feature_matrix(val_df,  encoders=enc, fit=False)
+        X_test, _ = build_feature_matrix(test_df, encoders=enc, fit=False)
+        y_val  = val_df["iv_expanding"].values.astype(int)
         y_test = test_df["iv_expanding"].values.astype(int)
-        result = _calibrate_and_save(art["model"], X_test, y_test, art, raw_path)
+
+        result = _calibrate_and_save(
+            art["model"], X_val, y_val, X_test, y_test, art, raw_path,
+        )
         return {"ok": True, "model": "iv_direction_classifier", **result}
     except Exception as e:
         return {"ok": False, "error": str(e)}
@@ -214,25 +335,29 @@ def calibrate_meta_ensemble():
     if not raw_path.exists():
         return {"ok": False, "error": "Not trained yet"}
     try:
-        from scripts.train_meta_ensemble import (
-            _load_base_models, build_meta_dataset, _META_CUTOFF
-        )
+        from scripts.train_meta_ensemble import _load_base_models, build_meta_dataset
         from scripts.db import read_df, TABLE
-        import pandas as pd
 
-        art = joblib.load(raw_path)
+        art      = joblib.load(raw_path)
+        meta_cutoff = pd.Timestamp(str(art["meta_cutoff"]))
+
         df = read_df(f"SELECT * FROM {TABLE} WHERE labeled = true")
         df["date"] = pd.to_datetime(df["date"])
-        meta_df = df[df["date"] >= _META_CUTOFF].copy()
+        meta_df = df[df["date"] >= meta_cutoff].copy()
         if len(meta_df) < 100:
             return {"ok": False, "error": f"Only {len(meta_df)} meta rows (need 100+)"}
+
         models = _load_base_models()
         X_meta, y_meta = build_meta_dataset(meta_df, models)
-        n = len(X_meta)
-        split = int(n * 0.8)
-        X_test = X_meta.iloc[split:]
-        y_test = y_meta.iloc[split:].values
-        result = _calibrate_and_save(art["model"], X_test, y_test, art, raw_path)
+        n       = len(X_meta)
+        val_end = int(n * 0.50)          # first 50% → calibration val
+        # second 50% → held-out evaluation (meta already starts at post-cutoff)
+        X_val   = X_meta.iloc[:val_end];   y_val  = y_meta.iloc[:val_end].values
+        X_test  = X_meta.iloc[val_end:];   y_test = y_meta.iloc[val_end:].values
+
+        result = _calibrate_and_save(
+            art["model"], X_val, y_val, X_test, y_test, art, raw_path,
+        )
         return {"ok": True, "model": "meta_ensemble", **result}
     except Exception as e:
         return {"ok": False, "error": str(e)}
@@ -244,23 +369,29 @@ def calibrate_pop_classifier():
         return {"ok": False, "error": "Not trained yet (waiting for labeled paper trade outcomes)"}
     try:
         from scripts.train_pop_model import (
-            load_dataset, build_feature_matrix, time_based_split
+            load_dataset, build_feature_matrix, time_based_split,
         )
         art = joblib.load(raw_path)
-        df = load_dataset()
+        df  = load_dataset()
         if df is None or df.empty:
             return {"ok": False, "error": "No labeled paper trade data"}
-        _, test_df, _ = time_based_split(df)
-        X_test, _ = build_feature_matrix(test_df, encoders=art["feature_encoders"], fit=False)
+
+        val_df, test_df = _val_test_from_artifact(df, art, time_based_split)
+        enc = art["feature_encoders"]
+        X_val,  _ = build_feature_matrix(val_df,  encoders=enc, fit=False)
+        X_test, _ = build_feature_matrix(test_df, encoders=enc, fit=False)
+        y_val  = val_df["win"].astype(int).values
         y_test = test_df["win"].astype(int).values
-        result = _calibrate_and_save(art["model"], X_test, y_test, art, raw_path)
+
+        result = _calibrate_and_save(
+            art["model"], X_val, y_val, X_test, y_test, art, raw_path,
+        )
         return {"ok": True, "model": "pop_classifier", **result}
     except Exception as e:
         return {"ok": False, "error": str(e)}
 
 
 def calibrate_all() -> dict:
-    """Calibrate all classifiers. Returns a dict of results keyed by model name."""
     results = {}
     for name, fn in [
         ("regime_classifier",       calibrate_regime_classifier),
@@ -274,7 +405,7 @@ def calibrate_all() -> dict:
 
 
 if __name__ == "__main__":
-    print("Calibrating all classifiers...\n")
+    print("Calibrating all classifiers…\n")
     results = calibrate_all()
     for name, r in results.items():
         if not r.get("ok"):
@@ -284,5 +415,9 @@ if __name__ == "__main__":
             after  = r["brier_after"]
             delta  = r["improvement"]
             sign   = "-" if delta > 0 else "+"
-            print(f"  {name:35s}  Brier {before:.4f} -> {after:.4f}  ({sign}{abs(delta):.4f})")
+            print(
+                f"  {name:35s}  "
+                f"Brier {before:.4f} → {after:.4f}  ({sign}{abs(delta):.4f})  "
+                f"[cal n={r['n_val_samples']}  test n={r['n_test_samples']}]"
+            )
     print("\nDone. Calibrated artifacts saved to data/models/")

@@ -20,7 +20,16 @@ from config.structures.calendar_spread    import CALENDAR_SPREAD
 from config.structures.diagonal_spread    import DIAGONAL_SPREAD
 from config.structures.cash_secured_put   import CASH_SECURED_PUT
 from config.structures.covered_call       import COVERED_CALL
-from config.structures._base              import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema
+from config.structures.naked_put          import NAKED_PUT
+from config.structures.leaps_long_call    import LEAPS_LONG_CALL
+from config.structures.risk_reversal        import RISK_REVERSAL
+from config.structures.bear_combo           import BEAR_COMBO
+from config.structures.financed_long_call   import FINANCED_LONG_CALL
+from config.structures.financed_long_put    import FINANCED_LONG_PUT
+from config.structures.ratio_call_backspread import RATIO_CALL_BACKSPREAD
+from config.structures.ratio_put_backspread  import RATIO_PUT_BACKSPREAD
+from config.structures.long_strangle        import LONG_STRANGLE
+from config.structures._base                import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema
 
 _ALL = [
     PUT_CREDIT_SPREAD,
@@ -33,6 +42,15 @@ _ALL = [
     DIAGONAL_SPREAD,
     CASH_SECURED_PUT,
     COVERED_CALL,
+    NAKED_PUT,
+    LEAPS_LONG_CALL,
+    RISK_REVERSAL,
+    BEAR_COMBO,
+    FINANCED_LONG_CALL,
+    FINANCED_LONG_PUT,
+    RATIO_CALL_BACKSPREAD,
+    RATIO_PUT_BACKSPREAD,
+    LONG_STRANGLE,
 ]
 
 # Primary registry — keyed by structure name string

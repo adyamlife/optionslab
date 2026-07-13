@@ -11,6 +11,7 @@ IRON_CONDOR = OptionStructure(
     short_delta_lo = 0.15,
     short_delta_hi = 0.25,
     min_credit_pct = 0.25,
+    capital_type   = "spread_width",
     hedge = HedgeDef(
         structure    = "Buy Wider Wings (Gamma Protection)",
         details      = "Buy a deeper OTM put + deeper OTM call to widen the buffer against extreme gap moves.",

@@ -362,83 +362,23 @@ def compute_hedge(candidate):
     }
 
 
-def build_top_trades(rows, n=3):
-    """Rank the rulebook-recommended trade from each ticker by EV (or an EV
-    proxy for Jade Lizard, which has undefined downside risk), preferring
-    trades that meet both the min-profit and max-loss criteria, then lower
-    capital required, then nearer expiry (lower DTE)."""
+def build_top_trades(rows, n=3, exclude=None):
+    """Score and rank candidates across all tickers; return top-n.
+
+    Ranking is done entirely inside rank_candidates (composite 0-100 score,
+    best-per-ticker, then top-n tickers). See scripts/candidate_ranker.py.
+    """
     from scripts.candidate_ranker import rank_candidates
 
-    def _ml_iv_bonus(item):
-        """
-        Extra score bonus for Live Suggestions, combining all trained ML signals:
-          meta_score      — meta-ensemble confidence (0–100)
-          iv_expanding    — IV direction vs credit/debit preference
-          expected_return — return regressor: reward direction alignment
-          expected_vol    — vol regressor: reward high vol for debit, low for credit
-          pop_score       — POP model: direct probability of profit
-          analogues       — k-NN historical win rate in similar conditions
-        Each signal is capped so no single model dominates the ranking.
-        """
-        from config.structures import CREDIT_STRUCTURES
-        c  = item["candidate"]
-        ml = item["row"].get("ml") or {}
-        structure  = c.get("structure", "")
-        is_credit  = structure in CREDIT_STRUCTURES
-        is_bullish = structure in ("Call Debit Spread", "Diagonal Spread")
-        is_bearish = structure in ("Put Debit Spread",)
-        bonus = 0.0
+    # Filter excluded ticker:structure pairs (session-side exclusions from UI toggle)
+    _excluded = set(exclude or [])
+    if _excluded:
+        rows = [r for r in rows if not any(
+            f"{r['ticker']}:{c['structure']}" in _excluded
+            for c in r.get("candidates", [])
+        )]
 
-        # 0. Confidence multiplier — scale all ML bonuses by model agreement.
-        # High agreement → full bonus weight; low agreement → half weight.
-        pred_dist  = ml.get("pred_dist") or {}
-        confidence = pred_dist.get("confidence")
-        conf_scale = 1.0 if confidence is None else (0.5 + 0.5 * confidence)  # 0.5–1.0
-
-        # 1. Meta-ensemble score (heuristic combination of regime + direction + vol models)
-        meta = ml.get("meta_score")
-        if meta is not None:
-            bonus += (meta - 50.0) / 50.0 * 4.0 * conf_scale   # ±4 pts × conf
-
-        # 2. IV expansion direction vs structure preference
-        iv_prob = ml.get("iv_expanding_prob")
-        if iv_prob is not None:
-            direction = -1 if is_credit else +1            # credit wants contraction
-            bonus += direction * (iv_prob - 0.5) * 3.0 * conf_scale    # ±1.5 pts
-
-        # 3. Return regressor: does predicted 10d move align with structure direction?
-        exp_ret = ml.get("expected_return")
-        if exp_ret is not None:
-            if is_bullish:
-                bonus += min(max(exp_ret * 15, -2.0), 2.0) * conf_scale
-            elif is_bearish:
-                bonus += min(max(-exp_ret * 15, -2.0), 2.0) * conf_scale
-            elif is_credit:
-                bonus += min(max(-abs(exp_ret) * 10, -2.0), 0.0) * conf_scale
-
-        # 4. Vol regressor: high expected vol helps debit, hurts credit
-        exp_vol = ml.get("expected_vol")
-        if exp_vol is not None:
-            vol_edge = (exp_vol - 0.30)                    # 30% annualised as neutral
-            if is_credit:
-                bonus += min(max(-vol_edge * 6, -2.0), 2.0) * conf_scale
-            else:
-                bonus += min(max(vol_edge * 6, -2.0), 2.0) * conf_scale
-
-        # 5. POP model: trained probability of profit on real trade outcomes
-        pop = ml.get("pop_score")
-        if pop is not None:
-            bonus += (pop - 0.5) * 5.0 * conf_scale                    # ±2.5 pts
-
-        # 6. Historical analogues: k-NN win rate in similar market conditions
-        ana_wr = ml.get("analogues_win_rate")
-        ana_k  = ml.get("analogues_k") or 0
-        if ana_wr is not None and ana_k >= 10:
-            bonus += (ana_wr - 0.5) * 3.0 * conf_scale                 # ±1.5 pts
-
-        return bonus
-
-    ranked = rank_candidates(rows, n=n, score_fn=_ml_iv_bonus)
+    ranked = rank_candidates(rows, n=n)
 
     # Run Monte Carlo per ranked trade (GARCH engine when available) and merge
     # p10_pnl / p90_pnl / ev_per_share into pred_dist. This is the only place
@@ -584,6 +524,21 @@ def build_top_trades(rows, n=3):
                     and t.get("meets_max_loss") is True
                 )
             t["hedge_exact"] = ex
+
+        # Attach capital / balance check to every top trade for UI warning badge
+        try:
+            from scripts.candidate_provider import check_balance_for_candidate as _chk_bal
+            from scripts.etrade_client import get_account_balance as _get_bal
+            _bal = _get_bal()
+            _buying_power = (_bal or {}).get("buying_power", 0.0)
+        except Exception:
+            _buying_power = 0.0
+        for t in top:
+            try:
+                t["capital_check"] = _chk_bal(t, _buying_power)
+            except Exception:
+                t["capital_check"] = None
+
     return top
 
 
@@ -612,6 +567,9 @@ def api_analyze():
     overrides = {k: request.args.get(k) for k in DEFAULT_PARAMS if request.args.get(k) not in (None, "")}
     tickers_param = request.args.get("tickers", "").strip()
     run_list = [t.strip().upper() for t in tickers_param.split(",") if t.strip()] if tickers_param else WATCHLIST
+    # Session-side exclusions: "AAPL:Put Credit Spread,TSLA:Naked Put"
+    _exclude_param = request.args.get("exclude", "").strip()
+    _exclude = [x.strip() for x in _exclude_param.split(",") if x.strip()] if _exclude_param else []
 
     # Capture role NOW (inside request context) — generator runs after context teardown
     from config.roles import get_structures_for_role as _gsfr
@@ -636,7 +594,8 @@ def api_analyze():
         _pool = ThreadPoolExecutor(max_workers=3)  # 3 tickers fetched concurrently
         try:
             yield from _generate_inner(_pool, run_list, overrides, _regime,
-                                       _etrade_allowed, mkt_ctx, _allowed_structs)
+                                       _etrade_allowed, mkt_ctx, _allowed_structs,
+                                       _exclude)
         except Exception as _gen_err:
             app.logger.error(f"/api/analyze generator crashed: {_gen_err}")
             payload = _json.dumps({'type': 'done', 'top_trades': [], 'total': 0,
@@ -646,7 +605,7 @@ def api_analyze():
             _pool.shutdown(wait=False)
 
     def _generate_inner(_pool, run_list, overrides, _regime,
-                        _etrade_allowed, mkt_ctx, _allowed_structs):
+                        _etrade_allowed, mkt_ctx, _allowed_structs, _exclude=None):
         from concurrent.futures import TimeoutError as _FuturesTimeout
 
         def _run_ticker(t):
@@ -761,7 +720,7 @@ def api_analyze():
 
         # Run build_top_trades (AI calls) in background; yield keepalives so nginx
         # doesn't drop the SSE connection during the up-to-60s AI wait.
-        _top_fut = _pool.submit(build_top_trades, rows)
+        _top_fut = _pool.submit(build_top_trades, rows, exclude=_exclude)
         _top_result = []
         while True:
             try:
@@ -1290,11 +1249,28 @@ def _load_scheduler_config():
             "collect_interval_minutes": int(s.get("collect_interval_minutes", 60)),
             "collect_hour_start":       int(s.get("collect_hour_start", 9)),
             "collect_hour_end":         int(s.get("collect_hour_end", 16)),
+            "morning_scan_hour":        int(s.get("morning_scan_hour", 10)),
+            "morning_scan_minute":      int(s.get("morning_scan_minute", 0)),
+            "evening_check_hour":       int(s.get("evening_check_hour", 17)),
+            "evening_check_minute":     int(s.get("evening_check_minute", 0)),
+            "oi_open_hour":             int(s.get("oi_open_hour", 9)),
+            "oi_open_minute":           int(s.get("oi_open_minute", 45)),
+            "oi_close_hour":            int(s.get("oi_close_hour", 15)),
+            "oi_close_minute":          int(s.get("oi_close_minute", 55)),
+            "daily_archive_hour":       int(s.get("daily_archive_hour", 16)),
+            "daily_archive_minute":     int(s.get("daily_archive_minute", 30)),
         }
     except Exception as e:
         app.logger.warning(f"Could not read [scheduler] from secrets.toml, using defaults: {e}")
-        return {"enabled": True, "collect_enabled": True, "collect_interval_minutes": 60,
-                "collect_hour_start": 9, "collect_hour_end": 16}
+        return {
+            "enabled": True, "collect_enabled": True, "collect_interval_minutes": 60,
+            "collect_hour_start": 9, "collect_hour_end": 16,
+            "morning_scan_hour": 10, "morning_scan_minute": 0,
+            "evening_check_hour": 17, "evening_check_minute": 0,
+            "oi_open_hour": 9, "oi_open_minute": 45,
+            "oi_close_hour": 15, "oi_close_minute": 55,
+            "daily_archive_hour": 16, "daily_archive_minute": 30,
+        }
 
 _scheduler_cfg = _load_scheduler_config()
 
@@ -1354,6 +1330,14 @@ def _start_training_data_scheduler():
         except Exception as e:
             app.logger.error(f"scheduled morning scan failed: {e}")
 
+    def _afternoon_scan():
+        if _scan_is_running("afternoon_scan"):
+            return
+        try:
+            _run_in_bg("afternoon_scan", lambda: pte.run_morning_scan(scan_time="afternoon"))
+        except Exception as e:
+            app.logger.error(f"scheduled afternoon scan failed: {e}")
+
     def _run_evening_and_label():
         pte.run_evening_check()
         _daily_label()
@@ -1406,6 +1390,10 @@ def _start_training_data_scheduler():
                   hour=_sc.get("morning_scan_hour", 10), minute=_sc.get("morning_scan_minute", 0),
                   day_of_week="mon-fri", id="morning_scan", name="Morning Scan",
                   timezone="America/New_York")
+    sched.add_job(_afternoon_scan, "cron",
+                  hour=_sc.get("afternoon_scan_hour", 14), minute=_sc.get("afternoon_scan_minute", 0),
+                  day_of_week="mon-fri", id="afternoon_scan", name="Afternoon Scan",
+                  timezone="America/New_York")
     sched.add_job(_evening_check, "cron",
                   hour=_sc.get("evening_check_hour", 17), minute=_sc.get("evening_check_minute", 0),
                   day_of_week="mon-fri", id="evening_check", name="Evening Check",
@@ -1424,7 +1412,7 @@ def _start_training_data_scheduler():
         _run_in_bg("daily_archive", _da.run_daily_archive)
 
     sched.add_job(_oi_open, "cron",
-                  hour=_sc.get("oi_open_hour", 9), minute=_sc.get("oi_open_minute", 30),
+                  hour=_sc.get("oi_open_hour", 9), minute=_sc.get("oi_open_minute", 45),
                   day_of_week="mon-fri", id="oi_open", name="OI Snapshot (Open)",
                   timezone="America/New_York")
     sched.add_job(_oi_close, "cron",
@@ -1438,8 +1426,8 @@ def _start_training_data_scheduler():
 
     sched.start()
     app.logger.info(
-        "Scheduler started — morning scan 10:00, OI open 9:45, OI close 15:55, "
-        "daily archive 16:30, evening check 17:00 ET"
+        "Scheduler started — morning scan 10:00, afternoon scan 14:00, OI open 9:45, "
+        "OI close 15:55, daily archive 16:30, evening check 17:00 ET"
     )
     return sched
 

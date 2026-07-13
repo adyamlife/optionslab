@@ -94,6 +94,10 @@ let _liveData = null;
 let _sortKey = "signal";
 let _sortDir = -1; // -1 = descending (best first), +1 = ascending
 
+// Session-only exclusion set — "TICKER:Structure" strings excluded from top-3.
+// Cleared on page refresh (never persisted to server).
+const _excluded = new Set();
+
 const SIGNAL_ORDER = { Strong: 4, Moderate: 3, Neutral: 2, Weak: 1, Conflicted: 0 };
 
 // getRecommendedCandidate is provided by lib/position-health.js
@@ -233,11 +237,23 @@ function buildMlExplainBlock(ml, rowCls = "tc-ml-row", signalCls = "tc-ml-signal
   }
 
   if (ml.iv_direction) {
-    const ivCls = ml.iv_direction === "Expanding" ? "warn" : "pass";
-    const prob = ml.iv_expanding_prob != null ? ` (${(ml.iv_expanding_prob*100).toFixed(0)}% confidence)` : "";
-    const ivDesc = ml.iv_direction === "Expanding"
-      ? `IV rank likely rising${prob}. Credit spreads and iron condors face headwind — rising IV expands the position against you. Consider waiting or using wider wings.`
-      : `IV rank likely falling${prob}. Premium sellers have edge; debit spreads risk vol crush. Favour credit structures while IV contracts.`;
+    const ivProb = ml.iv_expanding_prob != null ? ml.iv_expanding_prob : null;
+    // Confidence for the stated direction: expanding → iv_expanding_prob, contracting → 1 - iv_expanding_prob
+    const dirConf = ivProb != null
+      ? (ml.iv_direction === "Expanding" ? ivProb : 1 - ivProb)
+      : null;
+    const confPct = dirConf != null ? Math.round(dirConf * 100) : null;
+    const confStr = confPct != null ? ` (${confPct}% confidence)` : "";
+    // Only colour as pass/warn when confidence is meaningful (>= 50%); below that it's neutral
+    const ivCls = dirConf == null ? "" :
+      dirConf < 0.50 ? "" :
+      ml.iv_direction === "Expanding" ? "warn" : "pass";
+    const weakSignal = dirConf != null && dirConf < 0.50;
+    const ivDesc = weakSignal
+      ? `IV direction signal is weak${confStr}. Model has no strong view on whether IV expands or contracts — treat as uncertain. Do not size based on IV direction alone.`
+      : ml.iv_direction === "Expanding"
+      ? `IV rank likely rising${confStr}. Credit spreads and iron condors face headwind — rising IV expands the position against you. Consider waiting or using wider wings.`
+      : `IV rank likely falling${confStr}. Premium sellers have edge; debit spreads risk vol crush. Favour credit structures while IV contracts.`;
     rows.push([`<span class="${valCls} ${ivCls}">${ml.iv_direction}</span>`, "ML IV Dir", ivDesc]);
   }
 
@@ -262,11 +278,17 @@ function buildMlExplainBlock(ml, rowCls = "tc-ml-row", signalCls = "tc-ml-signal
     const agr  = pd ? pd.model_agreement : null;
     const agrCls = agr === "High" ? "pass" : agr === "Low" ? "fail" : "warn";
     const agrBadge = agr ? ` <span class="${agrCls}" style="font-size:.75rem;font-weight:600">${agr} agreement</span>` : "";
+    // When score is neutral (35–65) but agreement is High, the models are aligned on
+    // a near-neutral score — not disagreeing. Distinguish from the true low-confidence case.
     const mDesc = m >= 65
       ? `Strong bullish consensus across all ML models. High-conviction setup.`
       : m <= 35
       ? `Strong bearish consensus across all ML models. Avoid bullish structures.`
-      : `Models disagree or show no strong signal. Rely on rulebook signals and be cautious with size.`;
+      : agr === "High"
+      ? `Models are in ${m >= 50 ? "slight bullish" : "slight bearish"} agreement (score near neutral). No strong directional edge — size conservatively and lean on rulebook signals.`
+      : agr === "Low"
+      ? `Models disagree — each pointing in a different direction. Treat as no signal; rely on rulebook only.`
+      : `Models show no strong directional signal. Rely on rulebook signals and be cautious with size.`;
     const confStr = conf != null ? ` · Confidence ${(conf * 100).toFixed(0)}%` : "";
     rows.push([`<span class="${valCls} ${mCls}">${m.toFixed(0)}/100</span>${agrBadge}`,
       "ML Meta Score", `Stacked score from all 5 models (Regime, Return, Vol, POP, Anomaly).${confStr} ${mDesc}`]);
@@ -340,6 +362,25 @@ function renderTopTrades(topTrades) {
     const unusualBadge = t.unusual_activity
       ? `<span class="unusual-flag" title="Volume > 3× OI">⚠ Unusual</span>` : "";
 
+    const excludeKey = `${t.ticker}:${t.structure}`;
+    const chk = t.capital_check;
+    const capitalWarnHtml = (chk && !chk.ok && chk.capital_type !== "shares") ? `
+      <div class="capital-warn-bar">
+        <span class="capital-warn-icon">⚠</span>
+        <span class="capital-warn-msg">${chk.note}</span>
+      </div>` : (chk && chk.requires_margin ? `
+      <div class="capital-warn-bar capital-warn-margin">
+        <span class="capital-warn-icon">🔒</span>
+        <span class="capital-warn-msg">${chk.note}</span>
+      </div>` : "");
+
+    const excludeToggleHtml = `
+      <label class="exclude-toggle" title="Remove this trade from Top 3 and promote the next best candidate">
+        <input type="checkbox" class="exclude-chk" data-key="${excludeKey}"
+               ${_excluded.has(excludeKey) ? "checked" : ""}>
+        Exclude from Top 3
+      </label>`;
+
     const aiHtml = t.ai_assessment ? (() => {
       const aiCls = { HIGH: "pass", MEDIUM: "warn", LOW: "fail" }[t.ai_confidence] ?? "na";
       return `<div class="top3-ai"><strong class="${aiCls}">${t.ai_provider} · ${t.ai_confidence}:</strong> ${t.ai_assessment}</div>`;
@@ -412,7 +453,9 @@ function renderTopTrades(topTrades) {
           <span class="top3-structure-pill">${t.structure}</span>
           ${unusualBadge}
           <span class="top3-price ml-auto">${buildPriceBadge(t)}</span>
+          ${excludeToggleHtml}
         </div>
+        ${capitalWarnHtml}
         <div class="top3-body">
           <div class="top3-big-metrics">
             <div class="top3-metric">
@@ -790,6 +833,51 @@ function buildTickerCard(row) {
         ${hedgeWrap}
       </div>
     </div>`;
+}
+
+// ── Exclude-toggle re-fetch ───────────────────────────────────────────────────
+// Re-runs build_top_trades server-side with current exclusion set.
+// Uses the already-scanned rows cached in _liveData — no full re-scan.
+function _refetchTopTrades() {
+  if (!_liveData) return;
+  const resultsEl = document.getElementById("liveResults");
+  if (!resultsEl) return;
+
+  const section = resultsEl.querySelector(".top-trades");
+  if (section) {
+    section.innerHTML = `<p class="hint" style="padding:1rem">Recalculating top trades…</p>`;
+  }
+
+  const excludeParam = [..._excluded].map(encodeURIComponent).join(",");
+  // Re-call the analyze endpoint with the cached tickers + exclusions.
+  // Pass tickers from the last scan so we don't re-scan everything.
+  const tickers = (_liveData.rows || []).map(r => r.ticker).join(",");
+  const url = `/api/analyze?tickers=${encodeURIComponent(tickers)}&exclude=${excludeParam}`;
+
+  // Use a short SSE stream — we only need the 'done' event (top_trades)
+  const es = new EventSource(url);
+  es.onmessage = (ev) => {
+    try {
+      const msg = JSON.parse(ev.data);
+      if (msg.type === "done") {
+        es.close();
+        _liveData.top_trades = msg.top_trades;
+        const html = renderTopTrades(msg.top_trades);
+        const existing = resultsEl.querySelector(".top-trades");
+        if (existing) {
+          existing.insertAdjacentHTML("afterend", html || "");
+          existing.remove();
+        } else if (html) {
+          resultsEl.insertAdjacentHTML("afterbegin", html);
+        }
+      }
+    } catch (_) {}
+  };
+  es.onerror = () => {
+    es.close();
+    const s = resultsEl.querySelector(".top-trades");
+    if (s) s.innerHTML = `<p class="fail" style="padding:1rem">Recalculation failed — try again.</p>`;
+  };
 }
 
 // ── Main render ───────────────────────────────────────────────────────────────
@@ -1176,6 +1264,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const idx = top3Tab.dataset.top3;
       section.querySelectorAll(".top3-tab-btn").forEach(b => b.classList.toggle("active", b === top3Tab));
       section.querySelectorAll(".top3-panel").forEach(p => p.classList.toggle("active", p.dataset.top3 === idx));
+      return;
+    }
+
+    // Exclude-from-top-3 toggle
+    const excludeChk = e.target.closest(".exclude-chk");
+    if (excludeChk) {
+      const key = excludeChk.dataset.key;
+      if (excludeChk.checked) _excluded.add(key); else _excluded.delete(key);
+      _refetchTopTrades();
       return;
     }
 

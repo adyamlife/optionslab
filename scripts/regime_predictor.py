@@ -77,6 +77,13 @@ _POP_CAL_PATH           = _MODELS_DIR / "pop_classifier_calibrated.joblib"
 _CATEGORICAL_COLS = ("macd_trend", "trend", "spy_trend", "qqq_trend", "iwm_trend", "sector_etf", "sector_trend")
 _POP_PATH        = _MODELS_DIR / "pop_classifier.joblib"
 
+# Canonical label strings — must match label_encoder.classes_ from training.
+_LABEL_UPTREND    = "Uptrend"
+_LABEL_DOWNTREND  = "Downtrend"
+_LABEL_RANGEBOUND = "Range-bound"
+_LABEL_IV_EXP     = "Expanding"
+_LABEL_IV_CON     = "Contracting"
+
 # In-process model cache keyed by Path → (mtime, artifact).
 # Safe with gunicorn workers=1 (current deployment).
 # If workers > 1 each worker loads its own copy (~200MB × N workers).
@@ -211,29 +218,72 @@ def _build_X_return(row: dict, artifact: dict) -> pd.DataFrame:
     Uses dummy_cols (one-hot) instead of feature_encoders (LabelEncoder).
     Lag features are filled with NaN — XGBoost handles missing values natively,
     and for single-row live inference we don't have the prior N days per ticker.
+    Feature schema is read from the artifact; falls back to the training module
+    import only for artifacts saved before schema serialisation was added.
     """
-    from scripts.train_return_model import NUMERIC_FEATURES, CAT_COLS, LAG_COLS
     dummy_cols = artifact.get("dummy_cols") or []
+    numeric_features = artifact.get("numeric_features")
+    cat_cols         = artifact.get("cat_cols")
+    lag_cols         = artifact.get("lag_cols")
+
+    if numeric_features is None or cat_cols is None or lag_cols is None:
+        from scripts.train_return_model import (
+            NUMERIC_FEATURES as numeric_features,
+            CAT_COLS as cat_cols,
+            LAG_COLS as lag_cols,
+        )
 
     X = pd.DataFrame(index=[0])
-    for col in NUMERIC_FEATURES:
+    for col in numeric_features:
         X[col] = pd.to_numeric(row.get(col), errors="coerce")
 
     # Lag features — unavailable for single-row inference; NaN is fine for XGBoost
-    for col in LAG_COLS:
+    for col in lag_cols:
         X[col] = float("nan")
 
     # One-hot: build a tiny one-row dummies frame then align to dummy_cols
-    cat_df = pd.DataFrame([{c: str(row.get(c, "unknown")) for c in CAT_COLS}])
+    cat_df = pd.DataFrame([{c: str(row.get(c, "unknown")) for c in cat_cols}])
     dummies = pd.get_dummies(cat_df, prefix_sep="__", drop_first=False)
-    for col in dummy_cols:
-        X[col] = dummies[col].values[0] if col in dummies.columns else 0
-
-    # Final alignment — fill any gap (unknown category never seen in training) with 0
+    # Only add columns not already set above — prevents overwriting numeric/lag values
     for col in dummy_cols:
         if col not in X.columns:
-            X[col] = 0
+            X[col] = dummies[col].values[0] if col in dummies.columns else 0
+
     return X[dummy_cols]
+
+
+def _build_X_iv_direction(row: dict, artifact: dict) -> pd.DataFrame:
+    """
+    Build feature matrix for the IV direction classifier (v2 artifact format).
+    Uses dummy_cols (one-hot get_dummies) instead of feature_encoders (LabelEncoder).
+    artifact["dummy_cols"] = X_train.columns (numeric + one-hot); numeric cols are
+    set first, one-hot cols added only for names not already in X.
+    Feature schema is read from the artifact; falls back to the training module
+    import only for artifacts saved before schema serialisation was added.
+    """
+    all_cols         = artifact.get("dummy_cols") or []
+    numeric_features = artifact.get("numeric_features")
+    cat_cols         = artifact.get("cat_cols")
+
+    if numeric_features is None or cat_cols is None:
+        from scripts.train_iv_direction_model import (
+            NUMERIC_FEATURES as numeric_features,
+            _CATEGORICAL_COLS as cat_cols,
+        )
+
+    X = pd.DataFrame(index=[0])
+    for col in numeric_features:
+        X[col] = pd.to_numeric(row.get(col), errors="coerce")
+
+    cat_data = {col: str(row.get(col) or "unknown") for col in cat_cols}
+    cat_df   = pd.DataFrame([cat_data])
+    dummies  = pd.get_dummies(cat_df, prefix_sep="__", drop_first=False)
+    # Only add columns not already set above — prevents overwriting numeric values
+    for col in all_cols:
+        if col not in X.columns:
+            X[col] = dummies[col].values[0] if col in dummies.columns else 0
+
+    return X[all_cols]
 
 
 def _build_X_catboost(row: dict, artifact: dict) -> pd.DataFrame:
@@ -403,7 +453,7 @@ def predict_ticker(ticker: str, today_row: dict | None = None) -> dict:
         try:
             X = _build_X(today_row, art)
             p_up = float(art["model"].predict_proba(X)[0][1])
-            result["p_up"]     = round(p_up, 4)
+            result["p_up"]      = round(p_up, 4)
             result["direction"] = "Up" if p_up >= 0.5 else "Down"
         except Exception as e:
             result["p_up"] = None
@@ -418,10 +468,13 @@ def predict_ticker(ticker: str, today_row: dict | None = None) -> dict:
         warnings.append("IV Direction model not trained yet — run train_iv_direction_model")
     else:
         try:
-            X = _build_X(today_row, art)
+            if "dummy_cols" in art:
+                X = _build_X_iv_direction(today_row, art)
+            else:
+                X = _build_X(today_row, art)
             p_exp = float(art["model"].predict_proba(X)[0][1])
             result["iv_expanding_prob"] = round(p_exp, 4)
-            result["iv_direction"] = "Expanding" if p_exp >= 0.5 else "Contracting"
+            result["iv_direction"] = _LABEL_IV_EXP if p_exp >= 0.5 else _LABEL_IV_CON
         except Exception as e:
             result["iv_expanding_prob"] = None
             result["iv_direction"] = None
@@ -442,17 +495,33 @@ def predict_ticker(ticker: str, today_row: dict | None = None) -> dict:
         warnings.append("Meta-ensemble not trained yet — run train_meta_ensemble")
     else:
         try:
-            # Build the 7-feature meta-input from the other models' outputs.
-            # Missing individual model outputs default to 0.5 (maximum uncertainty).
+            # Build meta-input from the other models' outputs.
+            # Must include all features in art["meta_features"] (7 base + 2 derived).
             regime_proba = result.get("regime_proba") or {}
+            _p_up_t  = regime_proba.get(_LABEL_UPTREND,    1 / 3)
+            _p_down  = regime_proba.get(_LABEL_DOWNTREND,  1 / 3)
+            _p_range = regime_proba.get(_LABEL_RANGEBOUND, 1 / 3)
+            _p_up    = result.get("p_up") or 0.5
+            _p_iv    = result.get("iv_expanding_prob") or 0.5
+
+            # regime_entropy: uncertainty across regime distribution (0=certain, ~1.1=max)
+            _eps = 1e-9
+            _regime_entropy = -sum(
+                p * math.log(p + _eps) for p in [_p_up_t, _p_down, _p_range]
+            )
+            # pred_std: directional disagreement across three probability signals
+            _pred_std = float(np.std([_p_up_t, _p_up, _p_iv]))
+
             meta_row = {
-                "p_uptrend":       regime_proba.get("Uptrend", 0.333),
-                "p_downtrend":     regime_proba.get("Downtrend", 0.333),
-                "p_rangebound":    regime_proba.get("Range-bound", 0.333),
-                "expected_return": result.get("expected_return") or 0.0,
-                "expected_vol":    result.get("expected_vol") or 0.25,
-                "p_up":            result.get("p_up") or 0.5,
-                "iv_expanding_prob": result.get("iv_expanding_prob") or 0.5,
+                "p_uptrend":         _p_up_t,
+                "p_downtrend":       _p_down,
+                "p_rangebound":      _p_range,
+                "expected_return":   result.get("expected_return") or 0.0,
+                "expected_vol":      result.get("expected_vol") or 0.25,
+                "p_up":              _p_up,
+                "iv_expanding_prob": _p_iv,
+                "regime_entropy":    round(_regime_entropy, 4),
+                "pred_std":          round(_pred_std, 4),
             }
             X_meta = pd.DataFrame([meta_row])[art["meta_features"]]
             p_meta = float(art["model"].predict_proba(X_meta)[0][1])
@@ -538,51 +607,50 @@ def predict_ticker(ticker: str, today_row: dict | None = None) -> dict:
     else:
         result["pred_dist"] = None
 
-    # Carry through useful live context for display
-    result["live"] = {
-        "close":          today_row.get("close"),
-        "rsi":            today_row.get("rsi"),
-        "hv20":           today_row.get("hv20"),
-        "garch_conditional_var": today_row.get("garch_conditional_var"),
-        "trend":          today_row.get("trend"),
-        "vix_close":      today_row.get("vix_close"),
-        "rel_strength":   today_row.get("rel_strength_spy"),
-        "beta_60d":       today_row.get("beta_60d"),
-        "atr_pct":        today_row.get("atr_pct"),
-        "iv_rank_52w":    today_row.get("iv_rank_52w"),
-        "vol_oi_ratio":   today_row.get("vol_oi_ratio"),
-        "iv_skew":        today_row.get("iv_skew"),
-        "iv_term_slope":  today_row.get("iv_term_slope"),
-        "otm_pcr":        today_row.get("otm_pcr"),
-        "spy_trend":      today_row.get("spy_trend"),
-        "qqq_trend":      today_row.get("qqq_trend"),
-        "iwm_trend":      today_row.get("iwm_trend"),
-        "sector_etf":     today_row.get("sector_etf"),
-        "sector_trend":   today_row.get("sector_trend"),
-        "sector_rsi":     today_row.get("sector_rsi"),
-        "sector_iv_ratio": today_row.get("sector_iv_ratio"),
-        "vvix":                   today_row.get("vvix"),
-        "vix_3m":                 today_row.get("vix_3m"),
-        "vix_term_slope":         today_row.get("vix_term_slope"),
-        "earnings_inside_expiry": today_row.get("earnings_inside_expiry"),
-        "news_sentiment_score":   today_row.get("news_sentiment_score"),
-        "analyst_rec_change":     today_row.get("analyst_rec_change"),
-        "short_interest_pct":     today_row.get("short_interest_pct"),
-        # Tier 4 — chain-snapshot-derived
-        "iv_skew_20d":      today_row.get("iv_skew_20d"),
-        "gex_proxy":        today_row.get("gex_proxy"),
-        "max_pain_strike":  today_row.get("max_pain_strike"),
-        "oi_concentration": today_row.get("oi_concentration"),
-        "wings_iv_ratio":   today_row.get("wings_iv_ratio"),
-        # Tier 5 — macro context
-        "yield_10y":      today_row.get("yield_10y"),
-        "yield_3m":       today_row.get("yield_3m"),
-        "yield_curve":    today_row.get("yield_curve"),
-        "dollar_index":   today_row.get("dollar_index"),
-        "fed_within_dte": today_row.get("fed_within_dte"),
-        "cpi_within_dte": today_row.get("cpi_within_dte"),
-    }
+    result["live"] = _build_live_context(today_row)
+
+    # Record today's regime and compute consecutive-day streak.
+    # Used by candidate_ranker's ML regime override gate — override only fires
+    # when the regime has persisted for >= N days, preventing single-day noise.
+    try:
+        from scripts.regime_history import regime_history as _rh
+        from datetime import date as _date
+        _streak = _rh.record_and_streak(
+            ticker=ticker,
+            date_str=_date.today().isoformat(),
+            regime=result.get("regime"),
+            regime_proba=result.get("regime_proba"),
+            pred_dist=result.get("pred_dist"),
+        )
+        result["ml_regime_streak"] = _streak
+    except Exception as _rh_err:
+        log.debug(f"[regime_history] streak tracking skipped: {_rh_err}")
+        result["ml_regime_streak"] = 0
+
     return result
+
+
+# Keys extracted from the feature row for display (not model inputs).
+_LIVE_CONTEXT_KEYS = (
+    "close", "rsi", "hv20", "garch_conditional_var", "trend",
+    "vix_close", "beta_60d", "atr_pct", "iv_rank_52w",
+    "vol_oi_ratio", "iv_skew", "iv_term_slope", "otm_pcr",
+    "spy_trend", "qqq_trend", "iwm_trend",
+    "sector_etf", "sector_trend", "sector_rsi", "sector_iv_ratio",
+    "vvix", "vix_3m", "vix_term_slope",
+    "earnings_inside_expiry", "news_sentiment_score",
+    "analyst_rec_change", "short_interest_pct",
+    "iv_skew_20d", "gex_proxy", "max_pain_strike", "oi_concentration", "wings_iv_ratio",
+    "yield_10y", "yield_3m", "yield_curve", "dollar_index",
+    "fed_within_dte", "cpi_within_dte",
+)
+
+
+def _build_live_context(row: dict) -> dict:
+    ctx = {k: row.get(k) for k in _LIVE_CONTEXT_KEYS}
+    # rel_strength_spy stored under a different key in the feature row
+    ctx["rel_strength"] = row.get("rel_strength_spy")
+    return ctx
 
 
 def predict_all(tickers: list[str] | None = None) -> dict:

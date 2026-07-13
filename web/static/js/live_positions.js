@@ -157,6 +157,17 @@ function setupControlButtonHandlers() {
       }
     });
 
+    // Merge-by-expiry checkbox
+    const mergeChk = document.getElementById("lp-merge-expiry");
+    if (mergeChk) {
+      mergeChk.addEventListener("change", () => {
+        setMergeByExpiry(mergeChk.checked);
+        const groups = getCurrentGroups();
+        const el = getCurrentElement();
+        if (groups && el) renderPositionResults(groups, getCurrentFilename(), el);
+      });
+    }
+
     // Filter buttons
     eventManager.delegateTo("#lp-filter-bar", ".lp-filter-btn", "click", (e, btn) => {
       const filterVal = btn.dataset.filter;

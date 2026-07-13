@@ -7,11 +7,57 @@
 function _expiryIntrinsic(spy, sp) {
   const struct = sp.structure || sp.kind || "";
   const qty    = Math.abs(sp.qty || 1);
-  const mult   = qty * 100;
+  // candidateToSpread passes mult:1 so table values stay per-share (matching cost_value scale)
+  const mult   = sp.mult != null ? sp.mult : qty * 100;
   const lo     = sp.strike_lo, hi = sp.strike_hi, K = sp.strike;
 
   if (struct === "Call Debit Spread")  return Math.max(Math.min(spy - lo, hi - lo), 0) * mult;
   if (struct === "Put Debit Spread")   return Math.max(Math.min(hi - spy, hi - lo), 0) * mult;
+  if (struct === "Risk Reversal") {
+    // short put (strike_lo) + long call (strike_hi); net_credit stored in cost_value as negative
+    const putPnl  = -Math.max(lo - spy, 0);   // short put: loss if spy < put_strike
+    const callPnl =  Math.max(spy - hi, 0);   // long call: profit if spy > call_strike
+    return (putPnl + callPnl) * mult;
+  }
+  if (struct === "Financed Long Call") {
+    // put credit spread (short higher put, long lower put) + standalone long call
+    const putPnl  = -Math.max(Math.min(sp.put_short - spy, sp.put_short - sp.put_long), 0);
+    const callPnl =  Math.max(spy - sp.strike_hi, 0);   // strike_hi = call strike
+    return (putPnl + callPnl) * mult;
+  }
+  if (struct === "Financed Long Put") {
+    // call credit spread (short lower call, long higher call) + standalone long put
+    const callPnl = -Math.max(Math.min(spy - sp.call_short, sp.call_long - sp.call_short), 0);
+    const putPnl  =  Math.max(sp.strike_lo - spy, 0);   // strike_lo = put strike
+    return (callPnl + putPnl) * mult;
+  }
+  if (struct === "Ratio Call Backspread") {
+    // sell 1 near-ATM call (strike_lo), buy 2 OTM calls (strike_hi)
+    const shortPnl = -Math.max(spy - sp.strike_lo, 0);
+    const longPnl  =  2 * Math.max(spy - sp.strike_hi, 0);
+    return (shortPnl + longPnl) * mult;
+  }
+  if (struct === "Ratio Put Backspread") {
+    // sell 1 near-ATM put (strike_hi), buy 2 OTM puts (strike_lo)
+    const shortPnl = -Math.max(sp.strike_hi - spy, 0);
+    const longPnl  =  2 * Math.max(sp.strike_lo - spy, 0);
+    return (shortPnl + longPnl) * mult;
+  }
+  if (struct === "Long Strangle") {
+    // buy OTM put (strike_lo) + buy OTM call (strike_hi)
+    return (Math.max(sp.strike_lo - spy, 0) + Math.max(spy - sp.strike_hi, 0)) * mult;
+  }
+  if (struct === "Bear Combo") {
+    // Bear put spread + bear call spread (4 legs)
+    // put_long = higher put (bought), put_short = lower put (sold)
+    // call_short = lower call (sold, closer to ATM), call_long = higher call (bought, cap)
+    const pL = sp.put_long, pS = sp.put_short, cS = sp.call_short, cH = sp.call_long;
+    // Put spread (long pL put, short pS put): max(pL-spy,0) - max(pS-spy,0)
+    const putPnl  = Math.max(pL - spy, 0) - Math.max(pS - spy, 0);
+    // Call spread (short cS call, long cH call): -max(spy-cS,0) + max(spy-cH,0)
+    const callPnl = -Math.max(spy - cS, 0) + Math.max(spy - cH, 0);
+    return (putPnl + callPnl) * mult;
+  }
   if (struct === "Call Credit Spread") return -Math.max(Math.min(spy - lo, hi - lo), 0) * mult;
   if (struct === "Put Credit Spread")  return -Math.max(Math.min(hi - spy, hi - lo), 0) * mult;
   if (struct === "Iron Condor") {
@@ -109,11 +155,46 @@ function candidateToSpread(c, row) {
     strike_lo = c.short_strike;   // lower, short call
     strike_hi = c.long_strike;    // higher, long call
   } else if (struct === "Put Debit Spread") {
-    strike_lo = c.long_strike;
-    strike_hi = c.short_strike;
+    strike_lo = c.short_strike;  // lower put (sold)
+    strike_hi = c.long_strike;   // higher put (bought)
   } else if (struct === "Call Debit Spread") {
     strike_lo = c.long_strike;
     strike_hi = c.short_strike;
+  } else if (struct === "Risk Reversal") {
+    // short_strike = put strike (sold), long_strike = call strike (bought)
+    strike_lo = c.short_strike;   // put strike (loss side)
+    strike_hi = c.long_strike;    // call strike (profit side)
+  } else if (struct === "Bear Combo") {
+    // 4-leg: BUY long_put + SELL short_put + SELL short_call + BUY long_call
+    put_long   = c.long_put_strike;
+    put_short  = c.short_put_strike;
+    call_short = c.short_call_strike;
+    call_long  = c.long_call_strike;
+    strike_lo  = put_short;
+    strike_hi  = call_long;
+  } else if (struct === "Financed Long Call") {
+    // put credit spread + standalone long call
+    put_short  = c.short_put_strike;   // higher put (sold)
+    put_long   = c.long_put_strike;    // lower put (bought, defines max loss)
+    call_long  = c.call_strike;        // standalone long call (for price anchors)
+    strike_lo  = c.long_put_strike;
+    strike_hi  = c.call_strike;
+  } else if (struct === "Financed Long Put") {
+    // call credit spread + standalone long put
+    call_short = c.short_call_strike;  // lower call (sold)
+    call_long  = c.long_call_strike;   // higher call (bought, cap)
+    put_long   = c.put_strike;         // standalone long put (for price anchors)
+    strike_lo  = c.put_strike;
+    strike_hi  = c.long_call_strike;
+  } else if (struct === "Ratio Call Backspread") {
+    strike_lo = c.short_strike;        // near-ATM call (1× sold)
+    strike_hi = c.long_strike;         // OTM call (2× bought)
+  } else if (struct === "Ratio Put Backspread") {
+    strike_lo = c.long_strike;         // OTM put (2× bought, lower)
+    strike_hi = c.short_strike;        // near-ATM put (1× sold, higher)
+  } else if (struct === "Long Strangle") {
+    strike_lo = c.short_strike;        // OTM put (lower)
+    strike_hi = c.long_strike;         // OTM call (upper)
   } else if (struct === "Iron Condor") {
     put_long   = c.put_long_strike;
     put_short  = c.put_short_strike;
@@ -123,22 +204,80 @@ function candidateToSpread(c, row) {
     strike_hi  = call_long;
   }
 
-  // cost_value: negative = credit received, positive = debit paid
-  const costValue = isCredit ? -maxProfit : maxLoss;
+  // cost_value: for standard structures = credit received (neg) or debit paid (pos).
+  // For financed/backspread/strangle structures, use the actual net cost directly.
+  const unlimitedProfit = ["Financed Long Call", "Financed Long Put",
+                           "Ratio Call Backspread", "Ratio Put Backspread", "Long Strangle"].includes(struct);
+  let costValue;
+  if (struct === "Financed Long Call")    costValue = c.flc_net_cost ?? 0;
+  else if (struct === "Financed Long Put") costValue = c.flp_net_cost ?? 0;
+  else if (struct === "Ratio Call Backspread") costValue = c.rbc_net_cost ?? 0;
+  else if (struct === "Ratio Put Backspread")  costValue = c.rbp_net_cost ?? 0;
+  else if (struct === "Long Strangle")    costValue = c.ls_total_debit ?? maxLoss;
+  else costValue = isCredit ? -maxProfit : maxLoss;
 
   return {
     structure:  struct,
     kind:       "spread",
     qty:        1,
+    mult:       1,   // per-share scale: cost_value is per-share, table shows per-share
     strike_lo, strike_hi,
     put_long, put_short, call_short, call_long,
     cost_value: costValue,
     ul_price:   row.spot ?? c.spot_at_entry ?? null,
     expiry:     c.expiry ?? row.expiry ?? null,
     ticker:     row.ticker ?? "",
-    // pre-computed for narrative
-    max_profit_ps: maxProfit / 100,
-    max_loss_ps:   maxLoss   / 100,
+    // pre-computed for narrative — null for unlimited-upside structures
+    max_profit_ps: unlimitedProfit ? null : (c.max_profit != null ? c.max_profit / 100 : null),
+    max_loss_ps:   c.max_loss != null ? c.max_loss / 100 : null,
+    // Risk Reversal extras
+    rr_net_credit:    c.rr_net_credit,
+    rr_ref_up:        c.rr_ref_up,
+    rr_ref_dn:        c.rr_ref_dn,
+    rr_pnl_dn:        c.rr_pnl_dn,
+    rr_true_max_loss: c.rr_true_max_loss,
+    // Bear Combo extras
+    bc_put_debit:   c.bc_put_debit,
+    bc_call_credit: c.bc_call_credit,
+    bc_net_cost:    c.bc_net_cost,
+    bc_put_width:   c.bc_put_width,
+    bc_call_width:  c.bc_call_width,
+    bc_lower_be:    c.bc_lower_be,
+    bc_upper_be:    c.bc_upper_be,
+    // Financed Long Call extras
+    flc_put_credit:  c.flc_put_credit,
+    flc_call_debit:  c.flc_call_debit,
+    flc_net_cost:    c.flc_net_cost,
+    flc_put_width:   c.flc_put_width,
+    flc_lower_be:    c.flc_lower_be,
+    flc_upper_be:    c.flc_upper_be,
+    // Financed Long Put extras
+    flp_call_credit: c.flp_call_credit,
+    flp_put_debit:   c.flp_put_debit,
+    flp_net_cost:    c.flp_net_cost,
+    flp_call_width:  c.flp_call_width,
+    flp_upper_be:    c.flp_upper_be,
+    flp_lower_be:    c.flp_lower_be,
+    // Ratio Backspread extras
+    rbc_net_cost:  c.rbc_net_cost,
+    rbc_spread_w:  c.rbc_spread_w,
+    rbc_upper_be:  c.rbc_upper_be,
+    rbc_dead_be:   c.rbc_dead_be,
+    rbc_max_loss:  c.rbc_max_loss,
+    rbp_net_cost:  c.rbp_net_cost,
+    rbp_spread_w:  c.rbp_spread_w,
+    rbp_lower_be:  c.rbp_lower_be,
+    rbp_dead_be:   c.rbp_dead_be,
+    rbp_max_loss:  c.rbp_max_loss,
+    // Long Strangle extras
+    ls_call_k:      c.ls_call_k,
+    ls_put_k:       c.ls_put_k,
+    ls_call_debit:  c.ls_call_debit,
+    ls_put_debit:   c.ls_put_debit,
+    ls_total_debit: c.ls_total_debit,
+    ls_call_be:     c.ls_call_be,
+    ls_put_be:      c.ls_put_be,
+    ls_fits_cap:    c.ls_fits_cap,
   };
 }
 
@@ -275,27 +414,114 @@ function _pnlNarrative(sp, bes, levels) {
   else if (bes.length === 2)
     lines.push(`Breakevens: <strong>$${bes[0].toFixed(2)}</strong> (down) and <strong>$${bes[1].toFixed(2)}</strong> (up).`);
 
-  if (maxP != null && maxL != null)
-    lines.push(`Max gain <span class="pass">+$${maxP.toFixed(2)}</span> / Max loss <span class="fail">-$${maxL.toFixed(2)}</span>.`);
-  else if (maxL != null)
-    lines.push(`Max loss: <span class="fail">-$${maxL.toFixed(2)}</span>. Gain is open-ended.`);
+  if (struct === "Risk Reversal") {
+    const netCred = sp.rr_net_credit;
+    const credStr = netCred != null
+      ? (netCred >= 0 ? `net credit $${netCred.toFixed(2)}` : `net debit $${Math.abs(netCred).toFixed(2)}`)
+      : costLabel;
+    lines.push(`<strong>Risk Reversal</strong> — ${qty} contract${qty > 1 ? "s" : ""}, ${credStr}.`);
+    lines.push(`✅ Unlimited upside above $${sp.strike_hi?.toFixed(2)}. ❌ Large downside below put strike $${sp.strike_lo?.toFixed(2)} — uncapped (stock can go to zero).`);
+    if (bes.length) lines.push(`Downside breakeven: <strong>$${bes[0].toFixed(2)}</strong>. Loss grows below this level.`);
+    const trueMaxLoss = sp.rr_true_max_loss;
+    if (trueMaxLoss != null) lines.push(`<strong>True max loss if stock → $0:</strong> <span class="fail">-$${trueMaxLoss.toFixed(2)}/sh (-$${(trueMaxLoss * 100).toFixed(0)}/contract)</span>. Add a protective put below to cap this.`);
+    const refUp = sp.rr_ref_up;
+    const refDn = sp.rr_ref_dn;
+    const pnlDn = sp.rr_pnl_dn;
+    if (maxP != null) lines.push(`P&L at +10% ($${refUp != null ? refUp.toFixed(2) : "?"}): <span class="pass">+$${maxP.toFixed(2)}</span>.`);
+    if (pnlDn != null) lines.push(`P&L at put strike −20% ($${refDn != null ? refDn.toFixed(2) : "?"}): <span class="fail">$${pnlDn.toFixed(2)}</span> (loss accelerates below put strike $${sp.strike_lo?.toFixed(2)}).`);
+  } else if (struct === "Financed Long Call") {
+    const netCost = sp.flc_net_cost;
+    const costStr = netCost != null
+      ? (netCost < 0 ? `net credit $${Math.abs(netCost).toFixed(2)}` : `net debit $${netCost.toFixed(2)}`)
+      : costLabel;
+    lines.push(`<strong>Financed Long Call</strong> (put credit spread + long call) — ${qty} contract${qty > 1 ? "s" : ""}, ${costStr}.`);
+    lines.push(`❌ Max loss <span class="fail">-$${maxL != null ? maxL.toFixed(2) : "?"}</span> if stock falls below $${sp.put_long?.toFixed(2)} — defined by the put spread.`);
+    lines.push(`✅ Unlimited upside above $${sp.flc_upper_be?.toFixed(2)} (long call has no cap).`);
+    if (sp.flc_put_credit != null && sp.flc_call_debit != null)
+      lines.push(`Put spread credit $${sp.flc_put_credit.toFixed(2)} offsets call debit $${sp.flc_call_debit.toFixed(2)} — ${netCost < 0 ? "fully financed plus a credit" : "partially financed"}.`);
+    if (sp.flc_lower_be != null) lines.push(`Put spread enters loss zone below $${sp.flc_lower_be.toFixed(2)}.`);
+  } else if (struct === "Financed Long Put") {
+    const netCost = sp.flp_net_cost;
+    const costStr = netCost != null
+      ? (netCost < 0 ? `net credit $${Math.abs(netCost).toFixed(2)}` : `net debit $${netCost.toFixed(2)}`)
+      : costLabel;
+    lines.push(`<strong>Financed Long Put</strong> (call credit spread + long put) — ${qty} contract${qty > 1 ? "s" : ""}, ${costStr}.`);
+    lines.push(`❌ Max loss <span class="fail">-$${maxL != null ? maxL.toFixed(2) : "?"}</span> if stock rises above $${sp.call_long?.toFixed(2)} — defined by the call spread.`);
+    lines.push(`✅ Unlimited downside profit below $${sp.flp_lower_be?.toFixed(2)} (long put, no floor above $0).`);
+    if (sp.flp_call_credit != null && sp.flp_put_debit != null)
+      lines.push(`Call spread credit $${sp.flp_call_credit.toFixed(2)} offsets put debit $${sp.flp_put_debit.toFixed(2)} — ${netCost < 0 ? "fully financed plus a credit" : "partially financed"}.`);
+    if (sp.flp_upper_be != null) lines.push(`Call spread enters loss zone above $${sp.flp_upper_be.toFixed(2)}.`);
+  } else if (struct === "Ratio Call Backspread") {
+    const netCost = sp.rbc_net_cost;
+    const costStr = netCost != null
+      ? (netCost <= 0 ? `net credit $${Math.abs(netCost).toFixed(2)}` : `net debit $${netCost.toFixed(2)}`)
+      : costLabel;
+    lines.push(`<strong>Ratio Call Backspread</strong> (sell 1× $${sp.strike_lo?.toFixed(0)}C / buy 2× $${sp.strike_hi?.toFixed(0)}C) — ${costStr}.`);
+    lines.push(`⚠ Dead zone: max loss <span class="fail">-$${maxL != null ? maxL.toFixed(2) : "?"}</span> if stock expires between $${sp.strike_lo?.toFixed(2)}–$${sp.strike_hi?.toFixed(2)}.`);
+    lines.push(`✅ Unlimited upside above <strong>$${sp.rbc_upper_be?.toFixed(2)}</strong> (2× long call). ${netCost <= 0 ? `Credit $${Math.abs(netCost ?? 0).toFixed(2)} kept if stock stays below $${sp.strike_lo?.toFixed(2)}.` : ""}`);
+    lines.push(`Best in Low IV expecting a large up move + IV expansion. Close early if stock drifts into the dead zone.`);
+  } else if (struct === "Ratio Put Backspread") {
+    const netCost = sp.rbp_net_cost;
+    const costStr = netCost != null
+      ? (netCost <= 0 ? `net credit $${Math.abs(netCost).toFixed(2)}` : `net debit $${netCost.toFixed(2)}`)
+      : costLabel;
+    lines.push(`<strong>Ratio Put Backspread</strong> (sell 1× $${sp.strike_hi?.toFixed(0)}P / buy 2× $${sp.strike_lo?.toFixed(0)}P) — ${costStr}.`);
+    lines.push(`⚠ Dead zone: max loss <span class="fail">-$${maxL != null ? maxL.toFixed(2) : "?"}</span> if stock expires between $${sp.strike_lo?.toFixed(2)}–$${sp.strike_hi?.toFixed(2)}.`);
+    lines.push(`✅ Unlimited downside profit below <strong>$${sp.rbp_lower_be?.toFixed(2)}</strong> (2× long put). ${netCost <= 0 ? `Credit $${Math.abs(netCost ?? 0).toFixed(2)} kept if stock stays above $${sp.strike_hi?.toFixed(2)}.` : ""}`);
+    lines.push(`Best in Low IV expecting a large down move or crash + IV expansion. Close early if stock drifts into the dead zone.`);
+  } else if (struct === "Long Strangle") {
+    lines.push(`<strong>Long Strangle</strong> — buy $${sp.ls_put_k?.toFixed(0)}P + $${sp.ls_call_k?.toFixed(0)}C, total debit $${sp.ls_total_debit?.toFixed(2)}/sh ($${((sp.ls_total_debit ?? 0) * 100).toFixed(0)}/contract).`);
+    lines.push(`✅ Profits if stock moves more than $${sp.ls_total_debit?.toFixed(2)} from either strike by expiry.`);
+    if (sp.ls_call_be != null && sp.ls_put_be != null)
+      lines.push(`Upper BE: <strong>$${sp.ls_call_be.toFixed(2)}</strong> / Lower BE: <strong>$${sp.ls_put_be.toFixed(2)}</strong>.`);
+    if (sp.ls_fits_cap === false)
+      lines.push(`<span class="warn">⚠ Debit exceeds risk limit — informational only. Suitable for accounts with larger capital allocation.</span>`);
+    else
+      lines.push(`Best entered when IV is low — benefits from both a large move AND vol expansion (long vega on both legs).`);
+  } else if (struct === "Bear Combo") {
+    const netCost = sp.bc_net_cost;
+    const costStr = netCost != null
+      ? (netCost < 0 ? `net credit $${Math.abs(netCost).toFixed(2)}` : `net debit $${netCost.toFixed(2)}`)
+      : costLabel;
+    lines.push(`<strong>Bear Combo</strong> (bear put spread + bear call spread) — ${qty} contract${qty > 1 ? "s" : ""}, ${costStr}.`);
+    lines.push(`✅ Max profit <span class="pass">+$${maxP != null ? maxP.toFixed(2) : "?"}</span> if stock falls below $${sp.put_short?.toFixed(2)} at expiry.`);
+    lines.push(`❌ Max loss <span class="fail">-$${maxL != null ? maxL.toFixed(2) : "?"}</span> if stock rises above $${sp.call_long?.toFixed(2)} — all 4 legs defined, no naked exposure.`);
+    const lowerBe = sp.bc_lower_be, upperBe = sp.bc_upper_be;
+    if (lowerBe != null && upperBe != null)
+      lines.push(`Profit zone: stock below <strong>$${lowerBe.toFixed(2)}</strong>. Loss zone: stock above <strong>$${upperBe.toFixed(2)}</strong>.`);
+    if (sp.bc_put_debit != null && sp.bc_call_credit != null)
+      lines.push(`Put spread debit $${sp.bc_put_debit.toFixed(2)}, call spread credit $${sp.bc_call_credit.toFixed(2)} — call premium offsets put cost.`);
+  } else {
+    if (maxP != null && maxL != null)
+      lines.push(`Max gain <span class="pass">+$${maxP.toFixed(2)}</span> / Max loss <span class="fail">-$${maxL.toFixed(2)}</span>.`);
+    else if (maxL != null)
+      lines.push(`Max loss: <span class="fail">-$${maxL.toFixed(2)}</span>. Gain is open-ended.`);
 
-  if (struct === "Call Credit Spread")
-    lines.push(`Full credit kept if stock stays below $${sp.strike_lo}. Loss grows above breakeven.`);
-  else if (struct === "Put Credit Spread")
-    lines.push(`Full credit kept if stock stays above $${sp.strike_hi}. Loss grows below breakeven.`);
-  else if (struct === "Iron Condor")
-    lines.push(`Profit zone: $${bes[0]?.toFixed(2)} – $${bes[1]?.toFixed(2)}.`);
-  else if (struct === "Call Debit Spread")
-    lines.push(`Profit if stock rises above $${bes[bes.length-1]?.toFixed(2)}.`);
-  else if (struct === "Put Debit Spread")
-    lines.push(`Profit if stock falls below $${bes[0]?.toFixed(2)}.`);
+    if (struct === "Call Credit Spread")
+      lines.push(`Full credit kept if stock stays below $${sp.strike_lo}. Loss grows above breakeven.`);
+    else if (struct === "Put Credit Spread")
+      lines.push(`Full credit kept if stock stays above $${sp.strike_hi}. Loss grows below breakeven.`);
+    else if (struct === "Iron Condor")
+      lines.push(`Profit zone: $${bes[0]?.toFixed(2)} – $${bes[1]?.toFixed(2)}.`);
+    else if (struct === "Call Debit Spread")
+      lines.push(`Profit if stock rises above $${bes[bes.length-1]?.toFixed(2)}.`);
+    else if (struct === "Put Debit Spread")
+      lines.push(`Profit if stock falls below $${bes[0]?.toFixed(2)}.`);
+  }
 
   if (sp.ul_price != null && bes.length) {
     const ul = sp.ul_price;
-    const profitable = bes.length === 1
-      ? (struct.includes("Call") ? ul > bes[0] : ul < bes[0])
-      : (ul > bes[0] && ul < bes[1]);
+    const profitable =
+      struct === "Risk Reversal"         ? ul > bes[0]
+      : struct === "Bear Combo"          ? (bes.length >= 1 ? ul < bes[0] : false)
+      : struct === "Financed Long Call"  ? (bes.length >= 2 ? ul > bes[1] : bes.length === 1 ? ul > bes[0] : false)
+      : struct === "Financed Long Put"   ? (bes.length >= 1 ? ul < bes[0] : false)
+      : struct === "Ratio Call Backspread" ? (bes.length >= 2 ? (ul < bes[0] || ul > bes[1]) : ul > (bes[0] ?? Infinity))
+      : struct === "Ratio Put Backspread"  ? (bes.length >= 2 ? (ul > bes[1] || ul < bes[0]) : ul < (bes[0] ?? -Infinity))
+      : struct === "Long Strangle"       ? (bes.length >= 2 ? (ul < bes[0] || ul > bes[1]) : false)
+      : bes.length === 1
+        ? (struct.includes("Call") ? ul > bes[0] : ul < bes[0])
+        : (ul > bes[0] && ul < bes[1]);
     lines.push(`Current $${ul.toFixed(2)} — <span class="${profitable ? "pass" : "fail"}">${profitable ? "in profit zone ✓" : "outside profit zone"}</span>.`);
   }
   return lines.map(l => `<p class="pnl-narr-line">${l}</p>`).join("");
@@ -345,3 +571,71 @@ function renderPnlExplanation(sp) {
       </div>
     </details>`;
 }
+
+// ── Shared ML / Bias info modal ───────────────────────────────────────────────
+
+function _ensureInfoModal() {
+  if (document.getElementById("lp-info-modal")) return;
+  const el = document.createElement("div");
+  el.id = "lp-info-modal";
+  el.className = "lp-modal-overlay";
+  el.style.display = "none";
+  el.innerHTML = `
+    <div class="lp-modal-dialog" style="max-width:520px">
+      <div class="lp-modal-header">
+        <span id="lp-info-modal-title" class="lp-modal-title"></span>
+        <button class="lp-modal-close" id="lp-info-modal-close">&times;</button>
+      </div>
+      <div id="lp-info-modal-body" class="lp-modal-body" style="padding:1rem 1.2rem 1.2rem"></div>
+    </div>`;
+  document.body.appendChild(el);
+  el.addEventListener("click", e => { if (e.target === el) _closeInfoModal(); });
+  document.getElementById("lp-info-modal-close").addEventListener("click", _closeInfoModal);
+  document.addEventListener("keydown", e => { if (e.key === "Escape") _closeInfoModal(); });
+}
+
+function _closeInfoModal() {
+  const m = document.getElementById("lp-info-modal");
+  if (m) m.style.display = "none";
+}
+
+function _openInfoModal(type, detail) {
+  _ensureInfoModal();
+  const title = document.getElementById("lp-info-modal-title");
+  const body  = document.getElementById("lp-info-modal-body");
+  title.textContent = detail.title || "Details";
+
+  if (type === "bias") {
+    const reasons = (detail.reasons || []).map(r => `<li>${r}</li>`).join("");
+    const actionHtml = detail.action
+      ? `<div class="lp-tracking-action" style="margin-top:.8rem"><strong>Suggested action:</strong> ${detail.action}</div>`
+      : "";
+    const noteHtml = detail.note
+      ? `<p class="lp-tracking-note" style="margin-top:.8rem">${detail.note}</p>`
+      : "";
+    body.innerHTML = `<ul class="lp-tracking-reasons" style="margin:0">${reasons || "<li>No signal data available.</li>"}</ul>${actionHtml}${noteHtml}`;
+  } else if (type === "ml") {
+    const rowsHtml = (detail.rows || []).map(({ signal, val, vCls, desc }) => `
+      <div class="lp-ml-modal-row">
+        <div class="lp-ml-modal-header-row">
+          <span class="lp-ml-signal">${signal}</span>
+          <span class="lp-ml-val${vCls ? " " + vCls : ""}">${val}</span>
+        </div>
+        <p class="lp-ml-modal-desc">${desc}</p>
+      </div>`).join("");
+    body.innerHTML = `<div class="lp-ml-modal-rows">${rowsHtml}</div>`;
+  }
+
+  document.getElementById("lp-info-modal").style.display = "flex";
+}
+
+// Global delegated click handler — works for dynamically injected cards
+document.addEventListener("click", e => {
+  const btn = e.target.closest(".lp-info-btn");
+  if (!btn) return;
+  e.stopPropagation();
+  const type = btn.dataset.infoType;
+  let detail;
+  try { detail = JSON.parse(btn.dataset.info); } catch { return; }
+  _openInfoModal(type, detail);
+});

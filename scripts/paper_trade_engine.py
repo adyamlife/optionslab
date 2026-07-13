@@ -253,6 +253,19 @@ def _entry_price(candidate):
                     "legs": ({"long": lo, "short": sh} if lo and sh else {}),
                 }
 
+        # Long Strangle — buy put at short_strike + buy call at long_strike
+        if s == "Long Strangle":
+            put_leg  = _fetch_leg(ticker, expiry, candidate.get("short_strike"), "put")
+            call_leg = _fetch_leg(ticker, expiry, candidate.get("long_strike"),  "call")
+            if not put_leg or not call_leg: return None
+            debit_bid = put_leg["ask"] + call_leg["ask"]   # worst-case cost to enter
+            debit_mid = put_leg["mid"] + call_leg["mid"]
+            return {
+                "credit_bid": round(debit_bid, 4),
+                "credit_mid": round(debit_mid, 4),
+                "legs": {"put": put_leg, "call": call_leg},
+            }
+
         # Fallback for structures with no fixed strike schema (Calendar, Diagonal, Jade Lizard)
         val = candidate.get("max_profit")
         if val is None: return None
@@ -299,6 +312,12 @@ def _current_mark(trade):
                 return max(0.0, round(sh["ask"] - lo["bid"], 4))
             else:
                 return max(0.0, round(lo["bid"] - sh["ask"], 4))
+
+        if s == "Long Strangle":
+            put_leg  = _fetch_leg(ticker, expiry, strikes.get("short"), "put")
+            call_leg = _fetch_leg(ticker, expiry, strikes.get("long"),  "call")
+            if not put_leg or not call_leg: return None
+            return max(0.0, round(put_leg["bid"] + call_leg["bid"], 4))
 
     except Exception as e:
         log.warning(f"_current_mark failed for {ticker}: {e}")
@@ -349,6 +368,16 @@ def _expiry_pnl(trade, ul_price):
             entry_debit = trade.get("max_loss") or 0
             return val, round(val - entry_debit, 4)
 
+    if st.name == "Long Strangle":
+        put_k  = strikes.get("short")   # put leg (lower strike)
+        call_k = strikes.get("long")    # call leg (higher strike)
+        if put_k is None or call_k is None: return None, None
+        put_val  = max(0.0, put_k  - ul_price)
+        call_val = max(0.0, ul_price - call_k)
+        val      = round(put_val + call_val, 4)
+        entry_debit = trade.get("max_loss") or ec
+        return val, round(val - entry_debit, 4)
+
     return None, None   # Calendar, Diagonal, Jade Lizard — path-dependent
 
 
@@ -371,7 +400,7 @@ def _select_top3(rows, ml_snapshot: dict | None = None):
             if "ml" not in row or row["ml"] is None:
                 row["ml"] = ml_snapshot.get(row.get("ticker"))
 
-    items = rank_candidates(rows, n=3)
+    items = rank_candidates(rows, n=3, quality_floor=0)
     result = []
     for item in items:
         row, c = item["row"], item["candidate"]
@@ -412,9 +441,14 @@ def _select_top3(rows, ml_snapshot: dict | None = None):
 
 # ── Morning scan ──────────────────────────────────────────────────────────────
 
-def run_morning_scan(params=None, force=False):
+def run_morning_scan(params=None, force=False, scan_time="morning"):
     """
     Record today's top-3 as paper trades.
+
+    scan_time: "morning" (default, 10 AM) or "afternoon" (2 PM).
+      - Trade IDs are prefixed AM/PM so the same ticker can appear in both scans.
+      - A short-DTE pass (max_dte=10) runs after the normal pass to collect
+        weekly-expiry candidates that expire and label within 7-10 days.
     Set force=True to run even on non-market days (for testing).
     """
     import sys
@@ -424,15 +458,27 @@ def run_morning_scan(params=None, force=False):
         return {"skipped": True, "reason": "Not a market day"}
 
     from scripts.analyze import analyze_ticker, DEFAULT_PARAMS
-    from config.watchlist import WATCHLIST
+    from config.watchlist import PAPER_WATCHLIST
 
-    p    = {**DEFAULT_PARAMS, **(params or {})}
+    scan_tag  = "AM" if scan_time == "morning" else "PM"
+    p         = {**DEFAULT_PARAMS, **(params or {})}
+    short_p   = {**p, "min_dte": 7, "max_dte": 10}   # weekly expiry pass
+
     rows = []
-    for ticker in WATCHLIST:
+    for ticker in PAPER_WATCHLIST:
+        # Normal DTE pass
         try:
             rows.append(analyze_ticker(ticker, p))
         except Exception as e:
             log.warning(f"analyze_ticker({ticker}) failed: {e}")
+        # Short DTE pass — separate row so both can rank independently
+        try:
+            short_row = analyze_ticker(ticker, short_p)
+            if short_row.get("dte") and short_row["dte"] <= 10:
+                short_row["_short_dte_pass"] = True
+                rows.append(short_row)
+        except Exception as e:
+            log.warning(f"analyze_ticker({ticker}, short_dte) failed: {e}")
 
     row_by_ticker = {r["ticker"]: r for r in rows}
 
@@ -457,7 +503,7 @@ def run_morning_scan(params=None, force=False):
     new       = []
 
     for rank, c in enumerate(top3, 1):
-        tid = f"{today_str}_{c['ticker']}_{c['structure'][:3].upper()}_{rank}"
+        tid = f"{today_str}{scan_tag}_{c['ticker']}_{c['structure'][:3].upper()}_{rank}"
         if tid in seen:
             continue
 
@@ -471,7 +517,28 @@ def run_morning_scan(params=None, force=False):
 
         from config.structures import get_or_none as _gst
         from config.structures._base import StrikeSchema as _SS
+        from scripts.candidate_provider import compute_capital_required, check_balance_for_candidate
         _cst = _gst(c["structure"])
+
+        # Config-based margin gate — skip requires_margin structures when
+        # paper_trades.margin_account = false (stable account-type filter,
+        # not a balance check, so it belongs before any other per-trade logic)
+        _pt_cfg = _s.get("paper_trades", {})
+        _margin_ok = bool(_pt_cfg.get("margin_account", False))
+        _exclude_names = [n.strip() for n in _pt_cfg.get("exclude_structures", [])]
+        if not _margin_ok and _cst is not None and _cst.requires_margin:
+            log.info(
+                f"[paper_trade] Skipping {c['ticker']} {c['structure']} "
+                f"— requires_margin=True but paper_trades.margin_account=false"
+            )
+            continue
+        if c["structure"] in _exclude_names:
+            log.info(
+                f"[paper_trade] Skipping {c['ticker']} {c['structure']} "
+                f"— listed in paper_trades.exclude_structures"
+            )
+            continue
+
         if _cst is not None and _cst.strike_schema == _SS.IRON_CONDOR:
             strike_dict = {
                 "put_long":   c.get("put_long_strike"),
@@ -493,6 +560,23 @@ def run_morning_scan(params=None, force=False):
                 log.warning(f"Skipping {c['ticker']} {c['structure']} — short or long strike is None")
                 continue
 
+        # Balance / margin check — log a warning but do not block paper trades
+        try:
+            from scripts.etrade_client import get_account_balance as _get_bal
+            _bal = _get_bal()
+            if _bal:
+                _bchk = check_balance_for_candidate(c, _bal.get("buying_power", 0.0))
+                if not _bchk["ok"]:
+                    log.warning(
+                        f"[capital] {c['ticker']} {c['structure']} — {_bchk['note']}"
+                    )
+                elif _bchk.get("requires_margin"):
+                    log.info(
+                        f"[capital] {c['ticker']} {c['structure']} — {_bchk['note']}"
+                    )
+        except Exception as _be:
+            log.debug(f"[capital] balance check skipped: {_be}")
+
         trade = {
             "id":           tid,
             "rank":         rank,
@@ -506,7 +590,7 @@ def run_morning_scan(params=None, force=False):
             "entry_mid":    ep["credit_mid"],
             "entry_legs":   ep["legs"],
             "max_profit":   ec,
-            "max_loss":     round(width - ec, 4) if width > ec else c.get("max_loss"),
+            "max_loss":     ec if c["structure"] == "Long Strangle" else (round(width - ec, 4) if width > ec else c.get("max_loss")),
             "dte_at_entry": c["dte"],
             "spot_at_entry":c["spot_at_entry"],
             "signal_rating":c["signal_rating"],
@@ -523,8 +607,12 @@ def run_morning_scan(params=None, force=False):
             "kelly_pct":       (c.get("kelly") or {}).get("kelly_pct"),
             "kelly_contracts": (c.get("kelly") or {}).get("kelly_contracts"),
             "kelly_capital":   (c.get("kelly") or {}).get("kelly_capital"),
-            "ml_p_win":        (c.get("kelly") or {}).get("p_win"),
+            "ml_p_win":        (c.get("kelly") or {}).get("p_profit"),
             "ml_confidence":   (c.get("kelly") or {}).get("confidence"),
+            "capital_required": compute_capital_required(c),
+            "capital_type":     _cst.capital_type    if _cst else None,
+            "requires_margin":  _cst.requires_margin if _cst else False,
+            "scan_time":        scan_time,
         }
         trades.append(trade)
         new.append(trade)
@@ -603,8 +691,8 @@ def run_evening_check(force=False):
             mark = _current_mark(trade)
             if mark is None:
                 continue
-            is_debit   = trade.get("structure", "") in ("Call Debit Spread", "Put Debit Spread")
-            entry_cost = trade.get("max_loss") or 0 if is_debit else ec
+            is_debit   = trade.get("structure", "") in ("Call Debit Spread", "Put Debit Spread", "Long Strangle")
+            entry_cost = ec if trade.get("structure") == "Long Strangle" else (trade.get("max_loss") or 0 if is_debit else ec)
             unrealized = round(mark - entry_cost, 4) if is_debit else round(ec - mark, 4)
             pnl_pct_of_max = round(unrealized / ec * 100, 1) if ec else None
 

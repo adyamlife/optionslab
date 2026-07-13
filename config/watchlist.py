@@ -17,3 +17,6 @@ with open(_SETTINGS_PATH, "rb") as f:
 WATCHLIST         = _settings["watchlist"]
 WATCHLIST_ARCHIVE = _settings.get("watchlist_archive_only", [])
 WATCHLIST_ALL     = WATCHLIST + [t for t in WATCHLIST_ARCHIVE if t not in WATCHLIST]
+
+_extra = _settings.get("paper_trade_extra", [])
+PAPER_WATCHLIST   = WATCHLIST + [t for t in _extra if t not in WATCHLIST]

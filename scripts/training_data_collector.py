@@ -28,7 +28,7 @@ option_chain_snapshots. JSON columns store nested fields (candidate, strikes,
 outcome). Labeling does in-place SQL UPDATEs — no full-file rewrites.
 """
 import logging
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 
 import numpy as np
@@ -128,7 +128,7 @@ def enrich_candidate_greeks(record: dict, chain_index: dict) -> dict:
         if g is None:
             all_found = False
             break
-        if g.get("iv"):
+        if g.get("iv") is not None:
             ivs.append(g["iv"])
         if g.get("delta") is not None:
             net_delta += side * g["delta"]
@@ -301,9 +301,10 @@ def _build_snapshot_record(ticker: str, vix_price, spy_hist=None,
         and 0 < earn_days <= candidate_dte
     )
 
+    _now = datetime.now().isoformat()
     return {
-        "snapshot_id":           f"{ticker}-{datetime.now().isoformat()}",
-        "collected_at":          datetime.now().isoformat(),
+        "snapshot_id":           f"{ticker}-{_now}",
+        "collected_at":          _now,
         "ticker":                ticker,
         "spot":                  spot or None,
         "iv_env":                row.get("iv_env"),
@@ -430,6 +431,8 @@ def _fetch_chain_etrade(ticker: str, expiry: str, spot: float) -> list[dict]:
             for _, row in df.iloc[nearest_idx].iterrows():
                 bid = float(row.get("bid") or 0)
                 ask = float(row.get("ask") or 0)
+                def _greek(v):
+                    return None if v is None else float(v)
                 rows.append({
                     "strike":        float(row["strike"]),
                     "opt_type":      opt_type,
@@ -437,10 +440,10 @@ def _fetch_chain_etrade(ticker: str, expiry: str, spot: float) -> list[dict]:
                     "ask":           ask,
                     "mid":           round((bid + ask) / 2, 4),
                     "iv":            float(row.get("impliedVolatility") or 0),
-                    "delta":         float(row.get("delta") or 0) or None,
-                    "gamma":         float(row.get("gamma") or 0) or None,
-                    "theta":         float(row.get("theta") or 0) or None,
-                    "vega":          float(row.get("vega") or 0) or None,
+                    "delta":         _greek(row.get("delta")),
+                    "gamma":         _greek(row.get("gamma")),
+                    "theta":         _greek(row.get("theta")),
+                    "vega":          _greek(row.get("vega")),
                     "volume":        int(row.get("volume") or 0),
                     "open_interest": int(row.get("openInterest") or 0),
                 })
@@ -482,9 +485,10 @@ def _collect_chain_snapshot(ticker: str, spot: float) -> dict | None:
         if not strikes:
             return None
 
+        _now = datetime.now().isoformat()
         return {
-            "snapshot_id": f"{ticker}-{datetime.now().isoformat()}",
-            "collected_at": datetime.now().isoformat(),
+            "snapshot_id": f"{ticker}-{_now}",
+            "collected_at": _now,
             "ticker":       ticker,
             "spot":         spot,
             "expiry":       expiry,
@@ -500,6 +504,8 @@ def _row_to_strike_dict(row, opt_type: str) -> dict:
     """Convert a chain DataFrame row to the standard strike dict."""
     bid = float(row.get("bid") or 0)
     ask = float(row.get("ask") or 0)
+    def _greek(v):
+        return None if v is None else float(v)
     return {
         "strike":        float(row["strike"]),
         "opt_type":      opt_type,
@@ -507,10 +513,10 @@ def _row_to_strike_dict(row, opt_type: str) -> dict:
         "ask":           ask,
         "mid":           round((bid + ask) / 2, 4),
         "iv":            float(row.get("impliedVolatility") or 0),
-        "delta":         float(row.get("delta") or 0) or None,
-        "gamma":         float(row.get("gamma") or 0) or None,
-        "theta":         float(row.get("theta") or 0) or None,
-        "vega":          float(row.get("vega") or 0) or None,
+        "delta":         _greek(row.get("delta")),
+        "gamma":         _greek(row.get("gamma")),
+        "theta":         _greek(row.get("theta")),
+        "vega":          _greek(row.get("vega")),
         "volume":        int(row.get("volume") or 0),
         "open_interest": int(row.get("openInterest") or 0),
     }
@@ -722,11 +728,19 @@ def label_pending_snapshots() -> dict:
             continue  # not expired yet — try again on a later run
 
         ticker = r["ticker"]
-        if ticker not in price_cache:
-            price_cache[ticker] = fetch_underlying_price(ticker)
-        s_t = price_cache[ticker]
+        cache_key = (ticker, str(exp_date))
+        if cache_key not in price_cache:
+            try:
+                # Fetch the close on the expiry date specifically — not today's
+                # price, which would mislabel records labeled days after expiry.
+                import yfinance as _yf
+                _h = _yf.Ticker(ticker).history(start=str(exp_date), end=str(exp_date + timedelta(days=3)))
+                price_cache[cache_key] = float(_h["Close"].iloc[0]) if not _h.empty else None
+            except Exception:
+                price_cache[cache_key] = None
+        s_t = price_cache[cache_key]
         if s_t is None:
-            continue  # couldn't fetch right now — try again next run
+            continue  # couldn't fetch — try again next run
 
         pnl_arr = _payoff_per_share(r["candidate"].get("structure"), r["candidate"], np.array([s_t]))
         if pnl_arr is None:

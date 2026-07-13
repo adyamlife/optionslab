@@ -11,6 +11,7 @@ CASH_SECURED_PUT = OptionStructure(
     short_delta_lo = 0.15,
     short_delta_hi = 0.30,
     min_credit_pct = 0.0,   # no width to measure against; use raw credit threshold
+    capital_type   = "cash_secured",
     hedge = HedgeDef(
         structure    = "Buy OTM Protective Put (convert to PCS)",
         details      = "Buy a put 1–2 strikes below your short put. Converts the naked CSP into a defined-risk Put Credit Spread.",

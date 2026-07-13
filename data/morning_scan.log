@@ -207,3 +207,1157 @@
 2026-07-10 10:01:58,478 WARNING option_chain(CRWD, 2026-07-24) failed: Too Many Requests. Rate limited. Try after a while.
 2026-07-10 10:01:58,479 INFO Paper trade #3: 20260710_CRWD_CAL_3  credit=19.250  expiry=2026-07-24
 2026-07-10 10:01:58,548 WARNING Training snapshot write failed for 20260710_CRWD_CAL_3: name 'log' is not defined
+2026-07-13 10:00:08,578 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-13 10:00:08,900 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-13 10:00:13,090 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-13 10:00:13,991 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-13 10:03:12,402 WARNING analyze_ticker(FCX) failed: 'NoneType' object has no attribute 'copy'
+2026-07-13 10:03:24,203 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-13 10:03:24,674 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-13 10:03:29,115 WARNING [regime_history] record_and_streak failed for SPY: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:03:29,930 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-13 10:03:30,426 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-13 10:03:32,380 WARNING [regime_history] record_and_streak failed for QQQ: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:03:36,870 WARNING [regime_history] record_and_streak failed for NVDA: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:03:40,290 WARNING [regime_history] record_and_streak failed for MSFT: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:03:44,890 WARNING [regime_history] record_and_streak failed for AAPL: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:03:49,286 WARNING [regime_history] record_and_streak failed for AVGO: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:03:52,414 WARNING [regime_history] record_and_streak failed for AMD: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:03:55,598 WARNING [regime_history] record_and_streak failed for TSM: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:04:01,459 WARNING [regime_history] record_and_streak failed for MU: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:04:05,360 WARNING [regime_history] record_and_streak failed for ARM: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:04:08,799 WARNING [regime_history] record_and_streak failed for INTC: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:04:12,093 WARNING [regime_history] record_and_streak failed for QCOM: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:04:15,448 WARNING [regime_history] record_and_streak failed for TXN: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:04:18,600 WARNING [regime_history] record_and_streak failed for KLAC: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:04:22,738 WARNING [regime_history] record_and_streak failed for ASML: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:04:25,411 WARNING [regime_history] record_and_streak failed for LRCX: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:04:29,351 WARNING [regime_history] record_and_streak failed for CDNS: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:04:32,336 WARNING [regime_history] record_and_streak failed for SNPS: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:04:35,686 WARNING [regime_history] record_and_streak failed for PLTR: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:04:38,320 WARNING [regime_history] record_and_streak failed for SNOW: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:04:40,737 WARNING [regime_history] record_and_streak failed for MDB: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:04:44,212 WARNING [regime_history] record_and_streak failed for ORCL: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:04:48,238 WARNING [regime_history] record_and_streak failed for CRM: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:04:51,027 WARNING [regime_history] record_and_streak failed for NOW: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:04:54,452 WARNING [regime_history] record_and_streak failed for NET: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:04:58,083 WARNING [regime_history] record_and_streak failed for TEAM: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:05:00,722 WARNING [regime_history] record_and_streak failed for SAP: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:05:04,630 WARNING [regime_history] record_and_streak failed for ADBE: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:05:07,620 WARNING [regime_history] record_and_streak failed for INTU: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:05:10,324 WARNING [regime_history] record_and_streak failed for GOOGL: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:05:13,425 WARNING [regime_history] record_and_streak failed for META: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:05:16,574 WARNING [regime_history] record_and_streak failed for NFLX: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:05:21,190 WARNING [regime_history] record_and_streak failed for SPOT: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:05:24,370 WARNING [regime_history] record_and_streak failed for DIS: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:05:26,819 WARNING [regime_history] record_and_streak failed for TMUS: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:05:30,268 WARNING [regime_history] record_and_streak failed for TSLA: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:05:33,841 WARNING [regime_history] record_and_streak failed for AMZN: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:05:37,206 WARNING [regime_history] record_and_streak failed for UBER: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:05:42,790 WARNING [regime_history] record_and_streak failed for SHOP: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:05:46,193 WARNING [regime_history] record_and_streak failed for MELI: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:05:49,354 WARNING [regime_history] record_and_streak failed for APP: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:05:51,852 WARNING [regime_history] record_and_streak failed for CVNA: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:05:54,736 WARNING [regime_history] record_and_streak failed for HD: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:05:57,663 WARNING [regime_history] record_and_streak failed for NKE: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:06:00,264 WARNING [regime_history] record_and_streak failed for ULTA: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:06:05,413 WARNING [regime_history] record_and_streak failed for COST: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:06:07,756 WARNING [regime_history] record_and_streak failed for WMT: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:06:10,248 WARNING [regime_history] record_and_streak failed for PG: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:06:13,934 WARNING [regime_history] record_and_streak failed for LLY: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:06:17,540 WARNING [regime_history] record_and_streak failed for NVO: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:06:20,272 WARNING [regime_history] record_and_streak failed for ISRG: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:06:23,146 WARNING [regime_history] record_and_streak failed for ABBV: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:06:25,945 WARNING [regime_history] record_and_streak failed for BSX: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:06:28,698 WARNING [regime_history] record_and_streak failed for UNH: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:06:31,509 WARNING [regime_history] record_and_streak failed for AMGN: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:06:34,101 WARNING [regime_history] record_and_streak failed for V: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:06:36,595 WARNING [regime_history] record_and_streak failed for MA: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:06:39,413 WARNING [regime_history] record_and_streak failed for BRK-B: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:06:41,742 WARNING [regime_history] record_and_streak failed for JPM: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:06:44,810 WARNING [regime_history] record_and_streak failed for GS: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:06:47,548 WARNING [regime_history] record_and_streak failed for MS: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:06:50,386 WARNING [regime_history] record_and_streak failed for BAC: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:06:54,126 WARNING [regime_history] record_and_streak failed for GE: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:06:56,699 WARNING [regime_history] record_and_streak failed for ETN: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:06:59,599 WARNING [regime_history] record_and_streak failed for CAT: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:07:02,145 WARNING [regime_history] record_and_streak failed for DE: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:07:04,813 WARNING [regime_history] record_and_streak failed for VRT: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:07:07,988 WARNING [regime_history] record_and_streak failed for HON: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:07:10,380 WARNING [regime_history] record_and_streak failed for RTX: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:07:13,115 WARNING [regime_history] record_and_streak failed for XOM: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:07:16,048 WARNING [regime_history] record_and_streak failed for COP: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:07:18,740 WARNING [regime_history] record_and_streak failed for CVX: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:07:21,411 WARNING [regime_history] record_and_streak failed for OXY: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:07:25,305 WARNING [regime_history] record_and_streak failed for NEE: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:07:29,045 WARNING [regime_history] record_and_streak failed for CEG: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:07:32,018 WARNING [regime_history] record_and_streak failed for VST: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:07:36,179 WARNING [regime_history] record_and_streak failed for NEM: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:07:38,838 WARNING [regime_history] record_and_streak failed for AMT: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:07:41,976 WARNING [regime_history] record_and_streak failed for EQIX: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:07:45,320 WARNING [regime_history] record_and_streak failed for SOFI: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:07:45,845 INFO Skip SPY Call Credit Spread — max_profit $0.23 < $1.00 min
+2026-07-13 10:07:45,846 INFO Skip SPY Call Debit Spread — confidence 0.626 < 0.70
+2026-07-13 10:07:45,850 INFO Skip SPY Put Debit Spread — confidence 0.626 < 0.70
+2026-07-13 10:07:45,853 INFO Skip SPY Bear Combo — confidence 0.626 < 0.70
+2026-07-13 10:07:45,855 INFO Skip SPY Long Strangle — confidence 0.626 < 0.70
+2026-07-13 10:07:45,856 INFO Skip QQQ Put Credit Spread — max_profit $0.21 < $1.00 min
+2026-07-13 10:07:45,859 INFO Skip QQQ Iron Condor — max_profit $0.41 < $1.00 min
+2026-07-13 10:07:45,861 INFO Skip QQQ Calendar Spread — required strikes incomplete
+2026-07-13 10:07:45,863 INFO Skip NVDA Calendar Spread — required strikes incomplete
+2026-07-13 10:07:45,865 INFO Skip AVGO Calendar Spread — required strikes incomplete
+2026-07-13 10:07:45,866 INFO Skip AMD Put Credit Spread — required strikes incomplete
+2026-07-13 10:07:45,873 INFO Skip AMD Call Credit Spread — required strikes incomplete
+2026-07-13 10:07:45,876 INFO Skip AMD Iron Condor — required strikes incomplete
+2026-07-13 10:07:45,877 INFO Skip AMD Call Debit Spread — IV edge -6.7vp (overpay)
+2026-07-13 10:07:45,878 INFO Skip AMD Jade Lizard — required strikes incomplete
+2026-07-13 10:07:45,880 INFO Skip AMD Calendar Spread — required strikes incomplete
+2026-07-13 10:07:45,881 INFO Skip AMD Diagonal Spread — required strikes incomplete
+2026-07-13 10:07:45,882 INFO Skip MU Put Credit Spread — required strikes incomplete
+2026-07-13 10:07:45,883 INFO Skip MU Covered Call — IV edge -3.5vp (undersell)
+2026-07-13 10:07:45,886 INFO Skip MU Iron Condor — required strikes incomplete
+2026-07-13 10:07:45,888 INFO Skip MU Jade Lizard — required strikes incomplete
+2026-07-13 10:07:45,889 INFO Skip MU Calendar Spread — required strikes incomplete
+2026-07-13 10:07:45,889 INFO Skip MU Diagonal Spread — required strikes incomplete
+2026-07-13 10:07:45,890 INFO Skip ARM Put Credit Spread — required strikes incomplete
+2026-07-13 10:07:45,891 INFO Skip ARM Cash Secured Put — confidence 0.586 < 0.70
+2026-07-13 10:07:45,892 INFO Skip ARM Covered Call — IV edge -10.8vp (undersell)
+2026-07-13 10:07:45,892 INFO Skip ARM Call Credit Spread — max_profit $0.40 < $1.00 min
+2026-07-13 10:07:45,893 INFO Skip ARM Iron Condor — required strikes incomplete
+2026-07-13 10:07:45,894 INFO Skip ARM Call Debit Spread — confidence 0.586 < 0.70
+2026-07-13 10:07:45,895 INFO Skip ARM Put Debit Spread — confidence 0.586 < 0.70
+2026-07-13 10:07:45,895 INFO Skip ARM Jade Lizard — required strikes incomplete
+2026-07-13 10:07:45,896 INFO Skip ARM Risk Reversal — max_profit $0.00 < $1.00 min
+2026-07-13 10:07:45,897 INFO Skip ARM Bear Combo — confidence 0.586 < 0.70
+2026-07-13 10:07:45,897 INFO Skip ARM Financed Long Call — confidence 0.586 < 0.70
+2026-07-13 10:07:45,898 INFO Skip ARM Financed Long Put — confidence 0.586 < 0.70
+2026-07-13 10:07:45,898 INFO Skip ARM Ratio Call Backspread — confidence 0.586 < 0.70
+2026-07-13 10:07:45,899 INFO Skip ARM Ratio Put Backspread — confidence 0.586 < 0.70
+2026-07-13 10:07:45,902 INFO Skip ARM Long Strangle — confidence 0.586 < 0.70
+2026-07-13 10:07:45,903 INFO Skip ARM Calendar Spread — required strikes incomplete
+2026-07-13 10:07:45,904 INFO Skip ARM Diagonal Spread — required strikes incomplete
+2026-07-13 10:07:45,904 INFO Skip INTC Put Credit Spread — IV edge +10.3vp (undersell)
+2026-07-13 10:07:45,904 INFO Skip INTC Cash Secured Put — IV edge -15.3vp (undersell)
+2026-07-13 10:07:45,905 INFO Skip INTC Call Credit Spread — required strikes incomplete
+2026-07-13 10:07:45,905 INFO Skip INTC Iron Condor — required strikes incomplete
+2026-07-13 10:07:45,906 INFO Skip INTC Put Debit Spread — required strikes incomplete
+2026-07-13 10:07:45,906 INFO Skip INTC Jade Lizard — required strikes incomplete
+2026-07-13 10:07:45,907 INFO Skip INTC Risk Reversal — max_profit $0.50 < $1.00 min
+2026-07-13 10:07:45,908 INFO Skip INTC Calendar Spread — required strikes incomplete
+2026-07-13 10:07:45,908 INFO Skip INTC Diagonal Spread — required strikes incomplete
+2026-07-13 10:07:45,909 INFO Skip QCOM Put Credit Spread — confidence 0.631 < 0.70
+2026-07-13 10:07:45,909 INFO Skip QCOM Cash Secured Put — confidence 0.631 < 0.70
+2026-07-13 10:07:45,910 INFO Skip QCOM Covered Call — confidence 0.631 < 0.70
+2026-07-13 10:07:45,910 INFO Skip QCOM Call Credit Spread — required strikes incomplete
+2026-07-13 10:07:45,910 INFO Skip QCOM Iron Condor — required strikes incomplete
+2026-07-13 10:07:45,911 INFO Skip QCOM Call Debit Spread — confidence 0.631 < 0.70
+2026-07-13 10:07:45,911 INFO Skip QCOM Put Debit Spread — confidence 0.631 < 0.70
+2026-07-13 10:07:45,912 INFO Skip QCOM Jade Lizard — required strikes incomplete
+2026-07-13 10:07:45,912 INFO Skip QCOM Risk Reversal — max_profit $0.15 < $1.00 min
+2026-07-13 10:07:45,913 INFO Skip QCOM Bear Combo — confidence 0.631 < 0.70
+2026-07-13 10:07:45,913 INFO Skip QCOM Financed Long Call — confidence 0.631 < 0.70
+2026-07-13 10:07:45,914 INFO Skip QCOM Financed Long Put — confidence 0.631 < 0.70
+2026-07-13 10:07:45,914 INFO Skip QCOM Ratio Call Backspread — confidence 0.631 < 0.70
+2026-07-13 10:07:45,915 INFO Skip QCOM Ratio Put Backspread — confidence 0.631 < 0.70
+2026-07-13 10:07:45,918 INFO Skip QCOM Long Strangle — confidence 0.631 < 0.70
+2026-07-13 10:07:45,919 INFO Skip QCOM Calendar Spread — required strikes incomplete
+2026-07-13 10:07:45,919 INFO Skip QCOM Diagonal Spread — required strikes incomplete
+2026-07-13 10:07:45,920 INFO Skip TXN Put Credit Spread — required strikes incomplete
+2026-07-13 10:07:45,920 INFO Skip TXN Cash Secured Put — required strikes incomplete
+2026-07-13 10:07:45,921 INFO Skip TXN Covered Call — IV edge -5.8vp (undersell)
+2026-07-13 10:07:45,921 INFO Skip TXN Call Credit Spread — IV edge -5.9vp (undersell)
+2026-07-13 10:07:45,922 INFO Skip TXN Iron Condor — required strikes incomplete
+2026-07-13 10:07:45,922 INFO Skip TXN Call Debit Spread — required strikes incomplete
+2026-07-13 10:07:45,923 INFO Skip TXN Put Debit Spread — required strikes incomplete
+2026-07-13 10:07:45,923 INFO Skip TXN Jade Lizard — required strikes incomplete
+2026-07-13 10:07:45,924 INFO Skip TXN Risk Reversal — required strikes incomplete
+2026-07-13 10:07:45,925 INFO Skip TXN Bear Combo — required strikes incomplete
+2026-07-13 10:07:45,925 INFO Skip TXN Financed Long Call — required strikes incomplete
+2026-07-13 10:07:45,925 INFO Skip TXN Financed Long Put — required strikes incomplete
+2026-07-13 10:07:45,926 INFO Skip TXN Ratio Put Backspread — required strikes incomplete
+2026-07-13 10:07:45,926 INFO Skip TXN Long Strangle — required strikes incomplete
+2026-07-13 10:07:45,926 INFO Skip TXN Calendar Spread — required strikes incomplete
+2026-07-13 10:07:45,927 INFO Skip TXN Diagonal Spread — required strikes incomplete
+2026-07-13 10:07:45,927 INFO Skip KLAC Put Credit Spread — max_profit $0.85 < $1.00 min
+2026-07-13 10:07:45,928 INFO Skip KLAC Cash Secured Put — IV edge -3.0vp (undersell)
+2026-07-13 10:07:45,928 INFO Skip KLAC Covered Call — IV edge -7.4vp (undersell)
+2026-07-13 10:07:45,929 INFO Skip KLAC Call Credit Spread — max_profit $0.25 < $1.00 min
+2026-07-13 10:07:45,929 INFO Skip KLAC Iron Condor — required strikes incomplete
+2026-07-13 10:07:45,930 INFO Skip KLAC Jade Lizard — required strikes incomplete
+2026-07-13 10:07:45,933 INFO Skip KLAC Calendar Spread — required strikes incomplete
+2026-07-13 10:07:45,934 INFO Skip KLAC Diagonal Spread — required strikes incomplete
+2026-07-13 10:07:45,934 INFO Skip LRCX Put Credit Spread — required strikes incomplete
+2026-07-13 10:07:45,934 INFO Skip LRCX Covered Call — IV edge -4.5vp (undersell)
+2026-07-13 10:07:45,935 INFO Skip LRCX Call Credit Spread — required strikes incomplete
+2026-07-13 10:07:45,935 INFO Skip LRCX Iron Condor — required strikes incomplete
+2026-07-13 10:07:45,936 INFO Skip LRCX Jade Lizard — required strikes incomplete
+2026-07-13 10:07:45,936 INFO Skip LRCX Risk Reversal — max_profit $0.00 < $1.00 min
+2026-07-13 10:07:45,937 INFO Skip LRCX Calendar Spread — required strikes incomplete
+2026-07-13 10:07:45,937 INFO Skip LRCX Diagonal Spread — required strikes incomplete
+2026-07-13 10:07:45,938 INFO Skip PLTR Call Debit Spread — confidence 0.653 < 0.70
+2026-07-13 10:07:45,938 INFO Skip PLTR Put Debit Spread — confidence 0.653 < 0.70
+2026-07-13 10:07:45,939 INFO Skip PLTR Long Strangle — confidence 0.653 < 0.70
+2026-07-13 10:07:45,939 INFO Skip PLTR Calendar Spread — required strikes incomplete
+2026-07-13 10:07:45,940 INFO Skip ORCL Put Credit Spread — max_profit $0.74 < $1.00 min
+2026-07-13 10:07:45,941 INFO Skip ORCL Call Credit Spread — max_profit $0.06 < $1.00 min
+2026-07-13 10:07:45,942 INFO Skip ORCL Iron Condor — max_profit $0.80 < $1.00 min
+2026-07-13 10:07:45,942 INFO Skip ORCL Put Debit Spread — required strikes incomplete
+2026-07-13 10:07:45,942 INFO Skip ORCL Jade Lizard — required strikes incomplete
+2026-07-13 10:07:45,942 INFO Skip ORCL Risk Reversal — max_profit $0.00 < $1.00 min
+2026-07-13 10:07:45,943 INFO Skip ORCL Calendar Spread — required strikes incomplete
+2026-07-13 10:07:45,943 INFO Skip ORCL Diagonal Spread — required strikes incomplete
+2026-07-13 10:07:45,944 INFO Skip CRM Calendar Spread — required strikes incomplete
+2026-07-13 10:07:45,944 INFO Skip NOW Put Credit Spread — required strikes incomplete
+2026-07-13 10:07:45,945 INFO Skip NOW Cash Secured Put — IV edge -5.0vp (undersell)
+2026-07-13 10:07:45,945 INFO Skip NOW Covered Call — IV edge -6.5vp (undersell)
+2026-07-13 10:07:45,946 INFO Skip NOW Call Credit Spread — max_profit $0.43 < $1.00 min
+2026-07-13 10:07:45,949 INFO Skip NOW Iron Condor — required strikes incomplete
+2026-07-13 10:07:45,950 INFO Skip NOW Jade Lizard — required strikes incomplete
+2026-07-13 10:07:45,950 INFO Skip NOW Risk Reversal — max_profit $0.00 < $1.00 min
+2026-07-13 10:07:45,951 INFO Skip NOW Calendar Spread — required strikes incomplete
+2026-07-13 10:07:45,951 INFO Skip NOW Diagonal Spread — required strikes incomplete
+2026-07-13 10:07:45,952 INFO Skip NET Put Debit Spread — IV edge -5.1vp (overpay)
+2026-07-13 10:07:45,952 INFO Skip TEAM Put Credit Spread — required strikes incomplete
+2026-07-13 10:07:45,953 INFO Skip TEAM Cash Secured Put — IV edge -6.6vp (undersell)
+2026-07-13 10:07:45,953 INFO Skip TEAM Covered Call — required strikes incomplete
+2026-07-13 10:07:45,954 INFO Skip TEAM Call Credit Spread — required strikes incomplete
+2026-07-13 10:07:45,954 INFO Skip TEAM Iron Condor — required strikes incomplete
+2026-07-13 10:07:45,954 INFO Skip TEAM Call Debit Spread — required strikes incomplete
+2026-07-13 10:07:45,955 INFO Skip TEAM Put Debit Spread — required strikes incomplete
+2026-07-13 10:07:45,955 INFO Skip TEAM Jade Lizard — required strikes incomplete
+2026-07-13 10:07:45,956 INFO Skip TEAM Risk Reversal — required strikes incomplete
+2026-07-13 10:07:45,956 INFO Skip TEAM Bear Combo — required strikes incomplete
+2026-07-13 10:07:45,957 INFO Skip TEAM Financed Long Call — required strikes incomplete
+2026-07-13 10:07:45,957 INFO Skip TEAM Financed Long Put — required strikes incomplete
+2026-07-13 10:07:45,958 INFO Skip TEAM Ratio Call Backspread — required strikes incomplete
+2026-07-13 10:07:45,958 INFO Skip TEAM Ratio Put Backspread — required strikes incomplete
+2026-07-13 10:07:45,958 INFO Skip TEAM Long Strangle — required strikes incomplete
+2026-07-13 10:07:45,959 INFO Skip TEAM Calendar Spread — required strikes incomplete
+2026-07-13 10:07:45,959 INFO Skip TEAM Diagonal Spread — required strikes incomplete
+2026-07-13 10:07:45,960 INFO Skip ADBE Call Debit Spread — confidence 0.663 < 0.70
+2026-07-13 10:07:45,960 INFO Skip ADBE Long Strangle — confidence 0.663 < 0.70
+2026-07-13 10:07:45,961 INFO Skip ADBE Calendar Spread — required strikes incomplete
+2026-07-13 10:07:45,962 INFO Skip META Calendar Spread — required strikes incomplete
+2026-07-13 10:07:45,965 INFO Skip TMUS Put Credit Spread — required strikes incomplete
+2026-07-13 10:07:45,965 INFO Skip TMUS Cash Secured Put — required strikes incomplete
+2026-07-13 10:07:45,966 INFO Skip TMUS Covered Call — required strikes incomplete
+2026-07-13 10:07:45,966 INFO Skip TMUS Call Credit Spread — required strikes incomplete
+2026-07-13 10:07:45,967 INFO Skip TMUS Iron Condor — required strikes incomplete
+2026-07-13 10:07:45,967 INFO Skip TMUS Call Debit Spread — required strikes incomplete
+2026-07-13 10:07:45,968 INFO Skip TMUS Put Debit Spread — required strikes incomplete
+2026-07-13 10:07:45,968 INFO Skip TMUS Jade Lizard — required strikes incomplete
+2026-07-13 10:07:45,969 INFO Skip TMUS Risk Reversal — required strikes incomplete
+2026-07-13 10:07:45,969 INFO Skip TMUS Bear Combo — required strikes incomplete
+2026-07-13 10:07:45,970 INFO Skip TMUS Financed Long Call — required strikes incomplete
+2026-07-13 10:07:45,970 INFO Skip TMUS Financed Long Put — required strikes incomplete
+2026-07-13 10:07:45,971 INFO Skip TMUS Ratio Put Backspread — required strikes incomplete
+2026-07-13 10:07:45,971 INFO Skip TMUS Long Strangle — required strikes incomplete
+2026-07-13 10:07:45,972 INFO Skip TMUS Calendar Spread — required strikes incomplete
+2026-07-13 10:07:45,972 INFO Skip TMUS Diagonal Spread — required strikes incomplete
+2026-07-13 10:07:45,972 INFO Skip TSLA Put Credit Spread — max_profit $0.75 < $1.00 min
+2026-07-13 10:07:45,973 INFO Skip TSLA Covered Call — IV edge -17.2vp (undersell)
+2026-07-13 10:07:45,974 INFO Skip TSLA Call Credit Spread — max_profit $0.55 < $1.00 min
+2026-07-13 10:07:45,974 INFO Skip TSLA Jade Lizard — required strikes incomplete
+2026-07-13 10:07:45,974 INFO Skip TSLA Risk Reversal — max_profit $0.00 < $1.00 min
+2026-07-13 10:07:45,975 INFO Skip TSLA Calendar Spread — required strikes incomplete
+2026-07-13 10:07:45,975 INFO Skip TSLA Diagonal Spread — required strikes incomplete
+2026-07-13 10:07:45,976 INFO Skip UBER Calendar Spread — required strikes incomplete
+2026-07-13 10:07:45,976 INFO Skip SHOP Call Debit Spread — IV edge -12.8vp (overpay)
+2026-07-13 10:07:45,977 INFO Skip SHOP Put Debit Spread — IV edge -12.3vp (overpay)
+2026-07-13 10:07:45,980 INFO Skip APP Put Credit Spread — required strikes incomplete
+2026-07-13 10:07:45,981 INFO Skip APP Cash Secured Put — required strikes incomplete
+2026-07-13 10:07:45,981 INFO Skip APP Call Credit Spread — required strikes incomplete
+2026-07-13 10:07:45,982 INFO Skip APP Iron Condor — required strikes incomplete
+2026-07-13 10:07:45,982 INFO Skip APP Call Debit Spread — IV edge -6.3vp (overpay)
+2026-07-13 10:07:45,983 INFO Skip APP Put Debit Spread — required strikes incomplete
+2026-07-13 10:07:45,984 INFO Skip APP Jade Lizard — required strikes incomplete
+2026-07-13 10:07:45,984 INFO Skip APP Risk Reversal — max_profit $0.00 < $1.00 min
+2026-07-13 10:07:45,984 INFO Skip APP Bear Combo — required strikes incomplete
+2026-07-13 10:07:45,985 INFO Skip APP Calendar Spread — required strikes incomplete
+2026-07-13 10:07:45,985 INFO Skip APP Diagonal Spread — required strikes incomplete
+2026-07-13 10:07:45,986 INFO Skip CVNA Calendar Spread — required strikes incomplete
+2026-07-13 10:07:45,987 INFO Skip NKE Call Debit Spread — confidence 0.675 < 0.70
+2026-07-13 10:07:45,987 INFO Skip NKE Put Debit Spread — confidence 0.675 < 0.70
+2026-07-13 10:07:45,987 INFO Skip NKE Long Strangle — confidence 0.675 < 0.70
+2026-07-13 10:07:45,988 INFO Skip NKE Calendar Spread — required strikes incomplete
+2026-07-13 10:07:45,988 INFO Skip ULTA Calendar Spread — required strikes incomplete
+2026-07-13 10:07:45,989 INFO Skip WMT Calendar Spread — required strikes incomplete
+2026-07-13 10:07:45,989 INFO Skip ABBV Put Credit Spread — required strikes incomplete
+2026-07-13 10:07:45,990 INFO Skip ABBV Cash Secured Put — required strikes incomplete
+2026-07-13 10:07:45,990 INFO Skip ABBV Covered Call — required strikes incomplete
+2026-07-13 10:07:45,991 INFO Skip ABBV Call Credit Spread — required strikes incomplete
+2026-07-13 10:07:45,991 INFO Skip ABBV Iron Condor — required strikes incomplete
+2026-07-13 10:07:45,992 INFO Skip ABBV Call Debit Spread — required strikes incomplete
+2026-07-13 10:07:45,992 INFO Skip ABBV Put Debit Spread — required strikes incomplete
+2026-07-13 10:07:45,993 INFO Skip ABBV Jade Lizard — required strikes incomplete
+2026-07-13 10:07:45,996 INFO Skip ABBV Risk Reversal — IV edge -14.3vp (overpay)
+2026-07-13 10:07:45,997 INFO Skip ABBV Bear Combo — required strikes incomplete
+2026-07-13 10:07:45,997 INFO Skip ABBV Calendar Spread — required strikes incomplete
+2026-07-13 10:07:45,998 INFO Skip ABBV Diagonal Spread — required strikes incomplete
+2026-07-13 10:07:45,999 INFO Skip VRT Put Credit Spread — required strikes incomplete
+2026-07-13 10:07:45,999 INFO Skip VRT Call Credit Spread — required strikes incomplete
+2026-07-13 10:07:45,999 INFO Skip VRT Iron Condor — required strikes incomplete
+2026-07-13 10:07:46,000 INFO Skip VRT Call Debit Spread — IV edge +21.8vp (overpay)
+2026-07-13 10:07:46,000 INFO Skip VRT Put Debit Spread — IV edge -4.8vp (overpay)
+2026-07-13 10:07:46,001 INFO Skip VRT Jade Lizard — required strikes incomplete
+2026-07-13 10:07:46,001 INFO Skip VRT Risk Reversal — required strikes incomplete
+2026-07-13 10:07:46,002 INFO Skip VRT Financed Long Call — required strikes incomplete
+2026-07-13 10:07:46,002 INFO Skip VRT Ratio Call Backspread — required strikes incomplete
+2026-07-13 10:07:46,003 INFO Skip VRT Long Strangle — required strikes incomplete
+2026-07-13 10:07:46,003 INFO Skip VRT Calendar Spread — required strikes incomplete
+2026-07-13 10:07:46,003 INFO Skip VRT Diagonal Spread — required strikes incomplete
+2026-07-13 10:07:46,004 INFO Skip HON Put Credit Spread — required strikes incomplete
+2026-07-13 10:07:46,004 INFO Skip HON Cash Secured Put — required strikes incomplete
+2026-07-13 10:07:46,005 INFO Skip HON Covered Call — required strikes incomplete
+2026-07-13 10:07:46,005 INFO Skip HON Call Credit Spread — required strikes incomplete
+2026-07-13 10:07:46,006 INFO Skip HON Iron Condor — required strikes incomplete
+2026-07-13 10:07:46,006 INFO Skip HON Call Debit Spread — required strikes incomplete
+2026-07-13 10:07:46,007 INFO Skip HON Put Debit Spread — required strikes incomplete
+2026-07-13 10:07:46,007 INFO Skip HON Jade Lizard — required strikes incomplete
+2026-07-13 10:07:46,008 INFO Skip HON Risk Reversal — required strikes incomplete
+2026-07-13 10:07:46,008 INFO Skip HON Bear Combo — required strikes incomplete
+2026-07-13 10:07:46,011 INFO Skip HON Financed Long Call — required strikes incomplete
+2026-07-13 10:07:46,012 INFO Skip HON Financed Long Put — required strikes incomplete
+2026-07-13 10:07:46,013 INFO Skip HON Ratio Call Backspread — required strikes incomplete
+2026-07-13 10:07:46,013 INFO Skip HON Ratio Put Backspread — required strikes incomplete
+2026-07-13 10:07:46,014 INFO Skip HON Long Strangle — required strikes incomplete
+2026-07-13 10:07:46,014 INFO Skip HON Calendar Spread — required strikes incomplete
+2026-07-13 10:07:46,015 INFO Skip HON Diagonal Spread — required strikes incomplete
+2026-07-13 10:07:46,015 INFO Skip COP Call Debit Spread — IV edge -26.1vp (overpay)
+2026-07-13 10:07:46,016 INFO Skip CVX Calendar Spread — required strikes incomplete
+2026-07-13 10:07:46,016 INFO Skip OXY Put Credit Spread — required strikes incomplete
+2026-07-13 10:07:46,017 INFO Skip OXY Cash Secured Put — max_profit $0.03 < $1.00 min
+2026-07-13 10:07:46,017 INFO Skip OXY Call Credit Spread — required strikes incomplete
+2026-07-13 10:07:46,018 INFO Skip OXY Iron Condor — required strikes incomplete
+2026-07-13 10:07:46,018 INFO Skip OXY Jade Lizard — required strikes incomplete
+2026-07-13 10:07:46,019 INFO Skip OXY Risk Reversal — max_profit $0.37 < $1.00 min
+2026-07-13 10:07:46,019 INFO Skip OXY Bear Combo — required strikes incomplete
+2026-07-13 10:07:46,020 INFO Skip OXY Calendar Spread — required strikes incomplete
+2026-07-13 10:07:46,020 INFO Skip OXY Diagonal Spread — required strikes incomplete
+2026-07-13 10:07:46,021 INFO Skip CEG Put Debit Spread — IV edge +15.3vp (overpay)
+2026-07-13 10:07:46,021 INFO Skip NEM Put Credit Spread — required strikes incomplete
+2026-07-13 10:07:46,022 INFO Skip NEM Cash Secured Put — max_profit $0.27 < $1.00 min
+2026-07-13 10:07:46,022 INFO Skip NEM Call Credit Spread — max_profit $0.17 < $1.00 min
+2026-07-13 10:07:46,023 INFO Skip NEM Iron Condor — required strikes incomplete
+2026-07-13 10:07:46,023 INFO Skip NEM Call Debit Spread — required strikes incomplete
+2026-07-13 10:07:46,023 INFO Skip NEM Put Debit Spread — required strikes incomplete
+2026-07-13 10:07:46,024 INFO Skip NEM Jade Lizard — max_profit $0.44 < $1.00 min
+2026-07-13 10:07:46,024 INFO Skip NEM Risk Reversal — max_profit $0.00 < $1.00 min
+2026-07-13 10:07:46,027 INFO Skip NEM Bear Combo — required strikes incomplete
+2026-07-13 10:07:46,028 INFO Skip NEM Calendar Spread — required strikes incomplete
+2026-07-13 10:07:46,029 INFO Skip NEM Diagonal Spread — required strikes incomplete
+2026-07-13 10:07:46,029 INFO Skip SOFI Put Credit Spread — max_profit $0.16 < $1.00 min
+2026-07-13 10:07:46,030 INFO Skip SOFI Cash Secured Put — max_profit $0.31 < $1.00 min
+2026-07-13 10:07:46,030 INFO Skip SOFI Covered Call — IV edge -22.3vp (undersell)
+2026-07-13 10:07:46,031 INFO Skip SOFI Call Credit Spread — max_profit $0.10 < $1.00 min
+2026-07-13 10:07:46,031 INFO Skip SOFI Iron Condor — max_profit $0.26 < $1.00 min
+2026-07-13 10:07:46,032 INFO Skip SOFI Jade Lizard — max_profit $0.53 < $1.00 min
+2026-07-13 10:07:46,032 INFO Skip SOFI Risk Reversal — max_profit $0.00 < $1.00 min
+2026-07-13 10:07:46,033 INFO Skip SOFI Calendar Spread — required strikes incomplete
+2026-07-13 10:07:46,033 INFO Skip SOFI Diagonal Spread — max_profit $0.29 < $1.00 min
+2026-07-13 10:07:46,046 WARNING Skipping NEM Financed Long Call — short or long strike is None
+2026-07-13 10:07:46,050 INFO Paper trade #2: 20260713_CEG_LON_2  credit=0.000  expiry=2026-07-31
+2026-07-13 10:07:46,960 INFO Training snapshot written for paper trade 20260713_CEG_LON_2
+2026-07-13 10:07:46,963 INFO Paper trade #3: 20260713_CRM_LON_3  credit=0.000  expiry=2026-07-31
+2026-07-13 10:07:47,494 INFO Training snapshot written for paper trade 20260713_CRM_LON_3
+2026-07-13 10:40:22,155 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-13 10:40:22,511 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-13 10:40:24,460 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-13 10:40:24,792 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-13 10:42:33,737 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-13 10:42:34,528 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-13 10:42:37,759 WARNING [regime_history] record_and_streak failed for SPY: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:42:38,510 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-13 10:42:38,930 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-13 10:42:41,045 WARNING [regime_history] record_and_streak failed for QQQ: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:42:44,072 WARNING [regime_history] record_and_streak failed for NVDA: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:42:46,744 WARNING [regime_history] record_and_streak failed for MSFT: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:42:49,735 WARNING [regime_history] record_and_streak failed for AAPL: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:42:56,993 WARNING [regime_history] record_and_streak failed for AVGO: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:43:01,169 WARNING [regime_history] record_and_streak failed for AMD: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:43:05,133 WARNING [regime_history] record_and_streak failed for TSM: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:43:08,553 WARNING [regime_history] record_and_streak failed for MU: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:43:12,439 WARNING [regime_history] record_and_streak failed for ARM: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:43:15,513 WARNING [regime_history] record_and_streak failed for INTC: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:43:19,653 WARNING [regime_history] record_and_streak failed for QCOM: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:43:22,797 WARNING [regime_history] record_and_streak failed for TXN: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:43:26,476 WARNING [regime_history] record_and_streak failed for KLAC: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:43:30,010 WARNING [regime_history] record_and_streak failed for ASML: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:43:33,814 WARNING [regime_history] record_and_streak failed for LRCX: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:43:37,401 WARNING [regime_history] record_and_streak failed for CDNS: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:43:41,114 WARNING [regime_history] record_and_streak failed for SNPS: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:43:45,072 WARNING [regime_history] record_and_streak failed for PLTR: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:43:48,385 WARNING [regime_history] record_and_streak failed for SNOW: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:43:50,724 WARNING [regime_history] record_and_streak failed for MDB: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:43:54,339 WARNING [regime_history] record_and_streak failed for ORCL: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:43:56,964 WARNING [regime_history] record_and_streak failed for CRM: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:43:59,299 WARNING [regime_history] record_and_streak failed for NOW: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:44:02,300 WARNING [regime_history] record_and_streak failed for NET: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:44:05,492 WARNING [regime_history] record_and_streak failed for TEAM: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:44:08,362 WARNING [regime_history] record_and_streak failed for SAP: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:44:11,651 WARNING [regime_history] record_and_streak failed for ADBE: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:44:14,205 WARNING [regime_history] record_and_streak failed for INTU: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:44:16,718 WARNING [regime_history] record_and_streak failed for GOOGL: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:44:19,268 WARNING [regime_history] record_and_streak failed for META: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:44:21,679 WARNING [regime_history] record_and_streak failed for NFLX: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:44:25,008 WARNING [regime_history] record_and_streak failed for SPOT: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:44:27,383 WARNING [regime_history] record_and_streak failed for DIS: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:44:29,648 WARNING [regime_history] record_and_streak failed for TMUS: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:44:32,738 WARNING [regime_history] record_and_streak failed for TSLA: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:44:35,331 WARNING [regime_history] record_and_streak failed for AMZN: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:44:37,941 WARNING [regime_history] record_and_streak failed for UBER: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:44:42,918 WARNING [regime_history] record_and_streak failed for SHOP: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:44:46,271 WARNING [regime_history] record_and_streak failed for MELI: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:44:49,482 WARNING [regime_history] record_and_streak failed for APP: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:44:52,661 WARNING [regime_history] record_and_streak failed for CVNA: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:44:55,201 WARNING [regime_history] record_and_streak failed for HD: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:44:57,765 WARNING [regime_history] record_and_streak failed for NKE: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:45:00,400 WARNING [regime_history] record_and_streak failed for ULTA: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:45:03,018 WARNING [regime_history] record_and_streak failed for COST: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:45:06,098 WARNING [regime_history] record_and_streak failed for WMT: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:45:08,919 WARNING [regime_history] record_and_streak failed for PG: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:45:11,994 WARNING [regime_history] record_and_streak failed for LLY: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:45:15,455 WARNING [regime_history] record_and_streak failed for NVO: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:45:18,417 WARNING [regime_history] record_and_streak failed for ISRG: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:45:22,155 WARNING [regime_history] record_and_streak failed for ABBV: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:45:24,788 WARNING [regime_history] record_and_streak failed for BSX: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:45:27,062 WARNING [regime_history] record_and_streak failed for UNH: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:45:29,623 WARNING [regime_history] record_and_streak failed for AMGN: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:45:33,284 WARNING [regime_history] record_and_streak failed for V: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:45:35,913 WARNING [regime_history] record_and_streak failed for MA: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:45:38,795 WARNING [regime_history] record_and_streak failed for BRK-B: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:45:41,140 WARNING [regime_history] record_and_streak failed for JPM: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:45:44,548 WARNING [regime_history] record_and_streak failed for GS: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:45:47,005 WARNING [regime_history] record_and_streak failed for MS: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:45:50,182 WARNING [regime_history] record_and_streak failed for BAC: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:45:53,035 WARNING [regime_history] record_and_streak failed for GE: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:45:56,377 WARNING [regime_history] record_and_streak failed for ETN: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:45:59,247 WARNING [regime_history] record_and_streak failed for CAT: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:46:01,250 WARNING [regime_history] record_and_streak failed for DE: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:46:04,383 WARNING [regime_history] record_and_streak failed for VRT: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:46:06,870 WARNING [regime_history] record_and_streak failed for HON: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:46:09,199 WARNING [regime_history] record_and_streak failed for RTX: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:46:12,410 WARNING [regime_history] record_and_streak failed for XOM: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:46:14,682 WARNING [regime_history] record_and_streak failed for COP: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:46:17,259 WARNING [regime_history] record_and_streak failed for CVX: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:46:20,147 WARNING [regime_history] record_and_streak failed for OXY: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:46:23,065 WARNING [regime_history] record_and_streak failed for NEE: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:46:26,419 WARNING [regime_history] record_and_streak failed for CEG: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:46:28,990 WARNING [regime_history] record_and_streak failed for VST: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:46:32,665 WARNING [regime_history] record_and_streak failed for FCX: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:46:35,787 WARNING [regime_history] record_and_streak failed for NEM: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:46:38,178 WARNING [regime_history] record_and_streak failed for AMT: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:46:40,442 WARNING [regime_history] record_and_streak failed for EQIX: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:46:43,962 WARNING [regime_history] record_and_streak failed for SOFI: Binder Error: window function calls cannot be nested
+
+LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
+                                       ^
+2026-07-13 10:46:44,308 INFO Skip SPY Call Credit Spread — max_profit $0.24 < $1.00 min
+2026-07-13 10:46:44,308 INFO Skip SPY Call Debit Spread — confidence 0.605 < 0.70
+2026-07-13 10:46:44,308 INFO Skip SPY Put Debit Spread — confidence 0.605 < 0.70
+2026-07-13 10:46:44,308 INFO Skip SPY Bear Combo — confidence 0.605 < 0.70
+2026-07-13 10:46:44,309 INFO Skip SPY Long Strangle — confidence 0.605 < 0.70
+2026-07-13 10:46:44,309 INFO Skip QQQ Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,309 INFO Skip NVDA Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,309 INFO Skip MSFT Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,309 INFO Skip AVGO Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,309 INFO Skip AMD Put Credit Spread — required strikes incomplete
+2026-07-13 10:46:44,309 INFO Skip AMD Call Credit Spread — required strikes incomplete
+2026-07-13 10:46:44,309 INFO Skip AMD Iron Condor — required strikes incomplete
+2026-07-13 10:46:44,310 INFO Skip AMD Put Debit Spread — IV edge -4.8vp (overpay)
+2026-07-13 10:46:44,310 INFO Skip AMD Jade Lizard — required strikes incomplete
+2026-07-13 10:46:44,310 INFO Skip AMD Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,310 INFO Skip AMD Diagonal Spread — required strikes incomplete
+2026-07-13 10:46:44,310 INFO Skip MU Put Credit Spread — required strikes incomplete
+2026-07-13 10:46:44,310 INFO Skip MU Cash Secured Put — IV edge -4.4vp (undersell)
+2026-07-13 10:46:44,310 INFO Skip MU Call Credit Spread — required strikes incomplete
+2026-07-13 10:46:44,310 INFO Skip MU Iron Condor — required strikes incomplete
+2026-07-13 10:46:44,310 INFO Skip MU Jade Lizard — required strikes incomplete
+2026-07-13 10:46:44,310 INFO Skip MU Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,310 INFO Skip MU Diagonal Spread — required strikes incomplete
+2026-07-13 10:46:44,310 INFO Skip ARM Put Credit Spread — confidence 0.600 < 0.70
+2026-07-13 10:46:44,311 INFO Skip ARM Cash Secured Put — confidence 0.600 < 0.70
+2026-07-13 10:46:44,311 INFO Skip ARM Covered Call — confidence 0.600 < 0.70
+2026-07-13 10:46:44,311 INFO Skip ARM Call Credit Spread — max_profit $0.10 < $1.00 min
+2026-07-13 10:46:44,311 INFO Skip ARM Iron Condor — confidence 0.600 < 0.70
+2026-07-13 10:46:44,311 INFO Skip ARM Call Debit Spread — confidence 0.600 < 0.70
+2026-07-13 10:46:44,311 INFO Skip ARM Put Debit Spread — confidence 0.600 < 0.70
+2026-07-13 10:46:44,311 INFO Skip ARM Jade Lizard — required strikes incomplete
+2026-07-13 10:46:44,311 INFO Skip ARM Risk Reversal — confidence 0.600 < 0.70
+2026-07-13 10:46:44,311 INFO Skip ARM Bear Combo — confidence 0.600 < 0.70
+2026-07-13 10:46:44,311 INFO Skip ARM Financed Long Call — confidence 0.600 < 0.70
+2026-07-13 10:46:44,311 INFO Skip ARM Financed Long Put — confidence 0.600 < 0.70
+2026-07-13 10:46:44,311 INFO Skip ARM Ratio Call Backspread — confidence 0.600 < 0.70
+2026-07-13 10:46:44,311 INFO Skip ARM Ratio Put Backspread — confidence 0.600 < 0.70
+2026-07-13 10:46:44,312 INFO Skip ARM Long Strangle — confidence 0.600 < 0.70
+2026-07-13 10:46:44,312 INFO Skip ARM Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,312 INFO Skip ARM Diagonal Spread — required strikes incomplete
+2026-07-13 10:46:44,312 INFO Skip INTC Call Credit Spread — required strikes incomplete
+2026-07-13 10:46:44,312 INFO Skip INTC Iron Condor — required strikes incomplete
+2026-07-13 10:46:44,312 INFO Skip INTC Put Debit Spread — required strikes incomplete
+2026-07-13 10:46:44,312 INFO Skip INTC Jade Lizard — required strikes incomplete
+2026-07-13 10:46:44,312 INFO Skip INTC Risk Reversal — max_profit $0.65 < $1.00 min
+2026-07-13 10:46:44,312 INFO Skip INTC Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,312 INFO Skip INTC Diagonal Spread — required strikes incomplete
+2026-07-13 10:46:44,312 INFO Skip QCOM Put Credit Spread — max_profit $0.60 < $1.00 min
+2026-07-13 10:46:44,313 INFO Skip QCOM Cash Secured Put — confidence 0.672 < 0.70
+2026-07-13 10:46:44,313 INFO Skip QCOM Covered Call — confidence 0.672 < 0.70
+2026-07-13 10:46:44,313 INFO Skip QCOM Call Credit Spread — required strikes incomplete
+2026-07-13 10:46:44,313 INFO Skip QCOM Iron Condor — required strikes incomplete
+2026-07-13 10:46:44,313 INFO Skip QCOM Call Debit Spread — confidence 0.672 < 0.70
+2026-07-13 10:46:44,313 INFO Skip QCOM Put Debit Spread — confidence 0.672 < 0.70
+2026-07-13 10:46:44,313 INFO Skip QCOM Jade Lizard — required strikes incomplete
+2026-07-13 10:46:44,313 INFO Skip QCOM Risk Reversal — max_profit $0.85 < $1.00 min
+2026-07-13 10:46:44,313 INFO Skip QCOM Bear Combo — confidence 0.672 < 0.70
+2026-07-13 10:46:44,313 INFO Skip QCOM Financed Long Call — confidence 0.672 < 0.70
+2026-07-13 10:46:44,313 INFO Skip QCOM Financed Long Put — confidence 0.672 < 0.70
+2026-07-13 10:46:44,313 INFO Skip QCOM Ratio Call Backspread — confidence 0.672 < 0.70
+2026-07-13 10:46:44,313 INFO Skip QCOM Ratio Put Backspread — confidence 0.672 < 0.70
+2026-07-13 10:46:44,313 INFO Skip QCOM Long Strangle — confidence 0.672 < 0.70
+2026-07-13 10:46:44,314 INFO Skip QCOM Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,314 INFO Skip QCOM Diagonal Spread — required strikes incomplete
+2026-07-13 10:46:44,314 INFO Skip TXN Iron Condor — required strikes incomplete
+2026-07-13 10:46:44,314 INFO Skip TXN Jade Lizard — required strikes incomplete
+2026-07-13 10:46:44,314 INFO Skip TXN Risk Reversal — max_profit $0.00 < $1.00 min
+2026-07-13 10:46:44,314 INFO Skip TXN Financed Long Put — required strikes incomplete
+2026-07-13 10:46:44,314 INFO Skip TXN Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,314 INFO Skip TXN Diagonal Spread — required strikes incomplete
+2026-07-13 10:46:44,314 INFO Skip KLAC Put Credit Spread — required strikes incomplete
+2026-07-13 10:46:44,314 INFO Skip KLAC Cash Secured Put — IV edge -18.1vp (undersell)
+2026-07-13 10:46:44,314 INFO Skip KLAC Covered Call — IV edge -18.4vp (undersell)
+2026-07-13 10:46:44,315 INFO Skip KLAC Call Credit Spread — IV edge -17.6vp (undersell)
+2026-07-13 10:46:44,315 INFO Skip KLAC Iron Condor — required strikes incomplete
+2026-07-13 10:46:44,315 INFO Skip KLAC Jade Lizard — required strikes incomplete
+2026-07-13 10:46:44,315 INFO Skip KLAC Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,315 INFO Skip KLAC Diagonal Spread — required strikes incomplete
+2026-07-13 10:46:44,315 INFO Skip LRCX Put Credit Spread — required strikes incomplete
+2026-07-13 10:46:44,315 INFO Skip LRCX Call Credit Spread — required strikes incomplete
+2026-07-13 10:46:44,315 INFO Skip LRCX Iron Condor — required strikes incomplete
+2026-07-13 10:46:44,315 INFO Skip LRCX Jade Lizard — required strikes incomplete
+2026-07-13 10:46:44,315 INFO Skip LRCX Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,315 INFO Skip LRCX Diagonal Spread — required strikes incomplete
+2026-07-13 10:46:44,315 INFO Skip PLTR Call Debit Spread — confidence 0.652 < 0.70
+2026-07-13 10:46:44,316 INFO Skip PLTR Put Debit Spread — confidence 0.652 < 0.70
+2026-07-13 10:46:44,316 INFO Skip PLTR Long Strangle — confidence 0.652 < 0.70
+2026-07-13 10:46:44,316 INFO Skip PLTR Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,316 INFO Skip SNOW Put Debit Spread — IV edge +3.2vp (overpay)
+2026-07-13 10:46:44,316 INFO Skip MDB Call Debit Spread — IV edge -7.4vp (overpay)
+2026-07-13 10:46:44,316 INFO Skip MDB Long Strangle — confidence 0.695 < 0.70
+2026-07-13 10:46:44,316 INFO Skip ORCL Call Credit Spread — max_profit $0.11 < $1.00 min
+2026-07-13 10:46:44,316 INFO Skip ORCL Jade Lizard — required strikes incomplete
+2026-07-13 10:46:44,316 INFO Skip ORCL Risk Reversal — max_profit $0.08 < $1.00 min
+2026-07-13 10:46:44,316 INFO Skip ORCL Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,316 INFO Skip ORCL Diagonal Spread — required strikes incomplete
+2026-07-13 10:46:44,317 INFO Skip CRM Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,317 INFO Skip NOW Put Credit Spread — required strikes incomplete
+2026-07-13 10:46:44,317 INFO Skip NOW Call Credit Spread — max_profit $0.32 < $1.00 min
+2026-07-13 10:46:44,317 INFO Skip NOW Iron Condor — required strikes incomplete
+2026-07-13 10:46:44,317 INFO Skip NOW Jade Lizard — required strikes incomplete
+2026-07-13 10:46:44,317 INFO Skip NOW Risk Reversal — max_profit $0.59 < $1.00 min
+2026-07-13 10:46:44,317 INFO Skip NOW Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,317 INFO Skip NOW Diagonal Spread — required strikes incomplete
+2026-07-13 10:46:44,317 INFO Skip TEAM Put Credit Spread — max_profit $0.05 < $1.00 min
+2026-07-13 10:46:44,317 INFO Skip TEAM Call Credit Spread — max_profit $0.20 < $1.00 min
+2026-07-13 10:46:44,317 INFO Skip TEAM Iron Condor — required strikes incomplete
+2026-07-13 10:46:44,317 INFO Skip TEAM Call Debit Spread — required strikes incomplete
+2026-07-13 10:46:44,317 INFO Skip TEAM Put Debit Spread — required strikes incomplete
+2026-07-13 10:46:44,318 INFO Skip TEAM Jade Lizard — required strikes incomplete
+2026-07-13 10:46:44,318 INFO Skip TEAM Risk Reversal — required strikes incomplete
+2026-07-13 10:46:44,318 INFO Skip TEAM Bear Combo — required strikes incomplete
+2026-07-13 10:46:44,318 INFO Skip TEAM Financed Long Put — required strikes incomplete
+2026-07-13 10:46:44,318 INFO Skip TEAM Ratio Call Backspread — required strikes incomplete
+2026-07-13 10:46:44,318 INFO Skip TEAM Ratio Put Backspread — required strikes incomplete
+2026-07-13 10:46:44,318 INFO Skip TEAM Long Strangle — required strikes incomplete
+2026-07-13 10:46:44,318 INFO Skip TEAM Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,318 INFO Skip TEAM Diagonal Spread — required strikes incomplete
+2026-07-13 10:46:44,318 INFO Skip ADBE Call Debit Spread — confidence 0.685 < 0.70
+2026-07-13 10:46:44,318 INFO Skip ADBE Put Debit Spread — confidence 0.685 < 0.70
+2026-07-13 10:46:44,318 INFO Skip ADBE Long Strangle — confidence 0.685 < 0.70
+2026-07-13 10:46:44,318 INFO Skip META Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,319 INFO Skip TMUS Put Credit Spread — required strikes incomplete
+2026-07-13 10:46:44,319 INFO Skip TMUS Cash Secured Put — max_profit $0.60 < $1.00 min
+2026-07-13 10:46:44,319 INFO Skip TMUS Call Credit Spread — required strikes incomplete
+2026-07-13 10:46:44,319 INFO Skip TMUS Iron Condor — required strikes incomplete
+2026-07-13 10:46:44,319 INFO Skip TMUS Call Debit Spread — required strikes incomplete
+2026-07-13 10:46:44,319 INFO Skip TMUS Put Debit Spread — required strikes incomplete
+2026-07-13 10:46:44,319 INFO Skip TMUS Jade Lizard — required strikes incomplete
+2026-07-13 10:46:44,319 INFO Skip TMUS Bear Combo — required strikes incomplete
+2026-07-13 10:46:44,319 INFO Skip TMUS Ratio Put Backspread — required strikes incomplete
+2026-07-13 10:46:44,319 INFO Skip TMUS Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,319 INFO Skip TMUS Diagonal Spread — required strikes incomplete
+2026-07-13 10:46:44,319 INFO Skip TSLA Call Credit Spread — max_profit $0.55 < $1.00 min
+2026-07-13 10:46:44,320 INFO Skip TSLA Jade Lizard — required strikes incomplete
+2026-07-13 10:46:44,320 INFO Skip TSLA Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,320 INFO Skip TSLA Diagonal Spread — required strikes incomplete
+2026-07-13 10:46:44,320 INFO Skip UBER Call Debit Spread — confidence 0.684 < 0.70
+2026-07-13 10:46:44,320 INFO Skip UBER Put Debit Spread — IV edge +4.6vp (overpay)
+2026-07-13 10:46:44,320 INFO Skip UBER Long Strangle — confidence 0.684 < 0.70
+2026-07-13 10:46:44,320 INFO Skip UBER Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,320 INFO Skip APP Cash Secured Put — IV edge -3.9vp (undersell)
+2026-07-13 10:46:44,320 INFO Skip APP Covered Call — IV edge -3.8vp (undersell)
+2026-07-13 10:46:44,320 INFO Skip APP Call Credit Spread — IV edge -3.9vp (undersell)
+2026-07-13 10:46:44,320 INFO Skip APP Jade Lizard — required strikes incomplete
+2026-07-13 10:46:44,320 INFO Skip APP Risk Reversal — max_profit $0.00 < $1.00 min
+2026-07-13 10:46:44,321 INFO Skip APP Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,321 INFO Skip APP Diagonal Spread — required strikes incomplete
+2026-07-13 10:46:44,321 INFO Skip HD Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,321 INFO Skip NKE Call Debit Spread — confidence 0.695 < 0.70
+2026-07-13 10:46:44,321 INFO Skip NKE Long Strangle — confidence 0.695 < 0.70
+2026-07-13 10:46:44,321 INFO Skip NKE Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,321 INFO Skip ULTA Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,321 INFO Skip ABBV Put Credit Spread — required strikes incomplete
+2026-07-13 10:46:44,321 INFO Skip ABBV Covered Call — IV edge -2.8vp (undersell)
+2026-07-13 10:46:44,321 INFO Skip ABBV Call Credit Spread — required strikes incomplete
+2026-07-13 10:46:44,322 INFO Skip ABBV Iron Condor — required strikes incomplete
+2026-07-13 10:46:44,322 INFO Skip ABBV Jade Lizard — required strikes incomplete
+2026-07-13 10:46:44,322 INFO Skip ABBV Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,322 INFO Skip ABBV Diagonal Spread — required strikes incomplete
+2026-07-13 10:46:44,322 INFO Skip V Call Debit Spread — confidence 0.698 < 0.70
+2026-07-13 10:46:44,322 INFO Skip BRK-B Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,322 INFO Skip VRT Put Credit Spread — max_profit $0.30 < $1.00 min
+2026-07-13 10:46:44,322 INFO Skip VRT Call Credit Spread — required strikes incomplete
+2026-07-13 10:46:44,322 INFO Skip VRT Iron Condor — required strikes incomplete
+2026-07-13 10:46:44,323 INFO Skip VRT Jade Lizard — required strikes incomplete
+2026-07-13 10:46:44,323 INFO Skip VRT Risk Reversal — max_profit $0.00 < $1.00 min
+2026-07-13 10:46:44,323 INFO Skip VRT Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,323 INFO Skip VRT Diagonal Spread — required strikes incomplete
+2026-07-13 10:46:44,323 INFO Skip HON Put Credit Spread — required strikes incomplete
+2026-07-13 10:46:44,323 INFO Skip HON Cash Secured Put — required strikes incomplete
+2026-07-13 10:46:44,323 INFO Skip HON Covered Call — required strikes incomplete
+2026-07-13 10:46:44,323 INFO Skip HON Call Credit Spread — required strikes incomplete
+2026-07-13 10:46:44,323 INFO Skip HON Iron Condor — required strikes incomplete
+2026-07-13 10:46:44,324 INFO Skip HON Call Debit Spread — required strikes incomplete
+2026-07-13 10:46:44,324 INFO Skip HON Put Debit Spread — required strikes incomplete
+2026-07-13 10:46:44,324 INFO Skip HON Jade Lizard — required strikes incomplete
+2026-07-13 10:46:44,324 INFO Skip HON Risk Reversal — required strikes incomplete
+2026-07-13 10:46:44,324 INFO Skip HON Bear Combo — required strikes incomplete
+2026-07-13 10:46:44,324 INFO Skip HON Financed Long Call — required strikes incomplete
+2026-07-13 10:46:44,324 INFO Skip HON Financed Long Put — required strikes incomplete
+2026-07-13 10:46:44,324 INFO Skip HON Ratio Call Backspread — required strikes incomplete
+2026-07-13 10:46:44,324 INFO Skip HON Ratio Put Backspread — required strikes incomplete
+2026-07-13 10:46:44,324 INFO Skip HON Long Strangle — required strikes incomplete
+2026-07-13 10:46:44,324 INFO Skip HON Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,324 INFO Skip HON Diagonal Spread — required strikes incomplete
+2026-07-13 10:46:44,325 INFO Skip CVX Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,325 INFO Skip OXY Put Credit Spread — required strikes incomplete
+2026-07-13 10:46:44,325 INFO Skip OXY Cash Secured Put — max_profit $0.48 < $1.00 min
+2026-07-13 10:46:44,325 INFO Skip OXY Call Credit Spread — required strikes incomplete
+2026-07-13 10:46:44,325 INFO Skip OXY Iron Condor — required strikes incomplete
+2026-07-13 10:46:44,325 INFO Skip OXY Put Debit Spread — required strikes incomplete
+2026-07-13 10:46:44,325 INFO Skip OXY Jade Lizard — required strikes incomplete
+2026-07-13 10:46:44,325 INFO Skip OXY Ratio Put Backspread — required strikes incomplete
+2026-07-13 10:46:44,325 INFO Skip OXY Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,325 INFO Skip OXY Diagonal Spread — required strikes incomplete
+2026-07-13 10:46:44,326 INFO Skip VST Put Debit Spread — IV edge +5.8vp (overpay)
+2026-07-13 10:46:44,326 INFO Skip FCX Put Credit Spread — required strikes incomplete
+2026-07-13 10:46:44,326 INFO Skip FCX Cash Secured Put — max_profit $0.85 < $1.00 min
+2026-07-13 10:46:44,326 INFO Skip FCX Call Credit Spread — required strikes incomplete
+2026-07-13 10:46:44,326 INFO Skip FCX Iron Condor — required strikes incomplete
+2026-07-13 10:46:44,326 INFO Skip FCX Jade Lizard — required strikes incomplete
+2026-07-13 10:46:44,326 INFO Skip FCX Risk Reversal — max_profit $0.20 < $1.00 min
+2026-07-13 10:46:44,326 INFO Skip FCX Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,326 INFO Skip FCX Diagonal Spread — required strikes incomplete
+2026-07-13 10:46:44,326 INFO Skip NEM Put Credit Spread — required strikes incomplete
+2026-07-13 10:46:44,326 INFO Skip NEM Cash Secured Put — max_profit $0.54 < $1.00 min
+2026-07-13 10:46:44,327 INFO Skip NEM Call Credit Spread — required strikes incomplete
+2026-07-13 10:46:44,327 INFO Skip NEM Iron Condor — required strikes incomplete
+2026-07-13 10:46:44,327 INFO Skip NEM Put Debit Spread — required strikes incomplete
+2026-07-13 10:46:44,327 INFO Skip NEM Jade Lizard — required strikes incomplete
+2026-07-13 10:46:44,327 INFO Skip NEM Risk Reversal — required strikes incomplete
+2026-07-13 10:46:44,327 INFO Skip NEM Bear Combo — required strikes incomplete
+2026-07-13 10:46:44,327 INFO Skip NEM Financed Long Put — required strikes incomplete
+2026-07-13 10:46:44,327 INFO Skip NEM Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,327 INFO Skip NEM Diagonal Spread — required strikes incomplete
+2026-07-13 10:46:44,327 INFO Skip SOFI Put Credit Spread — max_profit $0.17 < $1.00 min
+2026-07-13 10:46:44,327 INFO Skip SOFI Cash Secured Put — max_profit $0.41 < $1.00 min
+2026-07-13 10:46:44,327 INFO Skip SOFI Covered Call — IV edge -5.4vp (undersell)
+2026-07-13 10:46:44,327 INFO Skip SOFI Call Credit Spread — max_profit $0.15 < $1.00 min
+2026-07-13 10:46:44,328 INFO Skip SOFI Iron Condor — max_profit $0.32 < $1.00 min
+2026-07-13 10:46:44,328 INFO Skip SOFI Jade Lizard — max_profit $0.70 < $1.00 min
+2026-07-13 10:46:44,328 INFO Skip SOFI Risk Reversal — max_profit $0.10 < $1.00 min
+2026-07-13 10:46:44,328 INFO Skip SOFI Calendar Spread — required strikes incomplete
+2026-07-13 10:46:44,328 INFO Skip SOFI Diagonal Spread — max_profit $0.17 < $1.00 min
+2026-07-13 10:46:44,338 WARNING Skipping NEM Financed Long Call — short or long strike is None
+2026-07-13 10:46:44,340 WARNING Skipping ORCL Financed Long Put — short or long strike is None
+2026-07-13 10:46:44,699 INFO Paper trade #3: 20260713_WMT_LON_3  credit=2.390  expiry=2026-07-31
+2026-07-13 10:46:45,485 INFO Training snapshot written for paper trade 20260713_WMT_LON_3

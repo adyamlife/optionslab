@@ -83,6 +83,34 @@ PARAM_INFO = {
     "calendar_max_gap_days":   (rules.CALENDAR_MAX_GAP_DAYS, "Maximum days between the front-month expiry and the back-month (long) expiry for a Calendar Spread."),
     "jade_lizard_put_delta_lo": (rules.JADE_LIZARD_PUT_DELTA_RANGE[0], "Lower bound of |delta| for the naked short put leg of a Jade Lizard."),
     "jade_lizard_put_delta_hi": (rules.JADE_LIZARD_PUT_DELTA_RANGE[1], "Upper bound of |delta| for the naked short put leg of a Jade Lizard."),
+    "rr_put_delta_lo":  (rules.RISK_REVERSAL_PUT_DELTA_RANGE[0],  "Lower bound of |delta| for the short put leg of a Risk Reversal."),
+    "rr_put_delta_hi":  (rules.RISK_REVERSAL_PUT_DELTA_RANGE[1],  "Upper bound of |delta| for the short put leg of a Risk Reversal."),
+    "rr_call_delta_lo": (rules.RISK_REVERSAL_CALL_DELTA_RANGE[0], "Lower bound of |delta| for the long call leg of a Risk Reversal."),
+    "rr_call_delta_hi": (rules.RISK_REVERSAL_CALL_DELTA_RANGE[1], "Upper bound of |delta| for the long call leg of a Risk Reversal."),
+    "flc_put_short_delta_lo":  (rules.FLC_PUT_SHORT_DELTA_RANGE[0],  "Lower bound of |delta| for the short put leg (credit spread) in a Financed Long Call."),
+    "flc_put_short_delta_hi":  (rules.FLC_PUT_SHORT_DELTA_RANGE[1],  "Upper bound of |delta| for the short put leg in a Financed Long Call."),
+    "flc_call_long_delta_lo":  (rules.FLC_CALL_LONG_DELTA_RANGE[0],  "Lower bound of |delta| for the standalone long call in a Financed Long Call."),
+    "flc_call_long_delta_hi":  (rules.FLC_CALL_LONG_DELTA_RANGE[1],  "Upper bound of |delta| for the standalone long call in a Financed Long Call."),
+    "flp_call_short_delta_lo": (rules.FLP_CALL_SHORT_DELTA_RANGE[0], "Lower bound of |delta| for the short call leg (credit spread) in a Financed Long Put."),
+    "flp_call_short_delta_hi": (rules.FLP_CALL_SHORT_DELTA_RANGE[1], "Upper bound of |delta| for the short call leg in a Financed Long Put."),
+    "flp_put_long_delta_lo":   (rules.FLP_PUT_LONG_DELTA_RANGE[0],   "Lower bound of |delta| for the standalone long put in a Financed Long Put."),
+    "flp_put_long_delta_hi":   (rules.FLP_PUT_LONG_DELTA_RANGE[1],   "Upper bound of |delta| for the standalone long put in a Financed Long Put."),
+    "rb_short_delta_lo":  (rules.RATIO_BACKSPREAD_SHORT_DELTA_RANGE[0], "Lower bound of |delta| for the short (near-ATM, 1×) leg of a Ratio Backspread."),
+    "rb_short_delta_hi":  (rules.RATIO_BACKSPREAD_SHORT_DELTA_RANGE[1], "Upper bound of |delta| for the short (near-ATM, 1×) leg of a Ratio Backspread."),
+    "rb_long_delta_lo":   (rules.RATIO_BACKSPREAD_LONG_DELTA_RANGE[0],  "Lower bound of |delta| for the long (OTM, 2×) legs of a Ratio Backspread."),
+    "rb_long_delta_hi":   (rules.RATIO_BACKSPREAD_LONG_DELTA_RANGE[1],  "Upper bound of |delta| for the long (OTM, 2×) legs of a Ratio Backspread."),
+    "ls_call_delta_lo":   (rules.LONG_STRANGLE_CALL_DELTA_RANGE[0], "Lower bound of |delta| for the OTM call leg of a Long Strangle."),
+    "ls_call_delta_hi":   (rules.LONG_STRANGLE_CALL_DELTA_RANGE[1], "Upper bound of |delta| for the OTM call leg of a Long Strangle."),
+    "ls_put_delta_lo":    (rules.LONG_STRANGLE_PUT_DELTA_RANGE[0],  "Lower bound of |delta| for the OTM put leg of a Long Strangle."),
+    "ls_put_delta_hi":    (rules.LONG_STRANGLE_PUT_DELTA_RANGE[1],  "Upper bound of |delta| for the OTM put leg of a Long Strangle."),
+    "bc_put_long_delta_lo":   (rules.BEAR_COMBO_PUT_LONG_DELTA_RANGE[0],   "Lower bound of |delta| for the long (ATM-ish) put in a Bear Combo."),
+    "bc_put_long_delta_hi":   (rules.BEAR_COMBO_PUT_LONG_DELTA_RANGE[1],   "Upper bound of |delta| for the long (ATM-ish) put in a Bear Combo."),
+    "bc_put_short_delta_lo":  (rules.BEAR_COMBO_PUT_SHORT_DELTA_RANGE[0],  "Lower bound of |delta| for the short (OTM) put in a Bear Combo."),
+    "bc_put_short_delta_hi":  (rules.BEAR_COMBO_PUT_SHORT_DELTA_RANGE[1],  "Upper bound of |delta| for the short (OTM) put in a Bear Combo."),
+    "bc_call_short_delta_lo": (rules.BEAR_COMBO_CALL_SHORT_DELTA_RANGE[0], "Lower bound of |delta| for the short (OTM) call in a Bear Combo."),
+    "bc_call_short_delta_hi": (rules.BEAR_COMBO_CALL_SHORT_DELTA_RANGE[1], "Upper bound of |delta| for the short (OTM) call in a Bear Combo."),
+    "bc_call_long_delta_lo":  (rules.BEAR_COMBO_CALL_LONG_DELTA_RANGE[0],  "Lower bound of |delta| for the long (far OTM) call in a Bear Combo."),
+    "bc_call_long_delta_hi":  (rules.BEAR_COMBO_CALL_LONG_DELTA_RANGE[1],  "Upper bound of |delta| for the long (far OTM) call in a Bear Combo."),
     "profit_target_pct":       (rules.PROFIT_TARGET_PCT, "Take-profit target as a fraction of max profit (e.g. 0.50 = close at 50% of max profit)."),
     "diagonal_long_delta_lo":  (rules.DIAGONAL_LONG_DELTA_RANGE[0],  "Lower bound of |delta| for the back-month (long) leg of a Diagonal Spread."),
     "diagonal_long_delta_hi":  (rules.DIAGONAL_LONG_DELTA_RANGE[1],  "Upper bound of |delta| for the back-month (long) leg of a Diagonal Spread."),
@@ -231,8 +259,8 @@ def compute_signal_alignment(recommended_structure, trend, weekly_trend, rsi, ma
 
     # --- EMA 200 (institutional trend filter) ---
     if ema200_position is not None:
-        bullish_structures = ("Put Credit Spread", "Call Debit Spread", "Diagonal Spread")
-        bearish_structures = ("Call Credit Spread", "Put Debit Spread")
+        bullish_structures = ("Put Credit Spread", "Call Debit Spread", "Diagonal Spread", "Risk Reversal", "Financed Long Call", "Ratio Call Backspread")
+        bearish_structures = ("Call Credit Spread", "Put Debit Spread", "Bear Combo", "Financed Long Put", "Ratio Put Backspread")
         wt = w("technical", "ema200")
         if recommended_structure in bullish_structures:
             if ema200_position == "above":
@@ -309,8 +337,8 @@ def compute_signal_alignment(recommended_structure, trend, weekly_trend, rsi, ma
     # --- MACD ---
     if macd_trend and macd_trend not in ("N/A",):
         wt = w("technical", "macd")
-        bullish_structures = ("Put Credit Spread", "Call Debit Spread")
-        bearish_structures = ("Call Credit Spread", "Put Debit Spread")
+        bullish_structures = ("Put Credit Spread", "Call Debit Spread", "Risk Reversal", "Financed Long Call", "Ratio Call Backspread")
+        bearish_structures = ("Call Credit Spread", "Put Debit Spread", "Bear Combo", "Financed Long Put", "Ratio Put Backspread")
         neutral_structures = ("Iron Condor", "Calendar Spread")
         if recommended_structure in bullish_structures:
             if macd_trend == "Bullish":
@@ -342,8 +370,8 @@ def compute_signal_alignment(recommended_structure, trend, weekly_trend, rsi, ma
     # --- News sentiment ---
     if news_sentiment and news_sentiment not in ("Neutral", "N/A"):
         wt = w("flow", "news")
-        bullish_structures = ("Put Credit Spread", "Call Debit Spread")
-        bearish_structures = ("Call Credit Spread", "Put Debit Spread")
+        bullish_structures = ("Put Credit Spread", "Call Debit Spread", "Risk Reversal", "Financed Long Call", "Ratio Call Backspread")
+        bearish_structures = ("Call Credit Spread", "Put Debit Spread", "Bear Combo", "Financed Long Put", "Ratio Put Backspread")
         if recommended_structure in bullish_structures:
             if news_sentiment == "Bullish":
                 score += wt; notes.append("news sentiment Bullish — supports upside trade")
@@ -363,8 +391,8 @@ def compute_signal_alignment(recommended_structure, trend, weekly_trend, rsi, ma
     # --- Put/Call Ratio ---
     if pcr_sentiment and pcr_sentiment not in ("Neutral", "N/A"):
         wt = w("flow", "pcr")
-        bullish_structures = ("Put Credit Spread", "Call Debit Spread")
-        bearish_structures = ("Call Credit Spread", "Put Debit Spread")
+        bullish_structures = ("Put Credit Spread", "Call Debit Spread", "Risk Reversal", "Financed Long Call", "Ratio Call Backspread")
+        bearish_structures = ("Call Credit Spread", "Put Debit Spread", "Bear Combo", "Financed Long Put", "Ratio Put Backspread")
         if recommended_structure in bullish_structures:
             if pcr_sentiment == "Bullish":
                 score += wt; notes.append(f"PCR {pcr} call-heavy OI — confirms upside bias")
@@ -392,8 +420,8 @@ def compute_signal_alignment(recommended_structure, trend, weekly_trend, rsi, ma
     # --- Analyst sentiment (buy/hold/sell consensus) ---
     if analyst_label and analyst_label not in ("N/A", "Neutral"):
         wt = w("flow", "analyst")
-        bullish_structures = ("Put Credit Spread", "Call Debit Spread")
-        bearish_structures = ("Call Credit Spread", "Put Debit Spread")
+        bullish_structures = ("Put Credit Spread", "Call Debit Spread", "Risk Reversal", "Financed Long Call", "Ratio Call Backspread")
+        bearish_structures = ("Call Credit Spread", "Put Debit Spread", "Bear Combo", "Financed Long Put", "Ratio Put Backspread")
         if recommended_structure in bullish_structures:
             if analyst_label == "Bullish":
                 score += wt; notes.append("Analyst consensus Bullish — supports upside trade")
@@ -426,8 +454,8 @@ def compute_signal_alignment(recommended_structure, trend, weekly_trend, rsi, ma
     # --- Short interest (squeeze risk) ---
     if short_interest is not None:
         wt = w("flow", "short_interest")
-        bullish_structures = ("Put Credit Spread", "Call Debit Spread")
-        bearish_structures = ("Call Credit Spread", "Put Debit Spread")
+        bullish_structures = ("Put Credit Spread", "Call Debit Spread", "Risk Reversal", "Financed Long Call", "Ratio Call Backspread")
+        bearish_structures = ("Call Credit Spread", "Put Debit Spread", "Bear Combo", "Financed Long Put", "Ratio Put Backspread")
         if short_interest > 20:
             if recommended_structure in bullish_structures:
                 score += wt; notes.append(f"Short interest {short_interest:.1f}% — high short float, squeeze risk favors upside")
@@ -1193,6 +1221,661 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
         candidates.append({
             "structure": "Jade Lizard", "recommended": False,
             "details": "Could not build naked short put + call credit spread legs (missing/illiquid strikes)",
+            "pop": None, "ev": None, "max_profit": None, "meets_min_profit": None,
+            "max_loss": None, "meets_max_loss": None,
+        })
+
+    # --- Risk Reversal (sell OTM put + buy OTM call) ---
+    # Bullish synthetic exposure: short put finances the long call via put skew.
+    # Net is usually a small credit (Low IV + put skew > call skew).
+    # Requires margin for the naked short put leg.
+    #
+    # RISK PROFILE:
+    #   Upside: unlimited (stock can go to any price above call strike)
+    #   Downside: up to put_strike − net_credit per share at stock = $0 (LARGE)
+    #   The −10% spot reference is NOT used because an OTM put at δ≈0.25 is
+    #   typically 20-30% below spot — spot−10% is still above the put strike and
+    #   shows zero loss, which would understate risk badly.
+    #   Instead we show: loss at put_strike (assignment zone) and true max loss.
+    _rr_put  = find_short_strike(puts,  "put",  (p["rr_put_delta_lo"],  p["rr_put_delta_hi"]),  min_oi)
+    _rr_call = find_short_strike(calls, "call", (p["rr_call_delta_lo"], p["rr_call_delta_hi"]), min_oi)
+    if (_rr_put is not None and _rr_call is not None
+            and _valid_price(_rr_put["bid"]) and _valid_price(_rr_call["ask"])):
+        _rr_put_bid  = float(_rr_put["bid"])
+        _rr_call_ask = float(_rr_call["ask"])
+        _rr_net      = round(_rr_put_bid - _rr_call_ask, 3)   # >0 = net credit, <0 = net debit
+        _rr_is_cred  = _rr_net >= 0
+        _rr_put_k    = float(_rr_put["strike"])
+        _rr_call_k   = float(_rr_call["strike"])
+
+        # Margin requirement on the short put (Reg-T style)
+        _rr_otm_amt  = max(0.0, spot - _rr_put_k)
+        _rr_margin   = max(0.20 * spot - _rr_otm_amt, 0.10 * _rr_put_k) * 100
+        _rr_fits_cap = bool(_rr_margin <= rules.CAPITAL)
+        _rr_margin_note = (f"naked put requires ~${_rr_margin:.0f} margin "
+                           f"({'fits' if _rr_fits_cap else 'exceeds'} ${rules.CAPITAL:.0f} capital)")
+
+        # Downside breakeven: stock price below which we start losing money at expiry
+        _rr_downside_be = round(_rr_put_k - abs(_rr_net), 2)
+
+        # True maximum loss: stock goes to $0 at expiry
+        # P&L at $0 = 0 (call) − put_strike (short put assignment at full strike) + net_credit
+        #           = net_credit − put_strike  (negative, large)
+        _rr_true_max_loss = round(_rr_put_k - _rr_net, 3)  # positive = dollar loss per share
+
+        # Upside reference: profit at +10% above spot
+        _rr_ref_up  = round(spot * 1.10, 2)
+        _rr_pnl_up  = round(max(0.0, _rr_ref_up - _rr_call_k) - max(0.0, _rr_put_k - _rr_ref_up) + _rr_net, 3)
+
+        # Downside reference: loss at 20% below the put strike (assignment + crash scenario)
+        # This is always below the put strike so it always shows a real loss.
+        _rr_ref_dn  = round(_rr_put_k * 0.80, 2)
+        _rr_pnl_dn  = round(max(0.0, _rr_ref_dn - _rr_call_k) - max(0.0, _rr_put_k - _rr_ref_dn) + _rr_net, 3)
+
+        _rr_max_profit = max(_rr_pnl_up, abs(_rr_net) if _rr_is_cred else 0.0)
+        meets_profit_rr, profit_msg_rr = profit_note(_rr_max_profit, min_profit_amount)
+
+        # POP ≈ P(stock stays above downside breakeven) ≈ 1 − |put delta|
+        _rr_pop = max(0.0, min(100.0, (1 - abs(float(_rr_put.get("delta") or 0))) * 100))
+
+        # EV: probability-weighted over three zones using delta approximations
+        # Note: EV uses reference P&L, not true extremes, to keep it comparable to other structures
+        _rr_p_up  = abs(float(_rr_call.get("delta") or 0))
+        _rr_p_dn  = abs(float(_rr_put.get("delta")  or 0))
+        _rr_p_mid = max(0.0, 1 - _rr_p_up - _rr_p_dn)
+        _rr_ev    = round(_rr_p_up * _rr_pnl_up + _rr_p_mid * _rr_net + _rr_p_dn * _rr_pnl_dn, 3) if _rr_max_profit > 0 else None
+
+        # Greeks: short put (negative delta/gamma/vega) + long call (positive)
+        _rr_put_iv  = float(_rr_put.get("impliedVolatility")  or 0)
+        _rr_call_iv = float(_rr_call.get("impliedVolatility") or 0)
+        _rr_nd  = round(-abs(float(_rr_put.get("delta")  or 0)) + abs(float(_rr_call.get("delta") or 0)), 3)
+        _rr_nth = round(
+            -(bs_theta(spot, _rr_put_k,  T, RISK_FREE_RATE, _rr_put_iv,  "put")  if _rr_put_iv  > 0 else 0.0)
+            +(bs_theta(spot, _rr_call_k, T, RISK_FREE_RATE, _rr_call_iv, "call") if _rr_call_iv > 0 else 0.0),
+            4)
+        _rr_ngm = round(
+            -(bs_gamma(spot, _rr_put_k,  T, RISK_FREE_RATE, _rr_put_iv)  if _rr_put_iv  > 0 else 0.0)
+            +(bs_gamma(spot, _rr_call_k, T, RISK_FREE_RATE, _rr_call_iv) if _rr_call_iv > 0 else 0.0),
+            6)
+        _rr_nvg = round(
+            -(bs_vega(spot, _rr_put_k,  T, RISK_FREE_RATE, _rr_put_iv)  if _rr_put_iv  > 0 else 0.0)
+            +(bs_vega(spot, _rr_call_k, T, RISK_FREE_RATE, _rr_call_iv) if _rr_call_iv > 0 else 0.0),
+            4)
+
+        candidates.append({
+            "structure": "Risk Reversal",
+            "recommended": (_rr_fits_cap and iv_env == "Low"
+                            and recommended_structure == "Risk Reversal"),
+            "details": (
+                f"SELL {_rr_put_k:.0f}P (naked, δ {float(_rr_put.get('delta',0)):.2f}) + "
+                f"BUY {_rr_call_k:.0f}C (δ {float(_rr_call.get('delta',0)):.2f}) — "
+                f"{'net credit' if _rr_is_cred else 'net debit'} ~${abs(_rr_net):.2f}, "
+                f"downside breakeven ${_rr_downside_be:.2f}, "
+                f"TRUE MAX LOSS if stock→$0: ${_rr_true_max_loss:.2f}/sh (${_rr_true_max_loss*100:.0f}/contract), "
+                f"P&L at +10%: ${_rr_pnl_up:+.2f} / at put_k−20% (${_rr_ref_dn:.0f}): ${_rr_pnl_dn:+.2f}, "
+                f"{profit_msg_rr}, {_rr_margin_note}"
+            ),
+            "pop": round(_rr_pop, 1),
+            "ev": _rr_ev,
+            "max_profit": round(_rr_max_profit, 3),
+            "meets_min_profit": meets_profit_rr,
+            # max_loss = true worst case (stock→$0) so Kelly sizing is appropriately conservative
+            "max_loss": round(_rr_true_max_loss, 3),
+            "meets_max_loss": None,   # uncapped; bypass loss-cap gate, rated on margin
+            "capital_required": round(_rr_margin, 2),
+            "net_delta": _rr_nd,
+            "net_theta": _rr_nth,
+            "net_gamma": _rr_ngm,
+            "net_vega":  _rr_nvg,
+            "is_credit": _rr_is_cred,
+            "short_strike":       _rr_put_k,        # put strike (the risk leg)
+            "long_strike":        _rr_call_k,        # call strike (the upside leg)
+            "spot_at_entry":      round(spot, 2),
+            "rr_net_credit":      _rr_net,           # signed: +credit, −debit
+            "rr_downside_be":     _rr_downside_be,
+            "rr_true_max_loss":   _rr_true_max_loss, # loss per share if stock → $0
+            "rr_ref_up":          _rr_ref_up,        # spot × 1.10
+            "rr_ref_dn":          _rr_ref_dn,        # put_strike × 0.80
+            "rr_pnl_dn":          _rr_pnl_dn,        # P&L at ref_dn (always negative)
+        })
+    else:
+        candidates.append({
+            "structure": "Risk Reversal",
+            "recommended": False,
+            "details": "Could not build Risk Reversal legs (missing or illiquid put/call at target delta)",
+            "pop": None, "ev": None, "max_profit": None, "meets_min_profit": None,
+            "max_loss": None, "meets_max_loss": None,
+        })
+
+    # --- Bear Combo (bear put spread + bear call spread, 4 legs, fully defined risk) ---
+    # Structure: BUY ATM-ish put + SELL OTM put + SELL OTM call + BUY far-OTM call
+    # The call credit partially (or fully) offsets the put debit, keeping net cost low.
+    # Max profit  = put_width − net_cost  (stock falls below OTM put at expiry)
+    # Max loss    = call_width + net_cost  (stock rises above far-OTM call)
+    # No naked exposure — all four legs are defined.
+    _bc_long_put  = find_short_strike(puts,  "put",  (p["bc_put_long_delta_lo"],  p["bc_put_long_delta_hi"]),  min_oi)
+    _bc_long_call = find_short_strike(calls, "call", (p["bc_call_long_delta_lo"], p["bc_call_long_delta_hi"]), min_oi)
+    # short_put and short_call (OTM, δ 0.15-0.25) are reused from the PCS / CCS sections
+    _bc_legs_ok = (
+        _bc_long_put  is not None and short_put     is not None
+        and _bc_long_call is not None and short_call is not None
+        and _valid_price(_bc_long_put["ask"])  and _valid_price(short_put["bid"])
+        and _valid_price(short_call["bid"])    and _valid_price(_bc_long_call["ask"])
+        and _bc_long_put["strike"] > short_put["strike"]      # long put above short put
+        and _bc_long_call["strike"] < short_call["strike"]    # long call below short call (further OTM)... wait, no
+    )
+    # Reclarify: bear call spread = sell lower-strike call, buy higher-strike call (cap).
+    # short_call is closer to ATM (higher delta, lower strike if OTM calls); long call is further OTM (higher strike).
+    # So long_call_strike > short_call_strike.
+    _bc_legs_ok = (
+        _bc_long_put  is not None and short_put  is not None
+        and _bc_long_call is not None and short_call is not None
+        and _valid_price(_bc_long_put["ask"])  and _valid_price(short_put["bid"])
+        and _valid_price(short_call["bid"])    and _valid_price(_bc_long_call["ask"])
+        and float(_bc_long_put["strike"])  > float(short_put["strike"])   # long put above short put (wider spread)
+        and float(_bc_long_call["strike"]) > float(short_call["strike"])  # long call above short call (cap)
+    )
+    if _bc_legs_ok:
+        _bc_lp_k  = float(_bc_long_put["strike"])
+        _bc_sp_k  = float(short_put["strike"])
+        _bc_sc_k  = float(short_call["strike"])
+        _bc_lc_k  = float(_bc_long_call["strike"])
+
+        _bc_put_debit   = round(float(_bc_long_put["ask"]) - float(short_put["bid"]), 3)
+        _bc_call_credit = round(float(short_call["bid"]) - float(_bc_long_call["ask"]), 3)
+        _bc_net_cost    = round(_bc_put_debit - _bc_call_credit, 3)   # positive = net debit
+        _bc_is_credit   = _bc_net_cost < 0
+
+        _bc_put_width  = round(_bc_lp_k - _bc_sp_k, 2)
+        _bc_call_width = round(_bc_lc_k - _bc_sc_k, 2)
+
+        _bc_max_profit = round(_bc_put_width - _bc_net_cost, 3)
+        _bc_max_loss   = round(_bc_call_width + _bc_net_cost, 3)
+
+        # Breakevens:
+        #   Downside BE: long_put_k − net_cost  (profit zone = stock below this)
+        #   Upside BE:   short_call_k + call_credit  (loss zone = stock above this)
+        _bc_lower_be = round(_bc_lp_k - _bc_net_cost, 2)
+        _bc_upper_be = round(_bc_sc_k + _bc_call_credit, 2)
+
+        # POP: probability stock ends below the lower BE ≈ abs(long_put_delta)
+        _bc_lp_delta = abs(float(_bc_long_put.get("delta") or 0))
+        _bc_pop = round(_bc_lp_delta * 100, 1)
+        _bc_ev  = round(_bc_pop / 100 * _bc_max_profit - (1 - _bc_pop / 100) * _bc_max_loss, 3)
+
+        _bc_meets_profit, _bc_profit_msg = profit_note(_bc_max_profit, min_profit_amount)
+        _bc_meets_loss,   _bc_loss_msg   = loss_note(_bc_max_loss, width_target)
+
+        _bc_fits_cap = bool(_bc_max_loss <= rules.MAX_LOSS_PER_TRADE)
+
+        # Greeks: put spread (long - short) + call spread (long - short, short on the sell side)
+        _bc_pd, _bc_pth, _bc_pgm, _bc_pvg = _net_greeks(spot, T, _bc_long_put,  short_put,   "put")
+        _bc_cd, _bc_cth, _bc_cgm, _bc_cvg = _net_greeks(spot, T, _bc_long_call, short_call,  "call")
+        _bc_nd  = round((_bc_pd  or 0) + (_bc_cd  or 0), 3)
+        _bc_nth = round((_bc_pth or 0) + (_bc_cth or 0), 4)
+        _bc_ngm = round((_bc_pgm or 0) + (_bc_cgm or 0), 6)
+        _bc_nvg = round((_bc_pvg or 0) + (_bc_cvg or 0), 4)
+
+        candidates.append({
+            "structure": "Bear Combo",
+            "recommended": (
+                _bc_fits_cap and _bc_meets_profit and _bc_meets_loss
+                and recommended_structure in ("Call Credit Spread", "Put Debit Spread", "Bear Combo")
+            ),
+            "details": (
+                f"BUY {_bc_lp_k:.0f}P / SELL {_bc_sp_k:.0f}P (put spread debit ~${_bc_put_debit:.2f}) + "
+                f"SELL {_bc_sc_k:.0f}C / BUY {_bc_lc_k:.0f}C (call spread credit ~${_bc_call_credit:.2f}) — "
+                f"net {'credit' if _bc_is_credit else 'debit'} ~${abs(_bc_net_cost):.2f}, "
+                f"max profit ${_bc_max_profit:.2f}/sh at expiry (stock < {_bc_sp_k:.0f}), "
+                f"max loss ${_bc_max_loss:.2f}/sh (stock > {_bc_lc_k:.0f}), "
+                f"lower BE ${_bc_lower_be:.2f}, upper BE ${_bc_upper_be:.2f}, "
+                f"{_bc_profit_msg}, {_bc_loss_msg}"
+            ),
+            "pop": _bc_pop, "ev": _bc_ev,
+            "max_profit":       round(_bc_max_profit, 3),
+            "meets_min_profit": _bc_meets_profit,
+            "max_loss":         round(_bc_max_loss, 3),
+            "meets_max_loss":   _bc_meets_loss,
+            "net_delta": _bc_nd, "net_theta": _bc_nth, "net_gamma": _bc_ngm, "net_vega": _bc_nvg,
+            "is_credit": _bc_is_credit,
+            "long_put_strike":  _bc_lp_k,
+            "short_put_strike": _bc_sp_k,
+            "short_call_strike": _bc_sc_k,
+            "long_call_strike":  _bc_lc_k,
+            "bc_put_debit":    _bc_put_debit,
+            "bc_call_credit":  _bc_call_credit,
+            "bc_net_cost":     _bc_net_cost,
+            "bc_put_width":    _bc_put_width,
+            "bc_call_width":   _bc_call_width,
+            "bc_lower_be":     _bc_lower_be,
+            "bc_upper_be":     _bc_upper_be,
+        })
+    else:
+        candidates.append({
+            "structure": "Bear Combo",
+            "recommended": False,
+            "details": "Could not build Bear Combo legs (missing or illiquid put/call at target delta)",
+            "pop": None, "ev": None, "max_profit": None, "meets_min_profit": None,
+            "max_loss": None, "meets_max_loss": None,
+        })
+
+    # --- Financed Long Call (put credit spread + standalone long call) ---
+    # Moderate bullish + IV contracting. The put spread credit pays for the OTM call.
+    # Max loss = put_spread_width + net_cost  (always defined, no margin needed)
+    # Max profit = unlimited (the long call has no cap)
+    _flc_short_put  = find_short_strike(puts,  "put",  (p["flc_put_short_delta_lo"],  p["flc_put_short_delta_hi"]),  min_oi)
+    _flc_long_put   = find_long_strike_for_credit_spread(puts, _flc_short_put, "put", width_target, min_oi) if _flc_short_put is not None else None
+    _flc_long_call  = find_short_strike(calls, "call", (p["flc_call_long_delta_lo"],  p["flc_call_long_delta_hi"]),  min_oi)
+    _flc_legs_ok = (
+        _flc_short_put is not None and _flc_long_put is not None and _flc_long_call is not None
+        and _valid_price(_flc_short_put["bid"]) and _valid_price(_flc_long_put["ask"])
+        and _valid_price(_flc_long_call["ask"])
+        and float(_flc_short_put["strike"]) > float(_flc_long_put["strike"])  # short put above long put
+    )
+    if _flc_legs_ok:
+        _flc_sp_k  = float(_flc_short_put["strike"])
+        _flc_lp_k  = float(_flc_long_put["strike"])
+        _flc_lc_k  = float(_flc_long_call["strike"])
+
+        _flc_put_credit   = round(float(_flc_short_put["bid"]) - float(_flc_long_put["ask"]), 3)
+        _flc_call_debit   = round(float(_flc_long_call["ask"]), 3)
+        _flc_net_cost     = round(_flc_call_debit - _flc_put_credit, 3)   # positive = net debit
+        _flc_is_credit    = _flc_net_cost < 0
+        _flc_put_width    = round(_flc_sp_k - _flc_lp_k, 2)
+
+        # max_loss at stock <= long_put: put spread at full loss, call worthless
+        _flc_max_loss  = round(_flc_put_width + _flc_net_cost, 3)
+        # max_profit unlimited — the long call is uncapped
+        # lower BE: stock enters the put spread zone
+        _flc_lower_be  = round(_flc_sp_k + _flc_net_cost, 2)   # = sp_k − net_credit
+        # upper BE: call covers net_cost (only if net debit; net credit means already above BE at call strike)
+        _flc_upper_be  = round(_flc_lc_k + max(_flc_net_cost, 0), 2)
+
+        _flc_meets_profit, _flc_profit_msg = True, "unlimited profit potential"
+        _flc_meets_loss,   _flc_loss_msg   = loss_note(_flc_max_loss, width_target)
+        _flc_fits_cap = bool(_flc_max_loss <= rules.MAX_LOSS_PER_TRADE)
+
+        # POP ≈ prob stock ends above the put credit spread zone ≈ 1 - short_put_delta
+        _flc_pop = round((1.0 - abs(float(_flc_short_put.get("delta") or 0))) * 100, 1)
+        _flc_ev  = None   # unlimited upside makes simple EV undefined
+
+        # Greeks: put spread (short_put - long_put, net short) + long call
+        _flc_pd, _flc_pth, _flc_pgm, _flc_pvg = _net_greeks(spot, T, _flc_long_put,  _flc_short_put, "put")
+        _flc_lc_iv = float(_flc_long_call.get("impliedVolatility") or 0)
+        _flc_cd  = round(float(_flc_long_call.get("delta") or 0), 3)
+        _flc_cth = round( bs_theta(spot, _flc_lc_k, T, RISK_FREE_RATE, _flc_lc_iv, "call") if _flc_lc_iv > 0 else 0.0, 4)
+        _flc_cgm = round( bs_gamma(spot, _flc_lc_k, T, RISK_FREE_RATE, _flc_lc_iv)         if _flc_lc_iv > 0 else 0.0, 6)
+        _flc_cvg = round( bs_vega( spot, _flc_lc_k, T, RISK_FREE_RATE, _flc_lc_iv)         if _flc_lc_iv > 0 else 0.0, 4)
+        _flc_nd  = round((_flc_pd or 0) + _flc_cd,  3)
+        _flc_nth = round((_flc_pth or 0) + _flc_cth, 4)
+        _flc_ngm = round((_flc_pgm or 0) + _flc_cgm, 6)
+        _flc_nvg = round((_flc_pvg or 0) + _flc_cvg, 4)
+
+        candidates.append({
+            "structure": "Financed Long Call",
+            "recommended": (
+                _flc_fits_cap and _flc_meets_loss
+                and recommended_structure in ("Put Credit Spread", "Call Debit Spread", "Risk Reversal",
+                                              "Financed Long Call", "Ratio Call Backspread")
+            ),
+            "details": (
+                f"SELL {_flc_sp_k:.0f}P / BUY {_flc_lp_k:.0f}P (put spread credit ~${_flc_put_credit:.2f}) + "
+                f"BUY {_flc_lc_k:.0f}C (call debit ~${_flc_call_debit:.2f}) — "
+                f"net {'credit' if _flc_is_credit else 'debit'} ~${abs(_flc_net_cost):.2f}, "
+                f"max loss ${_flc_max_loss:.2f}/sh, unlimited upside above ${_flc_upper_be:.2f}, "
+                f"lower BE ${_flc_lower_be:.2f}, {_flc_loss_msg}"
+            ),
+            "pop": _flc_pop, "ev": _flc_ev,
+            "max_profit":       None,      # unlimited
+            "meets_min_profit": True,      # unlimited always passes
+            "max_loss":         round(_flc_max_loss, 3),
+            "meets_max_loss":   _flc_meets_loss,
+            "net_delta": _flc_nd, "net_theta": _flc_nth, "net_gamma": _flc_ngm, "net_vega": _flc_nvg,
+            "is_credit": _flc_is_credit,
+            "short_put_strike": _flc_sp_k,
+            "long_put_strike":  _flc_lp_k,
+            "call_strike":      _flc_lc_k,
+            "flc_put_credit":   _flc_put_credit,
+            "flc_call_debit":   _flc_call_debit,
+            "flc_net_cost":     _flc_net_cost,
+            "flc_put_width":    _flc_put_width,
+            "flc_lower_be":     _flc_lower_be,
+            "flc_upper_be":     _flc_upper_be,
+        })
+    else:
+        candidates.append({
+            "structure": "Financed Long Call", "recommended": False,
+            "details": "Could not build Financed Long Call legs (missing or illiquid strikes at target delta)",
+            "pop": None, "ev": None, "max_profit": None, "meets_min_profit": None,
+            "max_loss": None, "meets_max_loss": None,
+        })
+
+    # --- Financed Long Put (call credit spread + standalone long put) ---
+    # Moderate bearish + IV contracting. Mirror of Financed Long Call.
+    # Max loss = call_spread_width + net_cost  (defined, no margin)
+    # Max profit = unlimited downside (the long put has no floor above $0)
+    _flp_short_call = find_short_strike(calls, "call", (p["flp_call_short_delta_lo"], p["flp_call_short_delta_hi"]), min_oi)
+    _flp_long_call  = find_long_strike_for_credit_spread(calls, _flp_short_call, "call", width_target, min_oi) if _flp_short_call is not None else None
+    _flp_long_put   = find_short_strike(puts,  "put",  (p["flp_put_long_delta_lo"],  p["flp_put_long_delta_hi"]),  min_oi)
+    _flp_legs_ok = (
+        _flp_short_call is not None and _flp_long_call is not None and _flp_long_put is not None
+        and _valid_price(_flp_short_call["bid"]) and _valid_price(_flp_long_call["ask"])
+        and _valid_price(_flp_long_put["ask"])
+        and float(_flp_long_call["strike"]) > float(_flp_short_call["strike"])
+    )
+    if _flp_legs_ok:
+        _flp_sc_k = float(_flp_short_call["strike"])
+        _flp_lc_k = float(_flp_long_call["strike"])
+        _flp_lp_k = float(_flp_long_put["strike"])
+
+        _flp_call_credit  = round(float(_flp_short_call["bid"]) - float(_flp_long_call["ask"]), 3)
+        _flp_put_debit    = round(float(_flp_long_put["ask"]), 3)
+        _flp_net_cost     = round(_flp_put_debit - _flp_call_credit, 3)
+        _flp_is_credit    = _flp_net_cost < 0
+        _flp_call_width   = round(_flp_lc_k - _flp_sc_k, 2)
+
+        _flp_max_loss  = round(_flp_call_width + _flp_net_cost, 3)
+        _flp_upper_be  = round(_flp_sc_k - _flp_net_cost, 2)   # = sc_k + net_credit
+        _flp_lower_be  = round(_flp_lp_k - max(_flp_net_cost, 0), 2)  # put BE if net debit
+
+        _flp_meets_loss, _flp_loss_msg = loss_note(_flp_max_loss, width_target)
+        _flp_fits_cap = bool(_flp_max_loss <= rules.MAX_LOSS_PER_TRADE)
+
+        _flp_pop = round((1.0 - abs(float(_flp_short_call.get("delta") or 0))) * 100, 1)
+        _flp_ev  = None
+
+        _flp_cd, _flp_cth, _flp_cgm, _flp_cvg = _net_greeks(spot, T, _flp_long_call, _flp_short_call, "call")
+        _flp_lp_iv = float(_flp_long_put.get("impliedVolatility") or 0)
+        _flp_pd  = round(-float(_flp_long_put.get("delta") or 0), 3)  # long put has negative delta; net positive
+        _flp_pth = round( bs_theta(spot, _flp_lp_k, T, RISK_FREE_RATE, _flp_lp_iv, "put") if _flp_lp_iv > 0 else 0.0, 4)
+        _flp_pgm = round( bs_gamma(spot, _flp_lp_k, T, RISK_FREE_RATE, _flp_lp_iv)         if _flp_lp_iv > 0 else 0.0, 6)
+        _flp_pvg = round( bs_vega( spot, _flp_lp_k, T, RISK_FREE_RATE, _flp_lp_iv)         if _flp_lp_iv > 0 else 0.0, 4)
+        _flp_nd  = round((_flp_cd or 0) + _flp_pd,  3)
+        _flp_nth = round((_flp_cth or 0) + _flp_pth, 4)
+        _flp_ngm = round((_flp_cgm or 0) + _flp_pgm, 6)
+        _flp_nvg = round((_flp_cvg or 0) + _flp_pvg, 4)
+
+        candidates.append({
+            "structure": "Financed Long Put",
+            "recommended": (
+                _flp_fits_cap and _flp_meets_loss
+                and recommended_structure in ("Call Credit Spread", "Put Debit Spread", "Bear Combo",
+                                              "Financed Long Put", "Ratio Put Backspread")
+            ),
+            "details": (
+                f"SELL {_flp_sc_k:.0f}C / BUY {_flp_lc_k:.0f}C (call spread credit ~${_flp_call_credit:.2f}) + "
+                f"BUY {_flp_lp_k:.0f}P (put debit ~${_flp_put_debit:.2f}) — "
+                f"net {'credit' if _flp_is_credit else 'debit'} ~${abs(_flp_net_cost):.2f}, "
+                f"max loss ${_flp_max_loss:.2f}/sh, unlimited downside below ${_flp_lower_be:.2f}, "
+                f"upper BE ${_flp_upper_be:.2f}, {_flp_loss_msg}"
+            ),
+            "pop": _flp_pop, "ev": _flp_ev,
+            "max_profit":       None,
+            "meets_min_profit": True,
+            "max_loss":         round(_flp_max_loss, 3),
+            "meets_max_loss":   _flp_meets_loss,
+            "net_delta": _flp_nd, "net_theta": _flp_nth, "net_gamma": _flp_ngm, "net_vega": _flp_nvg,
+            "is_credit": _flp_is_credit,
+            "short_call_strike": _flp_sc_k,
+            "long_call_strike":  _flp_lc_k,
+            "put_strike":        _flp_lp_k,
+            "flp_call_credit":   _flp_call_credit,
+            "flp_put_debit":     _flp_put_debit,
+            "flp_net_cost":      _flp_net_cost,
+            "flp_call_width":    _flp_call_width,
+            "flp_upper_be":      _flp_upper_be,
+            "flp_lower_be":      _flp_lower_be,
+        })
+    else:
+        candidates.append({
+            "structure": "Financed Long Put", "recommended": False,
+            "details": "Could not build Financed Long Put legs (missing or illiquid strikes at target delta)",
+            "pop": None, "ev": None, "max_profit": None, "meets_min_profit": None,
+            "max_loss": None, "meets_max_loss": None,
+        })
+
+    # --- Ratio Call Backspread (sell 1 near-ATM call, buy 2 OTM calls) ---
+    # Best for: strong bullish + IV expanding. Entered near-zero cost (small credit typical).
+    # Max profit: unlimited (2× long call exposure above the dead zone)
+    # Max loss: dead zone at expiry = short_k < stock < long_k; loss = long_k − short_k − net_credit
+    # Below short_k: net credit kept (all expire worthless) — secondary profit zone
+    _rb_short_call = find_short_strike(calls, "call", (p["rb_short_delta_lo"], p["rb_short_delta_hi"]), min_oi)
+    _rb_long_call  = find_short_strike(calls, "call", (p["rb_long_delta_lo"],  p["rb_long_delta_hi"]),  min_oi)
+    _rb_call_ok = (
+        _rb_short_call is not None and _rb_long_call is not None
+        and _valid_price(_rb_short_call["bid"]) and _valid_price(_rb_long_call["ask"])
+        and float(_rb_long_call["strike"]) > float(_rb_short_call["strike"])
+    )
+    if _rb_call_ok:
+        _rbc_short_k  = float(_rb_short_call["strike"])
+        _rbc_long_k   = float(_rb_long_call["strike"])
+        _rbc_short_cr = float(_rb_short_call["bid"])     # credit received for 1× short
+        _rbc_long_db  = float(_rb_long_call["ask"])      # debit paid per long call
+        # 1 short call, 2 long calls
+        _rbc_net_cost = round(_rbc_long_db * 2 - _rbc_short_cr, 3)  # positive = net debit, negative = net credit
+        _rbc_is_credit = _rbc_net_cost < 0
+        _rbc_spread_w  = round(_rbc_long_k - _rbc_short_k, 2)
+
+        # Max loss = dead-zone width − net_credit (occurs at expiry exactly at long_k)
+        _rbc_max_loss  = round(_rbc_spread_w + _rbc_net_cost, 3)   # = spread_w − net_credit
+        # Upside BE: 2×(spy−long_k) = net_cost → spy = long_k + net_cost/2 (above long_k)
+        _rbc_upper_be  = round(_rbc_long_k + max(_rbc_net_cost, 0) / 2, 2)
+        # Downside BE (credit case): net credit is profit if stock < short_k (no BE needed below)
+        # Between short_k and long_k: loss grows. BE between these = short_k + net_credit
+        _rbc_dead_be   = round(_rbc_short_k - _rbc_net_cost, 2) if _rbc_net_cost < 0 else _rbc_short_k
+
+        _rbc_meets_loss, _rbc_loss_msg = loss_note(_rbc_max_loss, width_target)
+        _rbc_fits_cap = bool(_rbc_max_loss <= rules.MAX_LOSS_PER_TRADE)
+
+        # POP rough: prob stock ends above upper_be OR below short_k (net credit case)
+        _rbc_short_delta = abs(float(_rb_short_call.get("delta") or 0))
+        _rbc_long_delta  = abs(float(_rb_long_call.get("delta") or 0))
+        _rbc_pop = round((_rbc_long_delta + (1 - _rbc_short_delta)) * 50, 1)   # rough average
+
+        # Greeks: net = 2×long - 1×short
+        _rbc_lc_iv = float(_rb_long_call.get("impliedVolatility") or 0)
+        _rbc_sc_iv = float(_rb_short_call.get("impliedVolatility") or 0)
+        _rbc_nd  = round(2 * float(_rb_long_call.get("delta") or 0) - float(_rb_short_call.get("delta") or 0), 3)
+        _rbc_nth = round(2 * (bs_theta(spot, _rbc_long_k, T, RISK_FREE_RATE, _rbc_lc_iv, "call") if _rbc_lc_iv > 0 else 0)
+                       - (bs_theta(spot, _rbc_short_k, T, RISK_FREE_RATE, _rbc_sc_iv, "call") if _rbc_sc_iv > 0 else 0), 4)
+        _rbc_ngm = round(2 * (bs_gamma(spot, _rbc_long_k, T, RISK_FREE_RATE, _rbc_lc_iv) if _rbc_lc_iv > 0 else 0)
+                       - (bs_gamma(spot, _rbc_short_k, T, RISK_FREE_RATE, _rbc_sc_iv) if _rbc_sc_iv > 0 else 0), 6)
+        _rbc_nvg = round(2 * (bs_vega(spot, _rbc_long_k, T, RISK_FREE_RATE, _rbc_lc_iv) if _rbc_lc_iv > 0 else 0)
+                       - (bs_vega(spot, _rbc_short_k, T, RISK_FREE_RATE, _rbc_sc_iv) if _rbc_sc_iv > 0 else 0), 4)
+
+        candidates.append({
+            "structure": "Ratio Call Backspread",
+            "recommended": (
+                _rbc_fits_cap and _rbc_meets_loss and iv_env == "Low"
+                and recommended_structure in ("Put Credit Spread", "Call Debit Spread", "Risk Reversal",
+                                              "Financed Long Call", "Ratio Call Backspread")
+            ),
+            "details": (
+                f"SELL 1× {_rbc_short_k:.0f}C / BUY 2× {_rbc_long_k:.0f}C — "
+                f"net {'credit' if _rbc_is_credit else 'debit'} ~${abs(_rbc_net_cost):.2f}, "
+                f"dead zone max loss ${_rbc_max_loss:.2f}/sh (stock between {_rbc_short_k:.0f}–{_rbc_long_k:.0f}), "
+                f"unlimited profit above ${_rbc_upper_be:.2f}, "
+                f"{'credit kept if stock < ' + str(int(_rbc_short_k)) if _rbc_is_credit else 'loss if stock < ' + str(int(_rbc_dead_be))}, "
+                f"{_rbc_loss_msg}"
+            ),
+            "pop": _rbc_pop, "ev": None,
+            "max_profit":       None,
+            "meets_min_profit": True,
+            "max_loss":         round(_rbc_max_loss, 3),
+            "meets_max_loss":   _rbc_meets_loss,
+            "net_delta": _rbc_nd, "net_theta": _rbc_nth, "net_gamma": _rbc_ngm, "net_vega": _rbc_nvg,
+            "is_credit": _rbc_is_credit,
+            "short_strike": _rbc_short_k,
+            "long_strike":  _rbc_long_k,
+            "rbc_net_cost":  _rbc_net_cost,
+            "rbc_spread_w":  _rbc_spread_w,
+            "rbc_upper_be":  _rbc_upper_be,
+            "rbc_dead_be":   _rbc_dead_be,
+            "rbc_max_loss":  _rbc_max_loss,
+        })
+    else:
+        candidates.append({
+            "structure": "Ratio Call Backspread", "recommended": False,
+            "details": "Could not build Ratio Call Backspread legs (missing or illiquid calls at target delta)",
+            "pop": None, "ev": None, "max_profit": None, "meets_min_profit": None,
+            "max_loss": None, "meets_max_loss": None,
+        })
+
+    # --- Ratio Put Backspread (sell 1 near-ATM put, buy 2 OTM puts) ---
+    # Best for: strong bearish + IV expanding. Mirror of Ratio Call Backspread.
+    # Max profit: unlimited downside (2× long put exposure below the dead zone)
+    # Max loss: dead zone = long_k < stock < short_k; loss = short_k − long_k − net_credit
+    _rb_short_put = find_short_strike(puts, "put", (p["rb_short_delta_lo"], p["rb_short_delta_hi"]), min_oi)
+    _rb_long_put2 = find_short_strike(puts, "put", (p["rb_long_delta_lo"],  p["rb_long_delta_hi"]),  min_oi)
+    _rb_put_ok = (
+        _rb_short_put is not None and _rb_long_put2 is not None
+        and _valid_price(_rb_short_put["bid"]) and _valid_price(_rb_long_put2["ask"])
+        and float(_rb_short_put["strike"]) > float(_rb_long_put2["strike"])
+    )
+    if _rb_put_ok:
+        _rbp_short_k  = float(_rb_short_put["strike"])
+        _rbp_long_k   = float(_rb_long_put2["strike"])
+        _rbp_short_cr = float(_rb_short_put["bid"])
+        _rbp_long_db  = float(_rb_long_put2["ask"])
+        _rbp_net_cost  = round(_rbp_long_db * 2 - _rbp_short_cr, 3)
+        _rbp_is_credit = _rbp_net_cost < 0
+        _rbp_spread_w  = round(_rbp_short_k - _rbp_long_k, 2)
+
+        _rbp_max_loss  = round(_rbp_spread_w + _rbp_net_cost, 3)
+        # Downside BE (below long_k): 2×(long_k−spy) − short_credit = net_cost → spy = long_k − net_cost/2
+        _rbp_lower_be  = round(_rbp_long_k - max(_rbp_net_cost, 0) / 2, 2)
+        _rbp_dead_be   = round(_rbp_short_k + _rbp_net_cost, 2) if _rbp_net_cost < 0 else _rbp_short_k
+
+        _rbp_meets_loss, _rbp_loss_msg = loss_note(_rbp_max_loss, width_target)
+        _rbp_fits_cap = bool(_rbp_max_loss <= rules.MAX_LOSS_PER_TRADE)
+
+        _rbp_short_delta = abs(float(_rb_short_put.get("delta") or 0))
+        _rbp_long_delta  = abs(float(_rb_long_put2.get("delta") or 0))
+        _rbp_pop = round((_rbp_long_delta + (1 - _rbp_short_delta)) * 50, 1)
+
+        _rbp_lp_iv = float(_rb_long_put2.get("impliedVolatility") or 0)
+        _rbp_sp_iv = float(_rb_short_put.get("impliedVolatility") or 0)
+        _rbp_nd  = round(2 * float(_rb_long_put2.get("delta") or 0) - float(_rb_short_put.get("delta") or 0), 3)
+        _rbp_nth = round(2 * (bs_theta(spot, _rbp_long_k,  T, RISK_FREE_RATE, _rbp_lp_iv, "put") if _rbp_lp_iv > 0 else 0)
+                       - (bs_theta(spot, _rbp_short_k, T, RISK_FREE_RATE, _rbp_sp_iv, "put") if _rbp_sp_iv > 0 else 0), 4)
+        _rbp_ngm = round(2 * (bs_gamma(spot, _rbp_long_k,  T, RISK_FREE_RATE, _rbp_lp_iv) if _rbp_lp_iv > 0 else 0)
+                       - (bs_gamma(spot, _rbp_short_k, T, RISK_FREE_RATE, _rbp_sp_iv) if _rbp_sp_iv > 0 else 0), 6)
+        _rbp_nvg = round(2 * (bs_vega(spot, _rbp_long_k,  T, RISK_FREE_RATE, _rbp_lp_iv) if _rbp_lp_iv > 0 else 0)
+                       - (bs_vega(spot, _rbp_short_k, T, RISK_FREE_RATE, _rbp_sp_iv) if _rbp_sp_iv > 0 else 0), 4)
+
+        candidates.append({
+            "structure": "Ratio Put Backspread",
+            "recommended": (
+                _rbp_fits_cap and _rbp_meets_loss and iv_env == "Low"
+                and recommended_structure in ("Call Credit Spread", "Put Debit Spread", "Bear Combo",
+                                              "Financed Long Put", "Ratio Put Backspread")
+            ),
+            "details": (
+                f"SELL 1× {_rbp_short_k:.0f}P / BUY 2× {_rbp_long_k:.0f}P — "
+                f"net {'credit' if _rbp_is_credit else 'debit'} ~${abs(_rbp_net_cost):.2f}, "
+                f"dead zone max loss ${_rbp_max_loss:.2f}/sh (stock between {_rbp_long_k:.0f}–{_rbp_short_k:.0f}), "
+                f"unlimited profit below ${_rbp_lower_be:.2f}, "
+                f"{'credit kept if stock > ' + str(int(_rbp_short_k)) if _rbp_is_credit else 'loss if stock > ' + str(int(_rbp_dead_be))}, "
+                f"{_rbp_loss_msg}"
+            ),
+            "pop": _rbp_pop, "ev": None,
+            "max_profit":       None,
+            "meets_min_profit": True,
+            "max_loss":         round(_rbp_max_loss, 3),
+            "meets_max_loss":   _rbp_meets_loss,
+            "net_delta": _rbp_nd, "net_theta": _rbp_nth, "net_gamma": _rbp_ngm, "net_vega": _rbp_nvg,
+            "is_credit": _rbp_is_credit,
+            "short_strike": _rbp_short_k,
+            "long_strike":  _rbp_long_k,
+            "rbp_net_cost":  _rbp_net_cost,
+            "rbp_spread_w":  _rbp_spread_w,
+            "rbp_lower_be":  _rbp_lower_be,
+            "rbp_dead_be":   _rbp_dead_be,
+            "rbp_max_loss":  _rbp_max_loss,
+        })
+    else:
+        candidates.append({
+            "structure": "Ratio Put Backspread", "recommended": False,
+            "details": "Could not build Ratio Put Backspread legs (missing or illiquid puts at target delta)",
+            "pop": None, "ev": None, "max_profit": None, "meets_min_profit": None,
+            "max_loss": None, "meets_max_loss": None,
+        })
+
+    # --- Long Strangle (buy OTM call + buy OTM put) ---
+    # Pure long-vol / large-move play. Profits from any large directional move OR IV expansion.
+    # Option B: always show candidate (informational even if capital doesn't fit).
+    # Option C: recommend only when total debit fits within MAX_LOSS_PER_TRADE.
+    _ls_call = find_short_strike(calls, "call", (p["ls_call_delta_lo"], p["ls_call_delta_hi"]), min_oi)
+    _ls_put  = find_short_strike(puts,  "put",  (p["ls_put_delta_lo"],  p["ls_put_delta_hi"]),  min_oi)
+    _ls_legs_ok = (
+        _ls_call is not None and _ls_put is not None
+        and _valid_price(_ls_call["ask"]) and _valid_price(_ls_put["ask"])
+        and float(_ls_call["strike"]) > float(_ls_put["strike"])
+    )
+    if _ls_legs_ok:
+        _ls_call_k    = float(_ls_call["strike"])
+        _ls_put_k     = float(_ls_put["strike"])
+        _ls_call_debit = round(float(_ls_call["ask"]), 3)
+        _ls_put_debit  = round(float(_ls_put["ask"]), 3)
+        _ls_total_debit = round(_ls_call_debit + _ls_put_debit, 3)
+
+        _ls_call_be = round(_ls_call_k + _ls_total_debit, 2)
+        _ls_put_be  = round(_ls_put_k  - _ls_total_debit, 2)
+        _ls_fits_cap = bool(_ls_total_debit <= rules.MAX_LOSS_PER_TRADE)
+
+        # POP rough: prob of large move past either breakeven ≈ call_delta + put_delta
+        _ls_pop = round((abs(float(_ls_call.get("delta") or 0)) + abs(float(_ls_put.get("delta") or 0))) * 100, 1)
+
+        _ls_call_iv = float(_ls_call.get("impliedVolatility") or 0)
+        _ls_put_iv  = float(_ls_put.get("impliedVolatility") or 0)
+        _ls_nd  = round(float(_ls_call.get("delta") or 0) + float(_ls_put.get("delta") or 0), 3)
+        _ls_nth = round((bs_theta(spot, _ls_call_k, T, RISK_FREE_RATE, _ls_call_iv, "call") if _ls_call_iv > 0 else 0)
+                      + (bs_theta(spot, _ls_put_k,  T, RISK_FREE_RATE, _ls_put_iv,  "put") if _ls_put_iv  > 0 else 0), 4)
+        _ls_ngm = round((bs_gamma(spot, _ls_call_k, T, RISK_FREE_RATE, _ls_call_iv) if _ls_call_iv > 0 else 0)
+                      + (bs_gamma(spot, _ls_put_k,  T, RISK_FREE_RATE, _ls_put_iv)  if _ls_put_iv  > 0 else 0), 6)
+        _ls_nvg = round((bs_vega(spot, _ls_call_k, T, RISK_FREE_RATE, _ls_call_iv) if _ls_call_iv > 0 else 0)
+                      + (bs_vega(spot, _ls_put_k,  T, RISK_FREE_RATE, _ls_put_iv)  if _ls_put_iv  > 0 else 0), 4)
+
+        _ls_capital_note = (f"fits within ${rules.MAX_LOSS_PER_TRADE:.0f} capital limit"
+                            if _ls_fits_cap else
+                            f"⚠ total debit ${_ls_total_debit:.2f}/sh (${_ls_total_debit * 100:.0f}/contract) exceeds "
+                            f"${rules.MAX_LOSS_PER_TRADE:.0f} risk limit — shown informational only")
+
+        candidates.append({
+            "structure": "Long Strangle",
+            "recommended": (
+                _ls_fits_cap and iv_env == "Low"
+                # show as recommended when IV is low (cheap vol) and a big move is expected
+            ),
+            "details": (
+                f"BUY {_ls_call_k:.0f}C (${_ls_call_debit:.2f}) + BUY {_ls_put_k:.0f}P (${_ls_put_debit:.2f}) — "
+                f"total debit ${_ls_total_debit:.2f}/sh, "
+                f"upper BE ${_ls_call_be:.2f}, lower BE ${_ls_put_be:.2f}, "
+                f"profit if stock moves > ${_ls_total_debit:.2f} from strikes by expiry, "
+                f"{_ls_capital_note}"
+            ),
+            "pop": _ls_pop, "ev": None,
+            "max_profit":       None,
+            "meets_min_profit": True,
+            "max_loss":         round(_ls_total_debit, 3),
+            "meets_max_loss":   _ls_fits_cap,
+            "net_delta": _ls_nd, "net_theta": _ls_nth, "net_gamma": _ls_ngm, "net_vega": _ls_nvg,
+            "is_credit": False,
+            "short_strike": _ls_put_k,    # put strike (lower)
+            "long_strike":  _ls_call_k,   # call strike (upper)
+            "ls_call_k":    _ls_call_k,
+            "ls_put_k":     _ls_put_k,
+            "ls_call_debit": _ls_call_debit,
+            "ls_put_debit":  _ls_put_debit,
+            "ls_total_debit": _ls_total_debit,
+            "ls_call_be":   _ls_call_be,
+            "ls_put_be":    _ls_put_be,
+            "ls_fits_cap":  _ls_fits_cap,
+        })
+    else:
+        candidates.append({
+            "structure": "Long Strangle", "recommended": False,
+            "details": "Could not build Long Strangle legs (missing or illiquid OTM call/put at target delta)",
             "pop": None, "ev": None, "max_profit": None, "meets_min_profit": None,
             "max_loss": None, "meets_max_loss": None,
         })

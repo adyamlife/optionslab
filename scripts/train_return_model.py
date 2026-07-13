@@ -23,10 +23,9 @@ Expected Return Model v2 — significant improvements over v1:
                            factor quality — above 0.5 is considered meaningful in
                            factor research).
 
-  Naive benchmarks         Three baselines on the same test set:
+  Naive benchmarks         Two baselines on the same test set:
                              predict-zero  : always predict 0% return
                              predict-mean  : always predict training-set mean return
-                             predict-last  : use the ticker's most recent known return
                            If the model can't beat predict-zero on RMSE, it has no signal.
 
 Run standalone: python -m scripts.train_return_model
@@ -173,17 +172,28 @@ def build_catboost_matrix(df: pd.DataFrame):
 
 # ── Evaluation helpers ────────────────────────────────────────────────────────
 
+def _safe_corr(fn, a, b):
+    """Call a scipy correlation function; return NaN on constant input or error."""
+    try:
+        r, _ = fn(a, b)
+        return float(r) if np.isfinite(r) else float("nan")
+    except Exception:
+        return float("nan")
+
+
 def _regression_metrics(y_true, y_pred, label=""):
     """Returns dict of RMSE, MAE, R², Pearson r, Spearman rho, Dir.Acc."""
     rmse = float(np.sqrt(mean_squared_error(y_true, y_pred)))
     mae  = float(mean_absolute_error(y_true, y_pred))
     r2   = float(r2_score(y_true, y_pred))
-    pearson,  _ = stats.pearsonr(y_true,  y_pred)
-    spearman, _ = stats.spearmanr(y_true, y_pred)
-    dir_acc = float(np.mean(np.sign(y_pred) == np.sign(y_true)))
+    pearson  = _safe_corr(stats.pearsonr,  y_true, y_pred)
+    spearman = _safe_corr(stats.spearmanr, y_true, y_pred)
+    # Boolean comparison avoids treating exact 0 as a third sign class
+    dir_acc = float(np.mean((y_pred > 0) == (y_true > 0)))
     return {
         "rmse": round(rmse, 5), "mae": round(mae, 5), "r2": round(r2, 5),
-        "pearson": round(float(pearson), 4), "spearman": round(float(spearman), 4),
+        "pearson":  round(pearson,  4) if np.isfinite(pearson)  else None,
+        "spearman": round(spearman, 4) if np.isfinite(spearman) else None,
         "directional_accuracy": round(dir_acc, 4),
     }
 
@@ -199,9 +209,9 @@ def _information_coefficient(y_true, y_pred, dates):
         mask = dates == date
         if mask.sum() < 5:
             continue
-        rho, _ = stats.spearmanr(y_pred[mask], y_true[mask])
-        if not np.isnan(rho):
-            ics.append(float(rho))
+        rho = _safe_corr(stats.spearmanr, y_pred[mask], y_true[mask])
+        if np.isfinite(rho):
+            ics.append(rho)
     if len(ics) < 3:
         return None, None, None
     ic_mean = float(np.mean(ics))
@@ -245,10 +255,25 @@ def train(out_path=_MODEL_PATH) -> dict:
     if train_df.empty or test_df.empty:
         return {"ok": False, "error": f"Split produced empty train/test (cutoff={cutoff})"}
 
+    # Load tuned hyperparams once so CV and final model use the same settings
+    try:
+        from scripts.tune_hyperparams import load_best_params as _lbp
+        _tuned = _lbp("return") or {}
+    except Exception:
+        _tuned = {}
+    _cv_xgb_params = {"n_estimators": 800, "max_depth": 4, "learning_rate": 0.03,
+                      "subsample": 0.8, "colsample_bytree": 0.7, "min_child_weight": 5,
+                      "reg_alpha": 0.1, "reg_lambda": 1.0, "tree_method": "hist",
+                      "random_state": 42, "n_jobs": -1}
+    _cv_xgb_params.update(_tuned)
+
     # ── Walk-forward cross-validation on training portion ─────────────────────
     train_df = train_df.sort_values("date")
     unique_train_dates = np.sort(train_df["date"].unique())
-    tscv = TimeSeriesSplit(n_splits=N_CV_SPLITS)
+    n_splits = min(N_CV_SPLITS, len(unique_train_dates) - 1)
+    if n_splits < 2:
+        return {"ok": False, "error": "Not enough unique dates for walk-forward CV"}
+    tscv = TimeSeriesSplit(n_splits=n_splits)
 
     cv_metrics = []
     best_iterations = []
@@ -268,12 +293,9 @@ def train(out_path=_MODEL_PATH) -> dict:
         y_fv = f_val[TARGET_COL].values
 
         m = XGBRegressor(
-            n_estimators=800, max_depth=4, learning_rate=0.03,
-            subsample=0.8, colsample_bytree=0.7, min_child_weight=5,
-            reg_alpha=0.1, reg_lambda=1.0,
-            objective="reg:squarederror", tree_method="hist",
+            **_cv_xgb_params,
+            objective="reg:squarederror",
             early_stopping_rounds=30, eval_metric="rmse",
-            random_state=42,
         )
         m.fit(X_ft, y_ft, eval_set=[(X_fv, y_fv)], verbose=False)
         best_iterations.append(m.best_iteration + 1)
@@ -293,25 +315,21 @@ def train(out_path=_MODEL_PATH) -> dict:
             cv_summary[key + "_std"]  = round(float(np.std(vals, ddof=1)), 5)
 
     # ── Final model: best n_estimators from CV, trained on full training set ──
-    best_n = int(np.median(best_iterations)) if best_iterations else 200
+    best_n = max(100, int(np.median(best_iterations))) if best_iterations else 200
 
     X_train, dummy_cols = build_feature_matrix(train_df, fit=True)
     X_test,  _          = build_feature_matrix(test_df, dummy_cols=dummy_cols, fit=False)
     y_train = train_df[TARGET_COL].values
     y_test  = test_df[TARGET_COL].values
 
-    try:
-        from scripts.tune_hyperparams import load_best_params as _lbp
-        _tuned = _lbp("return") or {}
-    except Exception:
-        _tuned = {}
     _xgb_params = {"n_estimators": best_n, "max_depth": 4, "learning_rate": 0.03,
                    "subsample": 0.8, "colsample_bytree": 0.7, "min_child_weight": 5,
-                   "reg_alpha": 0.1, "reg_lambda": 1.0}
-    _xgb_params.update(_tuned)
+                   "reg_alpha": 0.1, "reg_lambda": 1.0, "tree_method": "hist",
+                   "random_state": 42, "n_jobs": -1}
+    _xgb_params.update(_tuned)   # same _tuned loaded before the CV loop
     model = XGBRegressor(
         **_xgb_params,
-        objective="reg:squarederror", tree_method="hist", random_state=42,
+        objective="reg:squarederror",
     )
     model.fit(X_train, y_train)
 
@@ -325,21 +343,27 @@ def train(out_path=_MODEL_PATH) -> dict:
     if test_dates is not None and "ticker" in test_df.columns:
         ic_mean, ic_std, icir = _information_coefficient(y_test, y_pred, test_dates)
 
-    pearson_p  = stats.pearsonr(y_test, y_pred).pvalue  if len(y_test) > 2 else None
-    spearman_p = stats.spearmanr(y_test, y_pred).pvalue if len(y_test) > 2 else None
+    try:
+        pearson_p  = float(stats.pearsonr(y_test, y_pred).pvalue)  if len(y_test) > 2 else None
+    except Exception:
+        pearson_p = None
+    try:
+        spearman_p = float(stats.spearmanr(y_test, y_pred).pvalue) if len(y_test) > 2 else None
+    except Exception:
+        spearman_p = None
 
-    # ── Random Forest baseline ────────────────────────────────────────────────
-    rf_baseline = None
+    # ── Random Forest comparison (stronger model comparison, not a naive baseline) ──
+    rf_comparison = None
     try:
         rf = RandomForestRegressor(
             n_estimators=300, max_depth=None, min_samples_leaf=5,
             n_jobs=-1, random_state=42,
         )
         rf.fit(X_train, y_train)
-        rf_pred    = rf.predict(X_test)
-        rf_baseline = _regression_metrics(y_test, rf_pred)
+        rf_pred       = rf.predict(X_test)
+        rf_comparison = _regression_metrics(y_test, rf_pred)
     except Exception as e:
-        rf_baseline = {"error": str(e)}
+        rf_comparison = {"error": str(e)}
 
     # ── CatBoost (native categoricals) ───────────────────────────────────────
     cb_baseline = None
@@ -383,17 +407,23 @@ def train(out_path=_MODEL_PATH) -> dict:
     except Exception as e:
         cb_baseline = {"error": str(e)}
 
+    feature_importances = dict(zip(X_train.columns.tolist(), model.feature_importances_.tolist()))
+
     # ── Save XGBoost artifact ─────────────────────────────────────────────────
     out_path.parent.mkdir(parents=True, exist_ok=True)
     joblib.dump({
-        "model":        model,
-        "dummy_cols":   dummy_cols,       # for inference alignment (replaces feature_encoders)
-        "lag_sources":  LAG_SOURCES,
-        "lag_days":     LAG_DAYS,
-        "trained_on_rows": len(train_df),
-        "test_rows":    len(test_df),
-        "split_cutoff": str(cutoff),
-        "best_n_estimators": best_n,
+        "model":               model,
+        "dummy_cols":          dummy_cols,   # for inference alignment (replaces feature_encoders)
+        "numeric_features":    NUMERIC_FEATURES,
+        "cat_cols":            CAT_COLS,
+        "lag_cols":            LAG_COLS,
+        "lag_sources":         LAG_SOURCES,
+        "lag_days":            LAG_DAYS,
+        "feature_importances": feature_importances,
+        "trained_on_rows":     len(train_df),
+        "test_rows":           len(test_df),
+        "split_cutoff":        str(cutoff),
+        "best_n_estimators":   best_n,
         # Stored so regime_predictor can auto-enable once threshold is reached
         "r2":   round(holdout["r2"],   5),
         "rmse": round(holdout["rmse"], 5),
@@ -403,23 +433,24 @@ def train(out_path=_MODEL_PATH) -> dict:
     }, out_path)
 
     return {
-        "ok":           True,
-        "holdout":      holdout,
-        "naive":        naive,
-        "ic_mean":      ic_mean,
-        "ic_std":       ic_std,
-        "icir":         icir,
-        "pearson_p":    round(float(pearson_p), 4)  if pearson_p  is not None else None,
-        "spearman_p":   round(float(spearman_p), 4) if spearman_p is not None else None,
-        "cv_metrics":   cv_metrics,
-        "cv_summary":   cv_summary,
+        "ok":                True,
+        "holdout":           holdout,
+        "naive":             naive,
+        "ic_mean":           ic_mean,
+        "ic_std":            ic_std,
+        "icir":              icir,
+        "pearson_p":         round(pearson_p, 4)  if pearson_p  is not None else None,
+        "spearman_p":        round(spearman_p, 4) if spearman_p is not None else None,
+        "cv_metrics":        cv_metrics,
+        "cv_summary":        cv_summary,
         "best_n_estimators": best_n,
-        "train_rows":   len(train_df),
-        "test_rows":    len(test_df),
-        "split_cutoff": str(cutoff),
-        "rf_baseline":  rf_baseline,
-        "catboost":     cb_baseline,
-        "model_path":   str(out_path),
+        "train_rows":        len(train_df),
+        "test_rows":         len(test_df),
+        "split_cutoff":      str(cutoff),
+        "feature_importances": feature_importances,
+        "rf_comparison":     rf_comparison,
+        "catboost":          cb_baseline,
+        "model_path":        str(out_path),
         # top-level r2/rmse for regime_predictor config gate compatibility
         "r2":   holdout["r2"],
         "rmse": holdout["rmse"],
@@ -436,7 +467,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     h  = result["holdout"]
-    rf = result.get("rf_baseline") or {}
+    rf = result.get("rf_comparison") or {}
     cb = result.get("catboost") or {}
     n  = result.get("naive") or {}
 
@@ -482,5 +513,11 @@ if __name__ == "__main__":
     if result.get("ic_mean") is not None:
         print(f"\n  IC (cross-sectional): mean={result['ic_mean']:.4f}  std={result['ic_std']:.4f}  ICIR={result['icir']}")
         print(f"  (ICIR >= 0.5 is meaningful for factor research; >= 1.0 is strong)")
+
+    fi = result.get("feature_importances") or {}
+    if fi:
+        print(f"\nTop 10 features:")
+        for f, imp in sorted(fi.items(), key=lambda x: -x[1])[:10]:
+            print(f"  {f}: {imp:.3f}")
 
     print(f"\nModel saved to {result['model_path']}")

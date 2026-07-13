@@ -1,0 +1,5 @@
+/* 403 Access Denied page — all colors from theme.css */
+
+.err-box  { text-align: center; padding: 4rem 2rem; }
+.err-code { font-size: 4rem; font-weight: 800; color: var(--clr-danger-dark); margin: 0; }
+.err-msg  { font-size: 1.1rem; color: var(--clr-border-mid); margin: 0.5rem 0 2rem; }

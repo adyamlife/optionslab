@@ -1,0 +1,434 @@
+{
+  "SPY": [
+    {
+      "date": "2026-07-12",
+      "regime": "Range-bound"
+    }
+  ],
+  "QQQ": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "NVDA": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "MSFT": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "AAPL": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "AVGO": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "AMD": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "TSM": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "MU": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "ARM": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "INTC": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "QCOM": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "TXN": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "KLAC": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "ASML": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "LRCX": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "CDNS": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "SNPS": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "PLTR": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "SNOW": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "MDB": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "ORCL": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "CRM": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "NOW": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "NET": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "TEAM": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "SAP": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "ADBE": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "INTU": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "GOOGL": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "META": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "NFLX": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "SPOT": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "DIS": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "TMUS": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "TSLA": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "AMZN": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "UBER": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "SHOP": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "MELI": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "APP": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "CVNA": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "HD": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "NKE": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "ULTA": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "COST": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "WMT": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "PG": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "LLY": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "NVO": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "ISRG": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "ABBV": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "BSX": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "UNH": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "AMGN": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "V": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "MA": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "BRK-B": [
+    {
+      "date": "2026-07-12",
+      "regime": "Range-bound"
+    }
+  ],
+  "JPM": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "GS": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "MS": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "BAC": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "GE": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "ETN": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "CAT": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "DE": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "VRT": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "HON": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "RTX": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "XOM": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "COP": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ],
+  "CVX": [
+    {
+      "date": "2026-07-12",
+      "regime": "Downtrend"
+    }
+  ]
+}

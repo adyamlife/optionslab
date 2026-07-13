@@ -38,7 +38,27 @@ MIN_PROFIT_AMOUNT = _settings["liquidity"]["min_profit_amount"]
 CALENDAR_MIN_GAP_DAYS = _settings["calendar"]["min_gap_days"]
 CALENDAR_MAX_GAP_DAYS = _settings["calendar"]["max_gap_days"]
 
-JADE_LIZARD_PUT_DELTA_RANGE = (_settings["jade_lizard"]["put_delta_lo"], _settings["jade_lizard"]["put_delta_hi"])
+JADE_LIZARD_PUT_DELTA_RANGE   = (_settings["jade_lizard"]["put_delta_lo"], _settings["jade_lizard"]["put_delta_hi"])
+
+RISK_REVERSAL_PUT_DELTA_RANGE  = (_settings["risk_reversal"]["put_delta_lo"],  _settings["risk_reversal"]["put_delta_hi"])
+RISK_REVERSAL_CALL_DELTA_RANGE = (_settings["risk_reversal"]["call_delta_lo"], _settings["risk_reversal"]["call_delta_hi"])
+
+BEAR_COMBO_PUT_LONG_DELTA_RANGE   = (_settings["bear_combo"]["put_long_delta_lo"],   _settings["bear_combo"]["put_long_delta_hi"])
+BEAR_COMBO_PUT_SHORT_DELTA_RANGE  = (_settings["bear_combo"]["put_short_delta_lo"],  _settings["bear_combo"]["put_short_delta_hi"])
+BEAR_COMBO_CALL_SHORT_DELTA_RANGE = (_settings["bear_combo"]["call_short_delta_lo"], _settings["bear_combo"]["call_short_delta_hi"])
+BEAR_COMBO_CALL_LONG_DELTA_RANGE  = (_settings["bear_combo"]["call_long_delta_lo"],  _settings["bear_combo"]["call_long_delta_hi"])
+
+FLC_PUT_SHORT_DELTA_RANGE  = (_settings["financed_long_call"]["put_short_delta_lo"], _settings["financed_long_call"]["put_short_delta_hi"])
+FLC_CALL_LONG_DELTA_RANGE  = (_settings["financed_long_call"]["call_long_delta_lo"], _settings["financed_long_call"]["call_long_delta_hi"])
+
+FLP_CALL_SHORT_DELTA_RANGE = (_settings["financed_long_put"]["call_short_delta_lo"], _settings["financed_long_put"]["call_short_delta_hi"])
+FLP_PUT_LONG_DELTA_RANGE   = (_settings["financed_long_put"]["put_long_delta_lo"],   _settings["financed_long_put"]["put_long_delta_hi"])
+
+RATIO_BACKSPREAD_SHORT_DELTA_RANGE = (_settings["ratio_backspread"]["short_delta_lo"], _settings["ratio_backspread"]["short_delta_hi"])
+RATIO_BACKSPREAD_LONG_DELTA_RANGE  = (_settings["ratio_backspread"]["long_delta_lo"],  _settings["ratio_backspread"]["long_delta_hi"])
+
+LONG_STRANGLE_CALL_DELTA_RANGE = (_settings["long_strangle"]["call_delta_lo"], _settings["long_strangle"]["call_delta_hi"])
+LONG_STRANGLE_PUT_DELTA_RANGE  = (_settings["long_strangle"]["put_delta_lo"],  _settings["long_strangle"]["put_delta_hi"])
 
 PROFIT_TARGET_PCT  = _settings["management"]["profit_target_pct"]
 STOP_LOSS_MULT     = _settings["management"]["stop_loss_mult"]
