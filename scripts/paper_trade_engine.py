@@ -383,13 +383,14 @@ def _expiry_pnl(trade, ul_price):
 
 # ── Select top-3 (mirrors app.py build_top_trades without AI) ────────────────
 
-def _select_top3(rows, ml_snapshot: dict | None = None):
+def _select_top3(rows, ml_snapshot: dict | None = None, open_positions: list | None = None):
     """Return top-3 enterable candidates using the shared filter/rank pipeline.
 
     ml_snapshot: {ticker: pred_result} from predict_all or ml_cache. When
     provided it is attached to each row as row["ml"] so the confidence gate
     and Kelly sizing have access to pred_dist. When absent the ML gate is
     bypassed (backward compatible).
+    open_positions: list of currently open trade dicts for portfolio risk check.
     """
     from scripts.candidate_ranker import rank_candidates
     from scripts.candidate_provider import kelly_from_pred_dist
@@ -400,10 +401,27 @@ def _select_top3(rows, ml_snapshot: dict | None = None):
             if "ml" not in row or row["ml"] is None:
                 row["ml"] = ml_snapshot.get(row.get("ticker"))
 
-    items = rank_candidates(rows, n=3, quality_floor=0)
+    # Load excluded structures so they are filtered before the n=3 cap
+    try:
+        _pt_excl = _load_settings().get("paper_trades", {}).get("exclude_structures", [])
+        _excluded = {s.strip() for s in _pt_excl}
+    except Exception:
+        _excluded = set()
+
+    # Request extra candidates so excluded ones don't shrink the final list
+    _n_fetch = 3 + len(_excluded) * 2 + 3
+    items = rank_candidates(rows, n=_n_fetch, quality_floor=0, open_positions=open_positions or [], paper_trade=True)
     result = []
     for item in items:
+        if len(result) >= 3:
+            break
         row, c = item["row"], item["candidate"]
+        if c["structure"] in _excluded:
+            log.info(
+                f"[paper_trade] Skipping {row['ticker']} {c['structure']} "
+                f"— listed in paper_trades.exclude_structures"
+            )
+            continue
 
         # Kelly sizing: use candidate POP as p_profit (MC not available here),
         # scaled by pred_dist.confidence
@@ -464,21 +482,31 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
     p         = {**DEFAULT_PARAMS, **(params or {})}
     short_p   = {**p, "min_dte": 7, "max_dte": 10}   # weekly expiry pass
 
-    rows = []
-    for ticker in PAPER_WATCHLIST:
-        # Normal DTE pass
+    def _fetch_ticker_rows(ticker):
+        results = []
         try:
-            rows.append(analyze_ticker(ticker, p))
+            results.append(analyze_ticker(ticker, p))
         except Exception as e:
             log.warning(f"analyze_ticker({ticker}) failed: {e}")
-        # Short DTE pass — separate row so both can rank independently
         try:
             short_row = analyze_ticker(ticker, short_p)
             if short_row.get("dte") and short_row["dte"] <= 10:
                 short_row["_short_dte_pass"] = True
-                rows.append(short_row)
+                results.append(short_row)
         except Exception as e:
             log.warning(f"analyze_ticker({ticker}, short_dte) failed: {e}")
+        return results
+
+    from scripts.data_fetch import warmup_data_sources
+    warmup_data_sources(log)
+
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+    rows = []
+    _max_workers = 2   # reduced to avoid E*TRADE/yfinance rate limiting (test)
+    with ThreadPoolExecutor(max_workers=_max_workers) as _pool:
+        _futures = {_pool.submit(_fetch_ticker_rows, t): t for t in PAPER_WATCHLIST}
+        for _fut in as_completed(_futures):
+            rows.extend(_fut.result())
 
     row_by_ticker = {r["ticker"]: r for r in rows}
 
@@ -496,8 +524,9 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
     except Exception as _mle:
         log.warning(f"ML snapshot unavailable — confidence gate bypassed: {_mle}")
 
-    top3 = _select_top3(rows, ml_snapshot=_ml_snapshot)
-    trades    = load_trades()
+    trades      = load_trades()
+    open_trades = [t for t in trades if t.get("status") == "open"]
+    top3 = _select_top3(rows, ml_snapshot=_ml_snapshot, open_positions=open_trades)
     today_str = date.today().strftime("%Y%m%d")
     seen      = {t["id"] for t in trades}
     new       = []
@@ -525,17 +554,10 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
         # not a balance check, so it belongs before any other per-trade logic)
         _pt_cfg = _s.get("paper_trades", {})
         _margin_ok = bool(_pt_cfg.get("margin_account", False))
-        _exclude_names = [n.strip() for n in _pt_cfg.get("exclude_structures", [])]
         if not _margin_ok and _cst is not None and _cst.requires_margin:
             log.info(
                 f"[paper_trade] Skipping {c['ticker']} {c['structure']} "
                 f"— requires_margin=True but paper_trades.margin_account=false"
-            )
-            continue
-        if c["structure"] in _exclude_names:
-            log.info(
-                f"[paper_trade] Skipping {c['ticker']} {c['structure']} "
-                f"— listed in paper_trades.exclude_structures"
             )
             continue
 
@@ -609,10 +631,13 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
             "kelly_capital":   (c.get("kelly") or {}).get("kelly_capital"),
             "ml_p_win":        (c.get("kelly") or {}).get("p_profit"),
             "ml_confidence":   (c.get("kelly") or {}).get("confidence"),
-            "capital_required": compute_capital_required(c),
-            "capital_type":     _cst.capital_type    if _cst else None,
-            "requires_margin":  _cst.requires_margin if _cst else False,
-            "scan_time":        scan_time,
+            "capital_required":        compute_capital_required(c),
+            "capital_type":            _cst.capital_type    if _cst else None,
+            "requires_margin":         _cst.requires_margin if _cst else False,
+            "scan_time":               scan_time,
+            "ranker_score":            c.get("ranker_score"),
+            "position_size_factor":    c.get("position_size_factor"),
+            "suggested_allocation_pct": c.get("suggested_allocation_pct"),
         }
         trades.append(trade)
         new.append(trade)
@@ -627,6 +652,17 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
             log.warning(f"Training snapshot write failed for {tid}: {_snap_err}")
 
     save_trades(trades)
+
+    # Write snapshots for ALL scanned tickers (not just top 3) so ML training
+    # gets negative examples, scan-time features, and 100x more labeled rows.
+    try:
+        from scripts.training_data_collector import write_scan_all_snapshots
+        opened_tickers = {t["ticker"] for t in new}
+        snap_result = write_scan_all_snapshots(rows, scan_time, opened_tickers)
+        log.info(f"Scan snapshots: {snap_result['saved']} saved, {snap_result['skipped']} skipped")
+    except Exception as _snap_err:
+        log.warning(f"Scan snapshot bulk write failed: {_snap_err}")
+
     return {"ok": True, "date": today_str, "recorded": len(new), "trades": new}
 
 
@@ -642,6 +678,9 @@ def run_evening_check(force=False):
 
     if not force and not is_market_day():
         return {"skipped": True, "reason": "Not a market day"}
+
+    from scripts.data_fetch import warmup_data_sources
+    warmup_data_sources(log)
 
     trades  = load_trades()
     now     = datetime.now(EDT)
@@ -674,44 +713,104 @@ def run_evening_check(force=False):
                 continue
             win = pnl_ps > 0
             trade["status"] = "expired_profit" if win else "expired_loss"
+            _snaps = trade.get("snapshots") or []
+            _unr   = [s["unrealized"] for s in _snaps if s.get("unrealized") is not None]
+            _mae   = round(min(_unr) / ec * 100, 1) if _unr and ec else None
+            _mfe   = round(max(_unr) / ec * 100, 1) if _unr and ec else None
+            try:
+                _days = (date.fromisoformat(now.isoformat()[:10])
+                         - date.fromisoformat(trade["entered_at"][:10])).days
+            except Exception:
+                _days = None
+            _pnl_pct = round(pnl_ps / ec * 100, 1) if ec else None
             trade["exit"] = {
-                "ts":               now.isoformat(),
-                "reason":           "expired",
-                "spread_val":       spread_val,
-                "ul_price":         ul_price,
-                "pnl_per_share":    pnl_ps,
-                "pnl_total":        round(pnl_ps * 100, 2),
-                "pnl_pct_of_max":   round(pnl_ps / ec * 100, 1) if ec else None,
-                "win":              win,
+                "ts":             now.isoformat(),
+                "reason":         "expired",
+                "spread_val":     spread_val,
+                "ul_price":       ul_price,
+                "pnl_per_share":  pnl_ps,
+                "pnl_total":      round(pnl_ps * 100, 2),
+                "pnl_pct_of_max": _pnl_pct,
+                "win":            win,
+                "hit_tp":         win,
+                "hit_sl":         not win,
+                "mae_pct":        _mae,
+                "mfe_pct":        _mfe,
+                "days_held":      _days,
             }
             log.info(f"EXPIRED {trade['id']}: ul={ul_price}  P&L=${trade['exit']['pnl_total']:.2f}  {'WIN' if win else 'LOSS'}")
+            try:
+                from scripts.offline_eval import update_trade_outcome as _uto
+                _ret_pct = round(pnl_ps / ec * 100, 2) if ec else 0.0
+                _uto(trade["id"], _ret_pct, "win" if win else "loss")
+            except Exception as _e:
+                log.debug(f"[eval] outcome record failed: {_e}")
 
         else:
-            # ── Still open: snapshot, and auto-close if 100% of max profit is hit ─
+            # ── Still open: snapshot, check managed-exit rules ────────────────
             mark = _current_mark(trade)
             if mark is None:
                 continue
             is_debit   = trade.get("structure", "") in ("Call Debit Spread", "Put Debit Spread", "Long Strangle")
             entry_cost = ec if trade.get("structure") == "Long Strangle" else (trade.get("max_loss") or 0 if is_debit else ec)
             unrealized = round(mark - entry_cost, 4) if is_debit else round(ec - mark, 4)
-            pnl_pct_of_max = round(unrealized / ec * 100, 1) if ec else None
+            # For debit spreads, pnl_pct_of_max must use max_profit (spread width - debit)
+            # not ec (debit paid) — otherwise the 100% target never triggers correctly.
+            _max_profit_base = (trade.get("max_profit") or ec) if is_debit else ec
+            pnl_pct_of_max = round(unrealized / _max_profit_base * 100, 1) if _max_profit_base else None
+
+            _s = _load_settings()
+            _stop_pct = -(_s["stop_loss_mult"] - 1) * 100   # e.g. -200% for mult=3.0
+
+            def _exit_common(reason: str, hit_tp: bool, hit_sl: bool):
+                _snaps = trade.get("snapshots") or []
+                _unr   = [s["unrealized"] for s in _snaps if s.get("unrealized") is not None]
+                _mae   = round(min(_unr) / ec * 100, 1) if _unr and ec else None
+                _mfe   = round(max(_unr) / ec * 100, 1) if _unr and ec else None
+                try:
+                    _days = (date.fromisoformat(now.isoformat()[:10])
+                             - date.fromisoformat(trade["entered_at"][:10])).days
+                except Exception:
+                    _days = None
+                return {
+                    "ts":             now.isoformat(),
+                    "reason":         reason,
+                    "spread_val":     mark,
+                    "ul_price":       ul_price,
+                    "pnl_per_share":  unrealized,
+                    "pnl_total":      round(unrealized * 100, 2),
+                    "pnl_pct_of_max": pnl_pct_of_max,
+                    "win":            unrealized > 0,
+                    "hit_tp":         hit_tp,
+                    "hit_sl":         hit_sl,
+                    "mae_pct":        _mae,
+                    "mfe_pct":        _mfe,
+                    "days_held":      _days,
+                }
 
             if pnl_pct_of_max is not None and pnl_pct_of_max >= EARLY_CLOSE_PCT:
-                # Max profit achieved before expiry — close now rather than risk
-                # giving back gains while waiting for settlement.
+                # Max profit achieved before expiry
                 trade["status"] = "closed_target"
-                trade["exit"] = {
-                    "ts":               now.isoformat(),
-                    "reason":           "max_profit",
-                    "spread_val":       mark,
-                    "ul_price":         ul_price,
-                    "pnl_per_share":    unrealized,
-                    "pnl_total":        round(unrealized * 100, 2),
-                    "pnl_pct_of_max":   pnl_pct_of_max,
-                    "win":              True,
-                }
+                trade["exit"]   = _exit_common("max_profit", hit_tp=True, hit_sl=False)
                 log.info(f"CLOSED (max profit) {trade['id']}: mark={mark}  "
                          f"P&L=${trade['exit']['pnl_total']:.2f} ({pnl_pct_of_max}% of max)")
+                try:
+                    from scripts.offline_eval import update_trade_outcome as _uto
+                    _uto(trade["id"], float(pnl_pct_of_max or 0), "win")
+                except Exception as _e:
+                    log.debug(f"[eval] outcome record failed: {_e}")
+
+            elif pnl_pct_of_max is not None and pnl_pct_of_max <= _stop_pct:
+                # Stop-loss triggered
+                trade["status"] = "closed_stop"
+                trade["exit"]   = _exit_common("stop_loss", hit_tp=False, hit_sl=True)
+                log.info(f"CLOSED (stop loss) {trade['id']}: mark={mark}  "
+                         f"P&L=${trade['exit']['pnl_total']:.2f} ({pnl_pct_of_max}% of max)")
+                try:
+                    from scripts.offline_eval import update_trade_outcome as _uto
+                    _uto(trade["id"], float(pnl_pct_of_max or 0), "loss")
+                except Exception as _e:
+                    log.debug(f"[eval] outcome record failed: {_e}")
             else:
                 # Check if short strike is now expensive vs vol surface (take-profit signal)
                 iv_flag = None

@@ -7,7 +7,7 @@
 # Organised by GICS sector; top 2 additions per sector marked with (+).
 watchlist = [
   # ── Indices / broad market ────────────────────────────────────────────────
-  "SPY", "QQQ",
+  "SPY", "QQQ", "TQQQ",
 
   # ── Information Technology ───────────────────────────────────────────────
   # Mega-cap / semiconductors
@@ -125,6 +125,28 @@ min_dte = 2
 max_dte = 30
 event_blackout_days = 5  # skip ticker if earnings fall within this many days of expiry
 
+# Preferred DTE targets for expiry selection. pick_expiry() chooses the available
+# expiry whose DTE is closest to one of these targets (nearest target wins).
+# Trades at these tenors have well-understood theta/gamma profiles for the strategies used.
+candidate_dte = [14, 21, 30, 45, 60, 90]
+
+# ── Per-trade quality gates ───────────────────────────────────────────────────
+# Applied in filter_candidates() before composite scoring.
+# Thresholds marked (future) require POP model data — loaded but not enforced yet.
+[min_trade]
+min_expected_roi     = 0.10   # (credit / capital_required) × pop_estimate ≥ this; 0 = disabled
+max_theta_per_day    = 0.05   # |net_theta| per share per day above this → skip (high theta decay risk)
+min_liquidity_score  = 0.60   # composite of OI, bid-ask tightness, rel_volume; 0 = disabled
+max_drawdown_proxy   = 0.95   # max_loss / capital_required above this → skip (nearly total-loss trades)
+
+# The thresholds below are strategy-level metrics — meaningful only over 50+ closed trades.
+# They are stored here for future use by the performance analytics module,
+# NOT as per-trade entry filters (a single trade has no win rate or Sharpe).
+# Revisit once POP model has ≥ 100 labeled rows (estimated August 2026).
+# min_win_rate      = 0.60   # post-hoc: wins / total closed trades
+# min_sharpe        = 0.40   # post-hoc: mean_return / std_return across closed trades
+# min_profit_factor = 1.50   # post-hoc: sum(wins) / sum(losses)
+
 [iv]
 iv_rank_high_threshold = 50  # IV rank >= this -> "High" IV environment
 
@@ -140,20 +162,20 @@ short_delta_hi = 0.25
 min_credit_pct_of_width = 0.25   # credit must be >= 25% of spread width
 
 [debit_spread]
-long_delta_lo = 0.40
-long_delta_hi = 0.55
+long_delta_lo = 0.45
+long_delta_hi = 0.65
 short_delta_lo = 0.15
 short_delta_hi = 0.20
 
 [liquidity]
-min_open_interest = 50       # min OI required on each leg's strike
+min_open_interest = 200       # min OI required on each leg's strike
 min_profit_amount = 1.00     # min max-profit per share ($1.00/sh = $100/contract minimum)
 
 # Calendar / diagonal spread: gap (in days) between the front-month expiry
 # already chosen by min_dte/max_dte and the back-month (long) leg's expiry
 [calendar]
-min_gap_days = 5
-max_gap_days = 45
+min_gap_days = 14
+max_gap_days = 60
 
 # Jade Lizard: naked short put delta range (wider/further OTM than the
 # defined-risk credit spread short leg, since this leg carries downside risk)
@@ -165,10 +187,10 @@ put_delta_hi = 0.30
 # put and call delta ranges are symmetric — put skew in Low IV usually makes
 # the put leg richer, producing a net credit. Requires margin for the short put.
 [risk_reversal]
-put_delta_lo  = 0.20
-put_delta_hi  = 0.30
-call_delta_lo = 0.20
-call_delta_hi = 0.30
+put_delta_lo  = 0.15
+put_delta_hi  = 0.25
+call_delta_lo = 0.15
+call_delta_hi = 0.25
 
 # Bear Combo: bear put debit spread + bear call credit spread (4 legs, fully defined risk).
 # put_long is the closer-to-ATM put bought for bearish directional exposure.
@@ -213,10 +235,10 @@ long_delta_hi  = 0.35
 # Long Strangle: buy OTM call + buy OTM put. Pure long-vol / large-move play.
 # Recommended only when debit fits capital limit; shown informational otherwise.
 [long_strangle]
-call_delta_lo = 0.20
-call_delta_hi = 0.35
-put_delta_lo  = 0.20
-put_delta_hi  = 0.35
+call_delta_lo = 0.15
+call_delta_hi = 0.25
+put_delta_lo  = 0.15
+put_delta_hi  = 0.25
 
 # Paper trade managed-exit rules
 [management]
@@ -295,7 +317,8 @@ bonus_scale = 0.15
 #   regardless of margin setting (e.g. strategies you are not yet comfortable with).
 [paper_trades]
 margin_account     = false
-exclude_structures = []
+exclude_structures = ["Cash Secured Put"]
+min_profit_amount  = 0.50    # paper-trade override: lower gate vs live ($0.50/sh)
 
 [ai]
 primary_provider  = "groq"

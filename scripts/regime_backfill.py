@@ -204,6 +204,65 @@ def _fetch_macro_series(period="2y") -> dict[str, pd.Series]:
     return result
 
 
+def _fetch_cross_asset_series(period: str = "2y") -> dict:
+    """
+    Cross-asset context series fetched once per full backfill.
+    Returns dict with date-indexed pd.Series:
+      credit_spread_proxy  — HYG / LQD price ratio (higher = tighter spreads = bullish)
+      spx_above_200        — 1 if SPY > 200-day SMA, else 0
+      spy_above_50ma       — 1 if SPY > 50-day SMA, else 0  (shorter-term breadth)
+      bond_vol_proxy       — TLT 20-day realized vol annualized (MOVE index proxy)
+      qqq_rs               — QQQ / SPY ratio (growth vs. value relative strength)
+    """
+    result: dict = {
+        "credit_spread_proxy": None,
+        "spx_above_200":       None,
+        "spy_above_50ma":      None,
+        "bond_vol_proxy":      None,
+        "qqq_rs":              None,
+    }
+    try:
+        data = yf.download(["HYG", "LQD", "SPY", "TLT", "QQQ"], period=period,
+                           auto_adjust=True, progress=False)
+        close = data["Close"] if "Close" in data.columns else data
+
+        def _s(sym):
+            try:
+                s = close[sym].dropna()
+                s.index = s.index.date
+                return s
+            except Exception:
+                return None
+
+        hyg = _s("HYG")
+        lqd = _s("LQD")
+        spy = _s("SPY")
+        tlt = _s("TLT")
+        qqq = _s("QQQ")
+
+        if hyg is not None and lqd is not None:
+            lqd_al = lqd.reindex(hyg.index).ffill()
+            result["credit_spread_proxy"] = (hyg / lqd_al.replace(0, np.nan)).round(4)
+
+        if spy is not None:
+            ma200 = spy.rolling(200, min_periods=100).mean()
+            result["spx_above_200"] = (spy > ma200).astype(float)
+            result["spx_above_200"].index = spy.index
+            ma50 = spy.rolling(50, min_periods=25).mean()
+            result["spy_above_50ma"] = (spy > ma50).astype(float)
+
+        if tlt is not None:
+            log_rets = np.log(tlt / tlt.shift(1))
+            result["bond_vol_proxy"] = log_rets.rolling(20, min_periods=10).std() * np.sqrt(252)
+
+        if qqq is not None and spy is not None:
+            spy_al = spy.reindex(qqq.index).ffill()
+            result["qqq_rs"] = (qqq / spy_al.replace(0, np.nan)).round(4)
+    except Exception:
+        pass
+    return result
+
+
 def _earnings_series(ticker: str, dates) -> np.ndarray:
     """1.0 if a known earnings date falls within the next FORWARD_DAYS trading
     days (~14 calendar days) from each row's date. Uses yfinance earnings_dates
@@ -340,7 +399,8 @@ def _sector_etf_for(ticker: str) -> str | None:
 
 def build_ticker_features(ticker: str, period="2y", vix_close: pd.Series = None, spy_close: pd.Series = None,
                            qqq_close: pd.Series = None, iwm_close: pd.Series = None,
-                           macro_series: dict | None = None) -> pd.DataFrame:
+                           macro_series: dict | None = None,
+                           cross_asset: dict | None = None) -> pd.DataFrame:
     """One row per trading day: features as of that day + the forward-looking
     regime label (requires FORWARD_DAYS of future data, so the most recent
     FORWARD_DAYS rows are unlabeled and dropped)."""
@@ -489,19 +549,51 @@ def build_ticker_features(ticker: str, period="2y", vix_close: pd.Series = None,
         "max_pain_strike":  np.nan,
         "oi_concentration": np.nan,
         "wings_iv_ratio":   np.nan,
+        # Cross-asset context (fetched once per full backfill run)
+        "credit_spread_proxy": (
+            pd.Series(dates).map(cross_asset["credit_spread_proxy"].to_dict()).values
+            if cross_asset and cross_asset.get("credit_spread_proxy") is not None else np.nan
+        ),
+        "spx_above_200": (
+            pd.Series(dates).map(cross_asset["spx_above_200"].to_dict()).values
+            if cross_asset and cross_asset.get("spx_above_200") is not None else np.nan
+        ),
+        "spy_above_50ma": (
+            pd.Series(dates).map(cross_asset["spy_above_50ma"].to_dict()).values
+            if cross_asset and cross_asset.get("spy_above_50ma") is not None else np.nan
+        ),
+        "bond_vol_proxy": (
+            pd.Series(dates).map(cross_asset["bond_vol_proxy"].to_dict()).values
+            if cross_asset and cross_asset.get("bond_vol_proxy") is not None else np.nan
+        ),
+        "qqq_rs": (
+            pd.Series(dates).map(cross_asset["qqq_rs"].to_dict()).values
+            if cross_asset and cross_asset.get("qqq_rs") is not None else np.nan
+        ),
     })
 
     future_close = close.shift(-FORWARD_DAYS)
     fwd_return = (future_close - close) / close
-    band = rules.TREND_BAND_PCT
-    label = np.select(
-        [fwd_return > band, fwd_return < -band],
-        ["Uptrend", "Downtrend"],
-        default="Range-bound",
+    # 4-class regime labels for options strategy selection.
+    # NOTE: TREND_BAND_PCT (0.5%) is the SMA trend detection threshold — far too
+    # small for 10-day forward return classification (93% of rows would be Trending).
+    # Use a separate 5% threshold calibrated to 10-day price movement distributions.
+    _TREND_RETURN_THRESHOLD = 0.05   # |10-day return| > 5% → Trending (~35-45% of rows)
+    #   Trending        — large directional move (|return| > 5%)
+    #   High-vol-breakout — non-trending but chaotic (forward HV > 28% annualized)
+    #   Low-vol-squeeze   — non-trending and calm (forward HV < 15% annualized)
+    #   Mean-reverting    — oscillating, moderate vol
+    _fhv = _forward_realized_vol_series(close).values
+    _abs_ret = np.abs(fwd_return.values)
+    label = np.where(
+        _abs_ret > _TREND_RETURN_THRESHOLD, "Trending",
+        np.where(_fhv > 0.28,              "High-vol-breakout",
+        np.where(_fhv < 0.15,              "Low-vol-squeeze",
+                                           "Mean-reverting"))
     )
     df["forward_return"] = fwd_return.values
     df["regime_label"] = label
-    df["forward_hv"] = _forward_realized_vol_series(close).values
+    df["forward_hv"] = _fhv
     df["forward_iv_rank"] = _fwd_iv_rank_arr
     df["iv_expanding"] = _iv_expanding_arr
     df["labeled"] = True  # full backfill only ever keeps rows with a real forward label
@@ -515,13 +607,14 @@ def build_ticker_features(ticker: str, period="2y", vix_close: pd.Series = None,
 def build_regime_dataset(period="2y", out_path=None) -> dict:
     from scripts.db import connect, TABLE
     vix_close, spy_close, qqq_close, iwm_close = _fetch_market_context(period)
-    macro_series = _fetch_macro_series(period)
+    macro_series  = _fetch_macro_series(period)
+    cross_asset   = _fetch_cross_asset_series(period)
     frames, errors = [], []
     for ticker in backfill_tickers():
         try:
             df = build_ticker_features(ticker, period=period, vix_close=vix_close, spy_close=spy_close,
                                        qqq_close=qqq_close, iwm_close=iwm_close,
-                                       macro_series=macro_series)
+                                       macro_series=macro_series, cross_asset=cross_asset)
             if not df.empty:
                 frames.append(df)
         except Exception as e:
@@ -533,11 +626,11 @@ def build_regime_dataset(period="2y", out_path=None) -> dict:
     full = pd.concat(frames, ignore_index=True)
     with connect() as con:
         con.execute(f"DROP TABLE IF EXISTS {TABLE}_new")
-        con.register("full", full)
-        con.execute(f"CREATE TABLE {TABLE}_new AS SELECT * FROM full")
-        con.execute(f"CREATE INDEX IF NOT EXISTS idx_ticker_date_new ON {TABLE}_new (ticker, date)")
+        con.register("backfill_df", full)
+        con.execute(f"CREATE TABLE {TABLE}_new AS SELECT * FROM backfill_df")
         con.execute(f"DROP TABLE IF EXISTS {TABLE}")
         con.execute(f"ALTER TABLE {TABLE}_new RENAME TO {TABLE}")
+        con.execute(f"CREATE INDEX IF NOT EXISTS idx_ticker_date ON {TABLE} (ticker, date)")
         con.commit()
     return {
         "ok": True,
@@ -590,7 +683,8 @@ def _garch_live_vol(ticker: str, hist: pd.DataFrame) -> float | None:
 
 def _build_today_row(ticker: str, lookback="6mo", vix_close: pd.Series = None, spy_close: pd.Series = None,
                      qqq_close: pd.Series = None, iwm_close: pd.Series = None,
-                     vix_ctx: dict | None = None, macro_ctx: dict | None = None) -> dict | None:
+                     vix_ctx: dict | None = None, macro_ctx: dict | None = None,
+                     cross_asset: dict | None = None) -> dict | None:
     """One unlabeled feature row for today. lookback=6mo gives enough
     history for SMA_LONG/ADX warmup without re-pulling the full 2yr."""
     hist = yf.Ticker(ticker).history(period=lookback)
@@ -723,7 +817,7 @@ def _build_today_row(ticker: str, lookback="6mo", vix_close: pd.Series = None, s
                 otm = _get_otm_pcr(calls, puts, spot)
                 if otm:
                     otm_pcr_today = otm["otm_pcr"]
-                back_exp = pick_back_expiry(tkr_obj, front_exp)
+                back_exp, _ = pick_back_expiry(tkr_obj, front_exp)
                 if back_exp:
                     back_calls, back_puts = get_option_chain(tkr_obj, back_exp, spot=spot)
                     if back_calls is not None and not back_calls.empty:
@@ -781,6 +875,27 @@ def _build_today_row(ticker: str, lookback="6mo", vix_close: pd.Series = None, s
         "max_pain_strike":  chain_features.get("max_pain_strike"),
         "oi_concentration": chain_features.get("oi_concentration"),
         "wings_iv_ratio":   chain_features.get("wings_iv_ratio"),
+        # Cross-asset context (passed from caller; look up today's value)
+        "credit_spread_proxy": (
+            cross_asset["credit_spread_proxy"].get(today_date)
+            if cross_asset and cross_asset.get("credit_spread_proxy") is not None else None
+        ),
+        "spx_above_200": (
+            cross_asset["spx_above_200"].get(today_date)
+            if cross_asset and cross_asset.get("spx_above_200") is not None else None
+        ),
+        "spy_above_50ma": (
+            cross_asset["spy_above_50ma"].get(today_date)
+            if cross_asset and cross_asset.get("spy_above_50ma") is not None else None
+        ),
+        "bond_vol_proxy": (
+            cross_asset["bond_vol_proxy"].get(today_date)
+            if cross_asset and cross_asset.get("bond_vol_proxy") is not None else None
+        ),
+        "qqq_rs": (
+            cross_asset["qqq_rs"].get(today_date)
+            if cross_asset and cross_asset.get("qqq_rs") is not None else None
+        ),
         # Tier 5 — macro context (market-wide, passed from caller)
         "yield_10y":      macro_ctx.get("yield_10y"),
         "yield_3m":       macro_ctx.get("yield_3m"),
@@ -811,6 +926,7 @@ def update_regime_dataset(out_path=None) -> dict:
         existing_dates = set()
 
     vix_close, spy_close, qqq_close, iwm_close = _fetch_market_context("6mo")
+    cross_asset = _fetch_cross_asset_series("6mo")
     try:
         from scripts.data_fetch import get_vix_context as _get_vix_ctx
         vix_ctx = _get_vix_ctx()
@@ -826,7 +942,8 @@ def update_regime_dataset(out_path=None) -> dict:
         try:
             row = _build_today_row(ticker, vix_close=vix_close, spy_close=spy_close,
                                    qqq_close=qqq_close, iwm_close=iwm_close,
-                                   vix_ctx=vix_ctx, macro_ctx=macro_ctx)
+                                   vix_ctx=vix_ctx, macro_ctx=macro_ctx,
+                                   cross_asset=cross_asset)
             if row is None:
                 continue
             if (ticker, str(row["date"])) in existing_dates:
@@ -904,12 +1021,19 @@ def label_pending_regime_rows(out_path=None) -> dict:
             continue  # stale/illiquid ticker gap — leave pending rather than mislabel
         future_close = float(future_closes.iloc[FORWARD_DAYS - 1])
         fwd_return = (future_close - row["close"]) / row["close"]
-        regime_label = (
-            "Uptrend" if fwd_return > band else "Downtrend" if fwd_return < -band else "Range-bound"
-        )
         price_seq = np.array([row["close"]] + future_closes.iloc[:FORWARD_DAYS].tolist())
         log_rets = np.diff(np.log(price_seq))
         forward_hv = float(np.std(log_rets) * np.sqrt(252))
+        # 4-class labels (mirrors build_ticker_features label logic)
+        # Use 5% threshold — same as _TREND_RETURN_THRESHOLD in build_ticker_features
+        if abs(fwd_return) > 0.05:
+            regime_label = "Trending"
+        elif forward_hv > 0.28:
+            regime_label = "High-vol-breakout"
+        elif forward_hv < 0.15:
+            regime_label = "Low-vol-squeeze"
+        else:
+            regime_label = "Mean-reverting"
 
         df.loc[idx, "forward_return"] = fwd_return
         df.loc[idx, "regime_label"] = regime_label
@@ -920,6 +1044,72 @@ def label_pending_regime_rows(out_path=None) -> dict:
     if labeled_count > 0:
         upsert_df(df[df["labeled"].astype(bool)].copy())
     return {"ok": True, "labeled": labeled_count, "total_rows": len(df)}
+
+
+def build_hmm_labels(df: pd.DataFrame, n_states: int = 3) -> pd.Series:
+    """
+    Fit GaussianHMM on (log_return, hv20, vix_close) and map hidden states to
+    Bull / Bear / Sideways based on each state's mean forward return.
+
+    Alternative to the SMA-based regime_label — HMM learns data-driven market
+    regimes without hand-crafted SMA thresholds. Call this after build_ticker_features()
+    on a combined DataFrame; the resulting series can be stored as `hmm_label`.
+
+    Returns pd.Series of strings ("Bull"/"Bear"/"Sideways") indexed by df.index.
+    Falls back to regime_label if hmmlearn is not installed.
+    """
+    try:
+        from hmmlearn.hmm import GaussianHMM
+    except ImportError:
+        import warnings
+        warnings.warn("hmmlearn not installed — pip install hmmlearn. Falling back to regime_label.")
+        return df.get("regime_label", pd.Series(["unknown"] * len(df), index=df.index))
+
+    df = df.copy()
+    df["date"] = pd.to_datetime(df["date"])
+    df = df.sort_values("date")
+
+    has_return = "forward_return" in df.columns and df["forward_return"].notna().any()
+    cols_needed = ["hv20", "vix_close"]
+    if has_return:
+        df["_log_ret"] = np.log1p(
+            pd.to_numeric(df["forward_return"], errors="coerce").clip(-0.5, 0.5)
+        )
+        cols_needed = ["_log_ret"] + cols_needed
+
+    X_raw = pd.DataFrame({
+        c: pd.to_numeric(df[c], errors="coerce") for c in cols_needed if c in df.columns
+    }).fillna(method="ffill").fillna(0).values
+
+    X_scaled = (X_raw - X_raw.mean(axis=0)) / (X_raw.std(axis=0) + 1e-8)
+
+    try:
+        hmm = GaussianHMM(n_components=n_states, covariance_type="full",
+                          n_iter=100, random_state=42)
+        hmm.fit(X_scaled)
+        states = hmm.predict(X_scaled)
+    except Exception as e:
+        import warnings
+        warnings.warn(f"GaussianHMM fit failed: {e}. Returning regime_label.")
+        return df.get("regime_label", pd.Series(["unknown"] * len(df), index=df.index))
+
+    if has_return:
+        fwd = pd.to_numeric(df["forward_return"], errors="coerce").values
+        mean_returns = {s: float(fwd[states == s].mean()) for s in range(n_states) if (states == s).any()}
+    else:
+        # Without returns, use HV20 proxy: lowest vol = Bull, highest = Bear
+        hv20 = pd.to_numeric(df["hv20"], errors="coerce").values
+        mean_returns = {s: -float(hv20[states == s].mean()) for s in range(n_states) if (states == s).any()}
+
+    sorted_states = sorted(mean_returns.keys(), key=lambda s: mean_returns[s])
+    names = ["Bear", "Sideways", "Bull"] if n_states == 3 else \
+            ["Bear"] + [f"State{i}" for i in range(1, n_states - 1)] + ["Bull"]
+    state_map = {s: names[i] for i, s in enumerate(sorted_states)}
+
+    result = pd.Series([state_map.get(s, "unknown") for s in states], index=df.index)
+    if "_log_ret" in df.columns:
+        pass  # temp column on local copy, no cleanup needed
+    return result
 
 
 if __name__ == "__main__":

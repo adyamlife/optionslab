@@ -9,6 +9,7 @@ Main table: regime_training  (one row per ticker per trading day)
 """
 from pathlib import Path
 import duckdb
+import json as _json_mod
 import pandas as pd
 
 _ROOT    = Path(__file__).resolve().parent.parent
@@ -159,6 +160,24 @@ CREATE TABLE IF NOT EXISTS {SNAPSHOTS_TABLE} (
     dollar_index     DOUBLE,
     fed_within_dte   DOUBLE,
     cpi_within_dte   DOUBLE,
+    ppi_days_away    DOUBLE,
+    ppi_within_dte   DOUBLE,
+    jobs_days_away   DOUBLE,
+    jobs_within_dte  DOUBLE,
+    days_to_opex     DOUBLE,
+    opex_within_dte  DOUBLE,
+    is_opex_week     DOUBLE,
+    is_monthly_opex  DOUBLE,
+    is_quarterly_opex DOUBLE,
+    iv_pct_rank      DOUBLE,
+    gamma_pct_rank   DOUBLE,
+    volume_pct_rank  DOUBLE,
+    momentum_pct_rank DOUBLE,
+    oi_pct_rank      DOUBLE,
+    forward_1d       DOUBLE,
+    forward_3d       DOUBLE,
+    forward_5d       DOUBLE,
+    future_hv5d      DOUBLE,
     candidate        JSON,
     news_headlines   JSON,
     labeled          BOOLEAN,
@@ -166,10 +185,22 @@ CREATE TABLE IF NOT EXISTS {SNAPSHOTS_TABLE} (
     labeled_at       VARCHAR,
     source           VARCHAR,
     paper_trade_id   VARCHAR,
-    ml_meta_score    DOUBLE,
-    ml_p_win         DOUBLE,
-    ml_confidence    DOUBLE,
-    garch_vol_at_entry DOUBLE
+    ml_meta_score      DOUBLE,
+    ml_p_win           DOUBLE,
+    ml_confidence      DOUBLE,
+    ml_ranker_score    DOUBLE,
+    ml_return_score    DOUBLE,
+    ml_anomaly_score   DOUBLE,
+    ml_composite_score DOUBLE,
+    ml_confidence_tier VARCHAR,
+    ml_expected_vol    DOUBLE,
+    ml_iv_expanding    DOUBLE,
+    ml_p_return_gt10   DOUBLE,
+    ml_p_up            DOUBLE,
+    ml_regime          VARCHAR,
+    garch_vol_at_entry DOUBLE,
+    call_vol           BIGINT,
+    put_vol            BIGINT
 )
 """
 
@@ -328,12 +359,45 @@ def ensure_snapshot_tables() -> None:
         con.execute(f"CREATE INDEX IF NOT EXISTS idx_chain_ticker ON {CHAIN_TABLE} (ticker, collected_at)")
         # Migrate existing tables that pre-date these columns
         for col, typ in [
-            ("source",             "VARCHAR"),
-            ("paper_trade_id",     "VARCHAR"),
-            ("ml_meta_score",      "DOUBLE"),
-            ("ml_p_win",           "DOUBLE"),
-            ("ml_confidence",      "DOUBLE"),
-            ("garch_vol_at_entry", "DOUBLE"),
+            ("source",              "VARCHAR"),
+            ("paper_trade_id",      "VARCHAR"),
+            ("ml_meta_score",       "DOUBLE"),
+            ("ml_p_win",            "DOUBLE"),
+            ("ml_confidence",       "DOUBLE"),
+            ("ml_ranker_score",     "DOUBLE"),
+            ("ml_return_score",     "DOUBLE"),
+            ("ml_anomaly_score",    "DOUBLE"),
+            ("ml_composite_score",  "DOUBLE"),
+            ("ml_confidence_tier",  "VARCHAR"),
+            ("ml_expected_vol",     "DOUBLE"),
+            ("ml_iv_expanding",     "DOUBLE"),
+            ("ml_p_return_gt10",    "DOUBLE"),
+            ("ml_p_up",             "DOUBLE"),
+            ("ml_regime",           "VARCHAR"),
+            ("garch_vol_at_entry",  "DOUBLE"),
+            ("call_vol",            "BIGINT"),
+            ("put_vol",             "BIGINT"),
+            # #9 Event calendar
+            ("ppi_days_away",       "DOUBLE"),
+            ("ppi_within_dte",      "DOUBLE"),
+            ("jobs_days_away",      "DOUBLE"),
+            ("jobs_within_dte",     "DOUBLE"),
+            ("days_to_opex",        "DOUBLE"),
+            ("opex_within_dte",     "DOUBLE"),
+            ("is_opex_week",        "DOUBLE"),
+            ("is_monthly_opex",     "DOUBLE"),
+            ("is_quarterly_opex",   "DOUBLE"),
+            # #6 Cross-sectional percentile ranks
+            ("iv_pct_rank",         "DOUBLE"),
+            ("gamma_pct_rank",      "DOUBLE"),
+            ("volume_pct_rank",     "DOUBLE"),
+            ("momentum_pct_rank",   "DOUBLE"),
+            ("oi_pct_rank",         "DOUBLE"),
+            # #8 Forward return labels
+            ("forward_1d",          "DOUBLE"),
+            ("forward_3d",          "DOUBLE"),
+            ("forward_5d",          "DOUBLE"),
+            ("future_hv5d",         "DOUBLE"),
         ]:
             try:
                 con.execute(f"ALTER TABLE {SNAPSHOTS_TABLE} ADD COLUMN {col} {typ}")
@@ -343,14 +407,28 @@ def ensure_snapshot_tables() -> None:
     _snapshot_tables_ready = True
 
 
+class _NumpyEncoder(_json_mod.JSONEncoder):
+    """Coerce numpy scalars (bool_, int64, float32, …) to native Python types.
+    numpy.bool_ is not a subclass of Python bool, so the default encoder rejects it.
+    All numpy scalars expose .item() which returns the equivalent native type."""
+    def default(self, obj):
+        if hasattr(obj, "item"):   # numpy scalar
+            return obj.item()
+        return super().default(obj)
+
+
+def _safe_dumps(obj) -> str:
+    return _json_mod.dumps(obj, cls=_NumpyEncoder)
+
+
 def insert_snapshot(record: dict) -> None:
     """Insert one training snapshot row. JSON fields serialized automatically."""
     import json as _json
     ensure_snapshot_tables()
     r = dict(record)
-    r["candidate"]      = _json.dumps(r.get("candidate"))
-    r["news_headlines"] = _json.dumps(r.get("news_headlines") or [])
-    r["outcome"]        = _json.dumps(r.get("outcome"))
+    r["candidate"]      = _safe_dumps(r.get("candidate"))
+    r["news_headlines"] = _safe_dumps(r.get("news_headlines") or [])
+    r["outcome"]        = _safe_dumps(r.get("outcome"))
     cols = list(r.keys())
     placeholders = ", ".join("?" * len(cols))
     col_names = ", ".join(cols)
@@ -419,6 +497,45 @@ def update_snapshot_labels(records: list[dict]) -> int:
             updated += 1
         con.commit()
     return updated
+
+
+def update_snapshot_forward_returns(records: list[dict]) -> int:
+    """Update forward_1d/3d/5d and future_hv5d for a list of snapshots by snapshot_id."""
+    if not records:
+        return 0
+    updated = 0
+    with connect() as con:
+        for r in records:
+            con.execute(
+                f"UPDATE {SNAPSHOTS_TABLE} "
+                f"SET forward_1d=?, forward_3d=?, forward_5d=?, future_hv5d=? "
+                f"WHERE snapshot_id=?",
+                [r.get("forward_1d"), r.get("forward_3d"),
+                 r.get("forward_5d"), r.get("future_hv5d"),
+                 r["snapshot_id"]],
+            )
+            updated += 1
+        con.commit()
+    return updated
+
+
+def update_snapshot_xsec_ranks(records: list[dict]) -> int:
+    """Update cross-sectional percentile rank columns for a batch of snapshots."""
+    if not records:
+        return 0
+    with connect() as con:
+        for r in records:
+            con.execute(
+                f"UPDATE {SNAPSHOTS_TABLE} "
+                f"SET iv_pct_rank=?, gamma_pct_rank=?, volume_pct_rank=?, "
+                f"    momentum_pct_rank=?, oi_pct_rank=? "
+                f"WHERE snapshot_id=?",
+                [r.get("iv_pct_rank"), r.get("gamma_pct_rank"),
+                 r.get("volume_pct_rank"), r.get("momentum_pct_rank"),
+                 r.get("oi_pct_rank"), r["snapshot_id"]],
+            )
+        con.commit()
+    return len(records)
 
 
 def load_chain_index_from_db() -> dict:

@@ -9,8 +9,70 @@ from scipy.optimize import brentq
 from scipy.stats import norm
 import yfinance as yf
 
+# Cap concurrent yfinance HTTP calls to avoid 429/rate-limit responses when
+# 10 scanner threads all hit Yahoo Finance simultaneously.
+_YF_CONCURRENCY = threading.Semaphore(5)
+
 _EARNINGS_CACHE_PATH = Path(__file__).parent.parent / "data" / "earnings_cache.json"
-_OI_CACHE_PATH = Path(__file__).parent.parent / "data" / "oi_cache.json"
+_OI_CACHE_PATH       = Path(__file__).parent.parent / "data" / "oi_cache.json"
+_SECRETS_PATH        = Path(__file__).parent.parent / "config" / "secrets.toml"
+
+# ── FRED API ──────────────────────────────────────────────────────────────────
+
+def _fred_api_key() -> str | None:
+    """Read FRED API key from config/secrets.toml [api_keys] fred_api_key."""
+    try:
+        try:
+            import tomllib
+        except ImportError:
+            import tomli as tomllib
+        if not _SECRETS_PATH.exists():
+            return None
+        with open(_SECRETS_PATH, "rb") as f:
+            return tomllib.load(f).get("api_keys", {}).get("fred_api_key")
+    except Exception:
+        return None
+
+
+def get_fred_yields() -> dict:
+    """
+    Fetch daily Treasury yields from FRED (St. Louis Fed).
+
+    Series used:
+      DGS10   — 10-year constant maturity Treasury yield (daily, %)
+      DGS3MO  — 3-month constant maturity Treasury yield (daily, %)
+
+    Returns {yield_10y, yield_3m, yield_curve} or all-None on any failure.
+    Falls back gracefully when API key is absent — caller uses yfinance instead.
+    """
+    result = {"yield_10y": None, "yield_3m": None, "yield_curve": None}
+    key = _fred_api_key()
+    if not key:
+        return result
+    try:
+        import urllib.request
+        base = "https://api.stlouisfed.org/fred/series/observations"
+
+        def _fetch(series_id: str) -> float | None:
+            url = (f"{base}?series_id={series_id}&api_key={key}"
+                   f"&file_type=json&sort_order=desc&limit=5")
+            with urllib.request.urlopen(url, timeout=10) as r:
+                data = json.loads(r.read())
+            for obs in data.get("observations", []):
+                val = obs.get("value", ".")
+                if val != ".":
+                    return round(float(val), 3)
+            return None
+
+        tnx = _fetch("DGS10")
+        irx = _fetch("DGS3MO")
+        result["yield_10y"] = tnx
+        result["yield_3m"]  = irx
+        if tnx is not None and irx is not None:
+            result["yield_curve"] = round(tnx - irx, 3)
+    except Exception:
+        pass
+    return result
 
 # ── Per-thread data-source override ──────────────────────────────────────────
 # Set force_yfinance=True on a thread to make _use_etrade() always return False
@@ -64,43 +126,80 @@ def get_trend(hist, sma_short=20, sma_long=50, band_pct=0.005):
 
 
 def _get_expirations(ticker_obj) -> list[str]:
-    """Return available option expirations — E*TRADE or yfinance per config."""
+    """Return available option expirations — E*TRADE or yfinance per config.
+
+    When E*TRADE is active, intersect with yfinance dates before returning.
+    E*TRADE sometimes includes phantom/adjusted dates that its own chain
+    endpoint rejects with 400 — filtering to dates both sources agree on
+    prevents pick_expiry from selecting a date that neither chain can serve.
+    """
     ticker_str = getattr(ticker_obj, "ticker", None)
+    with _YF_CONCURRENCY:
+        yf_exps = list(ticker_obj.options)      # always fetch; cheap + cached
     if ticker_str and _use_etrade("expirations"):
         try:
             et = _et_module()
             exps = et.get_option_expirations(ticker_str)
+            if exps and yf_exps:
+                yf_set = set(yf_exps)
+                valid = [e for e in exps if e in yf_set]
+                return valid if valid else yf_exps
             if exps:
                 return exps
         except Exception:
             pass
-    return list(ticker_obj.options)
+    return yf_exps
+
+
+def _load_candidate_dte() -> list[int]:
+    """Load candidate_dte targets from settings.toml; fall back to [21, 30, 45]."""
+    try:
+        from pathlib import Path as _P
+        try:
+            import tomllib as _tl
+        except ImportError:
+            import tomli as _tl
+        _s = _tl.loads((_P(__file__).resolve().parent.parent / "config" / "settings.toml").read_text(encoding="utf-8"))
+        v = _s.get("dte", {}).get("candidate_dte")
+        if isinstance(v, list) and v:
+            return sorted(int(x) for x in v)
+    except Exception:
+        pass
+    return [21, 30, 45]
 
 
 def pick_expiry(ticker_obj, min_dte, max_dte):
-    """Pick the expiry closest to the midpoint of the DTE window so we avoid
-    the extremes (2-day options have zero OTM bid; 30-day adds too much theta
-    risk for a small account). Falls back to the nearest available expiry if
-    nothing is within the window."""
-    today = datetime.now().date()
-    target = (min_dte + max_dte) / 2
+    """Pick the available expiry whose DTE is closest to one of the candidate_dte
+    targets (from settings.toml [dte] candidate_dte). Only considers expirations
+    within [min_dte, max_dte]. Falls back to midpoint of window if no target fits,
+    and to the nearest available expiry if nothing is within the window at all."""
+    today      = datetime.now().date()
+    targets    = _load_candidate_dte()
     expirations = _get_expirations(ticker_obj)
+
+    # Filter to the DTE window
     candidates = []
     for exp in expirations:
         dte = (datetime.strptime(exp, "%Y-%m-%d").date() - today).days
         if min_dte <= dte <= max_dte:
             candidates.append((exp, dte))
+
     if candidates:
-        best = min(candidates, key=lambda c: abs(c[1] - target))
+        # Score each available expiry by its distance to the nearest candidate_dte target
+        def _target_dist(dte_val):
+            return min(abs(dte_val - t) for t in targets)
+        best = min(candidates, key=lambda c: _target_dist(c[1]))
         return best
+
     if not expirations:
         return None, None
-    # fallback: closest expiry overall
-    best = min(
-        expirations,
-        key=lambda e: abs((datetime.strptime(e, "%Y-%m-%d").date() - today).days - target),
-    )
-    dte = (datetime.strptime(best, "%Y-%m-%d").date() - today).days
+
+    # Fallback: closest expiry to nearest target, ignoring window
+    def _score(exp):
+        dte = (datetime.strptime(exp, "%Y-%m-%d").date() - today).days
+        return min(abs(dte - t) for t in targets)
+    best = min(expirations, key=_score)
+    dte  = (datetime.strptime(best, "%Y-%m-%d").date() - today).days
     return best, dte
 
 
@@ -224,7 +323,8 @@ def get_option_chain(ticker_obj, expiry, spot=None, dte=None):
         if et_calls is not None:
             return et_calls, et_puts
     # Fallback: yfinance (15–20 min delayed)
-    chain = ticker_obj.option_chain(expiry)
+    with _YF_CONCURRENCY:
+        chain = ticker_obj.option_chain(expiry)
     calls, puts = chain.calls, chain.puts
     if spot is not None and dte is not None:
         calls = _fill_bid_ask(calls, spot, dte, "call")
@@ -981,6 +1081,70 @@ _CPI_DATES_2026 = [
 _ALL_FOMC = sorted(_FOMC_DATES_2025 + _FOMC_DATES_2026)
 _ALL_CPI  = sorted(_CPI_DATES_2025  + _CPI_DATES_2026)
 
+# PPI release dates (BLS schedule — typically released ~1 week after CPI)
+_PPI_DATES_2025 = [
+    "2025-01-14", "2025-02-13", "2025-03-13", "2025-04-11",
+    "2025-05-15", "2025-06-12", "2025-07-15", "2025-08-14",
+    "2025-09-11", "2025-10-16", "2025-11-13", "2025-12-11",
+]
+_PPI_DATES_2026 = [
+    "2026-01-15", "2026-02-12", "2026-03-12", "2026-04-14",
+    "2026-05-14", "2026-06-11", "2026-07-15", "2026-08-13",
+    "2026-09-10", "2026-10-15", "2026-11-12", "2026-12-10",
+]
+# BLS Employment Situation (Jobs Report) — first Friday each month
+_JOBS_DATES_2025 = [
+    "2025-01-10", "2025-02-07", "2025-03-07", "2025-04-04",
+    "2025-05-02", "2025-06-06", "2025-07-03", "2025-08-01",
+    "2025-09-05", "2025-10-03", "2025-11-07", "2025-12-05",
+]
+_JOBS_DATES_2026 = [
+    "2026-01-09", "2026-02-06", "2026-03-06", "2026-04-03",
+    "2026-05-01", "2026-06-05", "2026-07-02", "2026-08-07",
+    "2026-09-04", "2026-10-02", "2026-11-06", "2026-12-04",
+]
+_ALL_PPI  = sorted(_PPI_DATES_2025  + _PPI_DATES_2026)
+_ALL_JOBS = sorted(_JOBS_DATES_2025 + _JOBS_DATES_2026)
+
+# Quarterly OPEX months (standard equity options expiry = 3rd Friday each month;
+# quarterly = March, June, September, December also expire index/futures)
+_OPEX_QUARTERLY_MONTHS = {3, 6, 9, 12}
+
+
+def _third_friday(year: int, month: int):
+    """Return the third Friday of the given month (standard equity OPEX date)."""
+    from datetime import date as _date, timedelta as _td
+    first_day = _date(year, month, 1)
+    days_to_first_friday = (4 - first_day.weekday()) % 7
+    first_friday = first_day + _td(days=days_to_first_friday)
+    return first_friday + _td(weeks=2)
+
+
+def _opex_info(from_date=None) -> dict:
+    """
+    Return context about the next standard equity OPEX (3rd Friday).
+    days_to_opex     : calendar days to next OPEX
+    is_opex_week     : 1 if OPEX falls within 5 calendar days
+    is_monthly_opex  : always 1 (every 3rd Friday is monthly OPEX)
+    is_quarterly_opex: 1 if the OPEX month is March / June / Sep / Dec
+    """
+    from datetime import date as _date
+    today = from_date or _date.today()
+    for month_offset in range(3):
+        y, m = today.year, today.month + month_offset
+        if m > 12:
+            y, m = y + 1, m - 12
+        opex = _third_friday(y, m)
+        days = (opex - today).days
+        if days >= 0:
+            return {
+                "days_to_opex":      days,
+                "is_opex_week":      int(days <= 5),
+                "is_monthly_opex":   1,
+                "is_quarterly_opex": int(m in _OPEX_QUARTERLY_MONTHS),
+            }
+    return {"days_to_opex": None, "is_opex_week": 0, "is_monthly_opex": 0, "is_quarterly_opex": 0}
+
 
 def _days_to_next_event(date_strings: list[str], from_date=None) -> int | None:
     """Return calendar days from `from_date` (default today) to the nearest
@@ -1001,58 +1165,101 @@ def get_macro_context(dte: int | None = None) -> dict:
     all tickers (these signals are market-wide, not ticker-specific).
 
     Returns dict with keys:
-      fed_days_away    : calendar days to next FOMC meeting (None if past last entry)
-      fed_within_dte   : 1 if FOMC falls within `dte` days, else 0 (None if dte not given)
-      cpi_days_away    : calendar days to next CPI release
-      cpi_within_dte   : 1 if CPI release falls within `dte` days, else 0
-      yield_10y        : ^TNX last close (10-year Treasury yield, %)
-      yield_3m         : ^IRX last close (3-month T-bill yield, %)
-      yield_curve      : yield_10y − yield_3m (positive = normal, negative = inverted)
-      dollar_index     : DX-Y.NYB last close
-    All price fields can be None if fetch fails; boolean fields can be None if
+      fed_days_away      : calendar days to next FOMC meeting
+      fed_within_dte     : 1 if FOMC falls within `dte` days, else 0 (None if dte not given)
+      cpi_days_away      : calendar days to next CPI release
+      cpi_within_dte     : 1 if CPI falls within `dte` days, else 0
+      ppi_days_away      : calendar days to next PPI release
+      ppi_within_dte     : 1 if PPI falls within `dte` days, else 0
+      jobs_days_away     : calendar days to next Jobs Report (first Friday each month)
+      jobs_within_dte    : 1 if Jobs Report falls within `dte` days, else 0
+      days_to_opex       : calendar days to next standard equity OPEX (3rd Friday)
+      opex_within_dte    : 1 if OPEX falls within `dte` days, else 0
+      is_opex_week       : 1 if OPEX is within 5 calendar days
+      is_monthly_opex    : always 1 (every 3rd Friday is monthly OPEX)
+      is_quarterly_opex  : 1 if OPEX month is March, June, September, or December
+      yield_10y          : ^TNX last close (10-year Treasury yield, %)
+      yield_3m           : ^IRX last close (3-month T-bill yield, %)
+      yield_curve        : yield_10y − yield_3m (positive = normal, negative = inverted)
+      dollar_index       : DX-Y.NYB last close
+    All price fields can be None if fetch fails; event fields can be None if
     dte is None or days_away is None.
     """
     result = {
-        "fed_days_away":  None,
-        "fed_within_dte": None,
-        "cpi_days_away":  None,
-        "cpi_within_dte": None,
-        "yield_10y":      None,
-        "yield_3m":       None,
-        "yield_curve":    None,
-        "dollar_index":   None,
+        "fed_days_away":       None,
+        "fed_within_dte":      None,
+        "cpi_days_away":       None,
+        "cpi_within_dte":      None,
+        "ppi_days_away":       None,
+        "ppi_within_dte":      None,
+        "jobs_days_away":      None,
+        "jobs_within_dte":     None,
+        "days_to_opex":        None,
+        "opex_within_dte":     None,
+        "is_opex_week":        None,
+        "is_monthly_opex":     None,
+        "is_quarterly_opex":   None,
+        "yield_10y":           None,
+        "yield_3m":            None,
+        "yield_curve":         None,
+        "dollar_index":        None,
     }
 
-    result["fed_days_away"] = _days_to_next_event(_ALL_FOMC)
-    result["cpi_days_away"] = _days_to_next_event(_ALL_CPI)
+    result["fed_days_away"]  = _days_to_next_event(_ALL_FOMC)
+    result["cpi_days_away"]  = _days_to_next_event(_ALL_CPI)
+    result["ppi_days_away"]  = _days_to_next_event(_ALL_PPI)
+    result["jobs_days_away"] = _days_to_next_event(_ALL_JOBS)
+
+    opex = _opex_info()
+    result["days_to_opex"]      = opex["days_to_opex"]
+    result["is_opex_week"]      = opex["is_opex_week"]
+    result["is_monthly_opex"]   = opex["is_monthly_opex"]
+    result["is_quarterly_opex"] = opex["is_quarterly_opex"]
 
     if dte is not None:
         fd = result["fed_days_away"]
         cd = result["cpi_days_away"]
-        result["fed_within_dte"] = int(fd is not None and fd <= dte)
-        result["cpi_within_dte"] = int(cd is not None and cd <= dte)
+        pd_ = result["ppi_days_away"]
+        jd  = result["jobs_days_away"]
+        od  = result["days_to_opex"]
+        result["fed_within_dte"]  = int(fd  is not None and fd  <= dte)
+        result["cpi_within_dte"]  = int(cd  is not None and cd  <= dte)
+        result["ppi_within_dte"]  = int(pd_ is not None and pd_ <= dte)
+        result["jobs_within_dte"] = int(jd  is not None and jd  <= dte)
+        result["opex_within_dte"] = int(od  is not None and od  <= dte)
 
+    # Yields — FRED primary (reliable daily data), yfinance fallback
+    fred = get_fred_yields()
+    if fred["yield_10y"] is not None:
+        result["yield_10y"]  = fred["yield_10y"]
+        result["yield_3m"]   = fred["yield_3m"]
+        result["yield_curve"] = fred["yield_curve"]
+    else:
+        try:
+            data  = yf.download(["^TNX", "^IRX", "DX-Y.NYB"], period="5d",
+                                 auto_adjust=True, progress=False)
+            close = data["Close"] if "Close" in data.columns else data
+
+            def _last(sym):
+                try:
+                    col = close[sym].dropna()
+                    return float(col.iloc[-1]) if not col.empty else None
+                except Exception:
+                    return None
+
+            tnx = _last("^TNX")
+            irx = _last("^IRX")
+            result["yield_10y"]  = round(tnx, 3) if tnx is not None else None
+            result["yield_3m"]   = round(irx, 3) if irx is not None else None
+            if tnx is not None and irx is not None:
+                result["yield_curve"] = round(tnx - irx, 3)
+        except Exception:
+            pass
+
+    # Dollar index always from yfinance (not on FRED)
     try:
-        data = yf.download(["^TNX", "^IRX", "DX-Y.NYB"], period="5d",
-                           auto_adjust=True, progress=False)
-        close = data["Close"] if "Close" in data.columns else data
-
-        def _last(sym):
-            try:
-                col = close[sym].dropna()
-                return float(col.iloc[-1]) if not col.empty else None
-            except Exception:
-                return None
-
-        tnx = _last("^TNX")
-        irx = _last("^IRX")
-        dxy = _last("DX-Y.NYB")
-
-        result["yield_10y"]   = round(tnx, 3) if tnx is not None else None
-        result["yield_3m"]    = round(irx, 3) if irx is not None else None
-        result["dollar_index"] = round(dxy, 3) if dxy is not None else None
-        if tnx is not None and irx is not None:
-            result["yield_curve"] = round(tnx - irx, 3)
+        dxy = yf.Ticker("DX-Y.NYB").fast_info.last_price
+        result["dollar_index"] = round(float(dxy), 3) if dxy else None
     except Exception:
         pass
 
@@ -1213,6 +1420,55 @@ def get_iv_rank_52w(ticker_str, atm_iv):
         return None
 
 
+def get_max_pain(calls, puts) -> float | None:
+    """
+    Max pain strike: the strike where total option buyer losses are maximised
+    (i.e. where the most open interest expires worthless). Acts as a price magnet
+    into expiry — useful for strike selection near expiry and as an OI signal.
+
+    Returns the strike price (float) or None on failure.
+    """
+    try:
+        strikes = sorted(set(calls["strike"].tolist() + puts["strike"].tolist()))
+        if not strikes:
+            return None
+        call_oi = calls.set_index("strike")["openInterest"].fillna(0)
+        put_oi  = puts.set_index("strike")["openInterest"].fillna(0)
+        min_pain, max_pain_strike = None, None
+        for s in strikes:
+            call_pain = sum(max(s - k, 0) * call_oi.get(k, 0) for k in strikes)
+            put_pain  = sum(max(k - s, 0) * put_oi.get(k, 0)  for k in strikes)
+            total = call_pain + put_pain
+            if min_pain is None or total < min_pain:
+                min_pain, max_pain_strike = total, s
+        return float(max_pain_strike) if max_pain_strike is not None else None
+    except Exception:
+        return None
+
+
+def get_oi_concentration(calls, puts, spot, window_pct=0.10) -> float | None:
+    """
+    OI concentration: fraction of total OI sitting within ±window_pct of spot.
+
+    High concentration (>0.5) means most open interest is clustered near ATM —
+    suggests pinning risk and tighter expected move. Low concentration means OI
+    is spread across many strikes — less pinning, larger tail risk.
+
+    Returns float 0–1 or None on failure.
+    """
+    try:
+        lo, hi = spot * (1 - window_pct), spot * (1 + window_pct)
+        all_oi    = pd.concat([calls[["strike", "openInterest"]],
+                               puts[["strike",  "openInterest"]]]).fillna(0)
+        total_oi  = all_oi["openInterest"].sum()
+        if total_oi <= 0:
+            return None
+        near_oi   = all_oi[all_oi["strike"].between(lo, hi)]["openInterest"].sum()
+        return round(float(near_oi / total_oi), 4)
+    except Exception:
+        return None
+
+
 def get_vol_skew(calls, puts, spot):
     """Compare ~25-delta OTM put IV vs ~25-delta OTM call IV to detect skew direction.
 
@@ -1262,6 +1518,11 @@ def compute_chain_features(ticker: str, spot: float | None = None) -> dict:
     _null = {
         "iv_skew_20d": None, "gex_proxy": None, "max_pain_strike": None,
         "oi_concentration": None, "wings_iv_ratio": None,
+        # Option-specific features (available when chain data has sufficient detail)
+        "atm_iv": None,       # IV of the ATM call (or nearest to 50-delta)
+        "atm_delta": None,    # Delta of ATM call (E*TRADE snapshots only)
+        "atm_gamma": None,    # Gamma of ATM call (E*TRADE snapshots only)
+        "front_dte": None,    # Days to expiry of the front expiry in the snapshot
     }
     if not _CHAIN_SNAPSHOT_PATH.exists():
         return _null
@@ -1368,4 +1629,71 @@ def compute_chain_features(ticker: str, spot: float | None = None) -> dict:
     except Exception:
         pass
 
+    # ── Feature 6: atm_iv, atm_delta, atm_gamma ─────────────────────────────
+    # ATM call: nearest to delta=0.50 (E*TRADE) or nearest strike to spot
+    try:
+        atm_call = None
+        cd_with_iv = [s for s in calls if (s.get("iv") or 0) > 0]
+        if cd_with_iv:
+            if any(s.get("delta") is not None for s in cd_with_iv):
+                atm_call = min(
+                    [s for s in cd_with_iv if s.get("delta") is not None],
+                    key=lambda s: abs(abs(s["delta"]) - 0.50),
+                )
+            elif snap_spot:
+                atm_call = min(cd_with_iv, key=lambda s: abs(s["strike"] - snap_spot))
+        if atm_call is not None:
+            result["atm_iv"] = round(float(atm_call["iv"]), 4)
+            if atm_call.get("delta") is not None:
+                result["atm_delta"] = round(float(atm_call["delta"]), 4)
+            if atm_call.get("gamma") is not None:
+                result["atm_gamma"] = round(float(atm_call["gamma"]), 6)
+    except Exception:
+        pass
+
+    # ── Feature 7: front_dte ─────────────────────────────────────────────────
+    # Days from snapshot collection date to the front expiry stored in record
+    try:
+        expiry_str = latest.get("expiry") or latest.get("front_expiry")
+        collected  = (latest.get("collected_at") or "")[:10]
+        if expiry_str and collected:
+            from datetime import date as _date
+            exp_d  = _date.fromisoformat(str(expiry_str)[:10])
+            coll_d = _date.fromisoformat(collected)
+            result["front_dte"] = max(0, (exp_d - coll_d).days)
+    except Exception:
+        pass
+
     return result
+
+
+def warmup_data_sources(log=None) -> None:
+    """
+    Prime yfinance crumb and verify E*TRADE session on the calling thread.
+
+    Call this once at the start of any scheduler job that fetches live market
+    data, BEFORE spawning worker threads.  yfinance's crumb is not thread-safe
+    under concurrent load — priming it here lets all workers reuse a valid
+    crumb.  The E*TRADE call confirms the OAuth session is live so auth
+    failures surface immediately rather than mid-scan.
+    """
+    import logging as _logging
+    _log = log or _logging.getLogger(__name__)
+
+    # yfinance crumb warmup
+    try:
+        import yfinance as _yf
+        _yf.Ticker("SPY").fast_info
+    except Exception as e:
+        _log.warning(f"[warmup] yfinance crumb prime failed: {e}")
+
+    # E*TRADE session warmup
+    try:
+        et = _et_module()
+        if et.is_authenticated():
+            et.get_quote("SPY")
+            _log.info("[warmup] E*TRADE session confirmed live")
+        else:
+            _log.warning("[warmup] E*TRADE not authenticated — option chains will fall back to yfinance")
+    except Exception as e:
+        _log.warning(f"[warmup] E*TRADE session check failed: {e}")

@@ -624,6 +624,17 @@ function _openInfoModal(type, detail) {
         <p class="lp-ml-modal-desc">${desc}</p>
       </div>`).join("");
     body.innerHTML = `<div class="lp-ml-modal-rows">${rowsHtml}</div>`;
+  } else if (type === "metric-group") {
+    const rowsHtml = (detail.rows || []).map(({ label, desc }) => `
+      <div class="lp-ml-modal-row">
+        <div class="lp-ml-modal-header-row">
+          <span class="lp-ml-signal">${label}</span>
+        </div>
+        <p class="lp-ml-modal-desc">${desc}</p>
+      </div>`).join("");
+    body.innerHTML = `<div class="lp-ml-modal-rows">${rowsHtml}</div>`;
+  } else if (type === "metric") {
+    body.innerHTML = `<p class="lp-ml-modal-desc" style="margin:0">${detail.desc || ""}</p>`;
   }
 
   document.getElementById("lp-info-modal").style.display = "flex";

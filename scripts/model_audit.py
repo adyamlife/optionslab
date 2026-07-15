@@ -54,16 +54,24 @@ import joblib
 import numpy as np
 import pandas as pd
 
-# Backward-compat shim: old calibrated artifacts saved before __reduce__ was
-# added to IsotonicCalibrator stored the class under __main__. The fix (adding
-# __reduce__) is already in calibrate_models.py so new artifacts don't need
-# this. The shim only matters when deserialising pre-fix artifacts.
+# Backward-compat shim: models pickled when training scripts ran as __main__
+# store their inner classes under __main__.<ClassName>. When joblib.load() is
+# called from a different __main__ (the Flask app), pickle can't find them.
+# Injecting the classes into __main__ before any load() call fixes this.
 import sys as _sys
 from scripts.calibrate_models import IsotonicCalibrator, _load_isotonic_calibrator  # noqa: F401
+from scripts.train_direction_model   import _BlendedMultiClassifier          # noqa: F401
+from scripts.train_iv_direction_model import _BlendedBinaryClassifier        # noqa: F401
+
 _main = _sys.modules.get("__main__")
-if _main is not None and not hasattr(_main, "IsotonicCalibrator"):
-    _main.IsotonicCalibrator      = IsotonicCalibrator
-    _main._load_isotonic_calibrator = _load_isotonic_calibrator
+if _main is not None:
+    if not hasattr(_main, "IsotonicCalibrator"):
+        _main.IsotonicCalibrator       = IsotonicCalibrator
+        _main._load_isotonic_calibrator = _load_isotonic_calibrator
+    if not hasattr(_main, "_BlendedMultiClassifier"):
+        _main._BlendedMultiClassifier  = _BlendedMultiClassifier
+    if not hasattr(_main, "_BlendedBinaryClassifier"):
+        _main._BlendedBinaryClassifier = _BlendedBinaryClassifier
 
 _ROOT       = Path(__file__).resolve().parent.parent
 _MODELS_DIR = _ROOT / "data" / "models"
@@ -209,11 +217,17 @@ def _brier_multi_arr(proba: np.ndarray, y_true: np.ndarray, n_classes: int) -> f
 # ── Metric bundles ────────────────────────────────────────────────────────────
 
 def _binary_metrics(art_raw: dict, art_cal: dict | None,
-                     X, y_true: np.ndarray) -> dict:
-    """Full calibration metric suite for a binary classifier."""
+                     X, y_true: np.ndarray,
+                     pos_class_idx: int = 1) -> dict:
+    """Full calibration metric suite for a binary (or collapsed multiclass) classifier.
+
+    pos_class_idx: column of predict_proba to use as the positive-class probability.
+    Default 1 for true binary models. Pass 2 for the 3-class direction model
+    (Down=0, Flat=1, Up=2) where Flat rows have already been stripped and y is 0/1.
+    """
     y_true = np.asarray(y_true, dtype=int)
-    p_raw  = art_raw["model"].predict_proba(X)[:, 1]
-    p_cal  = art_cal["model"].predict_proba(X)[:, 1] if art_cal else None
+    p_raw  = art_raw["model"].predict_proba(X)[:, pos_class_idx]
+    p_cal  = art_cal["model"].predict_proba(X)[:, pos_class_idx] if art_cal else None
 
     ece_raw, mce_raw = _ece_mce(y_true, p_raw)
     out = {
@@ -279,14 +293,20 @@ def _multiclass_metrics(art_raw: dict, art_cal: dict | None,
 def _model_info(art_raw: dict, art_cal: dict | None) -> dict:
     """Pull version metadata from artifact dicts for the audit report."""
     return {
-        "training_rows":  art_raw.get("trained_on_rows") or art_raw.get("train_rows"),
-        "test_rows":      art_raw.get("test_rows"),
-        "test_cutoff":    art_raw.get("test_cutoff") or art_raw.get("meta_cutoff"),
-        "val_cutoff":     art_raw.get("val_cutoff"),
-        "accuracy":       art_raw.get("accuracy"),
-        "auc":            art_raw.get("auc"),
-        "calibrated_at":  art_cal.get("calibrated_at") if art_cal else None,
-        "brier_at_training": art_cal.get("brier_before") if art_cal else None,
+        "training_rows": (art_raw.get("trained_on_rows")
+                          or art_raw.get("train_rows")
+                          or art_raw.get("n_train")),
+        "test_rows":     (art_raw.get("test_rows")
+                          or art_raw.get("n_test")),
+        "test_cutoff":   (art_raw.get("test_cutoff")
+                          or art_raw.get("split_cutoff")
+                          or art_raw.get("meta_cutoff")
+                          or art_raw.get("cutoff")),
+        "val_cutoff":    art_raw.get("val_cutoff"),
+        "accuracy":      art_raw.get("accuracy"),
+        "auc":           art_raw.get("auc"),
+        "calibrated_at":     art_cal.get("calibrated_at") if art_cal else None,
+        "brier_at_training": art_cal.get("brier_before")  if art_cal else None,
     }
 
 
@@ -405,13 +425,21 @@ def _audit_direction_classifier() -> dict:
             y      = sub["_direction"].astype(int).values
             return X, y
 
+        # Direction model is 3-class (Down=0 / Flat=1 / Up=2).
+        # _direction_target already strips Flat rows; y is 0=Down, 1=Up.
+        # Use predict_proba[:, 2] (P(Up)) as the binary positive-class signal.
+        _up_idx = art_raw.get("class_names", ["Down", "Flat", "Up"]).index("Up")
+
         df = load_labeled_data()
         if df.empty:
             return {"ok": False, "error": "No labeled data"}
         _, test_df, cutoff = time_based_split(df)
         X_test, y_test     = _make_Xy(test_df)
+        if len(y_test) == 0:
+            return {"ok": False, "error": "Test split empty after dropping Flat rows"}
         training = {"split_cutoff": str(cutoff)[:10],
-                    **_binary_metrics(art_raw, art_cal, X_test, y_test)}
+                    **_binary_metrics(art_raw, art_cal, X_test, y_test,
+                                      pos_class_idx=_up_idx)}
 
         prod_df = _production_df(art_raw)
         production = None
@@ -419,13 +447,15 @@ def _audit_direction_classifier() -> dict:
             X_p, y_p = _make_Xy(prod_df)
             if len(y_p) >= 10:
                 production = {"window_days": PROD_WINDOW_DAYS,
-                              **_binary_metrics(art_raw, art_cal, X_p, y_p)}
+                              **_binary_metrics(art_raw, art_cal, X_p, y_p,
+                                               pos_class_idx=_up_idx)}
         if production is None:
             production = {"window_days": PROD_WINDOW_DAYS, "n": 0,
                           "warning": "insufficient OOS data for production audit"}
 
         return {
             "ok": True, "type": "binary",
+            "class_note": "3-class model (Down/Flat/Up); audited as binary P(Up) vs Down, Flat rows excluded",
             "calibrated_exists": art_cal is not None,
             "model_info":  _model_info(art_raw, art_cal),
             "training":    training,

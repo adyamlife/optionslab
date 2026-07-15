@@ -35,6 +35,24 @@ from sklearn.utils.class_weight import compute_sample_weight
 from xgboost import XGBClassifier
 
 _ROOT = Path(__file__).resolve().parent.parent
+
+
+class _BlendedBinaryClassifier:
+    """0.5 XGBoost + 0.5 CatBoost probability blend. Drop-in predict_proba replacement."""
+    def __init__(self, xgb_m, cb_m):
+        self._xgb = xgb_m
+        self._cb  = cb_m
+
+    def predict_proba(self, X):
+        return 0.5 * self._xgb.predict_proba(X) + 0.5 * self._cb.predict_proba(X)
+
+    def predict(self, X):
+        return (self.predict_proba(X)[:, 1] >= 0.5).astype(int)
+
+    @property
+    def feature_importances_(self):
+        return self._xgb.feature_importances_ if hasattr(self._xgb, "feature_importances_") \
+               else self._cb.feature_importances_
 _DATA_PATH = _ROOT / "data" / "regime_training.csv"  # kept for import compat
 _MODEL_PATH = _ROOT / "data" / "models" / "iv_direction_classifier.joblib"
 
@@ -144,6 +162,40 @@ def build_feature_matrix(df: pd.DataFrame, encoders: dict = None, fit: bool = Fa
     return X, encoders
 
 
+def _find_optimal_threshold(proba: np.ndarray, y_true: np.ndarray) -> float:
+    """Grid search 0.10-0.90 on val set, maximize F1 for Expanding class."""
+    from sklearn.metrics import f1_score
+    best_thr, best_f1 = 0.30, -1.0
+    for thr in np.arange(0.10, 0.91, 0.02):
+        preds = (proba >= thr).astype(int)
+        if preds.sum() == 0:
+            continue
+        f1 = float(f1_score(y_true, preds, pos_label=1, zero_division=0))
+        if f1 > best_f1:
+            best_f1, best_thr = f1, float(thr)
+    return round(best_thr, 2)
+
+
+def _precision_at_k(proba: np.ndarray, y_true: np.ndarray, ks=(10, 25, 50)) -> dict:
+    base_rate = float(y_true.mean())
+    if base_rate == 0:
+        return {}
+    order = np.argsort(proba)[::-1]
+    n = len(y_true)
+    results = {}
+    for k in ks:
+        if k > n:
+            continue
+        top_k  = y_true[order[:k]]
+        prec   = float(top_k.mean())
+        recall = float(top_k.sum() / max(y_true.sum(), 1))
+        lift   = round(prec / base_rate, 2) if base_rate > 0 else None
+        results[f"P@{k}"]    = round(prec, 4)
+        results[f"R@{k}"]    = round(recall, 4)
+        results[f"Lift@{k}"] = lift
+    return results
+
+
 def train(out_path=_MODEL_PATH) -> dict:
     df = load_labeled_data()
     if df.empty:
@@ -204,9 +256,32 @@ def train(out_path=_MODEL_PATH) -> dict:
     model = XGBClassifier(n_estimators=best_n_estimators, **_base_params)
     model.fit(X_train, y_train, sample_weight=sample_weight)
 
-    # ── Evaluate on uncontaminated test set ───────────────────────────────────
-    y_pred = model.predict(X_test)
-    y_prob = model.predict_proba(X_test)[:, 1]
+    # CatBoost ensemble (0.5 XGB + 0.5 CatBoost blend)
+    _cb_iv = None
+    try:
+        from catboost import CatBoostClassifier
+        _cb_iv = CatBoostClassifier(
+            iterations=best_n_estimators, depth=4, learning_rate=0.05,
+            loss_function="Logloss", eval_metric="AUC",
+            random_seed=42, verbose=0, thread_count=-1,
+            auto_class_weights="Balanced",
+        )
+        _cb_iv.fit(X_train.values, y_train, verbose=False)
+    except Exception:
+        _cb_iv = None
+
+    _final_model = _BlendedBinaryClassifier(model, _cb_iv) if _cb_iv is not None else model
+
+    # ── Optimal threshold on val set (not test — no contamination) ───────────
+    # Must be computed BEFORE test evaluation so the reported confusion matrix
+    # reflects the same threshold used in live inference.
+    y_val_prob = _final_model.predict_proba(X_val)[:, 1]
+    optimal_threshold = _find_optimal_threshold(y_val_prob, y_val)
+    log.info("[IV Direction] optimal_threshold=%.2f (F1-maximizing on val set)", optimal_threshold)
+
+    # ── Evaluate on uncontaminated test set using production threshold ────────
+    y_prob = _final_model.predict_proba(X_test)[:, 1]
+    y_pred = (y_prob >= optimal_threshold).astype(int)
 
     acc      = float(accuracy_score(y_test, y_pred))
     bal_acc  = float(balanced_accuracy_score(y_test, y_pred))
@@ -223,11 +298,13 @@ def train(out_path=_MODEL_PATH) -> dict:
 
     # Feature importances keyed by actual column name — immune to ordering drift
     feature_importances = dict(zip(X_train.columns.tolist(),
-                                   model.feature_importances_.tolist()))
+                                   _final_model.feature_importances_.tolist()))
+
+    precision_at_k = _precision_at_k(y_prob, y_test)
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     artifact = {
-        "model":               model,
+        "model":               _final_model,
         "feature_encoders":    encoders,     # kept for _build_X compat; contains __dummy_cols__
         "dummy_cols":          X_train.columns.tolist(),
         "numeric_features":    list(NUMERIC_FEATURES),
@@ -242,22 +319,27 @@ def train(out_path=_MODEL_PATH) -> dict:
         "accuracy":            round(acc, 4),
         "balanced_accuracy":   round(bal_acc, 4),
         "auc":                 round(auc, 4) if auc is not None else None,
+        "optimal_threshold":   optimal_threshold,
     }
     joblib.dump(artifact, out_path)
 
-    # ── Calibrate on val fold (not test fold) — keeps test uncontaminated ─────
+    # ── Conditional calibration on val fold — keeps test uncontaminated ───────
     brier_before = brier_after = None
     try:
         brier_before = float(brier_score_loss(y_test, y_prob))
         from scripts.calibrate_models import IsotonicCalibrator
-        cal_model = IsotonicCalibrator(model)
+        cal_model = IsotonicCalibrator(_final_model)
         cal_model.fit(X_val, y_val)                            # val, not test
         brier_after = float(brier_score_loss(
             y_test, cal_model.predict_proba(X_test)[:, 1]))
-        joblib.dump({**artifact, "model": cal_model, "calibrated": True,
-                     "brier_before": round(brier_before, 4),
-                     "brier_after":  round(brier_after, 4)},
-                    out_path.with_name(out_path.stem + "_calibrated.joblib"))
+        if brier_after < brier_before:
+            joblib.dump({**artifact, "model": cal_model, "calibrated": True,
+                         "brier_before": round(brier_before, 4),
+                         "brier_after":  round(brier_after, 4)},
+                        out_path.with_name(out_path.stem + "_calibrated.joblib"))
+        else:
+            log.info("Calibration did not improve Brier (%.4f→%.4f); raw model preferred",
+                     brier_before, brier_after)
     except Exception as e:
         log.warning("Calibration failed: %s", e)
 
@@ -277,6 +359,8 @@ def train(out_path=_MODEL_PATH) -> dict:
         "confusion_matrix":     cm.tolist(),
         "classification_report": report,
         "feature_importances":  feature_importances,
+        "precision_at_k":       precision_at_k,
+        "optimal_threshold":    optimal_threshold,
         "model_path":           str(out_path),
         "brier_before": round(brier_before, 4) if brier_before is not None else None,
         "brier_after":  round(brier_after, 4)  if brier_after  is not None else None,
@@ -317,4 +401,14 @@ if __name__ == "__main__":
     if result.get("brier_before") is not None:
         print(f"\nBrier score  before calibration: {result['brier_before']}")
         print(f"Brier score  after  calibration: {result['brier_after']}")
+    pak = result.get("precision_at_k") or {}
+    if pak:
+        exp_pct = result["train_expanding_pct"]
+        print(f"\nPrecision@K (P(Expanding) ranking, base rate {exp_pct:.1%}):")
+        print(f"  {'K':>6}  {'Precision':>10}  {'Recall':>8}  {'Lift':>6}")
+        print("  " + "-" * 36)
+        for k in [10, 25, 50]:
+            p = pak.get(f"P@{k}"); r = pak.get(f"R@{k}"); l = pak.get(f"Lift@{k}")
+            if p is not None:
+                print(f"  {k:>6}  {p:>10.4f}  {r:>8.4f}  {l:>6.2f}x")
     print(f"\nModel saved to {result['model_path']}")

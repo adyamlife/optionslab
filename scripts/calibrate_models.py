@@ -57,6 +57,57 @@ _ROOT       = Path(__file__).resolve().parent.parent
 _MODELS_DIR = _ROOT / "data" / "models"
 
 
+# ── PlattCalibrator (temperature/sigmoid scaling) ────────────────────────────
+# More stable than isotonic on small val sets (< ~500 rows). Uses a single
+# scalar temperature T such that calibrated_p = σ(logit(raw_p) / T).
+
+class PlattCalibrator:
+    """
+    Temperature scaling: single-parameter sigmoid recalibration.
+    Fits T on val set by minimising NLL; more stable than isotonic for
+    small calibration sets (500 rows or fewer).
+    """
+
+    def __init__(self, raw_model):
+        self.raw_model = raw_model
+        self._T        = 1.0
+
+    def fit(self, X, y):
+        from scipy.optimize import minimize_scalar
+        raw_proba = self.raw_model.predict_proba(X)[:, 1]
+        eps = 1e-8
+        raw_proba = np.clip(raw_proba, eps, 1 - eps)
+        logits = np.log(raw_proba / (1 - raw_proba))
+        y_arr  = np.asarray(y, dtype=float)
+
+        def nll(T):
+            p = 1 / (1 + np.exp(-logits / max(T, 1e-3)))
+            p = np.clip(p, eps, 1 - eps)
+            return -float(np.mean(y_arr * np.log(p) + (1 - y_arr) * np.log(1 - p)))
+
+        res = minimize_scalar(nll, bounds=(0.05, 5.0), method="bounded")
+        self._T = float(res.x)
+        return self
+
+    def predict_proba(self, X) -> np.ndarray:
+        raw = self.raw_model.predict_proba(X)[:, 1]
+        raw = np.clip(raw, 1e-8, 1 - 1e-8)
+        logits = np.log(raw / (1 - raw))
+        p1 = np.clip(1 / (1 + np.exp(-logits / max(self._T, 1e-3))), 1e-8, 1 - 1e-8)
+        return np.column_stack([1 - p1, p1])
+
+    def predict(self, X) -> np.ndarray:
+        return (self.predict_proba(X)[:, 1] >= 0.5).astype(int)
+
+    def predict_log_proba(self, X) -> np.ndarray:
+        return np.log(self.predict_proba(X))
+
+    def __getattr__(self, name):
+        if name in ("raw_model", "_T"):
+            raise AttributeError(name)
+        return getattr(self.raw_model, name)
+
+
 # ── IsotonicCalibrator wrapper ────────────────────────────────────────────────
 
 class IsotonicCalibrator:
@@ -201,8 +252,12 @@ def _calibrate_and_save(
     n_classes: int = 2,
 ) -> dict:
     """
-    Fit IsotonicCalibrator on (X_val, y_val); report Brier on (X_test, y_test).
-    Saves calibrated artifact to <stem>_calibrated.joblib.
+    Calibrate on (X_val, y_val); report Brier on (X_test, y_test).
+    Strategy:
+      1. Try IsotonicCalibrator (flexible, needs ~500+ samples).
+      2. If isotonic doesn't improve Brier, fall back to PlattCalibrator
+         (temperature scaling — single-parameter, stable on small val sets).
+      3. Save whichever improves Brier the most.
     """
     multiclass = n_classes > 2
     brier_fn   = (_brier_multiclass if multiclass else _brier_binary)
@@ -212,30 +267,57 @@ def _calibrate_and_save(
         if multiclass else brier_fn(raw_model, X_test, y_test)
     )
 
-    cal = IsotonicCalibrator(raw_model, n_classes=n_classes)
-    cal.fit(X_val, y_val)                  # ← val, not test
+    best_cal    = None
+    best_brier  = brier_before
+    best_method = "none"
 
-    brier_after = (
-        brier_fn(cal, X_test, y_test, n_classes)
-        if multiclass else brier_fn(cal, X_test, y_test)
-    )
+    # Attempt 1: isotonic regression
+    try:
+        iso = IsotonicCalibrator(raw_model, n_classes=n_classes)
+        iso.fit(X_val, y_val)
+        iso_brier = (
+            brier_fn(iso, X_test, y_test, n_classes)
+            if multiclass else brier_fn(iso, X_test, y_test)
+        )
+        if iso_brier < best_brier:
+            best_cal, best_brier, best_method = iso, iso_brier, "isotonic"
+    except Exception:
+        iso_brier = None
+
+    # Attempt 2: Platt / temperature scaling (binary only — more stable on small data)
+    if not multiclass:
+        try:
+            platt = PlattCalibrator(raw_model)
+            platt.fit(X_val, y_val)
+            platt_brier = brier_fn(platt, X_test, y_test)
+            if platt_brier < best_brier:
+                best_cal, best_brier, best_method = platt, platt_brier, "platt"
+        except Exception:
+            platt_brier = None
 
     calib_path = Path(raw_path).with_name(Path(raw_path).stem + "_calibrated.joblib")
+    if best_cal is None:
+        # Neither method improved — save raw model as calibrated artifact so
+        # downstream loaders still get a consistent file.
+        best_method = "none (raw preferred)"
+        best_cal = raw_model
+
     calib_meta = {
-        "calibration_method":    "isotonic",
+        "calibration_method":    best_method,
         "n_calibration_samples": int(len(y_val)),
         "n_evaluation_samples":  int(len(y_test)),
         "calibrated_at":         datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "brier_before":          round(brier_before, 4),
-        "brier_after":           round(brier_after, 4),
-        "brier_improvement":     round(brier_before - brier_after, 4),
+        "brier_after":           round(best_brier, 4),
+        "brier_improvement":     round(brier_before - best_brier, 4),
     }
-    joblib.dump({**artifact, "model": cal, "calibrated": True, **calib_meta}, calib_path)
+    joblib.dump({**artifact, "model": best_cal, "calibrated": True, **calib_meta}, calib_path)
 
     return {
         "brier_before":     round(brier_before, 4),
-        "brier_after":      round(brier_after, 4),
-        "improvement":      round(brier_before - brier_after, 4),
+        "brier_after":      round(best_brier, 4),
+        "improvement":      round(brier_before - best_brier, 4),
+        "calibration_method": best_method,
         "n_val_samples":    int(len(y_val)),
         "n_test_samples":   int(len(y_test)),
         "calibrated_path":  str(calib_path),

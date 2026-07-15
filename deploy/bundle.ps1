@@ -29,7 +29,9 @@ $EXCLUDE = @(
     "--exclude=*.csv",
     "--exclude=*.json",
     "--exclude=.git",
-    "--exclude=node_modules"
+    "--exclude=node_modules",
+    "--exclude=*.duckdb",
+    "--exclude=*.duckdb.wal"
 )
 Remove-Item $BUNDLE
 Write-Host "==> Bundling project (excluding data/, venv/, .env) ..."

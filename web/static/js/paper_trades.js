@@ -428,22 +428,121 @@ function renderPortfolioSummary(openTrades, marksMap) {
 
 let _openTrades  = [];
 let _latestMarks = {};
+let _analyzeMode = false;
 
-function renderOpenTrades(trades) {
-  _openTrades = trades;
+let _openSortCol = null, _openSortDir = 1;
+
+function _openSortVal(t, col) {
+  const today = new Date().toISOString().slice(0, 10);
+  switch (col) {
+    case 0: return t.ticker ?? "";
+    case 1: return t.structure ?? "";
+    case 2: return t.entered_at ?? "";
+    case 3: return t.expiry ?? "";
+    case 4: return t.expiry ? Math.round((new Date(t.expiry) - new Date(today)) / 86400000) : 9999;
+    case 5: { const s = t.strikes ?? {}; return s.short ?? s.put_short ?? 0; }
+    case 6: return t.entry_credit ?? 0;
+    case 7: return t.max_loss ?? 0;
+    case 8: return t.latest_unrealized != null ? parseFloat(t.latest_unrealized) : -Infinity;
+    case 9: return t.latest_unrealized != null ? parseFloat(t.latest_unrealized) * 100 : -Infinity;
+    case 10: return t.signal_rating ?? "";
+    default: return "";
+  }
+}
+
+function renderOpenTradesTable(trades) {
   const el = document.getElementById("pt-open-table");
-  document.getElementById("pt-open-count").textContent = trades.length ? `(${trades.length})` : "";
+  if (!trades.length) {
+    el.innerHTML = `<p class="muted na">No open paper trades. Run a morning scan to add today's top-3.</p>`;
+    return;
+  }
 
+  const sorted = [...trades];
+  if (_openSortCol !== null) {
+    sorted.sort((a, b) => {
+      const av = _openSortVal(a, _openSortCol), bv = _openSortVal(b, _openSortCol);
+      return av < bv ? -_openSortDir : av > bv ? _openSortDir : 0;
+    });
+  }
+
+  const rows = sorted.map(t => {
+    const isDebit  = (t.structure ?? "").includes("Debit") || t.structure === "Long Strangle";
+    const unr      = t.latest_unrealized;
+    const unrTotal = unr != null ? parseFloat(unr) * 100 : null;
+    const unrCls   = unr == null ? "na" : parseFloat(unr) >= 0 ? "pass" : "fail";
+    const stk      = t.strikes ?? {};
+    let strikesStr = "—";
+    if (stk.put_long  != null) strikesStr = `${stk.put_long}/${stk.put_short} · ${stk.call_short}/${stk.call_long}`;
+    else if (stk.short != null && stk.long != null) strikesStr = `${stk.long}/${stk.short}`;
+    else if (stk.short != null) strikesStr = `${stk.short}`;
+
+    return `
+      <tr>
+        <td><strong>${esc(t.ticker)}</strong></td>
+        <td style="font-size:0.78rem;color:#aaa">${esc(t.structure)}</td>
+        <td class="muted">${(t.entered_at ?? "").slice(0, 10) || "—"}</td>
+        <td class="muted">${esc(t.expiry ?? "—")}</td>
+        <td>${dteLabel(t.expiry)}</td>
+        <td class="muted" style="font-size:0.8rem">${esc(strikesStr)}</td>
+        <td class="na">$${(t.entry_credit ?? 0).toFixed(3)}</td>
+        <td class="muted" style="font-size:0.78rem">${isDebit ? "Debit" : "Max loss"}: $${(t.max_loss ?? 0).toFixed(3)}</td>
+        <td class="${unrCls}">${unr != null ? fmt$(parseFloat(unr), 3) : "—"}</td>
+        <td class="${unrCls}">${unrTotal != null ? fmt$(unrTotal) : "—"}</td>
+        <td class="muted" style="font-size:0.78rem">${esc(t.signal_rating ?? "—")}</td>
+        <td>
+          <button class="pt-del-btn" data-id="${esc(t.id)}" title="Remove this paper trade">✕</button>
+        </td>
+      </tr>`;
+  }).join("");
+
+  const hdrs = ["Ticker","Structure","Entered","Expiry","DTE","Strikes","Max Profit","Risk","P&amp;L/sh","P&amp;L $","Signal",""];
+  const thRow = hdrs.map((h, i) => {
+    if (i === hdrs.length - 1) return `<th></th>`;
+    const isSorted = _openSortCol === i;
+    const arrow = isSorted ? (_openSortDir === 1 ? " ▲" : " ▼") : "";
+    return `<th class="sortable-th" data-col="${i}" style="cursor:pointer;user-select:none">${h}${arrow}</th>`;
+  }).join("");
+
+  el.innerHTML = `
+    <div class="table-scroll">
+      <table class="journal-table pt-trades-table">
+        <thead><tr>${thRow}</tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+
+  el.querySelectorAll("th.sortable-th").forEach(th => {
+    th.addEventListener("click", () => {
+      const col = parseInt(th.dataset.col);
+      if (_openSortCol === col) _openSortDir *= -1;
+      else { _openSortCol = col; _openSortDir = 1; }
+      renderOpenTradesTable(_openTrades);
+      renderPortfolioSummary(_openTrades, _latestMarks);
+    });
+  });
+}
+
+function renderOpenTradesCards(trades) {
+  const el = document.getElementById("pt-open-table");
   if (!trades.length) {
     el.innerHTML = `<p class="muted na">No open paper trades. Run a morning scan to add today's top-3.</p>`;
     renderPortfolioSummary([], {});
     return;
   }
-
   el.innerHTML = trades.map(t => buildTradeCard(t, null)).join("");
   renderPortfolioSummary(trades, {});
-  setupTradeAnalysis(trades);
-  setupGreeksDriftForTrades(trades);
+}
+
+function renderOpenTrades(trades) {
+  _openTrades = trades;
+  document.getElementById("pt-open-count").textContent = trades.length ? `(${trades.length})` : "";
+
+  if (_analyzeMode) {
+    renderOpenTradesCards(trades);
+  } else {
+    renderOpenTradesTable(trades);
+    renderPortfolioSummary(trades, {});
+  }
 }
 
 function _patchCardMetrics(cardEl, trade, live) {
@@ -921,6 +1020,7 @@ function initTabs() {
 let _allTrades = [];
 
 async function loadDashboard() {
+  _analyzeMode = false;
   // Phase 3: Performance monitoring
   if (typeof window.PerformanceMonitor !== 'undefined') {
     window.PerformanceMonitor.mark('load-paper-dashboard');
@@ -928,12 +1028,7 @@ async function loadDashboard() {
 
   try {
     // Phase 3: CacheManager wrapping
-    const data = typeof window.CacheManager !== 'undefined'
-      ? await window.CacheManager.get(
-          'paper-trades-summary',
-          () => fetch("/api/paper-trades/summary").then(r => r.json())
-        )
-      : await fetch("/api/paper-trades/summary").then(r => r.json());
+    const data = await fetch("/api/paper-trades/summary").then(r => r.json());
 
     if (!data.ok) throw new Error(data.error || "API error");
 
@@ -955,7 +1050,7 @@ async function loadDashboard() {
     renderClosedTrades(closedTrades);
     renderDayWiseLog(_allTrades);
 
-    if (openTrades.length > 0) fetchLiveMarks();
+    // Live marks, Greeks drift and market analysis are fetched on demand via "Analyze All" button
 
     // Phase 3: Record performance
     if (typeof window.PerformanceMonitor !== 'undefined') {
@@ -1128,13 +1223,36 @@ function startLiveRefresh() {
   }, 5 * 60 * 1000);
 }
 
+// ── Analyze All (on-demand) ───────────────────────────────────────────────────
+
+function analyzeAllTrades() {
+  if (!_openTrades.length) return;
+  const btn = document.getElementById("pt-analyze-btn");
+  if (btn) { btn.disabled = true; btn.textContent = "⚡ Analyzing…"; }
+
+  // Switch to card view
+  _analyzeMode = true;
+  renderOpenTradesCards(_openTrades);
+
+  // Live marks via SSE
+  fetchLiveMarks();
+  // Greeks drift + market analysis per trade
+  setupGreeksDriftForTrades(_openTrades);
+  setupTradeAnalysis(_openTrades);
+  // Start background refresh now that analysis is running
+  startLiveRefresh();
+
+  setTimeout(() => {
+    if (btn) { btn.disabled = false; btn.textContent = "⚡ Analyze All"; }
+  }, 5000);
+}
+
 // ── Boot ──────────────────────────────────────────────────────────────────────
 
 document.addEventListener("DOMContentLoaded", () => {
   initTabs();
   initCardCollapse();
   loadDashboard();
-  startLiveRefresh();
 
   document.getElementById("pt-refresh-btn")
     .addEventListener("click", loadDashboard);
@@ -1144,6 +1262,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("pt-evening-btn")
     .addEventListener("click", () => runScan("/api/paper-trades/evening-check", "Evening Check"));
+
+  document.getElementById("pt-analyze-btn")
+    .addEventListener("click", analyzeAllTrades);
 
   document.addEventListener("click", e => {
     const btn = e.target.closest(".pt-del-btn");

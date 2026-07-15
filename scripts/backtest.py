@@ -1,280 +1,198 @@
 """
-Approximate historical backtest of the rulebook's structure-matrix logic.
+Portfolio Backtest — rolling simulation using ML signals.
 
-LIMITATIONS (read before trusting any numbers):
-- No historical option chain data is available for free, so option premiums
-  are SYNTHESIZED via Black-Scholes using trailing 30-day REALIZED volatility
-  as a stand-in for IV. Real IV often differs from realized vol, especially
-  around events - this backtest does not capture that.
-- Earnings/event blackout is NOT applied (no historical earnings calendar).
-- Strike increments are simplified to whole-dollar steps.
-- Entries are simulated once per week (every 5 trading days), DTE ~ 7 calendar
-  days, matching the live analyze.py defaults.
+Uses the regime_training DuckDB table (with labeled forward_return) to simulate
+a rolling portfolio: at each date, rank candidates by score, take top-N,
+and track realized PnL over the 10-day forward horizon.
+
+By default uses a proxy score from price-derived features. In production,
+replace proxy_score with actual composite_score from regime_predictor.
+
+Metrics:
+  total_return, ann_return, Sharpe, max_drawdown, profit_factor,
+  win_rate, Prec@K (win fraction of top-N picks vs universe),
+  lift vs equal-weight universe, average turnover, quarterly breakdown.
+
+Run standalone: python -m scripts.backtest
 """
+import logging
 import sys
-import os
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
-from scipy.stats import norm
 
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+_ROOT = Path(__file__).resolve().parent.parent
+log = logging.getLogger(__name__)
 
-from config import rules
-from config.structures import STRUCTURE_MATRIX  # single source of truth — was previously hand-copied here and had drifted out of sync with the live matrix (High IV + Uptrend pointed at the wrong structure)
-from scripts.black_scholes import delta as bs_delta
-
-RISK_FREE_RATE = 0.05
-DTE = 7
-TRADING_DAYS_FOR_DTE = 5  # ~1 trading week
-WIDTH = 1.0  # $ width of each spread leg (matches live script's narrow sizing)
+# Default option strategy parameters (used by web/app.py default backtest config)
+DTE   = 10   # days to expiration — matches FORWARD_DAYS in regime_backfill
+WIDTH = 5    # spread width in points (credit spread default)
 
 
-def bs_price(S, K, T, r, sigma, option_type):
-    d1 = (np.log(S / K) + (r + 0.5 * sigma ** 2) * T) / (sigma * np.sqrt(T))
-    d2 = d1 - sigma * np.sqrt(T)
-    if option_type == "call":
-        return S * norm.cdf(d1) - K * np.exp(-r * T) * norm.cdf(d2)
-    return K * np.exp(-r * T) * norm.cdf(-d2) - S * norm.cdf(-d1)
+def _sharpe(returns: np.ndarray, periods_per_year: float = 26.0) -> float:
+    """Annualized Sharpe. periods_per_year=26 for 10-day (bi-weekly) periods."""
+    if len(returns) < 2:
+        return 0.0
+    mu    = float(np.mean(returns))
+    sigma = float(np.std(returns, ddof=1))
+    return round(mu / sigma * np.sqrt(periods_per_year), 3) if sigma > 0 else 0.0
 
 
-def strike_for_delta(S, target_delta, T, r, sigma, option_type):
-    """Invert Black-Scholes delta to get the strike."""
-    if option_type == "call":
-        d1 = norm.ppf(target_delta)
-    else:
-        d1 = norm.ppf(1 - target_delta)  # put delta = N(d1) - 1, target_delta given as positive magnitude
-    K = S * np.exp((r + 0.5 * sigma ** 2) * T - d1 * sigma * np.sqrt(T))
-    return K
+def _max_drawdown(period_returns: np.ndarray) -> float:
+    """Maximum peak-to-trough drawdown on the cumulative equity curve."""
+    if len(period_returns) == 0:
+        return 0.0
+    equity = np.cumprod(1.0 + period_returns)
+    peak   = np.maximum.accumulate(equity)
+    dd     = (equity - peak) / (np.abs(peak) + 1e-9)
+    return round(float(dd.min()), 4)
 
 
-def classify_trend(closes, sma_short, sma_long, band_pct):
-    price = closes.iloc[-1]
-    s = closes.tail(sma_short).mean()
-    l = closes.tail(sma_long).mean()
-    if price > s * (1 + band_pct) and s > l:
-        return "Uptrend"
-    if price < s * (1 - band_pct) and s < l:
-        return "Downtrend"
-    return "Range-bound"
+def _profit_factor(returns: np.ndarray) -> float:
+    gains  = float(returns[returns > 0].sum())
+    losses = float(abs(returns[returns < 0].sum()))
+    if losses == 0:
+        return float("inf")
+    return round(gains / losses, 3)
 
 
-def realized_vol_series(closes, window=30):
-    log_ret = np.log(closes / closes.shift(1))
-    return (log_ret.rolling(window).std() * np.sqrt(252)).dropna()
+def load_scored_data() -> pd.DataFrame:
+    """
+    Load labeled rows from DuckDB and attach a proxy composite score.
+    In production: join with regime_predictor output for actual composite_score.
+    """
+    from scripts.db import read_df, TABLE
+    df = read_df(f"SELECT * FROM {TABLE} WHERE labeled = true")
+    df = df.dropna(subset=["forward_return"])
+    df["date"] = pd.to_datetime(df["date"])
+    df = df.sort_values(["date", "ticker"]).reset_index(drop=True)
+
+    # Simple proxy: RSI momentum + low IV rank (lower IV = better selling environment)
+    rsi_norm = (pd.to_numeric(df["rsi"], errors="coerce").fillna(50) - 50) / 50
+    iv_norm  = 1.0 - pd.to_numeric(df["iv_rank_52w"], errors="coerce").fillna(50) / 100
+    df["proxy_score"] = (0.5 * rsi_norm + 0.5 * iv_norm).round(4)
+    return df
 
 
-def run_backtest(ticker, period="3y", credit_min_pct=None, width=None, dte=None):
-    if credit_min_pct is None:
-        credit_min_pct = rules.CREDIT_MIN_CREDIT_PCT_OF_WIDTH
-    width = WIDTH if width is None else width
-    dte = DTE if dte is None else dte
-    import yfinance as yf
-    hist = yf.Ticker(ticker).history(period=period)
-    closes = hist["Close"]
+def run_backtest(
+    df: pd.DataFrame = None,
+    top_n: int = 10,
+    score_col: str = "proxy_score",
+    return_col: str = "forward_return",
+    date_col: str = "date",
+) -> dict:
+    """
+    Rolling backtest: at each date, take top-N by score_col and track
+    equal-weight portfolio return over the 10-day forward horizon.
+    """
+    if df is None:
+        df = load_scored_data()
 
-    rv_full = realized_vol_series(closes, 30)
+    dates = sorted(df[date_col].unique())
+    if len(dates) < 4:
+        return {"ok": False, "error": "Insufficient dates for backtest"}
 
-    min_i = 252 + 30  # need 1yr of realized-vol history + the 30d window itself
-    max_i = len(closes) - TRADING_DAYS_FOR_DTE - 1
+    period_returns, trades = [], []
+    prev_tickers: set = set()
+    turnovers = []
 
-    trades = []
-    skipped_no_trade = 0
-    skipped_filter = 0
-
-    for i in range(min_i, max_i, TRADING_DAYS_FOR_DTE):
-        S = closes.iloc[i]
-        window_closes = closes.iloc[: i + 1]
-
-        trend = classify_trend(window_closes, rules.SMA_SHORT, rules.SMA_LONG, rules.TREND_BAND_PCT)
-
-        sigma = rv_full.loc[:closes.index[i]].iloc[-1]
-        rv_hist = rv_full.loc[:closes.index[i]].tail(252)
-        iv_rank = (rv_hist < sigma).mean() * 100
-        iv_env = "High" if iv_rank >= rules.IV_RANK_HIGH_THRESHOLD else "Low"
-
-        structure = STRUCTURE_MATRIX[(iv_env, trend)]
-        if structure == "No Trade":
-            skipped_no_trade += 1
+    for d in dates:
+        day_df = df[df[date_col] == d].copy()
+        if len(day_df) < 2:
             continue
+        day_df   = day_df.sort_values(score_col, ascending=False)
+        selected = day_df.head(top_n)
+        actual   = selected[return_col].values.astype(float)
+        period_ret = float(actual.mean())
+        period_returns.append(period_ret)
 
-        T = dte / 365.0
-        S_T = closes.iloc[i + TRADING_DAYS_FOR_DTE]
-        entry_date = closes.index[i].date()
+        curr_tickers = set(selected["ticker"])
+        if prev_tickers:
+            replaced = len(curr_tickers - prev_tickers) / max(len(curr_tickers), 1)
+            turnovers.append(replaced)
+        prev_tickers = curr_tickers
 
-        mid_delta = sum(rules.CREDIT_SHORT_DELTA_RANGE) / 2
-        debit_long_delta = sum(rules.DEBIT_LONG_DELTA_RANGE) / 2
-        debit_short_delta = sum(rules.DEBIT_SHORT_DELTA_RANGE) / 2
+        for _, row in selected.iterrows():
+            trades.append({
+                "date":   d,
+                "ticker": row.get("ticker", "?"),
+                "score":  float(row.get(score_col, 0)),
+                "return": float(row[return_col]),
+                "win":    int(row[return_col] > 0),
+            })
 
-        if structure in ("Put Credit Spread", "Iron Condor"):
-            k_short = round(strike_for_delta(S, mid_delta, T, RISK_FREE_RATE, sigma, "put"))
-            k_long = k_short - width
-            credit_put = (bs_price(S, k_short, T, RISK_FREE_RATE, sigma, "put")
-                           - bs_price(S, k_long, T, RISK_FREE_RATE, sigma, "put"))
-        if structure in ("Call Credit Spread", "Iron Condor"):
-            k_short_c = round(strike_for_delta(S, mid_delta, T, RISK_FREE_RATE, sigma, "call"))
-            k_long_c = k_short_c + width
-            credit_call = (bs_price(S, k_short_c, T, RISK_FREE_RATE, sigma, "call")
-                            - bs_price(S, k_long_c, T, RISK_FREE_RATE, sigma, "call"))
+    if not period_returns:
+        return {"ok": False, "error": "No valid periods"}
 
-        flags = []
+    rets      = np.array(period_returns)
+    trades_df = pd.DataFrame(trades)
 
-        if structure == "Put Credit Spread":
-            if credit_put / width * 100 < credit_min_pct * 100:
-                skipped_filter += 1
-                continue
-            loss = max(0.0, min(k_short - S_T, width))
-            pnl = credit_put - loss
-            max_risk = width - credit_put
-            details = f"SELL {k_short:.0f}P / BUY {k_long:.0f}P  (credit ${credit_put:.2f})"
-            if credit_put <= 0:
-                flags.append("negative/zero credit")
-            if pnl == -max_risk:
-                flags.append("max loss")
-            elif pnl == credit_put:
-                flags.append("max profit")
+    # Universe benchmark (equal-weight all stocks per date)
+    uni_rets = np.array([
+        float(df[df[date_col] == d][return_col].mean())
+        for d in dates
+        if len(df[df[date_col] == d]) >= 1
+    ])
 
-        elif structure == "Call Credit Spread":
-            if credit_call / width * 100 < credit_min_pct * 100:
-                skipped_filter += 1
-                continue
-            loss = max(0.0, min(S_T - k_short_c, width))
-            pnl = credit_call - loss
-            max_risk = width - credit_call
-            details = f"SELL {k_short_c:.0f}C / BUY {k_long_c:.0f}C  (credit ${credit_call:.2f})"
-            if credit_call <= 0:
-                flags.append("negative/zero credit")
-            if pnl == -max_risk:
-                flags.append("max loss")
-            elif pnl == credit_call:
-                flags.append("max profit")
+    base_win = round(float((df[return_col] > 0).mean()), 4)
+    prec_win = round(float(trades_df["win"].mean()), 4) if len(trades_df) else 0.0
+    lift     = round(prec_win / base_win, 3) if base_win > 0 else None
 
-        elif structure == "Iron Condor":
-            pct_put = credit_put / width * 100
-            pct_call = credit_call / width * 100
-            if pct_put < credit_min_pct * 100 or pct_call < credit_min_pct * 100:
-                skipped_filter += 1
-                continue
-            loss_put = max(0.0, min(k_short - S_T, width))
-            loss_call = max(0.0, min(S_T - k_short_c, width))
-            total_credit = credit_put + credit_call
-            pnl = total_credit - loss_put - loss_call
-            max_risk = width - total_credit
-            details = (f"SELL {k_short:.0f}P/BUY {k_long:.0f}P + "
-                       f"SELL {k_short_c:.0f}C/BUY {k_long_c:.0f}C  (credit ${total_credit:.2f})")
-            if total_credit <= 0:
-                flags.append("negative/zero credit")
-            if loss_put > 0 and loss_call > 0:
-                flags.append("both sides breached")
-            if pnl == -max_risk:
-                flags.append("max loss")
-            elif pnl == total_credit:
-                flags.append("max profit")
+    quarterly: dict = {}
+    if len(trades_df) and "date" in trades_df.columns:
+        trades_df["quarter"] = pd.to_datetime(trades_df["date"]).dt.to_period("Q").astype(str)
+        for q, grp in trades_df.groupby("quarter"):
+            quarterly[q] = {
+                "avg_return": round(float(grp["return"].mean()), 4),
+                "win_rate":   round(float(grp["win"].mean()), 3),
+                "n_trades":   int(len(grp)),
+            }
 
-        elif structure == "Cash Secured Put":
-            # Single short put, no spread — capital at risk is the strike
-            # itself (minus premium), not a defined width like the spreads.
-            k_short_csp = round(strike_for_delta(S, mid_delta, T, RISK_FREE_RATE, sigma, "put"))
-            credit_csp = bs_price(S, k_short_csp, T, RISK_FREE_RATE, sigma, "put")
-            if credit_csp / k_short_csp * 100 < credit_min_pct * 100:
-                skipped_filter += 1
-                continue
-            loss = max(0.0, k_short_csp - S_T)
-            pnl = credit_csp - loss
-            max_risk = k_short_csp - credit_csp
-            details = f"SELL {k_short_csp:.0f}P (cash-secured, credit ${credit_csp:.2f})"
-            if credit_csp <= 0:
-                flags.append("negative/zero credit")
-            if pnl == -max_risk:
-                flags.append("max loss")
-            elif pnl == credit_csp:
-                flags.append("max profit")
+    n_wins  = int((rets > 0).sum())
+    n_total = len(rets)
+    cum_ret = float(np.prod(1.0 + rets) - 1.0)
 
-        elif structure == "Call Debit Spread":
-            k_buy = round(strike_for_delta(S, debit_long_delta, T, RISK_FREE_RATE, sigma, "call"))
-            k_sell = round(strike_for_delta(S, debit_short_delta, T, RISK_FREE_RATE, sigma, "call"))
-            if k_sell <= k_buy:
-                k_sell = k_buy + width  # fallback if delta-implied strikes collapse
-            spread_width = k_sell - k_buy
-            debit = (bs_price(S, k_buy, T, RISK_FREE_RATE, sigma, "call")
-                     - bs_price(S, k_sell, T, RISK_FREE_RATE, sigma, "call"))
-            payoff = max(0.0, min(S_T - k_buy, spread_width))
-            pnl = payoff - debit
-            max_risk = debit
-            details = f"BUY {k_buy:.0f}C / SELL {k_sell:.0f}C  (debit ${debit:.2f}, width ${spread_width:.0f})"
-            if debit <= 0:
-                flags.append("negative/zero debit")
-            if pnl == -max_risk:
-                flags.append("max loss")
-            elif payoff == spread_width:
-                flags.append("max profit")
-
-        elif structure == "Put Debit Spread":
-            k_buy = round(strike_for_delta(S, debit_long_delta, T, RISK_FREE_RATE, sigma, "put"))
-            k_sell = round(strike_for_delta(S, debit_short_delta, T, RISK_FREE_RATE, sigma, "put"))
-            if k_sell >= k_buy:
-                k_sell = k_buy - width  # fallback if delta-implied strikes collapse
-            spread_width = k_buy - k_sell
-            debit = (bs_price(S, k_buy, T, RISK_FREE_RATE, sigma, "put")
-                     - bs_price(S, k_sell, T, RISK_FREE_RATE, sigma, "put"))
-            payoff = max(0.0, min(k_buy - S_T, spread_width))
-            pnl = payoff - debit
-            max_risk = debit
-            details = f"BUY {k_buy:.0f}P / SELL {k_sell:.0f}P  (debit ${debit:.2f}, width ${spread_width:.0f})"
-            if debit <= 0:
-                flags.append("negative/zero debit")
-            if pnl == -max_risk:
-                flags.append("max loss")
-            elif payoff == spread_width:
-                flags.append("max profit")
-
-        trades.append({
-            "date": entry_date, "structure": structure, "iv_env": iv_env,
-            "trend": trend, "S": round(S, 2), "S_T": round(S_T, 2),
-            "details": details,
-            "pnl": round(pnl, 4), "max_risk": round(max_risk, 4),
-            "win": pnl > 0,
-            "flags": ", ".join(flags) if flags else "-",
-        })
-
-    return pd.DataFrame(trades), skipped_no_trade, skipped_filter
-
-
-def summarize(df, ticker, skipped_no_trade, skipped_filter, width=WIDTH, dte=DTE):
-    print(f"\n=== {ticker} backtest (weekly entries, {dte}D, width=${width}) ===")
-    print(f"Trades taken: {len(df)} | Skipped (No Trade per matrix): {skipped_no_trade} | "
-          f"Skipped (failed credit filter): {skipped_filter}")
-    if df.empty:
-        print("No trades taken.")
-        return
-    win_rate = df["win"].mean() * 100
-    avg_win = df.loc[df["win"], "pnl"].mean()
-    avg_loss = df.loc[~df["win"], "pnl"].mean()
-    expectancy = df["pnl"].mean()
-    print(f"Win rate: {win_rate:.1f}%")
-    print(f"Avg win: ${avg_win:.3f} | Avg loss: ${avg_loss:.3f}")
-    print(f"Expectancy per trade: ${expectancy:.3f} (per $1 of width)")
-    print("\nBy structure:")
-    print(df.groupby("structure").agg(
-        n=("pnl", "size"), win_rate=("win", "mean"), avg_pnl=("pnl", "mean")
-    ).round(3))
-
-    print("\nTop 3 trades by P&L:")
-    print(df.sort_values("pnl", ascending=False).head(3)[
-        ["date", "structure", "details", "pnl", "win", "flags"]
-    ].to_string(index=False))
+    return {
+        "ok":              True,
+        "total_return":    round(cum_ret, 4),
+        "ann_return":      round(float(rets.mean() * 26), 4),
+        "sharpe":          _sharpe(rets),
+        "max_drawdown":    _max_drawdown(rets),
+        "profit_factor":   _profit_factor(rets),
+        "win_rate":        round(n_wins / n_total, 4) if n_total else 0.0,
+        "n_periods":       n_total,
+        "n_trades":        len(trades),
+        "prec_win":        prec_win,
+        "lift_vs_uni":     lift,
+        "universe_return": round(float(uni_rets.mean() * 26), 4) if len(uni_rets) else 0.0,
+        "avg_turnover":    round(float(np.mean(turnovers)), 3) if turnovers else None,
+        "top_n":           top_n,
+        "score_col":       score_col,
+        "quarterly":       quarterly,
+        "period_returns":  rets.round(4).tolist(),
+    }
 
 
 if __name__ == "__main__":
-    # Usage: python -m scripts.backtest [TICKER] [WIDTH] [CREDIT_MIN_PCT]
-    # CREDIT_MIN_PCT is a fraction, e.g. 0.10 for 10% (rulebook default is 0.25)
-    ticker = sys.argv[1] if len(sys.argv) > 1 else "QQQ"
-    width = float(sys.argv[2]) if len(sys.argv) > 2 else WIDTH
-    credit_min_pct = float(sys.argv[3]) if len(sys.argv) > 3 else None
-
-    df, skip_nt, skip_f = run_backtest(ticker, credit_min_pct=credit_min_pct, width=width)
-    summarize(df, ticker, skip_nt, skip_f, width=width)
-    if credit_min_pct is not None:
-        print(f"(credit filter threshold used: {credit_min_pct*100:.0f}% of width)")
-    out_dir = os.path.join(os.path.dirname(__file__), "..", "output")
-    os.makedirs(out_dir, exist_ok=True)
-    df.to_csv(os.path.join(out_dir, f"backtest_{ticker}.csv"), index=False)
+    logging.basicConfig(level=logging.INFO)
+    result = run_backtest()
+    if not result.get("ok"):
+        print("FAILED:", result.get("error"))
+        sys.exit(1)
+    print(f"\n=== Portfolio Backtest (top-{result['top_n']}, score={result['score_col']}) ===")
+    print(f"Total Return   : {result['total_return']:+.2%}")
+    print(f"Ann. Return    : {result['ann_return']:+.2%}")
+    print(f"Sharpe Ratio   : {result['sharpe']:.3f}")
+    print(f"Max Drawdown   : {result['max_drawdown']:.2%}")
+    print(f"Profit Factor  : {result['profit_factor']:.3f}")
+    print(f"Win Rate       : {result['win_rate']:.1%}")
+    lift_s = f"{result['lift_vs_uni']:.2f}x" if result.get("lift_vs_uni") else "—"
+    print(f"Prec (win)     : {result['prec_win']:.1%}  [lift vs universe: {lift_s}]")
+    print(f"Universe Ann.  : {result['universe_return']:+.2%}")
+    print(f"Avg Turnover   : {(result.get('avg_turnover') or 0):.1%} per period")
+    print(f"N Periods      : {result['n_periods']}  |  N Trades: {result['n_trades']}")
+    if result.get("quarterly"):
+        print(f"\nQuarterly breakdown:")
+        for q, m in sorted(result["quarterly"].items()):
+            print(f"  {q}  avg_ret={m['avg_return']:+.2%}  win={m['win_rate']:.0%}  n={m['n_trades']}")

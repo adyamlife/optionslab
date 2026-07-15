@@ -134,6 +134,9 @@ def archive_oi_snapshot(time_of_day: str = "close",
     E*TRADE is preferred (provides gamma per strike for GEX computation);
     yfinance is the fallback (OI and IV only, no Greeks).
     """
+    from scripts.data_fetch import warmup_data_sources
+    warmup_data_sources(log)
+
     from scripts.db import ensure_archive_tables, _insert_oi_snapshot
     ensure_archive_tables()
 
@@ -254,7 +257,7 @@ def archive_earnings_iv(tickers: list[str] | None = None) -> dict:
     from scripts.analyze import days_to_earnings
     ensure_archive_tables()
 
-    targets   = tickers or WATCHLIST
+    targets   = tickers or WATCHLIST_ALL
     today     = date.today()
     today_str = today.isoformat()
     collected, skipped, errors = [], [], []
