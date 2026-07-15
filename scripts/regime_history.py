@@ -48,16 +48,21 @@ CREATE TABLE IF NOT EXISTS ml_regime_history (
 # Uses a "gaps and islands" approach: assign a group number that increments each
 # time the regime changes, then count the size of the latest group.
 _STREAK_SQL = """
-WITH ordered AS (
+WITH lagged AS (
     SELECT
         date,
         regime,
-        SUM(
-            CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END
-        ) OVER (ORDER BY date) AS grp
+        CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 ELSE 1 END AS changed
     FROM ml_regime_history
     WHERE ticker = ?
       AND date >= CURRENT_DATE - INTERVAL '10 days'
+),
+ordered AS (
+    SELECT
+        date,
+        regime,
+        SUM(changed) OVER (ORDER BY date) AS grp
+    FROM lagged
     ORDER BY date
 ),
 latest_grp AS (

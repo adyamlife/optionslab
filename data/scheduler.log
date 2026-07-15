@@ -145,3 +145,48 @@ C:\Python312\python\python.exe (PID 9972)
 2026-07-13 12:57:50 INFO     scripts.ml_cache: ml_cache refreshed: 65 tickers in 220.48s
 2026-07-13 13:29:27 INFO     scripts.ml_cache: ml_cache refreshed: 75 tickers in 316.97s
 2026-07-13 13:29:28 INFO     scripts.ml_cache: ml_cache refreshed: 74 tickers in 317.76s
+2026-07-13 13:40:01 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 242.68s
+2026-07-13 13:48:56 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 258.15s
+2026-07-13 13:57:46 INFO     scripts.ml_cache: ml_cache refreshed: 63 tickers in 215.73s
+2026-07-13 13:57:46 INFO     scripts.ml_cache: ml_cache refreshed: 57 tickers in 216.35s
+2026-07-13 14:04:42 WARNING  scripts.paper_trade_engine: analyze_ticker(CEG) failed: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Project Y\\web\\..\\data\\oi_cache.json.tmp' -> 'C:\\Project Y\\web\\..\\data\\oi_cache.json'
+2026-07-13 14:06:19 WARNING  scripts.paper_trade_engine: Skipping APP Financed Long Put — short or long strike is None
+2026-07-13 14:06:19 WARNING  scripts.paper_trade_engine: Skipping ORCL Financed Long Put — short or long strike is None
+2026-07-13 14:06:19 INFO     scripts.paper_trade_engine: Paper trade #3: 20260713PM_SHOP_LON_3  credit=7.350  expiry=2026-07-31
+2026-07-13 14:06:20 INFO     scripts.training_data_collector: Training snapshot written for paper trade 20260713PM_SHOP_LON_3
+2026-07-13 14:06:22 WARNING  scripts.paper_trade_engine: Skipping APP Financed Long Put — short or long strike is None
+2026-07-13 14:06:22 WARNING  scripts.paper_trade_engine: Skipping ORCL Financed Long Put — short or long strike is None
+2026-07-13 14:29:01 INFO     scripts.ml_cache: ml_cache refreshed: 68 tickers in 291.04s
+2026-07-13 14:29:01 INFO     scripts.ml_cache: ml_cache refreshed: 69 tickers in 291.40s
+2026-07-13 15:00:39 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 389.61s
+2026-07-13 15:01:06 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 416.50s
+2026-07-13 15:05:21 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 254.45s
+2026-07-13 15:30:32 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 281.25s
+2026-07-13 15:30:32 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 382.31s
+2026-07-13 15:59:37 INFO     scripts.ml_cache: ml_cache refreshed: 80 tickers in 327.61s
+2026-07-13 15:59:39 INFO     scripts.ml_cache: ml_cache refreshed: 62 tickers in 328.72s
+2026-07-13 16:07:18 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 250.05s
+2026-07-13 16:22:15 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 219.50s
+2026-07-13 16:30:50 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 400.44s
+2026-07-13 16:30:59 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 243.75s
+2026-07-13 16:59:13 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 302.73s
+2026-07-13 17:00:02 INFO     scripts.paper_trade_engine: IV surface flag on 20260618_BTC_PUT_2: short strike 25.0 now +14.2vp expensive — consider closing
+2026-07-13 17:00:04 INFO     scripts.paper_trade_engine: IV surface flag on 20260622_BTC_PUT_1: short strike 25.0 now +14.2vp expensive — consider closing
+2026-07-13 17:00:04 INFO     scripts.paper_trade_engine: IV surface flag on 20260623_BTC_PUT_3: short strike 26.0 now -7.8vp cheap — vol moved against position
+2026-07-13 17:00:05 INFO     scripts.paper_trade_engine: IV surface flag on 20260623_BTC_PUT_3: short strike 26.0 now -7.8vp cheap — vol moved against position
+2026-07-13 17:00:13 INFO     scripts.paper_trade_engine: IV surface flag on 20260706_QUBT_PUT_2: short strike 7.5 now +54.0vp expensive — consider closing
+2026-07-13 17:00:14 INFO     scripts.paper_trade_engine: IV surface flag on 20260706_QUBT_PUT_2: short strike 7.5 now +54.0vp expensive — consider closing
+2026-07-13 17:00:15 INFO     scripts.paper_trade_engine: IV surface flag on 20260706_SMR_PUT_2: short strike 7.5 now -2.7vp cheap — vol moved against position
+2026-07-13 17:00:19 INFO     scripts.paper_trade_engine: IV surface flag on 20260707_QUBT_PUT_3: short strike 7.5 now +54.0vp expensive — consider closing
+2026-07-13 17:00:20 INFO     scripts.paper_trade_engine: IV surface flag on 20260707_QUBT_PUT_3: short strike 7.5 now +54.0vp expensive — consider closing
+2026-07-13 17:00:28 WARNING  scripts.paper_trade_engine: _current_mark failed for WMT: name 's' is not defined
+2026-07-13 17:00:28 WARNING  scripts.paper_trade_engine: _current_mark failed for SHOP: name 's' is not defined
+2026-07-13 17:00:28 WARNING  scripts.paper_trade_engine: _current_mark failed for WMT: name 's' is not defined
+2026-07-13 17:00:28 WARNING  scripts.paper_trade_engine: _current_mark failed for SHOP: name 's' is not defined
+2026-07-13 17:00:50 INFO     scripts.ml_cache: ml_cache refreshed: 81 tickers in 400.40s
+2026-07-13 17:31:58 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 205.00s
+2026-07-13 17:39:46 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 222.30s
+2026-07-13 17:45:11 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 218.74s
+2026-07-13 17:51:31 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 221.45s
+2026-07-13 17:58:59 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 317.33s
+2026-07-13 18:20:39 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 204.62s

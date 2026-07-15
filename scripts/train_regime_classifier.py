@@ -179,6 +179,18 @@ def train(path=_DATA_PATH, out_path=_MODEL_PATH) -> dict:
         eval_metric="mlogloss",
     )
     sample_weight = compute_sample_weight(class_weight="balanced", y=y_train)
+    # Boost minority regime classes that tend to be underrepresented.
+    # New 4-class system: Low-vol-squeeze and High-vol-breakout are rarer;
+    # give them extra weight so the model doesn't collapse to Trending/Mean-reverting.
+    for _boosted_class, _boost_mul in [
+        ("Low-vol-squeeze",   2.0),
+        ("High-vol-breakout", 1.5),
+        # Legacy label — kept in case data predates the 2026-07 label redesign
+        ("Range-bound",       2.0),
+    ]:
+        _idx = list(label_enc.classes_).index(_boosted_class) if _boosted_class in label_enc.classes_ else -1
+        if _idx >= 0:
+            sample_weight[y_train == _idx] *= _boost_mul
     model.fit(X_train, y_train, sample_weight=sample_weight)
 
     y_pred = model.predict(X_test)
@@ -219,10 +231,14 @@ def train(path=_DATA_PATH, out_path=_MODEL_PATH) -> dict:
             brier_score_loss((y_test == i).astype(int), proba_cal[:, i])
             for i in range(len(label_enc.classes_))
         ]))
-        joblib.dump({**artifact, "model": cal_model, "calibrated": True,
-                     "brier_before": round(brier_before, 4),
-                     "brier_after":  round(brier_after, 4)},
-                    out_path.with_name(out_path.stem + "_calibrated.joblib"))
+        if brier_after < brier_before:
+            joblib.dump({**artifact, "model": cal_model, "calibrated": True,
+                         "brier_before": round(brier_before, 4),
+                         "brier_after":  round(brier_after, 4)},
+                        out_path.with_name(out_path.stem + "_calibrated.joblib"))
+        else:
+            log.info("XGBoost calibration did not improve Brier (%.4f→%.4f); raw model preferred",
+                     brier_before, brier_after)
     except Exception as e:
         log.warning("XGBoost calibration failed: %s", e)
 
@@ -233,7 +249,7 @@ def train(path=_DATA_PATH, out_path=_MODEL_PATH) -> dict:
             n_estimators=200, max_depth=None, min_samples_leaf=5,
             class_weight="balanced", n_jobs=-1, random_state=42,
         )
-        rf.fit(X_train, y_train)
+        rf.fit(X_train, y_train, sample_weight=sample_weight)
         rf_pred  = rf.predict(X_test)
         rf_proba = rf.predict_proba(X_test)
         rf_acc   = float(accuracy_score(y_test, rf_pred))
@@ -305,11 +321,15 @@ def train(path=_DATA_PATH, out_path=_MODEL_PATH) -> dict:
                 brier_score_loss((y_test == i).astype(int), cb_proba_cal[:, i])
                 for i in range(n)
             ]))
-            joblib.dump({**cb_art, "model": cb_cal, "calibrated": True,
-                         "brier_before": round(cb_brier, 4),
-                         "brier_after":  round(cb_brier_after, 4)},
-                        _CATBOOST_PATH.with_name("regime_catboost_calibrated.joblib"))
-            cb_art["brier_after"] = round(cb_brier_after, 4)
+            if cb_brier_after < cb_brier:
+                joblib.dump({**cb_art, "model": cb_cal, "calibrated": True,
+                             "brier_before": round(cb_brier, 4),
+                             "brier_after":  round(cb_brier_after, 4)},
+                            _CATBOOST_PATH.with_name("regime_catboost_calibrated.joblib"))
+                cb_art["brier_after"] = round(cb_brier_after, 4)
+            else:
+                log.info("CatBoost calibration did not improve Brier (%.4f→%.4f); raw model preferred",
+                         cb_brier, cb_brier_after)
         except Exception as e:
             log.warning("CatBoost calibration failed: %s", e)
 

@@ -16,7 +16,8 @@ from scripts.data_fetch import (
     get_options_flow, get_ema200, get_iv_term_structure,
     get_dividend_info, get_short_interest, get_vol_skew,
     get_hv_and_iv_premium, get_analyst_sentiment, get_risk_free_rate,
-    get_live_spot,
+    get_live_spot, get_beta, get_atr_pct, get_iv_rank_52w,
+    get_max_pain, get_oi_concentration, get_vix_context, get_macro_context,
 )
 from scripts.black_scholes import delta as bs_delta, theta as bs_theta, gamma as bs_gamma, vega as bs_vega
 import yfinance as yf
@@ -769,6 +770,8 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
     result["vol_oi_ratio"] = flow["vol_oi_ratio"]
     result["call_oi"] = flow["call_oi"]
     result["put_oi"] = flow["put_oi"]
+    result["call_vol"] = flow["call_vol"]
+    result["put_vol"] = flow["put_vol"]
     result["oi_delta_calls"] = flow["oi_delta_calls"]
     result["oi_delta_puts"] = flow["oi_delta_puts"]
 
@@ -806,6 +809,25 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
     result["iv_premium"]  = hv_data["iv_premium"]  if hv_data else None
     result["iv_discount"] = hv_data["iv_discount"] if hv_data else None
     result["iv_hv_ratio"] = hv_data["iv_hv_ratio"] if hv_data else None
+
+    # ── Phase 1 market metrics (zero new API dependencies) ───────────────────
+    spy_hist = get_price_history("SPY")
+    result["beta_60d"]         = get_beta(hist, spy_hist, window=60)
+    result["atr_pct"]          = get_atr_pct(hist, spot)
+    result["iv_rank_52w"]      = get_iv_rank_52w(ticker, atm_iv)
+    result["max_pain_strike"]  = get_max_pain(calls, puts)
+    result["oi_concentration"] = get_oi_concentration(calls, puts, spot)
+    vix_ctx = get_vix_context()
+    result["vvix"]             = vix_ctx["vvix"]
+    result["vix_3m"]           = vix_ctx["vix_3m"]
+    result["vix_term_slope"]   = vix_ctx["vix_term_slope"]
+    macro = get_macro_context(dte=dte)
+    result["yield_10y"]        = macro["yield_10y"]
+    result["yield_3m"]         = macro["yield_3m"]
+    result["yield_curve"]      = macro["yield_curve"]
+    result["fed_within_dte"]   = macro["fed_within_dte"]
+    result["cpi_within_dte"]   = macro["cpi_within_dte"]
+    # ─────────────────────────────────────────────────────────────────────────
 
     iv_rank = get_iv_rank_proxy(hist, atm_iv, ticker=ticker)
     result["iv_rank_proxy"] = iv_rank
@@ -1844,8 +1866,10 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
         candidates.append({
             "structure": "Long Strangle",
             "recommended": (
-                _ls_fits_cap and iv_env == "Low"
-                # show as recommended when IV is low (cheap vol) and a big move is expected
+                _ls_fits_cap
+                and iv_env == "Low"
+                and (result.get("atm_iv") or 0) > 0.15
+                # require at least 15% annualised IV so the strangle isn't a theta bleed on a moribund stock
             ),
             "details": (
                 f"BUY {_ls_call_k:.0f}C (${_ls_call_debit:.2f}) + BUY {_ls_put_k:.0f}P (${_ls_put_debit:.2f}) — "

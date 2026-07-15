@@ -907,7 +907,7 @@ th {
 }
 .pt-hdr-entry-val {
   font-size: 0.78rem;
-  color: var(--clr-pt-text-mid);
+  /*color: var(--clr-pt-text-mid);*/
   font-weight: 500;
 }
 .pt-hdr-dot {
@@ -946,7 +946,7 @@ th {
   font-size: 0.6rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--clr-text-muted);
+ /* color: var(--clr-text-muted);*/
 }
 .pt-hdr-val {
   font-size: 0.9rem;
@@ -1257,21 +1257,20 @@ span.pt-live-loading {
 
 
 
+/* signal-notes / signal-note used in ticker cards (non-top3) — kept for those */
 .signal-notes {
   display: flex;
   flex-wrap: wrap;
   gap: 0.3rem;
-  padding: 0.4rem 0.75rem;
-  border-bottom: 1px solid var(--border, var(--clr-text-dark));
+  padding: 0.2rem 0;
 }
-
 .signal-note {
   font-size: 0.72rem;
   background: var(--clr-border-light);
   color: var(--clr-pass-text);
   border: 1px solid var(--clr-pass-dark);
-  border-radius: 3px;
-  padding: 0.15rem 0.45rem;
+  border-radius: 10px;
+  padding: 0.15rem 0.5rem;
   white-space: nowrap;
 }
 
@@ -3354,35 +3353,10 @@ span.pt-live-loading {
   padding: 0.15rem 0.65rem;
 }
 
-.top3-big-metrics {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.3rem;
-}
-
-.top3-metric {
-  text-align: center;
-  padding: 0.45rem 0.25rem;
-  background: var(--bg);
-  border-radius: 6px;
-  border: 1px solid var(--border);
-}
-
-.top3-metric-value {
-  display: block;
-  font-size: 1.15rem;
-  font-weight: 800;
-  line-height: 1;
-}
-
-.top3-metric-label {
-  display: block;
-  font-size: 0.58rem;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-top: 0.15rem;
-}
+/* top3-big-metrics now uses lp-ml-section / lp-ml-pills — no grid tiles */
+.top3-metric,
+.top3-metric-value,
+.top3-metric-label { /* kept for any legacy references */ }
 
 .top3-sub {
   display: grid;
@@ -3409,6 +3383,21 @@ span.pt-live-loading {
   line-height: 1.4;
   background: var(--clr-surface-alt);
   border-radius: 0 4px 4px 0;
+}
+
+.top3-ai-details {
+  font-size: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.2rem 0.4rem;
+}
+.top3-ai-details summary {
+  cursor: pointer;
+  color: var(--muted);
+  user-select: none;
+}
+.top3-ai-details .top3-ai {
+  margin-top: 0.3rem;
 }
 
 .top3-details-toggle {

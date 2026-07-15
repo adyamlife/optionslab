@@ -75,6 +75,12 @@ high_bonus =  8
 # or subtracted (short-vega structures) from the composite score.
 weight = 8.0
 
+[portfolio_risk]
+max_ticker_trades   = 5    # max open positions per ticker before blocking new entries
+max_sector_count    = 2    # max open trades in the same sector ETF
+max_deployment_pct  = 20.0 # max % of total notional capital deployed
+max_net_delta       = 3.0  # max net portfolio delta in underlying-equivalent shares
+
 [penalties]
 # Subtracted from or added to the composite score. These do not eliminate candidates.
 trend_conflict        = 10   # structure directional bias vs ML p_win disagrees

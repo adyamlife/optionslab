@@ -1361,3 +1361,1848 @@ LINE 7:             CASE WHEN regime = LAG(regime) OVER (ORDER BY date) THEN 0 E
 2026-07-13 10:46:44,340 WARNING Skipping ORCL Financed Long Put — short or long strike is None
 2026-07-13 10:46:44,699 INFO Paper trade #3: 20260713_WMT_LON_3  credit=2.390  expiry=2026-07-31
 2026-07-13 10:46:45,485 INFO Training snapshot written for paper trade 20260713_WMT_LON_3
+2026-07-14 10:00:05,442 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-14 10:00:06,573 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-14 10:00:28,063 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-14 10:00:28,347 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-14 10:00:41,113 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-14 10:00:41,542 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-14 10:00:56,209 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-14 10:00:56,549 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-14 10:01:09,469 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-14 10:01:09,788 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-14 10:01:22,798 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-14 10:01:23,162 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-14 10:11:15,714 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-07-14 10:11:16,032 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-07-14 10:11:49,745 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-07-14 10:11:52,870 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-07-14 10:11:53,242 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-07-14 10:11:57,181 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-07-14 10:11:57,564 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-07-14 10:12:00,664 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-07-14 10:12:00,995 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-07-14 10:12:04,589 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-07-14 10:12:04,888 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-07-14 10:12:14,434 ERROR HTTP Error 500: {"finance":{"result":null,"error":{"code":"Internal Server Error","description":"Server caught an exception"}}}
+2026-07-14 10:13:22,652 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-14 10:13:23,214 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-14 10:13:28,490 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-14 10:13:29,122 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-14 10:13:31,821 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-14 10:13:32,458 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-14 10:19:39,973 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-07-14 10:19:40,517 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-07-14 10:19:42,289 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-07-14 10:19:42,892 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-07-14 10:19:45,216 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-07-14 10:19:45,882 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-07-14 10:20:59,853 INFO Skip SPY Call Debit Spread — confidence 0.630 < 0.70
+2026-07-14 10:20:59,884 INFO Skip SPY Put Debit Spread — confidence 0.630 < 0.70
+2026-07-14 10:20:59,886 INFO Skip SPY Long Strangle — confidence 0.630 < 0.70
+2026-07-14 10:20:59,886 INFO Skip SPY Long Strangle — confidence 0.630 < 0.70
+2026-07-14 10:20:59,888 INFO Skip QQQ Calendar Spread — required strikes incomplete
+2026-07-14 10:20:59,889 INFO Skip QQQ Calendar Spread — required strikes incomplete
+2026-07-14 10:20:59,889 INFO Skip TQQQ Put Credit Spread — required strikes incomplete
+2026-07-14 10:20:59,889 INFO Skip TQQQ Call Credit Spread — max_profit $0.39 < $1.00 min
+2026-07-14 10:20:59,891 INFO Skip TQQQ Iron Condor — required strikes incomplete
+2026-07-14 10:20:59,891 INFO Skip TQQQ Jade Lizard — required strikes incomplete
+2026-07-14 10:20:59,892 INFO Skip TQQQ Calendar Spread — required strikes incomplete
+2026-07-14 10:20:59,892 INFO Skip TQQQ Diagonal Spread — required strikes incomplete
+2026-07-14 10:20:59,892 INFO Skip TQQQ Put Credit Spread — max_profit $0.01 < $1.00 min
+2026-07-14 10:20:59,893 INFO Skip TQQQ Covered Call — IV edge -4.5vp (undersell)
+2026-07-14 10:20:59,893 INFO Skip TQQQ Call Credit Spread — required strikes incomplete
+2026-07-14 10:20:59,894 INFO Skip TQQQ Iron Condor — required strikes incomplete
+2026-07-14 10:20:59,894 INFO Skip TQQQ Jade Lizard — required strikes incomplete
+2026-07-14 10:20:59,897 INFO Skip TQQQ Calendar Spread — required strikes incomplete
+2026-07-14 10:20:59,897 INFO Skip TQQQ Diagonal Spread — required strikes incomplete
+2026-07-14 10:20:59,898 INFO Skip NVDA Calendar Spread — required strikes incomplete
+2026-07-14 10:20:59,898 INFO Skip NVDA Calendar Spread — required strikes incomplete
+2026-07-14 10:20:59,899 INFO Skip MSFT Calendar Spread — required strikes incomplete
+2026-07-14 10:20:59,899 INFO Skip MSFT Calendar Spread — required strikes incomplete
+2026-07-14 10:20:59,900 INFO Skip AVGO Calendar Spread — required strikes incomplete
+2026-07-14 10:20:59,900 INFO Skip AVGO Calendar Spread — required strikes incomplete
+2026-07-14 10:20:59,900 INFO Skip AMD Put Credit Spread — required strikes incomplete
+2026-07-14 10:20:59,901 INFO Skip AMD Cash Secured Put — confidence 0.695 < 0.70
+2026-07-14 10:20:59,901 INFO Skip AMD Covered Call — confidence 0.695 < 0.70
+2026-07-14 10:20:59,902 INFO Skip AMD Call Credit Spread — confidence 0.695 < 0.70
+2026-07-14 10:20:59,902 INFO Skip AMD Iron Condor — required strikes incomplete
+2026-07-14 10:20:59,903 INFO Skip AMD Call Debit Spread — confidence 0.695 < 0.70
+2026-07-14 10:20:59,903 INFO Skip AMD Put Debit Spread — confidence 0.695 < 0.70
+2026-07-14 10:20:59,904 INFO Skip AMD Jade Lizard — required strikes incomplete
+2026-07-14 10:20:59,904 INFO Skip AMD Risk Reversal — confidence 0.695 < 0.70
+2026-07-14 10:20:59,905 INFO Skip AMD Bear Combo — confidence 0.695 < 0.70
+2026-07-14 10:20:59,905 INFO Skip AMD Financed Long Call — confidence 0.695 < 0.70
+2026-07-14 10:20:59,906 INFO Skip AMD Financed Long Put — confidence 0.695 < 0.70
+2026-07-14 10:20:59,906 INFO Skip AMD Ratio Call Backspread — confidence 0.695 < 0.70
+2026-07-14 10:20:59,907 INFO Skip AMD Ratio Put Backspread — confidence 0.695 < 0.70
+2026-07-14 10:20:59,907 INFO Skip AMD Long Strangle — confidence 0.695 < 0.70
+2026-07-14 10:20:59,908 INFO Skip AMD Calendar Spread — required strikes incomplete
+2026-07-14 10:20:59,908 INFO Skip AMD Diagonal Spread — required strikes incomplete
+2026-07-14 10:20:59,909 INFO Skip AMD Put Credit Spread — required strikes incomplete
+2026-07-14 10:20:59,909 INFO Skip AMD Cash Secured Put — confidence 0.695 < 0.70
+2026-07-14 10:20:59,910 INFO Skip AMD Covered Call — required strikes incomplete
+2026-07-14 10:20:59,913 INFO Skip AMD Call Credit Spread — required strikes incomplete
+2026-07-14 10:20:59,914 INFO Skip AMD Iron Condor — required strikes incomplete
+2026-07-14 10:20:59,914 INFO Skip AMD Call Debit Spread — required strikes incomplete
+2026-07-14 10:20:59,915 INFO Skip AMD Put Debit Spread — required strikes incomplete
+2026-07-14 10:20:59,915 INFO Skip AMD Jade Lizard — required strikes incomplete
+2026-07-14 10:20:59,915 INFO Skip AMD Risk Reversal — confidence 0.695 < 0.70
+2026-07-14 10:20:59,916 INFO Skip AMD Bear Combo — required strikes incomplete
+2026-07-14 10:20:59,916 INFO Skip AMD Financed Long Call — confidence 0.695 < 0.70
+2026-07-14 10:20:59,917 INFO Skip AMD Financed Long Put — required strikes incomplete
+2026-07-14 10:20:59,917 INFO Skip AMD Ratio Call Backspread — confidence 0.695 < 0.70
+2026-07-14 10:20:59,918 INFO Skip AMD Ratio Put Backspread — required strikes incomplete
+2026-07-14 10:20:59,918 INFO Skip AMD Long Strangle — confidence 0.695 < 0.70
+2026-07-14 10:20:59,919 INFO Skip AMD Calendar Spread — required strikes incomplete
+2026-07-14 10:20:59,919 INFO Skip AMD Diagonal Spread — required strikes incomplete
+2026-07-14 10:20:59,920 INFO Skip MU Put Credit Spread — required strikes incomplete
+2026-07-14 10:20:59,920 INFO Skip MU Cash Secured Put — required strikes incomplete
+2026-07-14 10:20:59,921 INFO Skip MU Covered Call — required strikes incomplete
+2026-07-14 10:20:59,921 INFO Skip MU Call Credit Spread — required strikes incomplete
+2026-07-14 10:20:59,922 INFO Skip MU Iron Condor — required strikes incomplete
+2026-07-14 10:20:59,922 INFO Skip MU Call Debit Spread — required strikes incomplete
+2026-07-14 10:20:59,923 INFO Skip MU Put Debit Spread — required strikes incomplete
+2026-07-14 10:20:59,923 INFO Skip MU Jade Lizard — required strikes incomplete
+2026-07-14 10:20:59,924 INFO Skip MU Risk Reversal — required strikes incomplete
+2026-07-14 10:20:59,924 INFO Skip MU Bear Combo — required strikes incomplete
+2026-07-14 10:20:59,925 INFO Skip MU Financed Long Call — required strikes incomplete
+2026-07-14 10:20:59,925 INFO Skip MU Financed Long Put — required strikes incomplete
+2026-07-14 10:20:59,927 INFO Skip MU Ratio Call Backspread — required strikes incomplete
+2026-07-14 10:20:59,930 INFO Skip MU Ratio Put Backspread — required strikes incomplete
+2026-07-14 10:20:59,931 INFO Skip MU Long Strangle — required strikes incomplete
+2026-07-14 10:20:59,931 INFO Skip MU Calendar Spread — required strikes incomplete
+2026-07-14 10:20:59,932 INFO Skip MU Diagonal Spread — required strikes incomplete
+2026-07-14 10:20:59,932 INFO Skip MU Put Credit Spread — required strikes incomplete
+2026-07-14 10:20:59,932 INFO Skip MU Cash Secured Put — required strikes incomplete
+2026-07-14 10:20:59,933 INFO Skip MU Covered Call — required strikes incomplete
+2026-07-14 10:20:59,933 INFO Skip MU Call Credit Spread — required strikes incomplete
+2026-07-14 10:20:59,934 INFO Skip MU Iron Condor — required strikes incomplete
+2026-07-14 10:20:59,934 INFO Skip MU Call Debit Spread — required strikes incomplete
+2026-07-14 10:20:59,935 INFO Skip MU Put Debit Spread — required strikes incomplete
+2026-07-14 10:20:59,935 INFO Skip MU Jade Lizard — required strikes incomplete
+2026-07-14 10:20:59,936 INFO Skip MU Risk Reversal — required strikes incomplete
+2026-07-14 10:20:59,936 INFO Skip MU Bear Combo — required strikes incomplete
+2026-07-14 10:20:59,937 INFO Skip MU Financed Long Call — required strikes incomplete
+2026-07-14 10:20:59,937 INFO Skip MU Financed Long Put — required strikes incomplete
+2026-07-14 10:20:59,938 INFO Skip MU Ratio Call Backspread — required strikes incomplete
+2026-07-14 10:20:59,938 INFO Skip MU Ratio Put Backspread — required strikes incomplete
+2026-07-14 10:20:59,939 INFO Skip MU Long Strangle — required strikes incomplete
+2026-07-14 10:20:59,939 INFO Skip MU Calendar Spread — required strikes incomplete
+2026-07-14 10:20:59,940 INFO Skip MU Diagonal Spread — required strikes incomplete
+2026-07-14 10:20:59,940 INFO Skip ARM Put Credit Spread — required strikes incomplete
+2026-07-14 10:20:59,941 INFO Skip ARM Call Credit Spread — required strikes incomplete
+2026-07-14 10:20:59,944 INFO Skip ARM Iron Condor — required strikes incomplete
+2026-07-14 10:20:59,944 INFO Skip ARM Call Debit Spread — required strikes incomplete
+2026-07-14 10:20:59,945 INFO Skip ARM Jade Lizard — required strikes incomplete
+2026-07-14 10:20:59,946 INFO Skip ARM Risk Reversal — max_profit $0.00 < $1.00 min
+2026-07-14 10:20:59,946 INFO Skip ARM Ratio Call Backspread — required strikes incomplete
+2026-07-14 10:20:59,946 INFO Skip ARM Calendar Spread — required strikes incomplete
+2026-07-14 10:20:59,947 INFO Skip ARM Diagonal Spread — required strikes incomplete
+2026-07-14 10:20:59,947 INFO Skip ARM Put Credit Spread — max_profit $0.51 < $1.00 min
+2026-07-14 10:20:59,948 INFO Skip ARM Call Credit Spread — max_profit $0.20 < $1.00 min
+2026-07-14 10:20:59,948 INFO Skip ARM Iron Condor — max_profit $0.71 < $1.00 min
+2026-07-14 10:20:59,949 INFO Skip ARM Call Debit Spread — required strikes incomplete
+2026-07-14 10:20:59,949 INFO Skip ARM Jade Lizard — required strikes incomplete
+2026-07-14 10:20:59,951 INFO Skip ARM Risk Reversal — max_profit $0.00 < $1.00 min
+2026-07-14 10:20:59,951 INFO Skip ARM Ratio Call Backspread — required strikes incomplete
+2026-07-14 10:20:59,951 INFO Skip ARM Calendar Spread — required strikes incomplete
+2026-07-14 10:20:59,952 INFO Skip ARM Diagonal Spread — required strikes incomplete
+2026-07-14 10:20:59,953 INFO Skip INTC Put Credit Spread — max_profit $0.98 < $1.00 min
+2026-07-14 10:20:59,953 INFO Skip INTC Covered Call — IV edge -3.6vp (undersell)
+2026-07-14 10:20:59,954 INFO Skip INTC Call Credit Spread — required strikes incomplete
+2026-07-14 10:20:59,954 INFO Skip INTC Iron Condor — required strikes incomplete
+2026-07-14 10:20:59,955 INFO Skip INTC Jade Lizard — required strikes incomplete
+2026-07-14 10:20:59,955 INFO Skip INTC Calendar Spread — required strikes incomplete
+2026-07-14 10:20:59,956 INFO Skip INTC Diagonal Spread — required strikes incomplete
+2026-07-14 10:20:59,956 INFO Skip INTC Put Credit Spread — max_profit $0.54 < $1.00 min
+2026-07-14 10:20:59,957 INFO Skip INTC Cash Secured Put — IV edge -3.2vp (undersell)
+2026-07-14 10:20:59,960 INFO Skip INTC Call Credit Spread — max_profit $0.20 < $1.00 min
+2026-07-14 10:20:59,960 INFO Skip INTC Iron Condor — required strikes incomplete
+2026-07-14 10:20:59,961 INFO Skip INTC Jade Lizard — required strikes incomplete
+2026-07-14 10:20:59,961 INFO Skip INTC Risk Reversal — required strikes incomplete
+2026-07-14 10:20:59,962 INFO Skip INTC Financed Long Call — required strikes incomplete
+2026-07-14 10:20:59,962 INFO Skip INTC Calendar Spread — required strikes incomplete
+2026-07-14 10:20:59,962 INFO Skip INTC Diagonal Spread — required strikes incomplete
+2026-07-14 10:20:59,963 INFO Skip QCOM Put Credit Spread — max_profit $0.41 < $1.00 min
+2026-07-14 10:20:59,963 INFO Skip QCOM Cash Secured Put — IV edge -3.1vp (undersell)
+2026-07-14 10:20:59,964 INFO Skip QCOM Call Credit Spread — required strikes incomplete
+2026-07-14 10:20:59,964 INFO Skip QCOM Iron Condor — required strikes incomplete
+2026-07-14 10:20:59,965 INFO Skip QCOM Jade Lizard — required strikes incomplete
+2026-07-14 10:20:59,965 INFO Skip QCOM Risk Reversal — max_profit $0.00 < $1.00 min
+2026-07-14 10:20:59,966 INFO Skip QCOM Calendar Spread — required strikes incomplete
+2026-07-14 10:20:59,966 INFO Skip QCOM Diagonal Spread — required strikes incomplete
+2026-07-14 10:20:59,967 INFO Skip QCOM Put Credit Spread — required strikes incomplete
+2026-07-14 10:20:59,967 INFO Skip QCOM Cash Secured Put — IV edge -4.9vp (undersell)
+2026-07-14 10:20:59,968 INFO Skip QCOM Call Credit Spread — max_profit $0.21 < $1.00 min
+2026-07-14 10:20:59,968 INFO Skip QCOM Iron Condor — required strikes incomplete
+2026-07-14 10:20:59,969 INFO Skip QCOM Jade Lizard — required strikes incomplete
+2026-07-14 10:20:59,969 INFO Skip QCOM Calendar Spread — required strikes incomplete
+2026-07-14 10:20:59,970 INFO Skip QCOM Diagonal Spread — required strikes incomplete
+2026-07-14 10:20:59,970 INFO Skip TXN Iron Condor — required strikes incomplete
+2026-07-14 10:20:59,971 INFO Skip TXN Call Debit Spread — required strikes incomplete
+2026-07-14 10:20:59,971 INFO Skip TXN Jade Lizard — required strikes incomplete
+2026-07-14 10:20:59,972 INFO Skip TXN Risk Reversal — max_profit $0.60 < $1.00 min
+2026-07-14 10:20:59,975 INFO Skip TXN Financed Long Put — required strikes incomplete
+2026-07-14 10:20:59,975 INFO Skip TXN Calendar Spread — required strikes incomplete
+2026-07-14 10:20:59,977 INFO Skip TXN Diagonal Spread — required strikes incomplete
+2026-07-14 10:20:59,977 INFO Skip TXN Put Credit Spread — required strikes incomplete
+2026-07-14 10:20:59,978 INFO Skip TXN Call Credit Spread — required strikes incomplete
+2026-07-14 10:20:59,978 INFO Skip TXN Iron Condor — required strikes incomplete
+2026-07-14 10:20:59,978 INFO Skip TXN Jade Lizard — required strikes incomplete
+2026-07-14 10:20:59,979 INFO Skip TXN Calendar Spread — required strikes incomplete
+2026-07-14 10:20:59,979 INFO Skip TXN Diagonal Spread — required strikes incomplete
+2026-07-14 10:20:59,980 INFO Skip KLAC Put Credit Spread — required strikes incomplete
+2026-07-14 10:20:59,980 INFO Skip KLAC Cash Secured Put — required strikes incomplete
+2026-07-14 10:20:59,981 INFO Skip KLAC Covered Call — required strikes incomplete
+2026-07-14 10:20:59,981 INFO Skip KLAC Call Credit Spread — required strikes incomplete
+2026-07-14 10:20:59,982 INFO Skip KLAC Iron Condor — required strikes incomplete
+2026-07-14 10:20:59,982 INFO Skip KLAC Call Debit Spread — required strikes incomplete
+2026-07-14 10:20:59,983 INFO Skip KLAC Put Debit Spread — required strikes incomplete
+2026-07-14 10:20:59,983 INFO Skip KLAC Jade Lizard — required strikes incomplete
+2026-07-14 10:20:59,984 INFO Skip KLAC Risk Reversal — required strikes incomplete
+2026-07-14 10:20:59,984 INFO Skip KLAC Bear Combo — required strikes incomplete
+2026-07-14 10:20:59,985 INFO Skip KLAC Financed Long Call — required strikes incomplete
+2026-07-14 10:20:59,985 INFO Skip KLAC Financed Long Put — required strikes incomplete
+2026-07-14 10:20:59,986 INFO Skip KLAC Ratio Call Backspread — required strikes incomplete
+2026-07-14 10:20:59,986 INFO Skip KLAC Ratio Put Backspread — required strikes incomplete
+2026-07-14 10:20:59,987 INFO Skip KLAC Long Strangle — required strikes incomplete
+2026-07-14 10:20:59,989 INFO Skip KLAC Calendar Spread — required strikes incomplete
+2026-07-14 10:20:59,991 INFO Skip KLAC Diagonal Spread — required strikes incomplete
+2026-07-14 10:20:59,991 INFO Skip KLAC Put Credit Spread — required strikes incomplete
+2026-07-14 10:20:59,992 INFO Skip KLAC Cash Secured Put — required strikes incomplete
+2026-07-14 10:20:59,992 INFO Skip KLAC Covered Call — required strikes incomplete
+2026-07-14 10:20:59,993 INFO Skip KLAC Call Credit Spread — required strikes incomplete
+2026-07-14 10:20:59,993 INFO Skip KLAC Iron Condor — required strikes incomplete
+2026-07-14 10:20:59,994 INFO Skip KLAC Call Debit Spread — required strikes incomplete
+2026-07-14 10:20:59,994 INFO Skip KLAC Put Debit Spread — required strikes incomplete
+2026-07-14 10:20:59,994 INFO Skip KLAC Jade Lizard — required strikes incomplete
+2026-07-14 10:20:59,995 INFO Skip KLAC Risk Reversal — required strikes incomplete
+2026-07-14 10:20:59,995 INFO Skip KLAC Bear Combo — required strikes incomplete
+2026-07-14 10:20:59,996 INFO Skip KLAC Financed Long Call — required strikes incomplete
+2026-07-14 10:20:59,996 INFO Skip KLAC Financed Long Put — required strikes incomplete
+2026-07-14 10:20:59,997 INFO Skip KLAC Ratio Call Backspread — required strikes incomplete
+2026-07-14 10:20:59,997 INFO Skip KLAC Ratio Put Backspread — required strikes incomplete
+2026-07-14 10:20:59,998 INFO Skip KLAC Long Strangle — required strikes incomplete
+2026-07-14 10:20:59,998 INFO Skip KLAC Calendar Spread — required strikes incomplete
+2026-07-14 10:20:59,999 INFO Skip KLAC Diagonal Spread — required strikes incomplete
+2026-07-14 10:20:59,999 INFO Skip LRCX Put Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,000 INFO Skip LRCX Cash Secured Put — required strikes incomplete
+2026-07-14 10:21:00,000 INFO Skip LRCX Covered Call — required strikes incomplete
+2026-07-14 10:21:00,001 INFO Skip LRCX Call Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,001 INFO Skip LRCX Iron Condor — required strikes incomplete
+2026-07-14 10:21:00,002 INFO Skip LRCX Call Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,002 INFO Skip LRCX Put Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,005 INFO Skip LRCX Jade Lizard — required strikes incomplete
+2026-07-14 10:21:00,009 INFO Skip LRCX Risk Reversal — required strikes incomplete
+2026-07-14 10:21:00,010 INFO Skip LRCX Bear Combo — required strikes incomplete
+2026-07-14 10:21:00,011 INFO Skip LRCX Financed Long Call — required strikes incomplete
+2026-07-14 10:21:00,011 INFO Skip LRCX Financed Long Put — required strikes incomplete
+2026-07-14 10:21:00,012 INFO Skip LRCX Ratio Call Backspread — required strikes incomplete
+2026-07-14 10:21:00,012 INFO Skip LRCX Ratio Put Backspread — required strikes incomplete
+2026-07-14 10:21:00,013 INFO Skip LRCX Long Strangle — required strikes incomplete
+2026-07-14 10:21:00,013 INFO Skip LRCX Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,014 INFO Skip LRCX Diagonal Spread — required strikes incomplete
+2026-07-14 10:21:00,014 INFO Skip LRCX Put Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,015 INFO Skip LRCX Cash Secured Put — required strikes incomplete
+2026-07-14 10:21:00,016 INFO Skip LRCX Covered Call — required strikes incomplete
+2026-07-14 10:21:00,016 INFO Skip LRCX Call Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,017 INFO Skip LRCX Iron Condor — required strikes incomplete
+2026-07-14 10:21:00,017 INFO Skip LRCX Call Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,018 INFO Skip LRCX Put Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,018 INFO Skip LRCX Jade Lizard — required strikes incomplete
+2026-07-14 10:21:00,019 INFO Skip LRCX Risk Reversal — required strikes incomplete
+2026-07-14 10:21:00,021 INFO Skip LRCX Bear Combo — required strikes incomplete
+2026-07-14 10:21:00,022 INFO Skip LRCX Financed Long Call — required strikes incomplete
+2026-07-14 10:21:00,023 INFO Skip LRCX Financed Long Put — required strikes incomplete
+2026-07-14 10:21:00,023 INFO Skip LRCX Ratio Call Backspread — required strikes incomplete
+2026-07-14 10:21:00,024 INFO Skip LRCX Ratio Put Backspread — required strikes incomplete
+2026-07-14 10:21:00,024 INFO Skip LRCX Long Strangle — required strikes incomplete
+2026-07-14 10:21:00,025 INFO Skip LRCX Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,025 INFO Skip LRCX Diagonal Spread — required strikes incomplete
+2026-07-14 10:21:00,026 INFO Skip CDNS Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,026 INFO Skip PLTR Call Debit Spread — confidence 0.607 < 0.70
+2026-07-14 10:21:00,027 INFO Skip PLTR Put Debit Spread — confidence 0.607 < 0.70
+2026-07-14 10:21:00,027 INFO Skip PLTR Long Strangle — confidence 0.607 < 0.70
+2026-07-14 10:21:00,028 INFO Skip PLTR Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,028 INFO Skip PLTR Call Debit Spread — confidence 0.607 < 0.70
+2026-07-14 10:21:00,029 INFO Skip PLTR Put Debit Spread — confidence 0.607 < 0.70
+2026-07-14 10:21:00,029 INFO Skip PLTR Long Strangle — confidence 0.607 < 0.70
+2026-07-14 10:21:00,030 INFO Skip PLTR Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,031 INFO Skip MDB Put Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,031 INFO Skip MDB Cash Secured Put — required strikes incomplete
+2026-07-14 10:21:00,032 INFO Skip MDB Covered Call — required strikes incomplete
+2026-07-14 10:21:00,032 INFO Skip MDB Call Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,033 INFO Skip MDB Iron Condor — required strikes incomplete
+2026-07-14 10:21:00,033 INFO Skip MDB Call Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,034 INFO Skip MDB Put Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,034 INFO Skip MDB Jade Lizard — required strikes incomplete
+2026-07-14 10:21:00,035 INFO Skip MDB Risk Reversal — required strikes incomplete
+2026-07-14 10:21:00,039 INFO Skip MDB Bear Combo — required strikes incomplete
+2026-07-14 10:21:00,039 INFO Skip MDB Financed Long Call — required strikes incomplete
+2026-07-14 10:21:00,040 INFO Skip MDB Financed Long Put — required strikes incomplete
+2026-07-14 10:21:00,041 INFO Skip MDB Ratio Call Backspread — required strikes incomplete
+2026-07-14 10:21:00,041 INFO Skip MDB Ratio Put Backspread — required strikes incomplete
+2026-07-14 10:21:00,042 INFO Skip MDB Long Strangle — required strikes incomplete
+2026-07-14 10:21:00,042 INFO Skip MDB Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,043 INFO Skip MDB Diagonal Spread — required strikes incomplete
+2026-07-14 10:21:00,044 INFO Skip MDB Put Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,044 INFO Skip MDB Cash Secured Put — required strikes incomplete
+2026-07-14 10:21:00,045 INFO Skip MDB Covered Call — required strikes incomplete
+2026-07-14 10:21:00,045 INFO Skip MDB Call Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,046 INFO Skip MDB Iron Condor — required strikes incomplete
+2026-07-14 10:21:00,046 INFO Skip MDB Call Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,047 INFO Skip MDB Put Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,047 INFO Skip MDB Jade Lizard — required strikes incomplete
+2026-07-14 10:21:00,048 INFO Skip MDB Risk Reversal — required strikes incomplete
+2026-07-14 10:21:00,048 INFO Skip MDB Bear Combo — required strikes incomplete
+2026-07-14 10:21:00,049 INFO Skip MDB Financed Long Call — required strikes incomplete
+2026-07-14 10:21:00,049 INFO Skip MDB Financed Long Put — required strikes incomplete
+2026-07-14 10:21:00,050 INFO Skip MDB Ratio Call Backspread — required strikes incomplete
+2026-07-14 10:21:00,050 INFO Skip MDB Ratio Put Backspread — required strikes incomplete
+2026-07-14 10:21:00,053 INFO Skip MDB Long Strangle — required strikes incomplete
+2026-07-14 10:21:00,053 INFO Skip MDB Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,054 INFO Skip MDB Diagonal Spread — required strikes incomplete
+2026-07-14 10:21:00,055 INFO Skip ORCL Put Credit Spread — max_profit $0.55 < $1.00 min
+2026-07-14 10:21:00,056 INFO Skip ORCL Call Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,056 INFO Skip ORCL Iron Condor — required strikes incomplete
+2026-07-14 10:21:00,057 INFO Skip ORCL Jade Lizard — required strikes incomplete
+2026-07-14 10:21:00,058 INFO Skip ORCL Risk Reversal — max_profit $0.00 < $1.00 min
+2026-07-14 10:21:00,059 INFO Skip ORCL Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,059 INFO Skip ORCL Diagonal Spread — required strikes incomplete
+2026-07-14 10:21:00,060 INFO Skip ORCL Put Credit Spread — max_profit $0.63 < $1.00 min
+2026-07-14 10:21:00,060 INFO Skip ORCL Covered Call — IV edge -4.6vp (undersell)
+2026-07-14 10:21:00,061 INFO Skip ORCL Call Credit Spread — max_profit $0.08 < $1.00 min
+2026-07-14 10:21:00,061 INFO Skip ORCL Iron Condor — max_profit $0.71 < $1.00 min
+2026-07-14 10:21:00,062 INFO Skip ORCL Put Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,062 INFO Skip ORCL Jade Lizard — required strikes incomplete
+2026-07-14 10:21:00,063 INFO Skip ORCL Risk Reversal — max_profit $0.52 < $1.00 min
+2026-07-14 10:21:00,063 INFO Skip ORCL Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,064 INFO Skip ORCL Diagonal Spread — required strikes incomplete
+2026-07-14 10:21:00,064 INFO Skip CRM Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,065 INFO Skip CRM Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,065 INFO Skip NOW Put Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,066 INFO Skip NOW Call Credit Spread — max_profit $0.74 < $1.00 min
+2026-07-14 10:21:00,069 INFO Skip NOW Iron Condor — required strikes incomplete
+2026-07-14 10:21:00,070 INFO Skip NOW Call Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,070 INFO Skip NOW Jade Lizard — required strikes incomplete
+2026-07-14 10:21:00,071 INFO Skip NOW Risk Reversal — max_profit $0.00 < $1.00 min
+2026-07-14 10:21:00,071 INFO Skip NOW Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,072 INFO Skip NOW Diagonal Spread — required strikes incomplete
+2026-07-14 10:21:00,072 INFO Skip NOW Put Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,073 INFO Skip NOW Cash Secured Put — IV edge -2.8vp (undersell)
+2026-07-14 10:21:00,073 INFO Skip NOW Covered Call — IV edge -3.8vp (undersell)
+2026-07-14 10:21:00,074 INFO Skip NOW Call Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,074 INFO Skip NOW Iron Condor — required strikes incomplete
+2026-07-14 10:21:00,075 INFO Skip NOW Jade Lizard — required strikes incomplete
+2026-07-14 10:21:00,075 INFO Skip NOW Risk Reversal — max_profit $0.00 < $1.00 min
+2026-07-14 10:21:00,076 INFO Skip NOW Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,076 INFO Skip NOW Diagonal Spread — required strikes incomplete
+2026-07-14 10:21:00,077 INFO Skip TEAM Put Credit Spread — max_profit $0.10 < $1.00 min
+2026-07-14 10:21:00,077 INFO Skip TEAM Cash Secured Put — max_profit $0.75 < $1.00 min
+2026-07-14 10:21:00,078 INFO Skip TEAM Iron Condor — required strikes incomplete
+2026-07-14 10:21:00,078 INFO Skip TEAM Put Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,079 INFO Skip TEAM Jade Lizard — required strikes incomplete
+2026-07-14 10:21:00,079 INFO Skip TEAM Risk Reversal — required strikes incomplete
+2026-07-14 10:21:00,080 INFO Skip TEAM Bear Combo — required strikes incomplete
+2026-07-14 10:21:00,080 INFO Skip TEAM Financed Long Put — required strikes incomplete
+2026-07-14 10:21:00,081 INFO Skip TEAM Ratio Put Backspread — required strikes incomplete
+2026-07-14 10:21:00,081 INFO Skip TEAM Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,084 INFO Skip TEAM Diagonal Spread — required strikes incomplete
+2026-07-14 10:21:00,085 INFO Skip TEAM Put Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,086 INFO Skip TEAM Cash Secured Put — max_profit $0.45 < $1.00 min
+2026-07-14 10:21:00,086 INFO Skip TEAM Covered Call — IV edge -7.9vp (undersell)
+2026-07-14 10:21:00,086 INFO Skip TEAM Call Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,087 INFO Skip TEAM Iron Condor — required strikes incomplete
+2026-07-14 10:21:00,087 INFO Skip TEAM Call Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,088 INFO Skip TEAM Jade Lizard — required strikes incomplete
+2026-07-14 10:21:00,088 INFO Skip TEAM Risk Reversal — max_profit $0.00 < $1.00 min
+2026-07-14 10:21:00,089 INFO Skip TEAM Bear Combo — required strikes incomplete
+2026-07-14 10:21:00,089 INFO Skip TEAM Financed Long Put — required strikes incomplete
+2026-07-14 10:21:00,089 INFO Skip TEAM Ratio Call Backspread — required strikes incomplete
+2026-07-14 10:21:00,090 INFO Skip TEAM Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,090 INFO Skip TEAM Diagonal Spread — required strikes incomplete
+2026-07-14 10:21:00,091 INFO Skip ADBE Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,092 INFO Skip ADBE Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,092 INFO Skip INTU Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,093 INFO Skip INTU Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,093 INFO Skip META Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,093 INFO Skip META Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,094 INFO Skip TMUS Put Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,094 INFO Skip TMUS Cash Secured Put — required strikes incomplete
+2026-07-14 10:21:00,095 INFO Skip TMUS Call Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,095 INFO Skip TMUS Iron Condor — required strikes incomplete
+2026-07-14 10:21:00,096 INFO Skip TMUS Call Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,096 INFO Skip TMUS Put Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,099 INFO Skip TMUS Jade Lizard — required strikes incomplete
+2026-07-14 10:21:00,100 INFO Skip TMUS Bear Combo — required strikes incomplete
+2026-07-14 10:21:00,101 INFO Skip TMUS Ratio Put Backspread — required strikes incomplete
+2026-07-14 10:21:00,101 INFO Skip TMUS Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,101 INFO Skip TMUS Diagonal Spread — required strikes incomplete
+2026-07-14 10:21:00,102 INFO Skip TMUS Put Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,102 INFO Skip TMUS Cash Secured Put — required strikes incomplete
+2026-07-14 10:21:00,103 INFO Skip TMUS Covered Call — IV edge -3.8vp (undersell)
+2026-07-14 10:21:00,103 INFO Skip TMUS Call Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,103 INFO Skip TMUS Iron Condor — required strikes incomplete
+2026-07-14 10:21:00,104 INFO Skip TMUS Put Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,104 INFO Skip TMUS Jade Lizard — required strikes incomplete
+2026-07-14 10:21:00,105 INFO Skip TMUS Bear Combo — required strikes incomplete
+2026-07-14 10:21:00,105 INFO Skip TMUS Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,105 INFO Skip TMUS Diagonal Spread — required strikes incomplete
+2026-07-14 10:21:00,106 INFO Skip TSLA Call Credit Spread — max_profit $0.50 < $1.00 min
+2026-07-14 10:21:00,106 INFO Skip TSLA Jade Lizard — required strikes incomplete
+2026-07-14 10:21:00,107 INFO Skip TSLA Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,107 INFO Skip TSLA Diagonal Spread — required strikes incomplete
+2026-07-14 10:21:00,108 INFO Skip TSLA Covered Call — IV edge -2.9vp (undersell)
+2026-07-14 10:21:00,108 INFO Skip TSLA Call Credit Spread — max_profit $0.55 < $1.00 min
+2026-07-14 10:21:00,108 INFO Skip TSLA Jade Lizard — required strikes incomplete
+2026-07-14 10:21:00,109 INFO Skip TSLA Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,109 INFO Skip TSLA Diagonal Spread — required strikes incomplete
+2026-07-14 10:21:00,110 INFO Skip AMZN Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,111 INFO Skip APP Put Credit Spread — max_profit $0.40 < $1.00 min
+2026-07-14 10:21:00,111 INFO Skip APP Call Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,111 INFO Skip APP Iron Condor — required strikes incomplete
+2026-07-14 10:21:00,112 INFO Skip APP Put Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,112 INFO Skip APP Jade Lizard — required strikes incomplete
+2026-07-14 10:21:00,113 INFO Skip APP Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,116 INFO Skip APP Diagonal Spread — required strikes incomplete
+2026-07-14 10:21:00,117 INFO Skip APP Put Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,117 INFO Skip APP Cash Secured Put — IV edge -4.0vp (undersell)
+2026-07-14 10:21:00,118 INFO Skip APP Call Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,118 INFO Skip APP Iron Condor — required strikes incomplete
+2026-07-14 10:21:00,118 INFO Skip APP Call Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,119 INFO Skip APP Jade Lizard — required strikes incomplete
+2026-07-14 10:21:00,119 INFO Skip APP Ratio Call Backspread — required strikes incomplete
+2026-07-14 10:21:00,120 INFO Skip APP Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,120 INFO Skip APP Diagonal Spread — required strikes incomplete
+2026-07-14 10:21:00,120 INFO Skip CVNA Put Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,121 INFO Skip CVNA Call Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,121 INFO Skip CVNA Iron Condor — required strikes incomplete
+2026-07-14 10:21:00,122 INFO Skip CVNA Jade Lizard — required strikes incomplete
+2026-07-14 10:21:00,122 INFO Skip CVNA Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,122 INFO Skip CVNA Diagonal Spread — required strikes incomplete
+2026-07-14 10:21:00,123 INFO Skip CVNA Put Credit Spread — max_profit $0.09 < $1.00 min
+2026-07-14 10:21:00,124 INFO Skip CVNA Cash Secured Put — IV edge -2.5vp (undersell)
+2026-07-14 10:21:00,124 INFO Skip CVNA Call Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,125 INFO Skip CVNA Iron Condor — required strikes incomplete
+2026-07-14 10:21:00,125 INFO Skip CVNA Jade Lizard — required strikes incomplete
+2026-07-14 10:21:00,125 INFO Skip CVNA Risk Reversal — IV edge -5.2vp (undersell)
+2026-07-14 10:21:00,126 INFO Skip CVNA Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,126 INFO Skip CVNA Diagonal Spread — required strikes incomplete
+2026-07-14 10:21:00,127 INFO Skip HD Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,128 INFO Skip HD Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,130 INFO Skip ULTA Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,131 INFO Skip COST Call Debit Spread — confidence 0.674 < 0.70
+2026-07-14 10:21:00,132 INFO Skip COST Put Debit Spread — confidence 0.674 < 0.70
+2026-07-14 10:21:00,132 INFO Skip COST Long Strangle — confidence 0.674 < 0.70
+2026-07-14 10:21:00,132 INFO Skip COST Call Debit Spread — confidence 0.674 < 0.70
+2026-07-14 10:21:00,133 INFO Skip COST Put Debit Spread — confidence 0.674 < 0.70
+2026-07-14 10:21:00,133 INFO Skip COST Long Strangle — confidence 0.674 < 0.70
+2026-07-14 10:21:00,134 INFO Skip PG Call Debit Spread — confidence 0.693 < 0.70
+2026-07-14 10:21:00,134 INFO Skip PG Long Strangle — confidence 0.693 < 0.70
+2026-07-14 10:21:00,134 INFO Skip PG Call Debit Spread — confidence 0.693 < 0.70
+2026-07-14 10:21:00,135 INFO Skip PG Long Strangle — confidence 0.693 < 0.70
+2026-07-14 10:21:00,135 INFO Skip LLY Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,136 INFO Skip LLY Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,136 INFO Skip ABBV Put Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,137 INFO Skip ABBV Call Credit Spread — max_profit $0.38 < $1.00 min
+2026-07-14 10:21:00,137 INFO Skip ABBV Iron Condor — required strikes incomplete
+2026-07-14 10:21:00,137 INFO Skip ABBV Jade Lizard — required strikes incomplete
+2026-07-14 10:21:00,138 INFO Skip ABBV Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,138 INFO Skip ABBV Diagonal Spread — max_profit $0.73 < $1.00 min
+2026-07-14 10:21:00,139 INFO Skip ABBV Put Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,139 INFO Skip ABBV Cash Secured Put — max_profit $0.77 < $1.00 min
+2026-07-14 10:21:00,140 INFO Skip ABBV Call Credit Spread — max_profit $0.47 < $1.00 min
+2026-07-14 10:21:00,140 INFO Skip ABBV Iron Condor — required strikes incomplete
+2026-07-14 10:21:00,141 INFO Skip ABBV Put Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,141 INFO Skip ABBV Jade Lizard — required strikes incomplete
+2026-07-14 10:21:00,142 INFO Skip ABBV Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,142 INFO Skip ABBV Diagonal Spread — max_profit $0.53 < $1.00 min
+2026-07-14 10:21:00,142 INFO Skip AMGN Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,143 INFO Skip BRK-B Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,143 INFO Skip ETN Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,146 INFO Skip ETN Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,147 INFO Skip DE Call Debit Spread — confidence 0.535 < 0.70
+2026-07-14 10:21:00,148 INFO Skip DE Long Strangle — confidence 0.535 < 0.70
+2026-07-14 10:21:00,148 INFO Skip VRT Put Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,149 INFO Skip VRT Call Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,149 INFO Skip VRT Iron Condor — required strikes incomplete
+2026-07-14 10:21:00,149 INFO Skip VRT Jade Lizard — required strikes incomplete
+2026-07-14 10:21:00,150 INFO Skip VRT Risk Reversal — max_profit $0.05 < $1.00 min
+2026-07-14 10:21:00,150 INFO Skip VRT Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,151 INFO Skip VRT Diagonal Spread — required strikes incomplete
+2026-07-14 10:21:00,151 INFO Skip VRT Put Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,152 INFO Skip VRT Covered Call — IV edge -3.4vp (undersell)
+2026-07-14 10:21:00,152 INFO Skip VRT Call Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,152 INFO Skip VRT Iron Condor — required strikes incomplete
+2026-07-14 10:21:00,153 INFO Skip VRT Jade Lizard — required strikes incomplete
+2026-07-14 10:21:00,153 INFO Skip VRT Risk Reversal — max_profit $0.40 < $1.00 min
+2026-07-14 10:21:00,154 INFO Skip VRT Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,154 INFO Skip VRT Diagonal Spread — required strikes incomplete
+2026-07-14 10:21:00,155 INFO Skip XOM Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,155 INFO Skip XOM Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,156 INFO Skip CVX Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,156 INFO Skip OXY Put Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,156 INFO Skip OXY Cash Secured Put — max_profit $0.42 < $1.00 min
+2026-07-14 10:21:00,157 INFO Skip OXY Call Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,157 INFO Skip OXY Iron Condor — required strikes incomplete
+2026-07-14 10:21:00,158 INFO Skip OXY Put Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,158 INFO Skip OXY Jade Lizard — required strikes incomplete
+2026-07-14 10:21:00,159 INFO Skip OXY Bear Combo — required strikes incomplete
+2026-07-14 10:21:00,159 INFO Skip OXY Ratio Put Backspread — required strikes incomplete
+2026-07-14 10:21:00,159 INFO Skip OXY Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,163 INFO Skip OXY Diagonal Spread — required strikes incomplete
+2026-07-14 10:21:00,163 INFO Skip OXY Put Credit Spread — max_profit $0.36 < $1.00 min
+2026-07-14 10:21:00,165 INFO Skip OXY Cash Secured Put — max_profit $0.39 < $1.00 min
+2026-07-14 10:21:00,165 INFO Skip OXY Call Credit Spread — max_profit $0.18 < $1.00 min
+2026-07-14 10:21:00,165 INFO Skip OXY Iron Condor — max_profit $0.54 < $1.00 min
+2026-07-14 10:21:00,166 INFO Skip OXY Call Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,166 INFO Skip OXY Put Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,167 INFO Skip OXY Jade Lizard — max_profit $0.82 < $1.00 min
+2026-07-14 10:21:00,167 INFO Skip OXY Ratio Put Backspread — required strikes incomplete
+2026-07-14 10:21:00,168 INFO Skip OXY Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,168 INFO Skip OXY Diagonal Spread — required strikes incomplete
+2026-07-14 10:21:00,169 INFO Skip CEG Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,169 INFO Skip CEG Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,169 INFO Skip VST Put Credit Spread — max_profit $0.87 < $1.00 min
+2026-07-14 10:21:00,170 INFO Skip FCX Put Credit Spread — max_profit $0.10 < $1.00 min
+2026-07-14 10:21:00,170 INFO Skip FCX Call Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,171 INFO Skip FCX Iron Condor — required strikes incomplete
+2026-07-14 10:21:00,171 INFO Skip FCX Jade Lizard — required strikes incomplete
+2026-07-14 10:21:00,172 INFO Skip FCX Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,172 INFO Skip FCX Diagonal Spread — required strikes incomplete
+2026-07-14 10:21:00,172 INFO Skip FCX Put Credit Spread — max_profit $0.05 < $1.00 min
+2026-07-14 10:21:00,173 INFO Skip FCX Call Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,173 INFO Skip FCX Iron Condor — required strikes incomplete
+2026-07-14 10:21:00,174 INFO Skip FCX Call Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,174 INFO Skip FCX Jade Lizard — required strikes incomplete
+2026-07-14 10:21:00,175 INFO Skip FCX Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,175 INFO Skip FCX Diagonal Spread — required strikes incomplete
+2026-07-14 10:21:00,176 INFO Skip NEM Covered Call — required strikes incomplete
+2026-07-14 10:21:00,179 INFO Skip NEM Call Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,180 INFO Skip NEM Iron Condor — required strikes incomplete
+2026-07-14 10:21:00,180 INFO Skip NEM Put Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,180 INFO Skip NEM Jade Lizard — required strikes incomplete
+2026-07-14 10:21:00,181 INFO Skip NEM Bear Combo — required strikes incomplete
+2026-07-14 10:21:00,181 INFO Skip NEM Financed Long Put — required strikes incomplete
+2026-07-14 10:21:00,182 INFO Skip NEM Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,182 INFO Skip NEM Diagonal Spread — required strikes incomplete
+2026-07-14 10:21:00,183 INFO Skip NEM Call Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,183 INFO Skip NEM Iron Condor — required strikes incomplete
+2026-07-14 10:21:00,183 INFO Skip NEM Call Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,184 INFO Skip NEM Put Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,184 INFO Skip NEM Jade Lizard — required strikes incomplete
+2026-07-14 10:21:00,185 INFO Skip NEM Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,185 INFO Skip NEM Diagonal Spread — required strikes incomplete
+2026-07-14 10:21:00,186 INFO Skip SOFI Put Credit Spread — max_profit $0.23 < $1.00 min
+2026-07-14 10:21:00,186 INFO Skip SOFI Cash Secured Put — max_profit $0.51 < $1.00 min
+2026-07-14 10:21:00,186 INFO Skip SOFI Covered Call — IV edge -20.5vp (undersell)
+2026-07-14 10:21:00,187 INFO Skip SOFI Call Credit Spread — max_profit $0.07 < $1.00 min
+2026-07-14 10:21:00,187 INFO Skip SOFI Iron Condor — max_profit $0.30 < $1.00 min
+2026-07-14 10:21:00,188 INFO Skip SOFI Jade Lizard — max_profit $0.75 < $1.00 min
+2026-07-14 10:21:00,188 INFO Skip SOFI Risk Reversal — max_profit $0.36 < $1.00 min
+2026-07-14 10:21:00,189 INFO Skip SOFI Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,189 INFO Skip SOFI Diagonal Spread — max_profit $0.50 < $1.00 min
+2026-07-14 10:21:00,189 INFO Skip SOFI Put Credit Spread — max_profit $0.17 < $1.00 min
+2026-07-14 10:21:00,190 INFO Skip SOFI Cash Secured Put — max_profit $0.30 < $1.00 min
+2026-07-14 10:21:00,190 INFO Skip SOFI Call Credit Spread — max_profit $0.07 < $1.00 min
+2026-07-14 10:21:00,191 INFO Skip SOFI Iron Condor — max_profit $0.24 < $1.00 min
+2026-07-14 10:21:00,191 INFO Skip SOFI Put Debit Spread — max_profit $0.82 < $1.00 min
+2026-07-14 10:21:00,193 INFO Skip SOFI Jade Lizard — max_profit $0.53 < $1.00 min
+2026-07-14 10:21:00,194 INFO Skip SOFI Risk Reversal — max_profit $0.76 < $1.00 min
+2026-07-14 10:21:00,196 INFO Skip SOFI Bear Combo — max_profit $0.91 < $1.00 min
+2026-07-14 10:21:00,196 INFO Skip SOFI Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,196 INFO Skip SOFI Diagonal Spread — max_profit $0.24 < $1.00 min
+2026-07-14 10:21:00,197 INFO Skip PFE Put Debit Spread — max_profit $0.68 < $1.00 min
+2026-07-14 10:21:00,197 INFO Skip PFE Financed Long Put — confidence 0.646 < 0.70
+2026-07-14 10:21:00,198 INFO Skip MRNA Put Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,198 INFO Skip MRNA Cash Secured Put — required strikes incomplete
+2026-07-14 10:21:00,199 INFO Skip MRNA Covered Call — required strikes incomplete
+2026-07-14 10:21:00,199 INFO Skip MRNA Call Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,200 INFO Skip MRNA Iron Condor — required strikes incomplete
+2026-07-14 10:21:00,200 INFO Skip MRNA Call Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,201 INFO Skip MRNA Put Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,201 INFO Skip MRNA Jade Lizard — required strikes incomplete
+2026-07-14 10:21:00,202 INFO Skip MRNA Risk Reversal — required strikes incomplete
+2026-07-14 10:21:00,202 INFO Skip MRNA Bear Combo — required strikes incomplete
+2026-07-14 10:21:00,203 INFO Skip MRNA Financed Long Call — required strikes incomplete
+2026-07-14 10:21:00,203 INFO Skip MRNA Financed Long Put — required strikes incomplete
+2026-07-14 10:21:00,204 INFO Skip MRNA Ratio Call Backspread — required strikes incomplete
+2026-07-14 10:21:00,204 INFO Skip MRNA Ratio Put Backspread — required strikes incomplete
+2026-07-14 10:21:00,205 INFO Skip MRNA Long Strangle — required strikes incomplete
+2026-07-14 10:21:00,205 INFO Skip MRNA Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,206 INFO Skip MRNA Diagonal Spread — required strikes incomplete
+2026-07-14 10:21:00,206 INFO Skip MRNA Put Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,207 INFO Skip MRNA Cash Secured Put — required strikes incomplete
+2026-07-14 10:21:00,209 INFO Skip MRNA Covered Call — required strikes incomplete
+2026-07-14 10:21:00,211 INFO Skip MRNA Call Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,211 INFO Skip MRNA Iron Condor — required strikes incomplete
+2026-07-14 10:21:00,211 INFO Skip MRNA Call Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,211 INFO Skip MRNA Put Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,212 INFO Skip MRNA Jade Lizard — required strikes incomplete
+2026-07-14 10:21:00,212 INFO Skip MRNA Risk Reversal — required strikes incomplete
+2026-07-14 10:21:00,212 INFO Skip MRNA Bear Combo — required strikes incomplete
+2026-07-14 10:21:00,213 INFO Skip MRNA Financed Long Call — required strikes incomplete
+2026-07-14 10:21:00,213 INFO Skip MRNA Financed Long Put — required strikes incomplete
+2026-07-14 10:21:00,214 INFO Skip MRNA Ratio Call Backspread — required strikes incomplete
+2026-07-14 10:21:00,214 INFO Skip MRNA Ratio Put Backspread — required strikes incomplete
+2026-07-14 10:21:00,215 INFO Skip MRNA Long Strangle — required strikes incomplete
+2026-07-14 10:21:00,215 INFO Skip MRNA Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,215 INFO Skip MRNA Diagonal Spread — required strikes incomplete
+2026-07-14 10:21:00,216 INFO Skip UPS Call Debit Spread — confidence 0.683 < 0.70
+2026-07-14 10:21:00,216 INFO Skip UPS Long Strangle — confidence 0.683 < 0.70
+2026-07-14 10:21:00,217 INFO Skip FDX Long Strangle — confidence 0.528 < 0.70
+2026-07-14 10:21:00,217 INFO Skip FDX Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,218 INFO Skip FDX Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,218 INFO Skip SLB Put Credit Spread — max_profit $0.17 < $1.00 min
+2026-07-14 10:21:00,219 INFO Skip SLB Cash Secured Put — max_profit $0.60 < $1.00 min
+2026-07-14 10:21:00,219 INFO Skip SLB Call Credit Spread — required strikes incomplete
+2026-07-14 10:21:00,219 INFO Skip SLB Iron Condor — required strikes incomplete
+2026-07-14 10:21:00,220 INFO Skip SLB Call Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,220 INFO Skip SLB Put Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,221 INFO Skip SLB Jade Lizard — required strikes incomplete
+2026-07-14 10:21:00,222 INFO Skip SLB Bear Combo — required strikes incomplete
+2026-07-14 10:21:00,225 INFO Skip SLB Ratio Put Backspread — required strikes incomplete
+2026-07-14 10:21:00,225 INFO Skip SLB Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,226 INFO Skip SLB Diagonal Spread — required strikes incomplete
+2026-07-14 10:21:00,227 INFO Skip SLB Put Credit Spread — max_profit $0.12 < $1.00 min
+2026-07-14 10:21:00,227 INFO Skip SLB Cash Secured Put — max_profit $0.43 < $1.00 min
+2026-07-14 10:21:00,228 INFO Skip SLB Call Credit Spread — max_profit $0.01 < $1.00 min
+2026-07-14 10:21:00,229 INFO Skip SLB Iron Condor — required strikes incomplete
+2026-07-14 10:21:00,229 INFO Skip SLB Put Debit Spread — required strikes incomplete
+2026-07-14 10:21:00,230 INFO Skip SLB Jade Lizard — max_profit $0.44 < $1.00 min
+2026-07-14 10:21:00,230 INFO Skip SLB Bear Combo — max_profit $0.74 < $1.00 min
+2026-07-14 10:21:00,231 INFO Skip SLB Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,231 INFO Skip SLB Diagonal Spread — required strikes incomplete
+2026-07-14 10:21:00,232 INFO Skip T Calendar Spread — required strikes incomplete
+2026-07-14 10:21:00,232 INFO Skip T Call Debit Spread — max_profit $0.95 < $1.00 min
+2026-07-14 10:21:00,233 INFO Skip T Put Debit Spread — max_profit $0.97 < $1.00 min
+2026-07-14 10:21:00,610 INFO Paper trade #1: 20260714AM_V_LON_1  credit=6.150  expiry=2026-07-24
+2026-07-14 10:21:01,415 WARNING Failed to write training snapshot for 20260714AM_V_LON_1: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:01,699 INFO Paper trade #2: 20260714AM_RTX_LON_2  credit=6.380  expiry=2026-07-31
+2026-07-14 10:21:01,760 WARNING Failed to write training snapshot for 20260714AM_RTX_LON_2: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:01,764 WARNING Skipping OXY Financed Long Put — short or long strike is None
+2026-07-14 10:21:01,830 WARNING Scan snapshot write failed for SPY: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:01,860 WARNING Scan snapshot write failed for SPY: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:01,887 WARNING Scan snapshot write failed for QQQ: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:01,913 WARNING Scan snapshot write failed for QQQ: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:01,942 WARNING Scan snapshot write failed for TQQQ: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:01,970 WARNING Scan snapshot write failed for TQQQ: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:01,998 WARNING Scan snapshot write failed for NVDA: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,025 WARNING Scan snapshot write failed for NVDA: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,052 WARNING Scan snapshot write failed for MSFT: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,078 WARNING Scan snapshot write failed for MSFT: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,104 WARNING Scan snapshot write failed for AAPL: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,131 WARNING Scan snapshot write failed for AAPL: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,158 WARNING Scan snapshot write failed for AVGO: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,186 WARNING Scan snapshot write failed for AVGO: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,213 WARNING Scan snapshot write failed for AMD: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,241 WARNING Scan snapshot write failed for AMD: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,268 WARNING Scan snapshot write failed for TSM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,295 WARNING Scan snapshot write failed for TSM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,323 WARNING Scan snapshot write failed for MU: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,351 WARNING Scan snapshot write failed for MU: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,382 WARNING Scan snapshot write failed for ARM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,415 WARNING Scan snapshot write failed for ARM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,444 WARNING Scan snapshot write failed for INTC: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,473 WARNING Scan snapshot write failed for INTC: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,501 WARNING Scan snapshot write failed for QCOM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,529 WARNING Scan snapshot write failed for QCOM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,556 WARNING Scan snapshot write failed for TXN: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,585 WARNING Scan snapshot write failed for TXN: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,613 WARNING Scan snapshot write failed for KLAC: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,639 WARNING Scan snapshot write failed for KLAC: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,666 WARNING Scan snapshot write failed for ASML: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,694 WARNING Scan snapshot write failed for ASML: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,722 WARNING Scan snapshot write failed for LRCX: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,749 WARNING Scan snapshot write failed for LRCX: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,778 WARNING Scan snapshot write failed for CDNS: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,805 WARNING Scan snapshot write failed for CDNS: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,831 WARNING Scan snapshot write failed for SNPS: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,859 WARNING Scan snapshot write failed for SNPS: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,886 WARNING Scan snapshot write failed for PLTR: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,917 WARNING Scan snapshot write failed for PLTR: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,947 WARNING Scan snapshot write failed for SNOW: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:02,974 WARNING Scan snapshot write failed for SNOW: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,002 WARNING Scan snapshot write failed for MDB: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,032 WARNING Scan snapshot write failed for MDB: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,058 WARNING Scan snapshot write failed for ORCL: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,087 WARNING Scan snapshot write failed for ORCL: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,114 WARNING Scan snapshot write failed for CRM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,145 WARNING Scan snapshot write failed for CRM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,173 WARNING Scan snapshot write failed for NOW: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,200 WARNING Scan snapshot write failed for NOW: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,229 WARNING Scan snapshot write failed for NET: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,258 WARNING Scan snapshot write failed for NET: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,286 WARNING Scan snapshot write failed for TEAM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,314 WARNING Scan snapshot write failed for TEAM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,343 WARNING Scan snapshot write failed for SAP: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,369 WARNING Scan snapshot write failed for SAP: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,397 WARNING Scan snapshot write failed for ADBE: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,427 WARNING Scan snapshot write failed for ADBE: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,459 WARNING Scan snapshot write failed for INTU: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,488 WARNING Scan snapshot write failed for INTU: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,516 WARNING Scan snapshot write failed for GOOGL: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,543 WARNING Scan snapshot write failed for GOOGL: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,576 WARNING Scan snapshot write failed for META: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,603 WARNING Scan snapshot write failed for META: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,632 WARNING Scan snapshot write failed for NFLX: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,658 WARNING Scan snapshot write failed for NFLX: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,686 WARNING Scan snapshot write failed for SPOT: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,715 WARNING Scan snapshot write failed for SPOT: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,745 WARNING Scan snapshot write failed for DIS: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,775 WARNING Scan snapshot write failed for DIS: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,803 WARNING Scan snapshot write failed for TMUS: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,831 WARNING Scan snapshot write failed for TMUS: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,860 WARNING Scan snapshot write failed for TSLA: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,889 WARNING Scan snapshot write failed for TSLA: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,918 WARNING Scan snapshot write failed for AMZN: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,948 WARNING Scan snapshot write failed for AMZN: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:03,982 WARNING Scan snapshot write failed for UBER: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,012 WARNING Scan snapshot write failed for UBER: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,042 WARNING Scan snapshot write failed for SHOP: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,073 WARNING Scan snapshot write failed for SHOP: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,107 WARNING Scan snapshot write failed for MELI: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,134 WARNING Scan snapshot write failed for MELI: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,161 WARNING Scan snapshot write failed for APP: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,189 WARNING Scan snapshot write failed for APP: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,218 WARNING Scan snapshot write failed for CVNA: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,248 WARNING Scan snapshot write failed for CVNA: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,280 WARNING Scan snapshot write failed for HD: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,314 WARNING Scan snapshot write failed for HD: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,350 WARNING Scan snapshot write failed for NKE: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,388 WARNING Scan snapshot write failed for NKE: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,424 WARNING Scan snapshot write failed for ULTA: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,458 WARNING Scan snapshot write failed for ULTA: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,497 WARNING Scan snapshot write failed for COST: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,533 WARNING Scan snapshot write failed for COST: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,579 WARNING Scan snapshot write failed for WMT: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,610 WARNING Scan snapshot write failed for WMT: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,641 WARNING Scan snapshot write failed for PG: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,670 WARNING Scan snapshot write failed for PG: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,700 WARNING Scan snapshot write failed for LLY: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,730 WARNING Scan snapshot write failed for LLY: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,758 WARNING Scan snapshot write failed for NVO: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,787 WARNING Scan snapshot write failed for NVO: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,815 WARNING Scan snapshot write failed for ISRG: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,844 WARNING Scan snapshot write failed for ISRG: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,872 WARNING Scan snapshot write failed for ABBV: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,900 WARNING Scan snapshot write failed for ABBV: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,929 WARNING Scan snapshot write failed for BSX: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,960 WARNING Scan snapshot write failed for BSX: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:04,988 WARNING Scan snapshot write failed for UNH: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,018 WARNING Scan snapshot write failed for UNH: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,051 WARNING Scan snapshot write failed for AMGN: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,080 WARNING Scan snapshot write failed for AMGN: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,107 WARNING Scan snapshot write failed for MA: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,137 WARNING Scan snapshot write failed for MA: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,166 WARNING Scan snapshot write failed for BRK-B: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,195 WARNING Scan snapshot write failed for BRK-B: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,224 WARNING Scan snapshot write failed for JPM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,255 WARNING Scan snapshot write failed for JPM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,283 WARNING Scan snapshot write failed for GS: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,311 WARNING Scan snapshot write failed for GS: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,341 WARNING Scan snapshot write failed for MS: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,372 WARNING Scan snapshot write failed for MS: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,404 WARNING Scan snapshot write failed for BAC: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,433 WARNING Scan snapshot write failed for BAC: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,461 WARNING Scan snapshot write failed for GE: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,488 WARNING Scan snapshot write failed for GE: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,517 WARNING Scan snapshot write failed for ETN: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,549 WARNING Scan snapshot write failed for ETN: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,582 WARNING Scan snapshot write failed for CAT: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,611 WARNING Scan snapshot write failed for CAT: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,641 WARNING Scan snapshot write failed for DE: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,672 WARNING Scan snapshot write failed for DE: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,700 WARNING Scan snapshot write failed for VRT: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,728 WARNING Scan snapshot write failed for VRT: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,758 WARNING Scan snapshot write failed for HON: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,787 WARNING Scan snapshot write failed for HON: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,814 WARNING Scan snapshot write failed for XOM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,843 WARNING Scan snapshot write failed for XOM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,871 WARNING Scan snapshot write failed for COP: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,899 WARNING Scan snapshot write failed for COP: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,926 WARNING Scan snapshot write failed for CVX: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,955 WARNING Scan snapshot write failed for CVX: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:05,985 WARNING Scan snapshot write failed for OXY: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,014 WARNING Scan snapshot write failed for OXY: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,043 WARNING Scan snapshot write failed for NEE: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,071 WARNING Scan snapshot write failed for NEE: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,103 WARNING Scan snapshot write failed for CEG: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,132 WARNING Scan snapshot write failed for CEG: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,161 WARNING Scan snapshot write failed for VST: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,190 WARNING Scan snapshot write failed for VST: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,221 WARNING Scan snapshot write failed for FCX: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,253 WARNING Scan snapshot write failed for FCX: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,282 WARNING Scan snapshot write failed for NEM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,313 WARNING Scan snapshot write failed for NEM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,341 WARNING Scan snapshot write failed for AMT: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,370 WARNING Scan snapshot write failed for AMT: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,399 WARNING Scan snapshot write failed for EQIX: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,430 WARNING Scan snapshot write failed for EQIX: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,459 WARNING Scan snapshot write failed for SOFI: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,488 WARNING Scan snapshot write failed for SOFI: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,515 WARNING Scan snapshot write failed for IWM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,542 WARNING Scan snapshot write failed for IWM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,572 WARNING Scan snapshot write failed for GLD: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,601 WARNING Scan snapshot write failed for GLD: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,633 WARNING Scan snapshot write failed for XLE: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,664 WARNING Scan snapshot write failed for XLE: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,694 WARNING Scan snapshot write failed for C: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,726 WARNING Scan snapshot write failed for C: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,755 WARNING Scan snapshot write failed for WFC: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,785 WARNING Scan snapshot write failed for WFC: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,814 WARNING Scan snapshot write failed for SCHW: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,844 WARNING Scan snapshot write failed for SCHW: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,873 WARNING Scan snapshot write failed for AXP: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,901 WARNING Scan snapshot write failed for AXP: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,930 WARNING Scan snapshot write failed for PFE: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,961 WARNING Scan snapshot write failed for PFE: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:06,990 WARNING Scan snapshot write failed for MRK: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:07,018 WARNING Scan snapshot write failed for MRK: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:07,048 WARNING Scan snapshot write failed for MRNA: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:07,076 WARNING Scan snapshot write failed for MRNA: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:07,107 WARNING Scan snapshot write failed for JNJ: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:07,135 WARNING Scan snapshot write failed for JNJ: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:07,168 WARNING Scan snapshot write failed for TGT: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:07,197 WARNING Scan snapshot write failed for TGT: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:07,226 WARNING Scan snapshot write failed for LOW: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:07,260 WARNING Scan snapshot write failed for LOW: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:07,290 WARNING Scan snapshot write failed for UPS: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:07,319 WARNING Scan snapshot write failed for UPS: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:07,347 WARNING Scan snapshot write failed for FDX: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:07,378 WARNING Scan snapshot write failed for FDX: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:07,406 WARNING Scan snapshot write failed for SLB: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:07,437 WARNING Scan snapshot write failed for SLB: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:07,466 WARNING Scan snapshot write failed for T: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:07,494 WARNING Scan snapshot write failed for T: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:07,524 WARNING Scan snapshot write failed for VZ: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:07,553 WARNING Scan snapshot write failed for VZ: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-14 10:21:07,553 INFO [scan_morning] scan snapshots: 0 saved, 4 skipped (opened), 196 errors
+2026-07-14 10:21:07,554 INFO Scan snapshots: 0 saved, 4 skipped
+2026-07-15 10:00:07,344 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-15 10:00:07,355 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-15 10:00:07,360 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-15 10:00:07,712 WARNING analyze_ticker(NVDA) failed: [WinError 5] Access is denied: 'C:\\Project Y\\data\\oi_cache.json.tmp' -> 'C:\\Project Y\\data\\oi_cache.json'
+2026-07-15 10:00:07,909 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-15 10:00:07,951 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-15 10:00:08,015 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-15 10:00:25,840 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-15 10:00:26,104 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-15 10:00:26,290 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-15 10:00:26,641 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-15 10:00:30,917 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-15 10:00:31,301 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-15 10:00:47,244 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-15 10:00:47,265 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-15 10:02:06,501 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-15 10:02:06,575 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-15 10:02:06,935 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-15 10:02:19,639 WARNING analyze_ticker(ORCL, short_dte) failed: 'NoneType' object has no attribute 'copy'
+2026-07-15 10:02:27,615 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-15 10:02:27,911 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-15 10:02:39,778 WARNING analyze_ticker(TEAM, short_dte) failed: 'NoneType' object has no attribute 'copy'
+2026-07-15 10:02:45,811 WARNING analyze_ticker(META, short_dte) failed: 'NoneType' object has no attribute 'copy'
+2026-07-15 10:02:47,274 WARNING analyze_ticker(AMZN) failed: 'NoneType' object has no attribute 'copy'
+2026-07-15 10:03:11,582 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-15 10:03:43,531 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-15 10:03:45,026 WARNING analyze_ticker(WMT) failed: 'NoneType' object has no attribute 'copy'
+2026-07-15 10:03:46,242 WARNING analyze_ticker(COST, short_dte) failed: 'NoneType' object has no attribute 'copy'
+2026-07-15 10:04:01,226 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-15 10:04:01,228 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-15 10:04:01,595 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-15 10:04:07,617 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-15 10:05:48,817 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-15 10:05:49,498 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-07-15 10:05:51,403 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-07-15 10:05:51,900 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-07-15 10:05:55,623 WARNING analyze_ticker(FCX, short_dte) failed: 'NoneType' object has no attribute 'copy'
+2026-07-15 10:05:56,359 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-07-15 10:05:57,047 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-07-15 10:06:06,577 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-07-15 10:06:06,792 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-07-15 10:06:07,101 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-07-15 10:06:07,124 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-07-15 10:06:09,561 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-15 10:06:11,765 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-07-15 10:06:12,173 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-07-15 10:06:25,407 WARNING analyze_ticker(WFC) failed: 'NoneType' object has no attribute 'copy'
+2026-07-15 10:06:25,726 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-15 10:06:40,719 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-15 10:06:40,729 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-15 10:06:45,668 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-15 10:07:03,629 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-15 10:07:04,033 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-15 10:07:41,757 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-15 10:07:42,449 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-15 10:07:46,688 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-15 10:07:47,300 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-15 10:07:55,330 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-15 10:07:56,018 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-15 10:12:29,768 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-07-15 10:12:30,526 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-07-15 10:12:32,571 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-07-15 10:12:33,123 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-07-15 10:12:38,542 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-07-15 10:12:39,034 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-07-15 10:13:35,436 INFO [filter] 847 rejected, 2 survived — gate breakdown: {'theta': 131, 'iv_edge': 16, 'strikes_incomplete': 591, 'expected_roi': 37, 'ml_confidence': 24, 'min_profit': 48}
+2026-07-15 10:13:35,475 INFO [risk] Skip SOFI — already have 1 open position(s)
+2026-07-15 10:13:35,741 WARNING Scan snapshot write failed for NVDA: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:35,774 WARNING Scan snapshot write failed for MSFT: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:35,803 WARNING Scan snapshot write failed for MSFT: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:35,833 WARNING Scan snapshot write failed for TQQQ: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:35,864 WARNING Scan snapshot write failed for TQQQ: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:35,894 WARNING Scan snapshot write failed for QQQ: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:35,925 WARNING Scan snapshot write failed for QQQ: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:35,957 WARNING Scan snapshot write failed for TSM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,001 WARNING Scan snapshot write failed for TSM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,031 WARNING Scan snapshot write failed for SPY: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,062 WARNING Scan snapshot write failed for SPY: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,093 WARNING Scan snapshot write failed for AAPL: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,124 WARNING Scan snapshot write failed for AAPL: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,157 WARNING Scan snapshot write failed for AVGO: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,187 WARNING Scan snapshot write failed for AVGO: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,219 WARNING Scan snapshot write failed for AMD: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,250 WARNING Scan snapshot write failed for AMD: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,282 WARNING Scan snapshot write failed for MU: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,312 WARNING Scan snapshot write failed for MU: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,343 WARNING Scan snapshot write failed for QCOM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,377 WARNING Scan snapshot write failed for QCOM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,408 WARNING Scan snapshot write failed for ASML: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,440 WARNING Scan snapshot write failed for ASML: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,472 WARNING Scan snapshot write failed for INTC: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,506 WARNING Scan snapshot write failed for INTC: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,538 WARNING Scan snapshot write failed for ARM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,569 WARNING Scan snapshot write failed for ARM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,601 WARNING Scan snapshot write failed for TXN: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,632 WARNING Scan snapshot write failed for TXN: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,663 WARNING Scan snapshot write failed for CDNS: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,698 WARNING Scan snapshot write failed for CDNS: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,732 WARNING Scan snapshot write failed for PLTR: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,764 WARNING Scan snapshot write failed for PLTR: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,795 WARNING Scan snapshot write failed for KLAC: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,827 WARNING Scan snapshot write failed for LRCX: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,858 WARNING Scan snapshot write failed for LRCX: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,889 WARNING Scan snapshot write failed for SNOW: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,921 WARNING Scan snapshot write failed for SNOW: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,953 WARNING Scan snapshot write failed for SNPS: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:36,988 WARNING Scan snapshot write failed for SNPS: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:37,022 WARNING Scan snapshot write failed for NOW: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:37,058 WARNING Scan snapshot write failed for NOW: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:37,092 WARNING Scan snapshot write failed for MDB: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:37,124 WARNING Scan snapshot write failed for MDB: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:37,157 WARNING Scan snapshot write failed for ORCL: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:37,189 WARNING Scan snapshot write failed for CRM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:37,220 WARNING Scan snapshot write failed for CRM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:37,257 WARNING Scan snapshot write failed for NET: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:37,288 WARNING Scan snapshot write failed for NET: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:37,320 WARNING Scan snapshot write failed for SAP: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:37,353 WARNING Scan snapshot write failed for SAP: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:37,384 WARNING Scan snapshot write failed for ADBE: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:37,416 WARNING Scan snapshot write failed for ADBE: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:37,450 WARNING Scan snapshot write failed for NFLX: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:37,484 WARNING Scan snapshot write failed for NFLX: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:37,514 WARNING Scan snapshot write failed for TEAM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:37,547 WARNING Scan snapshot write failed for SPOT: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:37,582 WARNING Scan snapshot write failed for SPOT: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:37,619 WARNING Scan snapshot write failed for DIS: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:37,653 WARNING Scan snapshot write failed for META: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:37,689 WARNING Scan snapshot write failed for GOOGL: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:37,729 WARNING Scan snapshot write failed for GOOGL: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:37,761 WARNING Scan snapshot write failed for INTU: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:37,793 WARNING Scan snapshot write failed for INTU: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:37,825 WARNING Scan snapshot write failed for TSLA: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:37,866 WARNING Scan snapshot write failed for TSLA: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:37,897 WARNING Scan snapshot write failed for AMZN: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:37,929 WARNING Scan snapshot write failed for UBER: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:37,967 WARNING Scan snapshot write failed for UBER: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:38,003 WARNING Scan snapshot write failed for TMUS: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:38,034 WARNING Scan snapshot write failed for TMUS: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:38,067 WARNING Scan snapshot write failed for SHOP: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:38,102 WARNING Scan snapshot write failed for SHOP: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:38,137 WARNING Scan snapshot write failed for CVNA: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:38,170 WARNING Scan snapshot write failed for CVNA: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:38,203 WARNING Scan snapshot write failed for MELI: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:38,236 WARNING Scan snapshot write failed for MELI: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:38,267 WARNING Scan snapshot write failed for APP: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:38,299 WARNING Scan snapshot write failed for APP: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:38,333 WARNING Scan snapshot write failed for NKE: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:38,365 WARNING Scan snapshot write failed for NKE: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:38,397 WARNING Scan snapshot write failed for HD: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:38,430 WARNING Scan snapshot write failed for HD: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:38,460 WARNING Scan snapshot write failed for ULTA: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:38,491 WARNING Scan snapshot write failed for ULTA: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:38,530 WARNING Scan snapshot write failed for COST: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:38,566 WARNING Scan snapshot write failed for ISRG: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:38,606 WARNING Scan snapshot write failed for ISRG: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:38,641 WARNING Scan snapshot write failed for LLY: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:38,676 WARNING Scan snapshot write failed for LLY: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:38,710 WARNING Scan snapshot write failed for WMT: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:38,744 WARNING Scan snapshot write failed for PG: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:38,775 WARNING Scan snapshot write failed for PG: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:38,806 WARNING Scan snapshot write failed for UNH: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:38,839 WARNING Scan snapshot write failed for UNH: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:38,876 WARNING Scan snapshot write failed for ABBV: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:38,909 WARNING Scan snapshot write failed for ABBV: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:38,943 WARNING Scan snapshot write failed for MA: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:38,975 WARNING Scan snapshot write failed for MA: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:39,011 WARNING Scan snapshot write failed for NVO: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:39,048 WARNING Scan snapshot write failed for NVO: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:39,094 WARNING Scan snapshot write failed for AMGN: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:39,129 WARNING Scan snapshot write failed for AMGN: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:39,165 WARNING Scan snapshot write failed for BSX: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:39,199 WARNING Scan snapshot write failed for BSX: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:39,232 WARNING Scan snapshot write failed for BRK-B: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:39,262 WARNING Scan snapshot write failed for BRK-B: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:39,296 WARNING Scan snapshot write failed for V: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:39,328 WARNING Scan snapshot write failed for V: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:39,358 WARNING Scan snapshot write failed for MS: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:39,389 WARNING Scan snapshot write failed for MS: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:39,422 WARNING Scan snapshot write failed for GE: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:39,454 WARNING Scan snapshot write failed for GE: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:39,487 WARNING Scan snapshot write failed for JPM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:39,521 WARNING Scan snapshot write failed for JPM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:39,554 WARNING Scan snapshot write failed for ETN: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:39,587 WARNING Scan snapshot write failed for ETN: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:39,620 WARNING Scan snapshot write failed for BAC: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:39,652 WARNING Scan snapshot write failed for BAC: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:39,685 WARNING Scan snapshot write failed for GS: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:39,723 WARNING Scan snapshot write failed for GS: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:39,755 WARNING Scan snapshot write failed for CAT: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:39,786 WARNING Scan snapshot write failed for CAT: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:39,820 WARNING Scan snapshot write failed for DE: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:39,852 WARNING Scan snapshot write failed for DE: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:39,884 WARNING Scan snapshot write failed for HON: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:39,916 WARNING Scan snapshot write failed for HON: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:39,947 WARNING Scan snapshot write failed for VRT: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:39,981 WARNING Scan snapshot write failed for VRT: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:40,014 WARNING Scan snapshot write failed for XOM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:40,054 WARNING Scan snapshot write failed for XOM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:40,088 WARNING Scan snapshot write failed for RTX: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:40,121 WARNING Scan snapshot write failed for RTX: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:40,153 WARNING Scan snapshot write failed for CVX: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:40,185 WARNING Scan snapshot write failed for CVX: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:40,217 WARNING Scan snapshot write failed for COP: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:40,254 WARNING Scan snapshot write failed for COP: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:40,285 WARNING Scan snapshot write failed for CEG: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:40,317 WARNING Scan snapshot write failed for CEG: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:40,351 WARNING Scan snapshot write failed for NEE: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:40,382 WARNING Scan snapshot write failed for NEE: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:40,419 WARNING Scan snapshot write failed for OXY: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:40,451 WARNING Scan snapshot write failed for OXY: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:40,485 WARNING Scan snapshot write failed for VST: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:40,521 WARNING Scan snapshot write failed for VST: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:40,552 WARNING Scan snapshot write failed for AMT: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:40,582 WARNING Scan snapshot write failed for EQIX: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:40,618 WARNING Scan snapshot write failed for FCX: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:40,651 WARNING Scan snapshot write failed for NEM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:40,682 WARNING Scan snapshot write failed for NEM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:40,713 WARNING Scan snapshot write failed for SOFI: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:40,744 WARNING Scan snapshot write failed for SOFI: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:40,780 WARNING Scan snapshot write failed for IWM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:40,812 WARNING Scan snapshot write failed for IWM: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:40,845 WARNING Scan snapshot write failed for GLD: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:40,878 WARNING Scan snapshot write failed for GLD: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:40,910 WARNING Scan snapshot write failed for C: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:40,942 WARNING Scan snapshot write failed for C: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:40,980 WARNING Scan snapshot write failed for XLE: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:41,012 WARNING Scan snapshot write failed for XLE: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:41,047 WARNING Scan snapshot write failed for SCHW: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:41,079 WARNING Scan snapshot write failed for SCHW: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:41,112 WARNING Scan snapshot write failed for WFC: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:41,143 WARNING Scan snapshot write failed for JNJ: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:41,176 WARNING Scan snapshot write failed for JNJ: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:41,208 WARNING Scan snapshot write failed for MRNA: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:41,242 WARNING Scan snapshot write failed for MRNA: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:41,274 WARNING Scan snapshot write failed for MRK: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:41,310 WARNING Scan snapshot write failed for MRK: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:41,342 WARNING Scan snapshot write failed for AXP: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:41,375 WARNING Scan snapshot write failed for AXP: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:41,410 WARNING Scan snapshot write failed for TGT: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:41,441 WARNING Scan snapshot write failed for TGT: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:41,474 WARNING Scan snapshot write failed for LOW: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:41,509 WARNING Scan snapshot write failed for LOW: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:41,542 WARNING Scan snapshot write failed for FDX: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:41,572 WARNING Scan snapshot write failed for FDX: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:41,603 WARNING Scan snapshot write failed for PFE: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:41,634 WARNING Scan snapshot write failed for PFE: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:41,664 WARNING Scan snapshot write failed for UPS: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:41,697 WARNING Scan snapshot write failed for UPS: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:41,729 WARNING Scan snapshot write failed for SLB: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:41,762 WARNING Scan snapshot write failed for SLB: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:41,794 WARNING Scan snapshot write failed for T: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:41,828 WARNING Scan snapshot write failed for T: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:41,863 WARNING Scan snapshot write failed for VZ: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:41,893 WARNING Scan snapshot write failed for VZ: Binder Error: Table "training_snapshots" does not have a column with name "ml_ranker_score"
+
+Did you mean: "ml_meta_score"
+2026-07-15 10:13:41,894 INFO [scan_morning] scan snapshots: 0 saved, 0 skipped (opened), 187 errors
+2026-07-15 10:13:41,895 INFO Scan snapshots: 0 saved, 0 skipped

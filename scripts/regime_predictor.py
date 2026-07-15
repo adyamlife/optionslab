@@ -59,6 +59,8 @@ _CLASSIFIER_PATH         = _MODELS_DIR / "regime_classifier.joblib"
 _REGIME_CATBOOST_PATH    = _MODELS_DIR / "regime_catboost.joblib"
 _RETURN_PATH             = _MODELS_DIR / "return_regressor.joblib"
 _RETURN_CATBOOST_PATH    = _MODELS_DIR / "return_catboost.joblib"
+_RETURN_CLASSIFIER_PATH  = _MODELS_DIR / "return_classifier.joblib"
+_RETURN_RANKER_PATH      = _MODELS_DIR / "return_ranker.joblib"
 _VOLATILITY_PATH     = _MODELS_DIR / "volatility_regressor.joblib"
 _DIRECTION_PATH      = _MODELS_DIR / "direction_classifier.joblib"
 _IV_DIRECTION_PATH   = _MODELS_DIR / "iv_direction_classifier.joblib"
@@ -78,11 +80,24 @@ _CATEGORICAL_COLS = ("macd_trend", "trend", "spy_trend", "qqq_trend", "iwm_trend
 _POP_PATH        = _MODELS_DIR / "pop_classifier.joblib"
 
 # Canonical label strings — must match label_encoder.classes_ from training.
-_LABEL_UPTREND    = "Uptrend"
-_LABEL_DOWNTREND  = "Downtrend"
-_LABEL_RANGEBOUND = "Range-bound"
-_LABEL_IV_EXP     = "Expanding"
-_LABEL_IV_CON     = "Contracting"
+# Regime labels redesigned 2026-07 (replaces Uptrend/Downtrend/Range-bound):
+#   Trending        — large directional move (|return| > TREND_BAND_PCT)
+#   High-vol-breakout — non-trending but chaotic (forward HV > 28%)
+#   Low-vol-squeeze   — non-trending and calm   (forward HV < 15%)
+#   Mean-reverting    — oscillating, moderate vol
+# Legacy labels kept for backward compat with pre-redesign model artifacts.
+_LABEL_TRENDING       = "Trending"
+_LABEL_HIGH_VOL       = "High-vol-breakout"
+_LABEL_LOW_VOL        = "Low-vol-squeeze"
+_LABEL_MEAN_REV       = "Mean-reverting"
+_LABEL_UPTREND        = "Uptrend"      # legacy
+_LABEL_DOWNTREND      = "Downtrend"    # legacy
+_LABEL_RANGEBOUND     = "Range-bound"  # legacy
+_LABEL_IV_EXP         = "Expanding"
+_LABEL_IV_CON         = "Contracting"
+
+# "Bullish" regime labels for composite_score p_uptrend signal
+_BULLISH_REGIME_LABELS = {_LABEL_TRENDING, _LABEL_UPTREND}
 
 # In-process model cache keyed by Path → (mtime, artifact).
 # Safe with gunicorn workers=1 (current deployment).
@@ -370,7 +385,19 @@ def predict_ticker(ticker: str, today_row: dict | None = None) -> dict:
             else:
                 result["regime_model"] = "xgb"
 
-            pred_idx = int(np.argmax(proba))
+            # With 4 behaviorally distinct classes (Trending/High-vol-breakout/
+            # Low-vol-squeeze/Mean-reverting), argmax is appropriate — each class
+            # has a distinguishable profile.  The old Range-bound threshold hack
+            # is no longer needed (Range-bound was an indistinguishable residual).
+            # Legacy: if model was trained on old labels, Low-vol-squeeze threshold
+            # treatment mirrors the old Range-bound boost.
+            _lvs_idx = list(label_enc.classes_).index(_LABEL_LOW_VOL) \
+                if _LABEL_LOW_VOL in label_enc.classes_ else -1
+            _LVS_THRESHOLD = 0.25
+            if _lvs_idx >= 0 and float(proba[_lvs_idx]) >= _LVS_THRESHOLD:
+                pred_idx = _lvs_idx
+            else:
+                pred_idx = int(np.argmax(proba))
             result["regime"] = label_enc.classes_[pred_idx]
             result["regime_proba"] = {
                 cls: round(float(p), 3)
@@ -424,6 +451,78 @@ def predict_ticker(ticker: str, today_row: dict | None = None) -> dict:
                 f"Return regressor inactive (R²={stored_r2:.3f} < threshold {threshold})"
             )
 
+    # ── Return classifier (replaces regression; produces probability scores) ──
+    art = _load(_RETURN_CLASSIFIER_PATH)
+    if art is None:
+        result["p_return_positive"] = None
+        result["p_return_gt5"]      = None
+        result["p_return_gt10"]     = None
+        result["p_top_decile"]      = None
+        result["return_score"]      = None
+    else:
+        try:
+            from scripts.train_return_classifier import build_feature_matrix as _rcls_fm
+            X_rc, _ = _rcls_fm(
+                pd.DataFrame([today_row]),
+                dummy_cols=art["dummy_cols"], fit=False,
+            )
+            models = art.get("models") or {}
+            def _proba(name):
+                m = models.get(name)
+                if m is None:
+                    return None
+                try:
+                    return round(float(m.predict_proba(X_rc)[0][1]), 4)
+                except Exception:
+                    return None
+
+            p_pos  = _proba("positive")
+            p_gt5  = _proba("gt5")
+            p_gt10 = _proba("gt10")
+            p_top  = _proba("top_decile")
+
+            result["p_return_positive"] = p_pos
+            result["p_return_gt5"]      = p_gt5
+            result["p_return_gt10"]     = p_gt10
+            result["p_top_decile"]      = p_top
+
+            # return_score: weighted composite 0-100.
+            # gt10 dominates — best AUC (0.662) and Lift@10=2.49x confirmed.
+            # gt5 and top_decile provide signal fill when gt10 probability is low.
+            w_gt10, w_gt5, w_top = 0.55, 0.25, 0.20
+            total_w = 0.0
+            score   = 0.0
+            for p, w in [(p_gt10, w_gt10), (p_gt5, w_gt5), (p_top, w_top)]:
+                if p is not None:
+                    score   += p * w
+                    total_w += w
+            result["return_score"] = round((score / total_w) * 100, 1) if total_w > 0 else None
+        except Exception as e:
+            result["p_return_positive"] = None
+            result["p_return_gt5"]      = None
+            result["p_return_gt10"]     = None
+            result["p_top_decile"]      = None
+            result["return_score"]      = None
+            warnings.append(f"Return classifier error: {e}")
+
+    # ── Return ranker score (XGBRanker portfolio signal) ────────────────────
+    # Higher score = model ranks this ticker better within today's universe.
+    # Used by candidate_ranker as primary sort key when available.
+    art = _load(_RETURN_RANKER_PATH)
+    if art is None:
+        result["ranker_score"] = None
+    else:
+        try:
+            from scripts.train_return_classifier import build_feature_matrix as _rcls_fm
+            X_rk, _ = _rcls_fm(
+                pd.DataFrame([today_row]),
+                dummy_cols=art["dummy_cols"], fit=False,
+            )
+            result["ranker_score"] = round(float(art["model"].predict(X_rk)[0]), 6)
+        except Exception as e:
+            result["ranker_score"] = None
+            warnings.append(f"Return ranker error: {e}")
+
     # ── Volatility regressor ─────────────────────────────────────────────────
     art = _load(_VOLATILITY_PATH)
     if art is None:
@@ -447,16 +546,32 @@ def predict_ticker(ticker: str, today_row: dict | None = None) -> dict:
     art = _load(_DIRECTION_CAL_PATH) or _load(_DIRECTION_PATH)
     if art is None:
         result["p_up"] = None
+        result["p_flat"] = None
+        result["p_down"] = None
         result["direction"] = None
         warnings.append("Direction model not trained yet — run train_direction_model")
     else:
         try:
             X = _build_X(today_row, art)
-            p_up = float(art["model"].predict_proba(X)[0][1])
-            result["p_up"]      = round(p_up, 4)
-            result["direction"] = "Up" if p_up >= 0.5 else "Down"
+            proba = art["model"].predict_proba(X)[0]
+            n_dir = art.get("n_direction_classes", 2)
+            if n_dir == 3:
+                # 0=Down, 1=Flat, 2=Up
+                p_down, p_flat, p_up = float(proba[0]), float(proba[1]), float(proba[2])
+                result["p_up"]    = round(p_up, 4)
+                result["p_flat"]  = round(p_flat, 4)
+                result["p_down"]  = round(p_down, 4)
+                result["direction"] = ["Down", "Flat", "Up"][int(np.argmax(proba))]
+            else:
+                p_up = float(proba[1]) if len(proba) > 1 else float(proba[0])
+                result["p_up"]    = round(p_up, 4)
+                result["p_flat"]  = None
+                result["p_down"]  = None
+                result["direction"] = "Up" if p_up >= 0.5 else "Down"
         except Exception as e:
             result["p_up"] = None
+            result["p_flat"] = None
+            result["p_down"] = None
             result["direction"] = None
             warnings.append(f"Direction model error: {e}")
 
@@ -474,7 +589,11 @@ def predict_ticker(ticker: str, today_row: dict | None = None) -> dict:
                 X = _build_X(today_row, art)
             p_exp = float(art["model"].predict_proba(X)[0][1])
             result["iv_expanding_prob"] = round(p_exp, 4)
-            result["iv_direction"] = _LABEL_IV_EXP if p_exp >= 0.5 else _LABEL_IV_CON
+            # Threshold lowered from 0.50: Expanding IV is rarer so the
+            # calibrated model undershoots it at 0.50. 0.30 recovers recall
+            # while AUC (0.762) ensures the rank ordering is still meaningful.
+            _iv_thr = float(art.get("optimal_threshold", 0.30))
+            result["iv_direction"] = _LABEL_IV_EXP if p_exp >= _iv_thr else _LABEL_IV_CON
         except Exception as e:
             result["iv_expanding_prob"] = None
             result["iv_direction"] = None
@@ -516,7 +635,7 @@ def predict_ticker(ticker: str, today_row: dict | None = None) -> dict:
                 "p_uptrend":         _p_up_t,
                 "p_downtrend":       _p_down,
                 "p_rangebound":      _p_range,
-                "expected_return":   result.get("expected_return") or 0.0,
+                "p_return_gt10":     result.get("p_return_gt10") or 0.161,
                 "expected_vol":      result.get("expected_vol") or 0.25,
                 "p_up":              _p_up,
                 "iv_expanding_prob": _p_iv,
@@ -566,6 +685,78 @@ def predict_ticker(ticker: str, today_row: dict | None = None) -> dict:
             result["anomaly_flags"] = []
             warnings.append(f"Anomaly detector error: {e}")
 
+    # ── Composite trade score — deterministic confidence engine ──────────────
+    # Replaces the XGB meta-ensemble stacker which degraded IV's P@10=100% to
+    # P@10=50% by learning noise on a small dataset.
+    # Weights: iv_expanding=0.40 (P@10=100%), p_return_gt10=0.30 (AUC=0.662),
+    #          p_up=0.20 (AUC=0.563), p_uptrend=0.10 (regime context)
+    try:
+        from scripts.confidence_engine import compute_confidence as _compute_conf
+        _rp       = result.get("regime_proba") or {}
+        _p_trend  = max(
+            _rp.get(_LABEL_TRENDING, 0.0) or 0.0,
+            _rp.get(_LABEL_UPTREND,  0.0) or 0.0,   # legacy compat
+        )
+        _conf_out = _compute_conf(
+            iv_expanding_prob = result.get("iv_expanding_prob"),
+            p_return_gt10     = result.get("p_return_gt10"),
+            p_up              = result.get("p_up"),
+            p_uptrend         = _p_trend if _p_trend > 0 else None,
+            is_anomaly        = bool(result.get("is_anomaly")),
+        )
+        result["composite_score"]  = _conf_out["composite_score"]
+        result["confidence_tier"]  = _conf_out["confidence_tier"]
+        result["iv_confidence"]    = _conf_out["iv_confidence"]
+        result["anomaly_penalized"] = _conf_out["anomaly_penalty"]
+    except Exception:
+        result["composite_score"]  = None
+        result["confidence_tier"]  = None
+        result["iv_confidence"]    = None
+        result["anomaly_penalized"] = False
+
+    # ── SHAP attribution — per-prediction feature drivers ────────────────────
+    # Identifies the top 3 features driving the IV direction and direction
+    # predictions.  Uses XGBoost's built-in pred_contribs (margin space SHAP).
+    try:
+        import xgboost as _xgb
+
+        def _xgb_shap(model_art: dict, X_row: "pd.DataFrame") -> dict:
+            raw = model_art.get("model")
+            # Unwrap IsotonicCalibrator to get XGBClassifier underneath
+            raw = getattr(raw, "raw_model", raw)
+            if not hasattr(raw, "get_booster"):
+                return {}
+            feat_names = list(X_row.columns)
+            dmat = _xgb.DMatrix(X_row, feature_names=feat_names)
+            contribs = raw.get_booster().predict(dmat, pred_contribs=True)
+            sv = contribs[0, :-1]   # exclude bias (last col)
+            pairs = sorted(zip(feat_names, sv.tolist()), key=lambda x: -abs(x[1]))
+            return {
+                "drivers": [{"f": f, "v": round(v, 4)} for f, v in pairs[:3] if v > 0],
+                "drags":   [{"f": f, "v": round(v, 4)} for f, v in pairs if v < 0][:3],
+            }
+
+        _shap: dict[str, dict] = {}
+        # IV direction SHAP
+        _iv_art = _load(_IV_DIRECTION_CAL_PATH) or _load(_IV_DIRECTION_PATH)
+        if _iv_art is not None:
+            from scripts.train_iv_direction_model import build_feature_matrix as _iv_bfm
+            _Xiv, _ = _iv_bfm(pd.DataFrame([today_row]),
+                               encoders=_iv_art.get("feature_encoders") or {},
+                               fit=False)
+            _shap["iv_direction"] = _xgb_shap(_iv_art, _Xiv)
+        # Direction SHAP
+        _dir_art = _load(_DIRECTION_CAL_PATH) or _load(_DIRECTION_PATH)
+        if _dir_art is not None:
+            from scripts.train_direction_model import build_feature_matrix as _dir_bfm
+            _Xdir, _ = _dir_bfm(pd.DataFrame([today_row]),
+                                 encoders=_dir_art.get("feature_encoders") or {},
+                                 fit=False)
+            _shap["direction"] = _xgb_shap(_dir_art, _Xdir)
+        result["shap"] = _shap if _shap else None
+    except Exception:
+        result["shap"] = None
+
     # ── Prediction distribution: model-agreement ensemble ────────────────────
     # Aggregate every directional probability signal into a single distribution
     # object. This lets callers distinguish "65 with high agreement across 5
@@ -581,8 +772,10 @@ def predict_ticker(ticker: str, today_row: dict | None = None) -> dict:
     if result.get("analogues_win_rate") is not None and (result.get("analogues_k") or 0) >= 10:
         _signals["analogues"] = float(result["analogues_win_rate"])
     _rp = result.get("regime_proba") or {}
-    if _rp.get("Uptrend") is not None:
-        _signals["regime_up"] = float(_rp["Uptrend"])
+    # Support both new labels (Trending) and legacy labels (Uptrend)
+    _regime_bull = (_rp.get(_LABEL_TRENDING) or _rp.get(_LABEL_UPTREND))
+    if _regime_bull is not None:
+        _signals["regime_up"] = float(_regime_bull)
 
     if _signals:
         _vals = list(_signals.values())
@@ -699,6 +892,7 @@ def predict_all(tickers: list[str] | None = None) -> dict:
     model_status = {
         "regime_classifier":       _CLASSIFIER_PATH.exists(),
         "return_regressor":        _RETURN_PATH.exists(),
+        "return_classifier":       _RETURN_CLASSIFIER_PATH.exists(),
         "volatility_regressor":    _VOLATILITY_PATH.exists(),
         "direction_classifier":    _DIRECTION_PATH.exists(),
         "iv_direction_classifier": _IV_DIRECTION_PATH.exists(),

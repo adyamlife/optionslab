@@ -206,11 +206,13 @@ const mkChip = (label, value, cls, tip) =>
   </div>`;
 
 // ── ML Explanation block (shared by top-3 and per-ticker cards) ──────────────
-function buildMlExplainBlock(ml, rowCls = "tc-ml-row", signalCls = "tc-ml-signal",
-                              valCls = "tc-ml-val", descCls = "tc-ml-desc",
-                              wrapCls = "tc-ml-explain", titleCls = "tc-ml-explain-title") {
-  if (!ml) return `<div class="${wrapCls}"><div class="${titleCls}">ML Analysis</div><p class="muted" style="font-size:.8rem;margin:0">ML cache is cold — no predictions yet. Visit the <a href="/scheduler">Scheduler</a> page to refresh.</p></div>`;
-  if (!ml.ok) return `<div class="${wrapCls}"><div class="${titleCls}">ML Analysis</div><p class="muted" style="font-size:.8rem;margin:0">ML prediction unavailable: ${ml.error || "unknown error"}</p></div>`;
+/**
+ * Compact ML pill row + ? button that opens a modal with full detail.
+ * Replaces the old verbose buildMlExplainBlock.
+ */
+function buildMlExplainBlock(ml) {
+  if (!ml) return `<div class="lp-ml-section"><div class="lp-ml-section-header"><span class="lp-ml-section-title">ML</span></div><p class="muted" style="font-size:.8rem;margin:0">ML cache cold — <a href="/scheduler">refresh</a>.</p></div>`;
+  if (!ml.ok) return `<div class="lp-ml-section"><div class="lp-ml-section-header"><span class="lp-ml-section-title">ML</span></div><p class="muted" style="font-size:.8rem;margin:0">Unavailable: ${ml.error || "unknown error"}</p></div>`;
 
   const rows = [];
   const cls = (v, good, bad) => v >= good ? "pass" : v <= bad ? "fail" : "";
@@ -220,41 +222,33 @@ function buildMlExplainBlock(ml, rowCls = "tc-ml-row", signalCls = "tc-ml-signal
     const probaStr = ml.regime_proba
       ? Object.entries(ml.regime_proba).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`${k} ${(v*100).toFixed(0)}%`).join(" · ")
       : "";
-    const implication = ml.regime === "Uptrend"
+    const impl = ml.regime === "Uptrend"
       ? "Bull put spreads, covered calls, and call debit spreads align with trend."
       : ml.regime === "Downtrend"
       ? "Bear call spreads and put debit spreads align with trend. Avoid naked short puts."
       : "Range-bound — iron condors and short straddles may fit. Watch for breakout.";
-    rows.push([`<span class="${valCls} ${rCls}">${ml.regime}</span>`,
-      "ML Regime", `${implication}${probaStr ? " (" + probaStr + ")" : ""}`]);
+    rows.push(["ML Regime", ml.regime, rCls, `${impl}${probaStr ? " (" + probaStr + ")" : ""}`]);
   }
 
   if (ml.expected_move_pct != null) {
     const em = (ml.expected_move_pct * 100).toFixed(1);
     const fvol = ml.expected_vol != null ? ` (forecast vol: ${(ml.expected_vol*100).toFixed(1)}% ann.)` : "";
-    rows.push([`<span class="${valCls}">±${em}%</span>`,
-      "ML Move ±", `ML predicts ±${em}% over the next 10 days${fvol}. Place short strikes beyond this range for a cushion.`]);
+    rows.push(["ML Move ±", `±${em}%`, "", `ML predicts ±${em}% over the next 10 days${fvol}. Place short strikes beyond this range for a cushion.`]);
   }
 
   if (ml.iv_direction) {
     const ivProb = ml.iv_expanding_prob != null ? ml.iv_expanding_prob : null;
-    // Confidence for the stated direction: expanding → iv_expanding_prob, contracting → 1 - iv_expanding_prob
-    const dirConf = ivProb != null
-      ? (ml.iv_direction === "Expanding" ? ivProb : 1 - ivProb)
-      : null;
+    const dirConf = ivProb != null ? (ml.iv_direction === "Expanding" ? ivProb : 1 - ivProb) : null;
     const confPct = dirConf != null ? Math.round(dirConf * 100) : null;
     const confStr = confPct != null ? ` (${confPct}% confidence)` : "";
-    // Only colour as pass/warn when confidence is meaningful (>= 50%); below that it's neutral
-    const ivCls = dirConf == null ? "" :
-      dirConf < 0.50 ? "" :
-      ml.iv_direction === "Expanding" ? "warn" : "pass";
+    const ivCls = dirConf == null ? "" : dirConf < 0.50 ? "" : ml.iv_direction === "Expanding" ? "warn" : "pass";
     const weakSignal = dirConf != null && dirConf < 0.50;
     const ivDesc = weakSignal
-      ? `IV direction signal is weak${confStr}. Model has no strong view on whether IV expands or contracts — treat as uncertain. Do not size based on IV direction alone.`
+      ? `IV direction signal is weak${confStr}. Model has no strong view — treat as uncertain.`
       : ml.iv_direction === "Expanding"
-      ? `IV rank likely rising${confStr}. Credit spreads and iron condors face headwind — rising IV expands the position against you. Consider waiting or using wider wings.`
-      : `IV rank likely falling${confStr}. Premium sellers have edge; debit spreads risk vol crush. Favour credit structures while IV contracts.`;
-    rows.push([`<span class="${valCls} ${ivCls}">${ml.iv_direction}</span>`, "ML IV Dir", ivDesc]);
+      ? `IV rank likely rising${confStr}. Credit spreads face headwind — rising IV expands position against you.`
+      : `IV rank likely falling${confStr}. Premium sellers have edge; debit spreads risk vol crush.`;
+    rows.push(["ML IV Dir", ml.iv_direction, ivCls, ivDesc]);
   }
 
   if (ml.p_up != null) {
@@ -262,12 +256,11 @@ function buildMlExplainBlock(ml, rowCls = "tc-ml-row", signalCls = "tc-ml-signal
     const pCls = cls(pUp, 60, 40);
     const dir = ml.direction || (pUp >= 55 ? "Bullish lean" : pUp <= 45 ? "Bearish lean" : "No strong lean");
     const pDesc = pUp >= 60
-      ? `Strong upside probability. Bullish structures (bull put spread, call debit spread) have model backing.`
+      ? "Strong upside probability. Bullish structures (bull put spread, call debit spread) have model backing."
       : pUp <= 40
-      ? `Strong downside probability. Bearish structures (bear call spread, put debit spread) align with model.`
-      : `Mixed directional signal. Non-directional trades (iron condor, short strangle) may be preferable.`;
-    rows.push([`<span class="${valCls} ${pCls}">${pUp.toFixed(0)}%</span>`,
-      "ML P(↑)", `${dir}. ${pDesc}`]);
+      ? "Strong downside probability. Bearish structures (bear call spread, put debit spread) align with model."
+      : "Mixed directional signal. Non-directional trades (iron condor, short strangle) may be preferable.";
+    rows.push(["ML P(↑)", `${pUp.toFixed(0)}%`, pCls, `${dir}. ${pDesc}`]);
   }
 
   if (ml.meta_score != null) {
@@ -277,21 +270,18 @@ function buildMlExplainBlock(ml, rowCls = "tc-ml-row", signalCls = "tc-ml-signal
     const conf = pd ? pd.confidence : null;
     const agr  = pd ? pd.model_agreement : null;
     const agrCls = agr === "High" ? "pass" : agr === "Low" ? "fail" : "warn";
-    const agrBadge = agr ? ` <span class="${agrCls}" style="font-size:.75rem;font-weight:600">${agr} agreement</span>` : "";
-    // When score is neutral (35–65) but agreement is High, the models are aligned on
-    // a near-neutral score — not disagreeing. Distinguish from the true low-confidence case.
+    const agrStr = agr ? ` <span class="${agrCls}" style="font-size:.75rem;font-weight:600">${agr} agr.</span>` : "";
     const mDesc = m >= 65
-      ? `Strong bullish consensus across all ML models. High-conviction setup.`
+      ? "Strong bullish consensus across all ML models. High-conviction setup."
       : m <= 35
-      ? `Strong bearish consensus across all ML models. Avoid bullish structures.`
+      ? "Strong bearish consensus across all ML models. Avoid bullish structures."
       : agr === "High"
-      ? `Models are in ${m >= 50 ? "slight bullish" : "slight bearish"} agreement (score near neutral). No strong directional edge — size conservatively and lean on rulebook signals.`
+      ? `Models are in ${m >= 50 ? "slight bullish" : "slight bearish"} agreement (near neutral). Size conservatively.`
       : agr === "Low"
-      ? `Models disagree — each pointing in a different direction. Treat as no signal; rely on rulebook only.`
-      : `Models show no strong directional signal. Rely on rulebook signals and be cautious with size.`;
-    const confStr = conf != null ? ` · Confidence ${(conf * 100).toFixed(0)}%` : "";
-    rows.push([`<span class="${valCls} ${mCls}">${m.toFixed(0)}/100</span>${agrBadge}`,
-      "ML Meta Score", `Stacked score from all 5 models (Regime, Return, Vol, POP, Anomaly).${confStr} ${mDesc}`]);
+      ? "Models disagree — rely on rulebook only."
+      : "No strong directional signal. Rely on rulebook signals.";
+    const confStr = conf != null ? ` Confidence ${(conf * 100).toFixed(0)}%.` : "";
+    rows.push(["ML Meta", `${m.toFixed(0)}/100${agrStr}`, mCls, `Stacked score from all 5 models.${confStr} ${mDesc}`]);
   }
 
   if (ml.pred_dist) {
@@ -299,13 +289,12 @@ function buildMlExplainBlock(ml, rowCls = "tc-ml-row", signalCls = "tc-ml-signal
     if (pd.p10_pnl != null && pd.p90_pnl != null) {
       const p10Cls = pd.p10_pnl >= 0 ? "pass" : "fail";
       const p90Cls = pd.p90_pnl >= 0 ? "pass" : "fail";
-      const evStr  = pd.ev_per_share != null ? ` · EV ${pd.ev_per_share >= 0 ? "+" : ""}$${pd.ev_per_share.toFixed(2)}/sh` : "";
-      const srcStr = pd.vol_source ? ` (${pd.vol_source} engine)` : "";
-      rows.push([
-        `<span class="${valCls} ${p10Cls}">${pd.p10_pnl >= 0 ? "+" : ""}$${pd.p10_pnl.toFixed(2)}</span>` +
-        ` — <span class="${valCls} ${p90Cls}">+$${pd.p90_pnl.toFixed(2)}</span>`,
-        "MC P10/P90",
-        `Monte Carlo 10th–90th percentile P&L per share${srcStr}.${evStr} A tighter range signals more predictable outcome; a wide range means high tail uncertainty.`
+      const evStr  = pd.ev_per_share != null ? ` EV ${pd.ev_per_share >= 0 ? "+" : ""}$${pd.ev_per_share.toFixed(2)}/sh.` : "";
+      const srcStr = pd.vol_source ? ` (${pd.vol_source})` : "";
+      rows.push(["MC P10/P90",
+        `<span class="${p10Cls}">${pd.p10_pnl >= 0 ? "+" : ""}$${pd.p10_pnl.toFixed(2)}</span> – <span class="${p90Cls}">+$${pd.p90_pnl.toFixed(2)}</span>`,
+        "",
+        `Monte Carlo P&L range per share${srcStr}.${evStr} Tighter range = more predictable outcome.`
       ]);
     }
   }
@@ -315,24 +304,29 @@ function buildMlExplainBlock(ml, rowCls = "tc-ml-row", signalCls = "tc-ml-signal
     const aCls = ml.is_anomaly ? (a <= 20 ? "fail" : "warn") : "";
     const flags = (ml.anomaly_flags || []).slice(0, 3).join(", ") || "multi-feature outlier";
     const aDesc = ml.is_anomaly
-      ? `UNUSUAL CONDITIONS: ${flags}. The ticker is outside normal historical patterns — ML model confidence is reduced. Use smaller position size.`
-      : `Market conditions are within normal historical range. ML models are operating within their training distribution.`;
-    rows.push([`<span class="${valCls} ${aCls}">${a.toFixed(0)}${ml.is_anomaly ? " ⚠" : ""}/100</span>`,
-      "ML Anomaly", aDesc]);
+      ? `Unusual conditions: ${flags}. ML confidence reduced — consider smaller size.`
+      : "Conditions within normal historical range. ML models are reliable.";
+    rows.push(["ML Anomaly", `${a.toFixed(0)}${ml.is_anomaly ? " ⚠" : ""}/100`, aCls, aDesc]);
   }
 
   if (!rows.length) return "";
 
-  const rowsHtml = rows.map(([val, signal, desc]) =>
-    `<div class="${rowCls}">
-      <span class="${signalCls}">${signal}</span>
-      ${val}
-      <span class="${descCls}">${desc}</span>
-    </div>`).join("");
+  const pillsHtml = rows.map(([signal, val, vCls]) =>
+    `<span class="lp-ml-pill${vCls ? " " + vCls : ""}"><span class="lp-ml-pill-label">${signal}</span> ${val}</span>`
+  ).join("");
 
-  return `<div class="${wrapCls}">
-    <div class="${titleCls}">ML Analysis</div>
-    ${rowsHtml}
+  const detail = {
+    title: "ML Analysis",
+    rows: rows.map(([signal, val, vCls, desc]) => ({ signal, val, vCls, desc })),
+  };
+  const detailJson = escHtml(JSON.stringify(detail));
+
+  return `<div class="lp-ml-section">
+    <div class="lp-ml-section-header">
+      <span class="lp-ml-section-title">ML Analysis</span>
+      <button class="lp-info-btn" data-info-type="ml" data-info='${detailJson}' title="Show ML details">?</button>
+    </div>
+    <div class="lp-ml-pills">${pillsHtml}</div>
   </div>`;
 }
 
@@ -386,59 +380,53 @@ function renderTopTrades(topTrades) {
       return `<div class="top3-ai"><strong class="${aiCls}">${t.ai_provider} · ${t.ai_confidence}:</strong> ${t.ai_assessment}</div>`;
     })() : "";
 
-    // ML chips for top-3
-    const mlChipsHtml = (() => {
-      const ml = t.ml;
-      if (!ml || !ml.ok) return "";
-      const chips = [];
-      if (ml.regime) {
-        const rCls = ml.regime === "Uptrend" ? "pass" : ml.regime === "Downtrend" ? "fail" : "warn";
-        chips.push(mkChip("ML Regime", ml.regime, rCls,
-          `Regime: ${ml.regime}. Probas: ${ml.regime_proba ? Object.entries(ml.regime_proba).map(([k,v])=>`${k} ${(v*100).toFixed(0)}%`).join(", ") : "N/A"}`));
-      }
-      if (ml.expected_move_pct != null) {
-        chips.push(mkChip("ML EM±", `±${(ml.expected_move_pct*100).toFixed(1)}%`, "",
-          `ML 10-day expected move (1σ). Forecast vol: ${ml.expected_vol != null ? (ml.expected_vol*100).toFixed(1)+"% ann." : "N/A"}`));
-      }
-      if (ml.iv_direction) {
-        const ivCls = ml.iv_direction === "Expanding" ? "warn" : "pass";
-        const ivProb = ml.iv_expanding_prob != null ? ` ${(ml.iv_expanding_prob*100).toFixed(0)}%` : "";
-        chips.push(mkChip("ML IV", ml.iv_direction + ivProb, ivCls,
-          ml.iv_direction === "Expanding" ? "IV likely rising — headwind for credit spreads." : "IV likely falling — premium sellers have edge."));
-      }
-      if (ml.p_up != null) {
-        const pUpCls = ml.p_up >= 0.6 ? "pass" : ml.p_up <= 0.4 ? "fail" : "";
-        chips.push(mkChip("ML P(↑)", `${(ml.p_up*100).toFixed(0)}%`, pUpCls,
-          `ML direction model — probability next 10d return is positive.`));
-      }
-      if (ml.meta_score != null) {
-        const metaCls = ml.meta_score >= 65 ? "pass" : ml.meta_score <= 35 ? "fail" : "";
-        const pd  = ml.pred_dist;
-        const agr = pd ? pd.model_agreement : null;
-        const agrSuffix = agr ? ` · ${agr} agr.` : "";
-        const conf = pd && pd.confidence != null ? ` Confidence ${(pd.confidence*100).toFixed(0)}%.` : "";
-        chips.push(mkChip("ML Meta", `${ml.meta_score.toFixed(0)}/100${agrSuffix}`, metaCls,
-          `Meta-ensemble (0–100): all 5 ML models stacked.${conf} ≥65 bullish, ≤35 bearish.`));
-      }
-      // MC distribution chip: p10/p90 range from GARCH Monte Carlo
-      const pd = ml.pred_dist;
-      if (pd && pd.p10_pnl != null && pd.p90_pnl != null) {
-        const rangeStr = `$${pd.p10_pnl.toFixed(2)}–$${pd.p90_pnl.toFixed(2)}`;
-        const rangeCls = pd.p10_pnl >= 0 ? "pass" : pd.p90_pnl >= 0 ? "warn" : "fail";
-        const src = pd.vol_source ? ` (${pd.vol_source})` : "";
-        chips.push(mkChip("MC P10/P90", rangeStr, rangeCls,
-          `Monte Carlo P&L range per share${src}. P10=${pd.p10_pnl >= 0 ? "+" : ""}$${pd.p10_pnl.toFixed(2)}, P90=+$${pd.p90_pnl.toFixed(2)}.` +
-          (pd.ev_per_share != null ? ` EV ${pd.ev_per_share >= 0 ? "+" : ""}$${pd.ev_per_share.toFixed(2)}/sh.` : "")));
-      }
-      if (ml.anomaly_score != null) {
-        const anom = ml.anomaly_score;
-        const anomCls = ml.is_anomaly ? (anom <= 20 ? "fail" : "warn") : "";
-        const anomLabel = ml.is_anomaly ? `${anom.toFixed(0)}⚠` : `${anom.toFixed(0)}`;
-        chips.push(mkChip("ML Anom", anomLabel, anomCls,
-          `Anomaly score (100=normal, 0=extreme). ${ml.is_anomaly ? "UNUSUAL: " + (ml.anomaly_flags||[]).slice(0,2).join("; ") : "Within normal conditions."}`));
-      }
-      if (!chips.length) return "";
-      return `<div class="tc-metric-grid top3-ml-chips">${chips.join("")}</div>`;
+    // Market signals chip row for top-3 card
+    const top3MarketChips = (() => {
+      const pcrC  = { Bullish: "pass", Bearish: "fail", Neutral: "na", "N/A": "na" }[t.pcr_sentiment] ?? "na";
+      const e200C = t.ema200_position === "above" ? "pass" : t.ema200_position === "below" ? "warn" : "";
+      const rvolC = t.rel_volume != null ? (t.rel_volume >= 1.5 ? "pass" : t.rel_volume <= 0.5 ? "warn" : "") : "";
+      const newC  = { Bullish: "pass", Bearish: "fail", Mixed: "warn", Neutral: "", "N/A": "" }[t.news_sentiment] ?? "";
+
+      // Each entry: [label, value, cls, description]
+      const rows = [
+        ["Trend D",  t.trend ?? "—",           "",    "Daily price trend derived from EMA crossover. Uptrend = bullish structures preferred; Downtrend = bearish; Range-bound = neutral."],
+        ["Trend W",  t.weekly_trend ?? "—",    "",    "Weekly trend — higher-timeframe confirmation. Alignment between daily and weekly trend increases signal confidence."],
+        ["RSI",      String(t.rsi ?? "—"),      "",    "14-day Relative Strength Index. >70 = potentially overbought; <30 = potentially oversold. Used to gauge momentum extremes."],
+        ["ADX",      String(t.adx ?? "—"),      "",    "Average Directional Index — measures trend strength regardless of direction. >25 = strong trend; <20 = choppy/ranging market."],
+        ["IV Env",   t.iv_env ?? "—",           "",    "Implied Volatility environment: High = elevated premium, good for credit sellers. Low = cheap options, better for debit buyers."],
+        ["PCR",      t.pcr != null ? String(t.pcr) : "—", pcrC, `Put/Call ratio. Sentiment: ${t.pcr_sentiment ?? "N/A"}. High PCR (>1) = bearish hedging. Low PCR (<0.7) = bullish positioning.`],
+        ["EMA200",   t.ema200_position ?? "—",  e200C, `200-day EMA: ${t.ema200 ? "$" + t.ema200 + ". " : ""}Above = long-term uptrend (favours bullish structures). Below = long-term downtrend.`],
+        ["RelVol",   t.rel_volume != null ? t.rel_volume + "x" : "—", rvolC, "Relative volume vs 20-day average. >1.5x = elevated activity (institutions active). <0.5x = thin, illiquid conditions."],
+        ["IV Term",  t.iv_term_shape ?? "—",    "",    t.iv_term_note ?? "IV term structure across expiries. Contango = normal (near < far IV). Backwardation = stress (near > far IV) — short-dated options are expensive."],
+        ...(t.hv20 != null ? [["HV20", (t.hv20 * 100).toFixed(1) + "%", "", "20-day historical (realised) volatility, annualised. Compare to IV — if IV >> HV20, options are rich and selling premium has edge."]] : []),
+        ...(t.iv_premium != null ? [["IV±HV",
+          (t.iv_premium >= 0 ? "+" : "") + (t.iv_premium * 100).toFixed(1) + "%",
+          t.iv_premium > 0.03 ? "pass" : t.iv_premium < -0.03 ? "warn" : "",
+          `IV minus HV20 (options richness). Positive = IV > realised vol → premium selling edge. Negative = IV cheap → debit buyers have edge. Ratio: ${t.iv_hv_ratio?.toFixed(2) ?? "—"}.`]] : []),
+        ...(t.vol_skew_pct != null ? [["Skew",
+          (t.vol_skew_pct >= 0 ? "+" : "") + t.vol_skew_pct.toFixed(1) + "%",
+          t.vol_skew_pct > 5 ? "warn" : t.vol_skew_pct < -5 ? "pass" : "",
+          "Put IV minus Call IV at ~5% OTM. Positive (fear skew) = market paying up for downside protection — watch short puts. Negative = calls bid up, possible squeeze risk."]] : []),
+        ["MACD",     t.macd_trend ?? "—",       "",    `MACD trend direction. Histogram: ${t.macd_hist ?? "—"}. Bullish = upward momentum building; Bearish = downward. Use as momentum confirmation alongside Trend D.`],
+        ["News",     t.news_sentiment ?? "—",   newC,  "Aggregated recent news sentiment for the ticker. Bullish = positive catalysts; Bearish = negative news risk; Mixed = conflicting signals."],
+      ];
+
+      const pillsHtml = rows.map(([label, val, cls]) =>
+        `<span class="lp-ml-pill${cls ? " " + cls : ""}"><span class="lp-ml-pill-label">${label}</span> ${val}</span>`
+      ).join("");
+
+      const detail = {
+        title: "Market Signals",
+        rows: rows.map(([signal, val, vCls, desc]) => ({ signal, val, vCls, desc })),
+      };
+
+      return `<div class="lp-ml-section">
+        <div class="lp-ml-section-header">
+          <span class="lp-ml-section-title">Market Signals</span>
+          <button class="lp-info-btn" data-info-type="ml" data-info='${escHtml(JSON.stringify(detail))}' title="Market signal descriptions">?</button>
+        </div>
+        <div class="lp-ml-pills">${pillsHtml}</div>
+      </div>`;
     })();
 
     // Expiry P&L
@@ -457,52 +445,47 @@ function renderTopTrades(topTrades) {
         </div>
         ${capitalWarnHtml}
         <div class="top3-body">
-          <div class="top3-big-metrics">
-            <div class="top3-metric">
-              <span class="top3-metric-value">${popVal}</span>
-              <span class="top3-metric-label">POP</span>
+          <div class="lp-ml-section">
+            <div class="lp-ml-section-header">
+              <span class="lp-ml-section-title">Key Metrics</span>
+              <button class="lp-info-btn" data-info-type="metric-group" data-info='${escHtml(JSON.stringify({ title: "Key Metrics", rows: [
+                { label: "POP", desc: "Probability of Profit — estimated chance this position expires at or better than max profit. ≥65% is favorable." },
+                { label: "Max Profit", desc: isCalendar ? "Calendar/Diagonal: max profit is path-dependent and estimated, not fixed at entry." : "Maximum theoretical profit if the underlying closes between both short strikes at expiry." },
+                { label: "Max Loss", desc: "Maximum theoretical loss — capital at risk. For spreads this equals the net debit or margin requirement." },
+                { label: "EV", desc: t.ev_is_proxy ? "EV proxy (estimated from Jade Lizard structure). *Not a direct Monte Carlo output." : "Expected Value per share — probability-weighted average P&L across all expiry scenarios." },
+                { label: "Capital Req", desc: "Estimated capital required to open this position (margin for credit spreads, debit for debit spreads)." },
+                { label: "DTE", desc: "Days to Expiration of the primary option leg." },
+                { label: "Ann. Gain", desc: "Annualised return = (Max Profit / Capital) × (365 / DTE). Useful for comparing trades across different expiries." },
+              ]}))}'  title="Metric descriptions">?</button>
             </div>
-            <div class="top3-metric">
-              <span class="top3-metric-value ${profitCls}">${profitVal}</span>
-              <span class="top3-metric-label">Max Profit</span>
-            </div>
-            <div class="top3-metric">
-              <span class="top3-metric-value ${lossCls}">${lossVal}</span>
-              <span class="top3-metric-label">Max Loss</span>
-            </div>
-            <div class="top3-metric">
-              <span class="top3-metric-value">${evVal}</span>
-              <span class="top3-metric-label">EV${t.ev_is_proxy ? "*" : ""}</span>
-            </div>
-            <div class="top3-metric">
-              <span class="top3-metric-value">${capVal}</span>
-              <span class="top3-metric-label">Capital Req</span>
-            </div>
-            <div class="top3-metric">
-              <span class="top3-metric-value">${t.dte != null ? t.dte + "d" : "—"}</span>
-              <span class="top3-metric-label">DTE</span>
-            </div>
-            <div class="top3-metric" title="Annualised return = (Max Profit / Capital) × (365 / DTE)">
-              <span class="top3-metric-value ${top3AnnGainCls}">${top3AnnGainPct}</span>
-              <span class="top3-metric-label">Ann. Gain</span>
+            <div class="lp-ml-pills">
+              <span class="lp-ml-pill"><span class="lp-ml-pill-label">POP</span>${popVal}</span>
+              <span class="lp-ml-pill ${profitCls}"><span class="lp-ml-pill-label">Max Profit</span>${profitVal}</span>
+              <span class="lp-ml-pill ${lossCls}"><span class="lp-ml-pill-label">Max Loss</span>${lossVal}</span>
+              <span class="lp-ml-pill"><span class="lp-ml-pill-label">EV${t.ev_is_proxy ? "*" : ""}</span>${evVal}</span>
+              <span class="lp-ml-pill"><span class="lp-ml-pill-label">Capital</span>${capVal}</span>
+              <span class="lp-ml-pill"><span class="lp-ml-pill-label">DTE</span>${t.dte != null ? t.dte + "d" : "—"}</span>
+              <span class="lp-ml-pill ${top3AnnGainCls}"><span class="lp-ml-pill-label">Ann. Gain</span>${top3AnnGainPct}</span>
             </div>
           </div>
           <div class="top3-info-grid">
             <span>Expiry: <strong>${t.expiry ?? "—"}</strong></span>
             <span>Take-profit: <strong>${fmtMoney(t.profit_target)}</strong></span>
-            <span>ADX: <strong>${t.adx ?? "—"}</strong></span>
-            <span>EMA200: <strong>${t.ema200_position ?? "—"}</strong></span>
-            <span>PCR: <strong>${t.pcr ?? "—"}${t.pcr_sentiment && t.pcr_sentiment !== "N/A" ? " ("+t.pcr_sentiment+")" : ""}</strong></span>
-            <span>News: <strong class="${newsCls}">${t.news_sentiment ?? "—"}</strong></span>
           </div>
+          ${top3MarketChips}
           <div class="top3-signal-row">
             <span class="tc-signal-pill ${_signalPillClass(t.signal_rating)}" title="${signalTip}">${t.signal_rating ?? "—"}</span>
             ${(t.hedge || t.hedge_exact) ? `<span class="hedge-avail-badge">🛡 Hedge available</span>` : ""}
           </div>
-          ${mlChipsHtml}
           ${buildMlExplainBlock(t.ml)}
-          ${aiHtml}
-          ${(t.signal_notes ?? []).length ? `<div class="signal-notes">${t.signal_notes.map(n => `<span class="signal-note">${n}</span>`).join("")}</div>` : ""}
+          ${aiHtml ? `<details class="top3-ai-details"><summary>AI Assessment</summary>${aiHtml}</details>` : ""}
+          ${(t.signal_notes ?? []).length ? `<div class="lp-ml-section">
+            <div class="lp-ml-section-header">
+              <span class="lp-ml-section-title">Signal Notes</span>
+              <button class="lp-info-btn" data-info-type="bias" data-info='${escHtml(JSON.stringify({ title: "Signal Alignment Notes", reasons: t.signal_notes, action: "", note: "These notes explain why the rulebook assigned this signal rating. Each note corresponds to a scoring criterion that was met or flagged." }))}' title="Signal alignment details">?</button>
+            </div>
+            <div class="lp-ml-pills">${(t.signal_notes).map(n => `<span class="lp-ml-pill">${escHtml(n)}</span>`).join("")}</div>
+          </div>` : ""}
           ${marketBiasBadge(t.market_bias)}
           <details class="top3-details-toggle">
             <summary>Trade details, Greeks &amp; Hedge</summary>
@@ -566,102 +549,93 @@ function buildTickerCard(row) {
     : "";
 
   // ── Signal notes strip ────────────────────────────────────────────────────
-  const signalNotesHtml = (row.signal_notes ?? []).length
-    ? `<div class="tc-signal-notes">${row.signal_notes.map(n => `<span class="signal-note">${n}</span>`).join("")}</div>`
-    : "";
+  const signalNotesHtml = (row.signal_notes ?? []).length ? (() => {
+    const noteDetail = escHtml(JSON.stringify({
+      title: "Signal Alignment Notes",
+      reasons: row.signal_notes,
+      action: "",
+      note: "These notes explain why the rulebook assigned this signal rating. Each note corresponds to a scoring criterion that was met or flagged.",
+    }));
+    const notePills = row.signal_notes.map(n => `<span class="lp-ml-pill">${escHtml(n)}</span>`).join("");
+    return `<div class="lp-ml-section">
+      <div class="lp-ml-section-header">
+        <span class="lp-ml-section-title">Signal Notes</span>
+        <button class="lp-info-btn" data-info-type="bias" data-info='${noteDetail}' title="Signal alignment details">?</button>
+      </div>
+      <div class="lp-ml-pills">${notePills}</div>
+    </div>`;
+  })() : "";
 
   // ── Market bias row ───────────────────────────────────────────────────────
   const biasHtml = row.market_bias ? `<div class="tc-bias-row">${marketBiasBadge(row.market_bias)}</div>` : "";
 
-  // ── Left: signal metric chips ──────────────────────────────────────────────
-
-  const metrics = [
-    mkChip("Trend D", row.trend ?? "—", "", "Daily price trend from EMA crossover"),
-    mkChip("Trend W", row.weekly_trend ?? "—", "", "Weekly price trend — higher timeframe confirmation"),
-    mkChip("RSI", row.rsi ?? "—", "", "14-day Relative Strength Index. >70 overbought, <30 oversold."),
-    mkChip("ADX", row.adx ?? "—", adxCls, "Average Directional Index. >25 = strong trend, <20 = choppy."),
-    mkChip("IV Env", row.iv_env ?? "—", "", "Current implied volatility environment: High / Normal / Low."),
-    mkChip("PCR", row.pcr != null ? `${row.pcr}` : "—", pcrCls, `Put/Call ratio. ${row.pcr_sentiment ?? ""}`),
-    mkChip("EMA200", row.ema200_position ?? "—", ema200Cls, `200-day EMA. ${row.ema200 ? "($"+row.ema200+")" : ""} Price above = long-term uptrend.`),
-    mkChip("RelVol", row.rel_volume != null ? row.rel_volume + "x" : "—", rvolCls, "Relative volume vs 20-day avg. >1.5x = elevated activity."),
-    mkChip("IV Term", row.iv_term_shape ?? "—", "", row.iv_term_note ?? "IV term structure across expiries."),
-    ...(row.hv20 != null ? [mkChip("HV20", (row.hv20 * 100).toFixed(1) + "%", "", "20-day historical (realised) volatility, annualised.")] : []),
-    ...(row.iv_premium != null ? [mkChip("IV±HV", (row.iv_premium >= 0 ? "+" : "") + (row.iv_premium * 100).toFixed(1) + "%",
-        row.iv_premium > 0.03 ? "pass" : row.iv_premium < -0.03 ? "warn" : "",
-        `IV minus HV20. Positive = options rich → selling edge. IV/HV ratio: ${row.iv_hv_ratio?.toFixed(2) ?? "—"}`)] : []),
-    ...(row.vol_skew_pct != null ? [mkChip("Skew", (row.vol_skew_pct >= 0 ? "+" : "") + row.vol_skew_pct.toFixed(1) + "%",
-        row.vol_skew_pct > 5 ? "warn" : row.vol_skew_pct < -5 ? "pass" : "",
-        "Put IV minus Call IV at ~5% OTM. Positive = downside fear skew.")] : []),
-    ...(row.short_interest != null ? [mkChip("Short%", row.short_interest.toFixed(1) + "%",
-        row.short_interest > 20 ? "fail" : row.short_interest > 10 ? "warn" : "",
-        "Short interest as % of float. >20% = high squeeze risk.")] : []),
-    ...(row.div_ex_date != null ? [mkChip("Ex-Div", row.div_ex_date,
-        row.div_days_to_ex != null && row.div_days_to_ex <= 7 ? "warn" : "",
-        `Ex-dividend date. Yield: ${row.div_yield != null ? row.div_yield + "%" : "N/A"}`)] : []),
-    ...(row.analyst_label && row.analyst_label !== "N/A" ? [mkChip("Analysts",
-        row.analyst_label,
-        { Bullish: "pass", Bearish: "fail", Neutral: "" }[row.analyst_label] ?? "",
-        `Analyst consensus: ${row.analyst_buy}B/${row.analyst_hold}H/${row.analyst_sell}S. Score: ${row.analyst_net_score?.toFixed(2) ?? "—"}`)] : []),
-    mkChip("MACD", `${row.macd_trend ?? "—"}`, "", `MACD trend direction. Hist: ${row.macd_hist ?? "—"}`),
-    ...(() => {
-      const ml = row.ml;
-      if (!ml) return [mkChip("ML", "No cache", "na", "ML cache cold — predictions not yet available. Trigger a cache refresh from the Scheduler page.")];
-      if (!ml.ok) return [mkChip("ML", ml.error ? "Error" : "N/A", "na", ml.error || "ML prediction failed for this ticker.")];
-      const chips = [];
-      if (ml.regime) {
-        const rCls = ml.regime === "Uptrend" ? "pass" : ml.regime === "Downtrend" ? "fail" : "warn";
-        chips.push(mkChip("ML Regime", ml.regime, rCls, `ML regime classifier — ${ml.regime}. Probabilities: ${ml.regime_proba ? Object.entries(ml.regime_proba).map(([k,v])=>`${k} ${(v*100).toFixed(0)}%`).join(", ") : "N/A"}`));
-      }
-      if (ml.expected_move_pct != null) {
-        const emStr = `±${(ml.expected_move_pct * 100).toFixed(1)}%`;
-        chips.push(mkChip("ML EM±", emStr, "", `ML 10-day expected move (1σ) — size strikes at least ${emStr} from spot. Based on forecast vol ${ml.expected_vol != null ? (ml.expected_vol*100).toFixed(1)+"% ann." : ""}`));
-      }
-      if (ml.iv_direction) {
-        const ivCls = ml.iv_direction === "Expanding" ? "warn" : "pass";
-        const ivProb = ml.iv_expanding_prob != null ? ` ${(ml.iv_expanding_prob * 100).toFixed(0)}%` : "";
-        chips.push(mkChip("ML IV", ml.iv_direction + ivProb, ivCls,
-          `ML IV direction — ${ml.iv_direction === "Expanding"
-            ? "IV rank likely rising: short-vol structures (credit spreads, iron condors) face headwind."
-            : "IV rank likely falling: premium sellers have edge; debit spreads face vol crush risk."}`));
-      }
-      if (ml.p_up != null) {
-        const pUpCls = ml.p_up >= 0.6 ? "pass" : ml.p_up <= 0.4 ? "fail" : "";
-        chips.push(mkChip("ML P(↑)", `${(ml.p_up * 100).toFixed(0)}%`, pUpCls, `ML direction model — probability next 10d return is positive. ${ml.direction ?? ""}`));
-      }
-      if (ml.meta_score != null) {
-        const metaCls = ml.meta_score >= 65 ? "pass" : ml.meta_score <= 35 ? "fail" : "";
-        const pd2 = ml.pred_dist;
-        const agr2 = pd2 ? pd2.model_agreement : null;
-        const agrSuffix2 = agr2 ? ` · ${agr2} agr.` : "";
-        const conf2 = pd2 && pd2.confidence != null ? ` Confidence ${(pd2.confidence*100).toFixed(0)}%.` : "";
-        chips.push(mkChip("ML Meta", `${ml.meta_score.toFixed(0)}/100${agrSuffix2}`, metaCls,
-          `Meta-ensemble score (0–100): stacked output of all 5 ML models.${conf2} ` +
-          `≥65 = bullish lean, ≤35 = bearish lean, 35–65 = no strong consensus.`));
-      }
-      if (ml.anomaly_score != null) {
-        const anom = ml.anomaly_score;
-        const anomCls = ml.is_anomaly ? (anom <= 20 ? "fail" : "warn") : "";
-        const anomLabel = ml.is_anomaly ? `${anom.toFixed(0)}⚠` : `${anom.toFixed(0)}`;
-        const flagStr = (ml.anomaly_flags || []).slice(0, 2).join("; ") || "multi-feature outlier";
-        chips.push(mkChip("ML Anom", anomLabel, anomCls,
-          `Anomaly detector score (0–100): 100=normal, 0=extreme outlier. ` +
-          (ml.is_anomaly ? `UNUSUAL: ${flagStr}. ML models may be outside training distribution.` : `Within normal market conditions.`)));
-      }
-      return chips;
-    })(),
-    // ── IV Surface edge chip ───────────────────────────────────────────────────
-    ...(() => {
+  // ── Market signals pill section ───────────────────────────────────────────
+  const marketSignalsHtml = (() => {
+    const ivEdgeRows = (() => {
       const rec = (candidates || []).find(c => c.recommended);
       if (!rec || rec.iv_edge_vp == null) return [];
       const vp  = rec.iv_edge_vp;
       const lbl = rec.iv_edge_label || "fair";
-      const cls = lbl === "expensive" ? "pass" : lbl === "cheap" ? "pass" : lbl === "overpay" ? "fail" : lbl === "undersell" ? "fail" : "";
+      const cls = lbl === "expensive" || lbl === "cheap" ? "pass" : lbl === "overpay" || lbl === "undersell" ? "fail" : "";
       const icon = vp > 1.5 ? "↑" : vp < -1.5 ? "↓" : "≈";
-      const tip = `SVI surface edge on short strike: ${vp > 0 ? "+" : ""}${vp.toFixed(1)} vol-pts vs fitted surface. `
-        + `${lbl === "expensive" ? "Selling expensive IV — surface edge in your favour." : lbl === "cheap" ? "Buying cheap IV — good entry vs surface." : lbl === "overpay" ? "Buying expensive IV — paying above surface." : lbl === "undersell" ? "Selling cheap IV — surface edge against you." : "Strike is fairly priced vs the SVI surface."}`;
-      return [mkChip("IV Edge", `${icon}${vp > 0 ? "+" : ""}${vp.toFixed(1)}vp`, cls, tip)];
-    })(),
-  ];
+      const desc = `SVI surface edge on short strike: ${vp > 0 ? "+" : ""}${vp.toFixed(1)} vol-pts vs fitted surface. `
+        + (lbl === "expensive" ? "Selling expensive IV — surface edge in your favour."
+         : lbl === "cheap"     ? "Buying cheap IV — good entry vs surface."
+         : lbl === "overpay"   ? "Buying expensive IV — paying above surface."
+         : lbl === "undersell" ? "Selling cheap IV — surface edge against you."
+         : "Strike is fairly priced vs the SVI surface.");
+      return [["IV Edge", `${icon}${vp > 0 ? "+" : ""}${vp.toFixed(1)}vp`, cls, desc]];
+    })();
+
+    const rows = [
+      ["Trend D",  row.trend ?? "—",          "",       "Daily price trend from EMA crossover. Uptrend = bullish structures preferred; Downtrend = bearish; Range-bound = neutral."],
+      ["Trend W",  row.weekly_trend ?? "—",   "",       "Weekly trend — higher-timeframe confirmation. Alignment between daily and weekly increases signal confidence."],
+      ["RSI",      String(row.rsi ?? "—"),     "",       "14-day Relative Strength Index. >70 = potentially overbought; <30 = potentially oversold."],
+      ["ADX",      String(row.adx ?? "—"),     adxCls,  "Average Directional Index — trend strength regardless of direction. >25 = strong trend; <20 = choppy/ranging."],
+      ["IV Env",   row.iv_env ?? "—",          "",       "Implied Volatility environment: High = elevated premium (good for credit sellers). Low = cheap options (better for debit buyers)."],
+      ["PCR",      row.pcr != null ? String(row.pcr) : "—", pcrCls, `Put/Call ratio. Sentiment: ${row.pcr_sentiment ?? "N/A"}. High PCR (>1) = bearish hedging. Low PCR (<0.7) = bullish positioning.`],
+      ["EMA200",   row.ema200_position ?? "—", ema200Cls, `200-day EMA: ${row.ema200 ? "$" + row.ema200 + ". " : ""}Above = long-term uptrend (favours bullish). Below = long-term downtrend.`],
+      ["RelVol",   row.rel_volume != null ? row.rel_volume + "x" : "—", rvolCls, "Relative volume vs 20-day average. >1.5x = elevated activity. <0.5x = thin/illiquid conditions."],
+      ["IV Term",  row.iv_term_shape ?? "—",   "",       row.iv_term_note ?? "IV term structure. Contango = normal (near < far IV). Backwardation = stress (near > far IV)."],
+      ...(row.hv20 != null ? [["HV20", (row.hv20 * 100).toFixed(1) + "%", "", "20-day historical (realised) volatility, annualised. Compare to IV — if IV >> HV20 options are rich."]] : []),
+      ...(row.iv_premium != null ? [["IV±HV",
+        (row.iv_premium >= 0 ? "+" : "") + (row.iv_premium * 100).toFixed(1) + "%",
+        row.iv_premium > 0.03 ? "pass" : row.iv_premium < -0.03 ? "warn" : "",
+        `IV minus HV20. Positive = options rich → premium selling edge. Negative = IV cheap → debit buyers have edge. Ratio: ${row.iv_hv_ratio?.toFixed(2) ?? "—"}.`]] : []),
+      ...(row.vol_skew_pct != null ? [["Skew",
+        (row.vol_skew_pct >= 0 ? "+" : "") + row.vol_skew_pct.toFixed(1) + "%",
+        row.vol_skew_pct > 5 ? "warn" : row.vol_skew_pct < -5 ? "pass" : "",
+        "Put IV minus Call IV at ~5% OTM. Positive (fear skew) = market paying for downside protection. Negative = calls bid up."]] : []),
+      ...(row.short_interest != null ? [["Short%",
+        row.short_interest.toFixed(1) + "%",
+        row.short_interest > 20 ? "fail" : row.short_interest > 10 ? "warn" : "",
+        "Short interest as % of float. >20% = high squeeze risk; elevated short can amplify upside moves."]] : []),
+      ...(row.div_ex_date != null ? [["Ex-Div", row.div_ex_date,
+        row.div_days_to_ex != null && row.div_days_to_ex <= 7 ? "warn" : "",
+        `Ex-dividend date. Yield: ${row.div_yield != null ? row.div_yield + "%" : "N/A"}. Short calls near ex-div carry early assignment risk.`]] : []),
+      ...(row.analyst_label && row.analyst_label !== "N/A" ? [["Analysts",
+        row.analyst_label,
+        { Bullish: "pass", Bearish: "fail", Neutral: "" }[row.analyst_label] ?? "",
+        `Analyst consensus: ${row.analyst_buy ?? "—"}B / ${row.analyst_hold ?? "—"}H / ${row.analyst_sell ?? "—"}S. Net score: ${row.analyst_net_score?.toFixed(2) ?? "—"}.`]] : []),
+      ["MACD",     row.macd_trend ?? "—",      "",       `MACD trend direction. Histogram: ${row.macd_hist ?? "—"}. Bullish = upward momentum; Bearish = downward momentum.`],
+      ["News",     row.news_sentiment ?? "—",  newsCls,  "Aggregated recent news sentiment. Bullish = positive catalysts. Bearish = negative risk. Mixed = conflicting signals."],
+      ...ivEdgeRows,
+    ];
+
+    const pillsHtml = rows.map(([label, val, cls]) =>
+      `<span class="lp-ml-pill${cls ? " " + cls : ""}"><span class="lp-ml-pill-label">${label}</span> ${val}</span>`
+    ).join("");
+
+    const detail = { title: "Market Signals", rows: rows.map(([signal, val, vCls, desc]) => ({ signal, val, vCls, desc })) };
+
+    return `<div class="lp-ml-section">
+      <div class="lp-ml-section-header">
+        <span class="lp-ml-section-title">Market Signals</span>
+        <button class="lp-info-btn" data-info-type="ml" data-info='${escHtml(JSON.stringify(detail))}' title="Market signal descriptions">?</button>
+      </div>
+      <div class="lp-ml-pills">${pillsHtml}</div>
+    </div>`;
+  })();
 
   // ── Right: recommended trade ────────────────────────────────────────────────
   function buildTradeSection(c) {
@@ -823,8 +797,7 @@ function buildTickerCard(row) {
         ${biasHtml}
         <div class="tc-body">
           <div class="tc-signals">
-            <div class="tc-col-title">Market Signals</div>
-            <div class="tc-metric-grid">${metrics.join("")}</div>
+            ${marketSignalsHtml}
             ${buildMlExplainBlock(row.ml)}
           </div>
           ${buildTradeSection(rec)}

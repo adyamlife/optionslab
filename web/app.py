@@ -3,7 +3,7 @@ import os
 import json
 import math
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from functools import wraps
 
@@ -77,6 +77,7 @@ for _noisy in ("urllib3", "urllib3.connectionpool", "yfinance", "peewee",
 
 # Scheduler-related modules also write to dedicated scheduler.log
 for _sched_mod in ("scripts.paper_trade_engine", "scripts.training_data_collector",
+                   "scripts.candidate_ranker", "scripts.data_fetch",
                    "scripts.regime_backfill", "scripts.ml_cache", "web.app"):
     _lg = _logging.getLogger(_sched_mod)
     _lg.addHandler(_sched_handler)
@@ -106,7 +107,7 @@ _ASSET_VERSION = str(int(time.time()))
 def _inject_globals():
     return {
         "current_role": _current_role(),
-        "now":          datetime.utcnow(),
+        "now":          datetime.now(timezone.utc),
         "features":     ff.as_dict(),   # {{ features.live_positions.enabled }}
         "ff":           ff,             # {{ ff.role_gte(current_role, "trader") }}
         "asset_v":      _ASSET_VERSION,
@@ -538,6 +539,13 @@ def build_top_trades(rows, n=3, exclude=None):
                 t["capital_check"] = _chk_bal(t, _buying_power)
             except Exception:
                 t["capital_check"] = None
+
+    # Record every scan for offline evaluation (Precision@k, NDCG, calibration)
+    try:
+        from scripts.offline_eval import record_scan as _record_scan
+        _record_scan(ranked)
+    except Exception as _e:
+        log.warning(f"[eval] record_scan failed: {_e}")
 
     return top
 
@@ -1316,6 +1324,15 @@ def _start_training_data_scheduler():
         except Exception as e:
             app.logger.error(f"daily label_pending_snapshots failed: {e}")
         try:
+            tdc.label_snapshots_with_forward_returns()
+        except Exception as e:
+            app.logger.error(f"daily label_snapshots_with_forward_returns failed: {e}")
+        try:
+            from scripts import feature_drift as fd
+            fd.compute_drift_report()
+        except Exception as e:
+            app.logger.error(f"daily feature_drift report failed: {e}")
+        try:
             from scripts import regime_backfill as rb
             rb.update_regime_dataset()
             rb.label_pending_regime_rows()
@@ -1368,20 +1385,46 @@ def _start_training_data_scheduler():
                     pass
                 break
 
+        def _next_window_open(from_dt):
+            """Return the datetime of the next collect_hour_start on a weekday."""
+            from datetime import timedelta as _td2
+            candidate = from_dt.replace(hour=hour_start, minute=0, second=0, microsecond=0)
+            if candidate <= from_dt:
+                candidate += _td2(days=1)
+            # Skip weekend
+            while candidate.weekday() >= 5:
+                candidate += _td2(days=1)
+            return candidate
+
         if _last_collect_ts:
             _next = _last_collect_ts + _interval_td
             while _next <= _now:
                 _next += _interval_td
+            # If the computed next run is already outside the collect window,
+            # don't schedule mid-evening or overnight — defer to next window open.
+            if _next.hour >= hour_end or _next.hour < hour_start or _next.weekday() >= 5:
+                _next = _next_window_open(_now)
+                app.logger.info(f"Collect job: last run {_last_collect_ts.strftime('%H:%M')} ET — "
+                                f"outside window, next run at window open {_next.strftime('%a %H:%M')} ET")
+            else:
+                app.logger.info(f"Collect job resuming from last run {_last_collect_ts.strftime('%H:%M')} ET "
+                                f"— next run {_next.strftime('%H:%M')} ET")
             _start_date = _next
-            app.logger.info(f"Collect job resuming from last run {_last_collect_ts.strftime('%H:%M')} ET — next run {_start_date.strftime('%H:%M')} ET")
         else:
-            _start_date = _now + _interval_td
-            app.logger.info(f"Collect job: no prior run found — first run in {interval}m")
+            # No prior run — if we're currently inside the window fire soon, else wait for next open
+            if _is_collect_window():
+                _start_date = _now + _interval_td
+                app.logger.info(f"Collect job: no prior run found — first run in {interval}m")
+            else:
+                _start_date = _next_window_open(_now)
+                app.logger.info(f"Collect job: no prior run, outside window — first run at {_start_date.strftime('%a %H:%M')} ET")
 
         sched.add_job(_interval_collect, "interval", minutes=interval,
                       id="collect", name=f"Data Collect ({interval}m)",
                       start_date=_start_date,
-                      timezone="America/New_York")
+                      timezone="America/New_York",
+                      max_instances=1,
+                      misfire_grace_time=interval * 60 // 2)
         app.logger.info(f"Collect job scheduled every {interval}m, window {hour_start}:00-{hour_end}:00 ET")
     else:
         app.logger.info("Collect job disabled via secrets.toml collect_enabled=false")
@@ -1586,15 +1629,15 @@ def mispricing_page():
 @app.route("/api/paper-trades/morning-scan", methods=["POST"])
 def api_morning_scan():
     force = request.json.get("force", False) if request.is_json else False
-    if _scan_is_running("morning"):
+    if _scan_is_running("morning_scan"):
         return jsonify({"ok": False, "running": True, "error": "Scan already in progress"})
-    _run_in_bg("morning", pte.run_morning_scan, force=force)
+    _run_in_bg("morning_scan", pte.run_morning_scan, force=force)
     return jsonify({"ok": True, "running": True, "message": "Morning scan started — refresh dashboard in ~2 minutes"})
 
 
 @app.route("/api/paper-trades/morning-scan/status")
 def api_morning_scan_status():
-    s = _scan_status.get("morning", {"state": "idle"})
+    s = _scan_status.get("morning_scan", {"state": "idle"})
     return jsonify(s)
 
 
@@ -1635,11 +1678,54 @@ def api_training_data_label():
         return jsonify({"ok": False, "error": str(e)}), 500
 
 
+@app.route("/api/training-data/backfill", methods=["POST"])
+def api_training_data_backfill():
+    """
+    One-shot backfill of event calendar and cross-sectional rank features
+    for all existing snapshots. Safe to call multiple times.
+    """
+    from scripts import training_data_collector as tdc
+    try:
+        result = tdc.backfill_snapshot_features()
+        # Also run forward return labeling so older snapshots get labeled
+        fwd_result = tdc.label_snapshots_with_forward_returns()
+        return jsonify({"ok": True, "backfill": result, "forward_returns": fwd_result})
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+
 @app.route("/api/training-data/summary")
 def api_training_data_summary():
     from scripts import training_data_collector as tdc
     try:
         return jsonify({"ok": True, **tdc.get_dataset_summary()})
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+
+@app.route("/api/eval/metrics")
+def api_eval_metrics():
+    """
+    Offline scoring-pipeline evaluation metrics.
+    Returns Precision@k, NDCG@k, score-return correlation, and calibration bins.
+    Metrics are None until ≥5 paper trades have closed — the framework records
+    data from the first scan even with zero closed trades.
+    """
+    from scripts.offline_eval import compute_metrics as _cm
+    try:
+        k = int(request.args.get("k", 3))
+        return jsonify({"ok": True, **_cm(k=k)})
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+
+@app.route("/api/eval/save-metrics", methods=["POST"])
+def api_eval_save_metrics():
+    """Compute and persist eval_metrics.json — call from cron alongside daily label."""
+    from scripts.offline_eval import save_metrics as _sm
+    try:
+        m = _sm()
+        return jsonify({"ok": True, **m})
     except Exception as e:
         return jsonify({"ok": False, "error": str(e)}), 500
 
@@ -1664,27 +1750,34 @@ def api_training_data_backfill_regime_status():
 
 @app.route("/api/training-data/train-models", methods=["POST"])
 def api_train_models():
-    """Train all three regime-dataset models (regime classifier, return regressor,
-    volatility regressor). Runs in the background — poll /status to check completion."""
+    """Train all ML models in dependency order. Runs in the background —
+    poll /api/training-data/train-models/status to check completion."""
     if _scan_is_running("train_models"):
         return jsonify({"ok": False, "running": True, "error": "Training already in progress"})
 
     def _run_all_training():
         results = {}
         from scripts.train_regime_classifier import train as train_regime
-        from scripts.train_return_model import train as train_return
+        from scripts.train_return_classifier import train as train_return_clf
+        from scripts.train_return_model import train as train_return_reg
         from scripts.train_volatility_model import train as train_vol
         from scripts.train_direction_model import train as train_direction
         from scripts.train_iv_direction_model import train as train_iv_direction
+        from scripts.train_return_ranker import train as train_ranker
         from scripts.train_meta_ensemble import train as train_meta
         from scripts.train_anomaly_detector import train as train_anomaly
-        for name, fn in [("regime_classifier", train_regime),
-                         ("return_regressor", train_return),
-                         ("volatility_regressor", train_vol),
-                         ("direction_classifier", train_direction),
-                         ("iv_direction_classifier", train_iv_direction),
-                         ("meta_ensemble", train_meta),
-                         ("anomaly_detector", train_anomaly)]:
+        # Order matters: base models before meta-ensemble
+        for name, fn in [
+            ("regime_classifier",      train_regime),
+            ("return_classifier",      train_return_clf),   # used by meta-ensemble
+            ("return_regressor",       train_return_reg),   # kept for backward compat
+            ("volatility_regressor",   train_vol),
+            ("direction_classifier",   train_direction),
+            ("iv_direction_classifier", train_iv_direction),
+            ("return_ranker",          train_ranker),
+            ("meta_ensemble",          train_meta),         # depends on all above
+            ("anomaly_detector",       train_anomaly),
+        ]:
             try:
                 results[name] = fn()
             except Exception as e:
@@ -1692,7 +1785,7 @@ def api_train_models():
         return results
 
     _run_in_bg("train_models", _run_all_training)
-    return jsonify({"ok": True, "running": True, "message": "Model training started"})
+    return jsonify({"ok": True, "running": True, "message": "Model training started (9 models)"})
 
 
 @app.route("/api/training-data/train-models/status")

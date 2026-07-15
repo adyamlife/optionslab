@@ -84,6 +84,13 @@ def ds_pref(key: str) -> str:
 _BASE_URL   = "https://apisb.etrade.com" if _SANDBOX else "https://api.etrade.com"
 _AUTH_URL   = "https://us.etrade.com/e/t/etws/authorize"
 
+# E*TRADE's API rate-limits concurrent calls per account.  With 10 scanner
+# threads all hitting option chain + expirations simultaneously, we routinely
+# get 400 Bad Request.  This semaphore caps concurrent in-flight E*TRADE HTTP
+# calls to 5 so the other threads fall back to yfinance without blocking.
+import threading as _threading
+_ET_CONCURRENCY = _threading.Semaphore(5)
+
 # Set when any API call receives a 401 — prevents retrying expired token for
 # the rest of this process lifetime.  Cleared on successful get_access_token().
 _session_invalidated: bool = False
@@ -324,7 +331,8 @@ def get_option_expirations(symbol: str) -> list[str] | None:
         return None
     try:
         url  = f"{_BASE_URL}/v1/market/optionexpiredate.json"
-        r    = sess.get(url, params={"symbol": symbol.upper()}, timeout=10)
+        with _ET_CONCURRENCY:
+            r = sess.get(url, params={"symbol": symbol.upper()}, timeout=10)
         r.raise_for_status()
         dates = r.json()["OptionExpireDateResponse"]["ExpirationDate"]
         result = []
@@ -365,9 +373,10 @@ def get_option_chain(symbol: str, expiry_str: str):
             "optionCategory":   "STANDARD",
             "chainType":        "CALLPUT",
             "skipAdjusted":     "true",
-            "noOfStrikes":      40,
+            "noOfStrikes":      20,   # E*TRADE max is 20 strikes above/below ATM
         }
-        r = sess.get(url, params=params, timeout=15)
+        with _ET_CONCURRENCY:
+            r = sess.get(url, params=params, timeout=15)
         r.raise_for_status()
         data = r.json()
 
