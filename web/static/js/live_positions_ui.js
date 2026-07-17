@@ -52,7 +52,7 @@ function renderSpreadLP(sp, ticker) {
   if (sp.max_profit_ps != null && sp.max_loss_ps != null && sp.dte != null && sp.dte > 0) {
     const annGain = (sp.max_profit_ps / Math.abs(sp.max_loss_ps)) * (365 / sp.dte) * 100;
     const annGainCls = annGain >= 50 ? "pass" : annGain >= 20 ? "na" : "fail";
-    annGainHtml = `<div class="pu-metric"><div class="pu-metric-label">Ann. Gain %</div><div class="pu-metric-value ${annGainCls}">${annGain.toFixed(1)}%</div></div>`;
+    annGainHtml = `<div class="pu-metric"><div class="pu-metric-label">Ann. Gain %${typeof MetricHelp !== 'undefined' ? MetricHelp.btn('Ann. Gain') : ''}</div><div class="pu-metric-value ${annGainCls}">${annGain.toFixed(1)}%</div></div>`;
   }
 
   const analysisId = makeAnalysisId(ticker, sp.desc);
@@ -77,11 +77,11 @@ function renderSpreadLP(sp, ticker) {
           <div class="pu-metric-value ${pnlC}">${fmtMoney(sp.unrealized_pnl)}</div>
         </div>
         <div class="pu-metric">
-          <div class="pu-metric-label">POP</div>
+          <div class="pu-metric-label">POP${typeof MetricHelp !== 'undefined' ? MetricHelp.btn('POP') : ''}</div>
           <div class="pu-metric-value ${popC}">${sp.pop_est != null ? sp.pop_est.toFixed(1) + "%" : "—"}</div>
         </div>
         <div class="pu-metric">
-          <div class="pu-metric-label">DTE</div>
+          <div class="pu-metric-label">DTE${typeof MetricHelp !== 'undefined' ? MetricHelp.btn('DTE') : ''}</div>
           <div class="pu-metric-value ${dteC}">${sp.dte || "—"}</div>
         </div>
         <div class="pu-metric">
@@ -93,11 +93,11 @@ function renderSpreadLP(sp, ticker) {
           <div class="pu-metric-value ${riskCls}">${riskLabel}</div>
         </div>
         <div class="pu-metric">
-          <div class="pu-metric-label">Max Profit</div>
+          <div class="pu-metric-label">Max Profit${typeof MetricHelp !== 'undefined' ? MetricHelp.btn('Max Profit') : ''}</div>
           <div class="pu-metric-value pass">${fmtMoney(sp.max_profit_ps)}</div>
         </div>
         <div class="pu-metric">
-          <div class="pu-metric-label">Max Loss</div>
+          <div class="pu-metric-label">Max Loss${typeof MetricHelp !== 'undefined' ? MetricHelp.btn('Max Loss') : ''}</div>
           <div class="pu-metric-value fail">${fmtMoney(sp.max_loss_ps)}</div>
         </div>
         ${annGainHtml}
@@ -353,15 +353,15 @@ function renderMergedExpiryCard(spreads, ticker, expiry) {
           <div class="pu-metric-value ${pnlC}">${fmtMoney(totalPnl)}</div>
         </div>
         <div class="pu-metric">
-          <div class="pu-metric-label">DTE</div>
+          <div class="pu-metric-label">DTE${typeof MetricHelp !== 'undefined' ? MetricHelp.btn('DTE') : ''}</div>
           <div class="pu-metric-value ${dteC}">${dte ?? "—"}</div>
         </div>
         <div class="pu-metric">
-          <div class="pu-metric-label">Combined Max Profit</div>
+          <div class="pu-metric-label">Combined Max Profit${typeof MetricHelp !== 'undefined' ? MetricHelp.btn('Max Profit') : ''}</div>
           <div class="pu-metric-value ${profC}">${fmtMoney(totalProfit)}</div>
         </div>
         <div class="pu-metric">
-          <div class="pu-metric-label">Combined Max Loss</div>
+          <div class="pu-metric-label">Combined Max Loss${typeof MetricHelp !== 'undefined' ? MetricHelp.btn('Max Loss') : ''}</div>
           <div class="pu-metric-value ${lossC}">${fmtMoney(totalLoss)}</div>
         </div>
         ${ulPrice != null ? `

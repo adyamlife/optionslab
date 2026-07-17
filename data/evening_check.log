@@ -30,3 +30,25 @@
 2026-07-14 17:18:13,910 WARNING _current_mark failed for SHOP: name 's' is not defined
 2026-07-14 17:18:14,010 WARNING _current_mark failed for V: name 's' is not defined
 2026-07-14 17:18:14,108 WARNING _current_mark failed for RTX: name 's' is not defined
+2026-07-15 17:00:09,238 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-15 17:00:13,997 INFO IV surface flag on 20260618_BTC_PUT_2: short strike 25.0 now +14.2vp expensive — consider closing
+2026-07-15 17:00:14,924 INFO IV surface flag on 20260622_BTC_PUT_1: short strike 25.0 now +14.2vp expensive — consider closing
+2026-07-15 17:00:15,575 INFO IV surface flag on 20260623_BTC_PUT_3: short strike 26.0 now -7.8vp cheap — vol moved against position
+2026-07-15 17:00:21,685 INFO IV surface flag on 20260706_QUBT_PUT_2: short strike 7.5 now +54.0vp expensive — consider closing
+2026-07-15 17:00:23,626 INFO IV surface flag on 20260706_SMR_PUT_2: short strike 7.5 now -2.7vp cheap — vol moved against position
+2026-07-15 17:00:26,165 INFO IV surface flag on 20260707_QUBT_PUT_3: short strike 7.5 now +54.0vp expensive — consider closing
+2026-07-15 17:00:33,055 WARNING _current_mark failed for WMT: name 's' is not defined
+2026-07-15 17:00:33,155 WARNING _current_mark failed for SHOP: name 's' is not defined
+2026-07-15 17:00:33,319 WARNING _current_mark failed for V: name 's' is not defined
+2026-07-15 17:00:33,419 WARNING _current_mark failed for RTX: name 's' is not defined
+2026-07-16 17:00:02,666 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-16 17:00:06,074 INFO IV surface flag on 20260618_BTC_PUT_2: short strike 25.0 now +14.2vp expensive — consider closing
+2026-07-16 17:00:07,020 INFO IV surface flag on 20260622_BTC_PUT_1: short strike 25.0 now +14.2vp expensive — consider closing
+2026-07-16 17:00:07,617 INFO IV surface flag on 20260623_BTC_PUT_3: short strike 26.0 now -7.8vp cheap — vol moved against position
+2026-07-16 17:00:12,906 INFO IV surface flag on 20260706_QUBT_PUT_2: short strike 7.5 now +54.0vp expensive — consider closing
+2026-07-16 17:00:14,028 INFO IV surface flag on 20260706_SMR_PUT_2: short strike 7.5 now -2.7vp cheap — vol moved against position
+2026-07-16 17:00:16,747 INFO IV surface flag on 20260707_QUBT_PUT_3: short strike 7.5 now +54.0vp expensive — consider closing
+2026-07-16 17:00:21,464 WARNING _current_mark failed for WMT: name 's' is not defined
+2026-07-16 17:00:21,593 WARNING _current_mark failed for SHOP: name 's' is not defined
+2026-07-16 17:00:21,714 WARNING _current_mark failed for V: name 's' is not defined
+2026-07-16 17:00:21,837 WARNING _current_mark failed for RTX: name 's' is not defined

@@ -10,11 +10,14 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+_LOG_DIR = Path(__file__).parent.parent / "data" / "logs"
+_LOG_DIR.mkdir(parents=True, exist_ok=True)
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(message)s",
     handlers=[
-        logging.FileHandler(Path(__file__).parent.parent / "data" / "morning_scan.log"),
+        logging.FileHandler(Path(__file__).parent.parent / "data" / "logs" / "morning_scan.log"),
         logging.StreamHandler(sys.stdout),
     ],
 )

@@ -538,6 +538,193 @@ def update_snapshot_xsec_ranks(records: list[dict]) -> int:
     return len(records)
 
 
+# ── ML Predictions history ────────────────────────────────────────────────────
+
+ML_PREDICTIONS_TABLE = "ml_predictions"
+
+_ML_PREDICTIONS_DDL = f"""
+CREATE TABLE IF NOT EXISTS {ML_PREDICTIONS_TABLE} (
+    ticker          VARCHAR NOT NULL,
+    scanned_at      VARCHAR NOT NULL,
+    regime          VARCHAR,
+    p_win           DOUBLE,
+    confidence      DOUBLE,
+    pred_return     DOUBLE,
+    pred_vol        DOUBLE,
+    signal_rating   VARCHAR,
+    ok              BOOLEAN,
+    source          VARCHAR,
+    raw_json        JSON
+)
+"""
+
+_ml_predictions_table_ready = False
+
+
+def ensure_ml_predictions_table() -> None:
+    global _ml_predictions_table_ready
+    if _ml_predictions_table_ready:
+        return
+    with connect() as con:
+        con.execute(_ML_PREDICTIONS_DDL)
+        con.execute(
+            f"CREATE INDEX IF NOT EXISTS idx_ml_pred_ticker "
+            f"ON {ML_PREDICTIONS_TABLE} (ticker, scanned_at)"
+        )
+        con.commit()
+    _ml_predictions_table_ready = True
+
+
+def insert_ml_predictions(predictions: dict[str, dict], scanned_at: str, source: str = "scan") -> int:
+    """
+    Insert one row per ticker from a {ticker: pred} snapshot dict.
+    Writes all model output fields as typed columns plus raw_json for forward compat.
+    Returns number of rows inserted.
+    """
+    import json as _json
+    if not predictions:
+        return 0
+    ensure_ml_predictions_table()
+
+    def _f(d, k):
+        v = d.get(k)
+        return float(v) if v is not None else None
+
+    def _b(d, k):
+        v = d.get(k)
+        return bool(v) if v is not None else None
+
+    def _j(v):
+        return _json.dumps(v) if v is not None else None
+
+    rows = []
+    for ticker, p in predictions.items():
+        pd_ = p.get("pred_dist") or {}
+        rows.append((
+            ticker, scanned_at,
+            # core
+            p.get("regime"),
+            _f(pd_, "p_win"),
+            _f(pd_, "confidence"),
+            _f(p, "expected_return"),
+            _f(p, "expected_vol"),
+            p.get("confidence_tier"),
+            _b(p, "ok"),
+            source,
+            # date + regime model
+            p.get("date"),
+            p.get("regime_model"),
+            _j(p.get("regime_proba")),
+            # return classifier
+            _f(p, "p_return_positive"),
+            _f(p, "p_return_gt5"),
+            _f(p, "p_return_gt10"),
+            _f(p, "p_top_decile"),
+            _f(p, "return_score"),
+            _f(p, "ranker_score"),
+            # vol
+            _f(p, "expected_move_pct"),
+            _f(p, "garch_vol_forecast"),
+            # direction
+            _f(p, "p_up"),
+            _f(p, "p_flat"),
+            _f(p, "p_down"),
+            p.get("direction"),
+            # IV direction
+            _f(p, "iv_expanding_prob"),
+            p.get("iv_direction"),
+            # meta / composite
+            _f(p, "meta_score"),
+            _f(p, "composite_score"),
+            _f(p, "iv_confidence"),
+            _b(p, "anomaly_penalized"),
+            # pop + analogues
+            _f(p, "pop_score"),
+            _f(p, "analogues_win_rate"),
+            p.get("analogues_k"),
+            # anomaly
+            _f(p, "anomaly_score"),
+            _b(p, "is_anomaly"),
+            _j(p.get("anomaly_flags")),
+            # streak
+            p.get("ml_regime_streak"),
+            # JSON blobs
+            _j(p.get("pred_dist")),
+            _j(p.get("shap")),
+            _j(p.get("live")),
+            _json.dumps(p),
+        ))
+
+    cols = (
+        "ticker, scanned_at, regime, p_win, confidence, expected_return, "
+        "expected_vol, signal_rating, ok, source, "
+        "date, regime_model, regime_proba, "
+        "p_return_positive, p_return_gt5, p_return_gt10, p_top_decile, "
+        "return_score, ranker_score, expected_move_pct, garch_vol_forecast, "
+        "p_up, p_flat, p_down, direction, "
+        "iv_expanding_prob, iv_direction, "
+        "meta_score, composite_score, iv_confidence, anomaly_penalized, "
+        "pop_score, analogues_win_rate, analogues_k, "
+        "anomaly_score, is_anomaly, anomaly_flags, ml_regime_streak, "
+        "pred_dist, shap, live, raw_json"
+    )
+    placeholders = ", ".join("?" * len(rows[0]))
+    with connect() as con:
+        con.executemany(
+            f"INSERT INTO {ML_PREDICTIONS_TABLE} ({cols}) VALUES ({placeholders})",
+            rows,
+        )
+        con.commit()
+    return len(rows)
+
+
+def load_ml_predictions_history(ticker: str | None = None, limit: int = 500) -> list[dict]:
+    """Return recent ML prediction rows, optionally filtered by ticker."""
+    ensure_ml_predictions_table()
+    where = f"WHERE ticker = ?" if ticker else ""
+    params = [ticker] if ticker else []
+    df = read_df(
+        f"SELECT ticker, scanned_at, regime, p_win, confidence, pred_return, "
+        f"pred_vol, signal_rating, source FROM {ML_PREDICTIONS_TABLE} "
+        f"{where} ORDER BY scanned_at DESC LIMIT {limit}",
+        params or None,
+    )
+    return df.to_dict("records")
+
+
+def load_latest_ml_predictions() -> dict[str, dict]:
+    """Return the most-recent prediction per ticker as {ticker: pred_dict}."""
+    import json as _json
+    ensure_ml_predictions_table()
+    try:
+        df = read_df(
+            f"SELECT ticker, raw_json FROM ("
+            f"  SELECT ticker, raw_json, "
+            f"         ROW_NUMBER() OVER (PARTITION BY ticker ORDER BY scanned_at DESC) AS rn "
+            f"  FROM {ML_PREDICTIONS_TABLE}"
+            f") t WHERE rn = 1"
+        )
+        result = {}
+        for _, row in df.iterrows():
+            try:
+                result[row["ticker"]] = _json.loads(row["raw_json"]) if row.get("raw_json") else {}
+            except Exception:
+                pass
+        return result
+    except Exception:
+        return {}
+
+
+def load_ml_predictions_count() -> int:
+    """Total rows in ml_predictions — useful for health checks."""
+    try:
+        ensure_ml_predictions_table()
+        with connect() as con:
+            return con.execute(f"SELECT count(*) FROM {ML_PREDICTIONS_TABLE}").fetchone()[0]
+    except Exception:
+        return 0
+
+
 def load_chain_index_from_db() -> dict:
     """
     Rebuild the chain lookup index from DuckDB:

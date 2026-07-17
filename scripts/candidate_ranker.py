@@ -379,7 +379,7 @@ def filter_candidates(rows, paper_trade: bool = False):
     except Exception:
         gate_enabled = True
 
-    # Paper-trade override: lower min_profit gate if configured
+    # Paper-trade overrides: lower gates since all outcomes are training data
     _min_profit = MIN_PROFIT_AMOUNT
     if paper_trade:
         try:
@@ -394,6 +394,14 @@ def filter_candidates(rows, paper_trade: bool = False):
             ).get("paper_trades", {})
             if "min_profit_amount" in _pt_cfg:
                 _min_profit = float(_pt_cfg["min_profit_amount"])
+            if "min_confidence" in _pt_cfg:
+                min_conf = float(_pt_cfg["min_confidence"])
+            if "max_theta_per_day" in _pt_cfg:
+                _max_theta = float(_pt_cfg["max_theta_per_day"])
+            if "min_expected_roi" in _pt_cfg:
+                _min_roi = float(_pt_cfg["min_expected_roi"])
+            if "min_liquidity_score" in _pt_cfg:
+                _min_liq = float(_pt_cfg["min_liquidity_score"])
         except Exception:
             pass
 
@@ -518,7 +526,7 @@ def filter_candidates(rows, paper_trade: bool = False):
                 if _cap and _cap > 0:
                     _pop_est  = (c.get("pop") or 50.0) / 100.0
                     _mp       = c.get("max_profit") or 0.0
-                    _roi      = (_mp * _pop_est) / _cap
+                    _roi      = (_mp * _pop_est) / (_cap / 100.0)  # _cap is per-contract, _mp is per-share
                     if _roi < _min_roi:
                         _reject(_t, struct, "expected_roi", _min_roi, round(_roi, 3))
                         continue

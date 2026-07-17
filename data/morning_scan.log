@@ -3206,3 +3206,310 @@ Did you mean: "ml_meta_score"
 Did you mean: "ml_meta_score"
 2026-07-15 10:13:41,894 INFO [scan_morning] scan snapshots: 0 saved, 0 skipped (opened), 187 errors
 2026-07-15 10:13:41,895 INFO Scan snapshots: 0 saved, 0 skipped
+2026-07-16 10:00:06,046 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-16 10:00:06,941 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-16 10:00:07,224 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-16 10:00:07,274 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-16 10:00:07,732 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-16 10:00:12,104 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-16 10:00:12,411 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-16 10:00:22,987 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-16 10:00:23,353 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-16 10:00:24,063 WARNING analyze_ticker(SPY, short_dte) failed: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Project Y\\data\\oi_cache.json.tmp' -> 'C:\\Project Y\\data\\oi_cache.json'
+2026-07-16 10:00:25,033 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-16 10:00:25,312 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-16 10:00:40,667 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-16 10:00:41,015 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-16 10:05:42,958 WARNING analyze_ticker(APP) failed: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Project Y\\data\\oi_cache.json.tmp' -> 'C:\\Project Y\\data\\oi_cache.json'
+2026-07-16 10:07:20,959 WARNING analyze_ticker(CAT) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:21,481 WARNING analyze_ticker(CAT, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:22,051 WARNING analyze_ticker(DE) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:22,225 WARNING analyze_ticker(ETN, short_dte) failed: 'NoneType' object has no attribute 'copy'
+2026-07-16 10:07:22,254 WARNING analyze_ticker(DE, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:22,660 WARNING analyze_ticker(HON) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:23,004 WARNING analyze_ticker(HON, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:23,344 WARNING analyze_ticker(RTX) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:23,544 WARNING analyze_ticker(RTX, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:23,957 WARNING analyze_ticker(XOM) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:24,188 WARNING analyze_ticker(XOM, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:24,632 WARNING analyze_ticker(CVX) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:24,823 WARNING analyze_ticker(CVX, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:25,161 WARNING analyze_ticker(OXY) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:25,480 WARNING analyze_ticker(NEE) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:25,781 WARNING analyze_ticker(NEE, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:26,221 WARNING analyze_ticker(VST) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:26,522 WARNING analyze_ticker(CEG, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:26,940 WARNING analyze_ticker(FCX) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:27,194 WARNING analyze_ticker(NEM) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:27,391 WARNING analyze_ticker(NEM, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:27,744 WARNING analyze_ticker(EQIX) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:28,137 WARNING analyze_ticker(EQIX, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:28,567 WARNING analyze_ticker(SOFI) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:28,786 WARNING analyze_ticker(SOFI, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:29,044 WARNING analyze_ticker(IWM) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:29,330 WARNING analyze_ticker(IWM, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:29,798 WARNING analyze_ticker(XLE) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:30,044 WARNING analyze_ticker(C) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:30,411 WARNING analyze_ticker(C, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:30,643 WARNING analyze_ticker(WFC) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:30,844 WARNING analyze_ticker(SCHW) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:31,105 WARNING analyze_ticker(SCHW, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:31,598 WARNING analyze_ticker(PFE) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:31,899 WARNING analyze_ticker(PFE, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:32,471 WARNING analyze_ticker(MRK) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:32,733 WARNING analyze_ticker(MRNA, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:33,077 WARNING analyze_ticker(JNJ) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:33,346 WARNING analyze_ticker(JNJ, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:33,651 WARNING analyze_ticker(TGT, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:33,965 WARNING analyze_ticker(UPS) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:34,117 WARNING analyze_ticker(LOW, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:34,566 WARNING analyze_ticker(FDX) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:34,722 WARNING analyze_ticker(SLB) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:34,880 WARNING analyze_ticker(FDX, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:35,148 WARNING analyze_ticker(SLB, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:35,387 WARNING analyze_ticker(T) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:35,636 WARNING analyze_ticker(VZ) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:35,864 WARNING analyze_ticker(VZ, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:50,140 WARNING [regime_history] record_and_streak failed for QQQ: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 13980)
+2026-07-16 10:07:52,065 WARNING [regime_history] record_and_streak failed for NVDA: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 13980)
+2026-07-16 10:07:54,245 WARNING [regime_history] record_and_streak failed for TQQQ: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 13980)
+2026-07-16 10:07:57,032 WARNING [regime_history] record_and_streak failed for AAPL: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 13980)
+2026-07-16 10:08:03,286 WARNING [regime_history] record_and_streak failed for MSFT: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 13980)
+2026-07-16 10:08:05,358 WARNING [regime_history] record_and_streak failed for AMD: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 13980)
+2026-07-16 10:08:07,889 WARNING [regime_history] record_and_streak failed for TSM: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 13980)
+2026-07-16 10:08:09,699 WARNING [regime_history] record_and_streak failed for AVGO: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 13980)
+2026-07-16 10:08:12,397 WARNING [regime_history] record_and_streak failed for ARM: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 13980)
+2026-07-16 10:08:14,915 WARNING [regime_history] record_and_streak failed for MU: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 13980)
+2026-07-16 10:08:17,123 WARNING [regime_history] record_and_streak failed for INTC: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 13980)
+2026-07-16 10:08:19,160 WARNING [regime_history] record_and_streak failed for QCOM: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 13980)
+2026-07-16 10:08:21,504 WARNING [regime_history] record_and_streak failed for TXN: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 13980)
+2026-07-16 10:08:43,578 WARNING [regime_history] record_and_streak failed for KLAC: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 13980)
+2026-07-16 10:09:04,251 WARNING [regime_history] record_and_streak failed for ASML: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 13980)
+2026-07-16 10:09:06,545 WARNING [regime_history] record_and_streak failed for LRCX: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 13980)
+2026-07-16 10:09:08,542 WARNING [regime_history] record_and_streak failed for CDNS: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 13980)
+2026-07-16 10:09:11,407 WARNING [regime_history] record_and_streak failed for SNPS: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 13980)
+2026-07-16 10:09:15,250 WARNING [regime_history] record_and_streak failed for PLTR: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 13980)
+2026-07-16 10:09:19,035 WARNING [regime_history] record_and_streak failed for MDB: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 13980)
+2026-07-16 10:12:24,930 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-07-16 10:12:25,550 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-07-16 10:12:44,098 INFO [filter] 615 rejected, 1 survived — gate breakdown: {'strikes_incomplete': 383, 'theta': 142, 'expected_roi': 21, 'iv_edge': 28, 'min_profit': 19, 'ml_confidence': 22}
+2026-07-16 10:12:44,819 INFO Paper trade #1: 20260716AM_KLAC_COV_1  credit=28.300  expiry=2026-09-18
+2026-07-16 10:12:46,977 INFO Training snapshot written for paper trade 20260716AM_KLAC_COV_1
+2026-07-16 10:14:24,134 INFO [scan_morning] scan snapshots: 133 saved, 1 skipped (opened), 0 errors
+2026-07-16 10:14:24,135 INFO Scan snapshots: 133 saved, 1 skipped
+2026-07-17 10:00:04,256 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-17 10:00:04,618 INFO [prefetch] step 1 — batch daily history for 101 tickers
+2026-07-17 10:00:23,651 INFO [prefetch] daily history done: 101 ok, 0 fail  (19.0s)
+2026-07-17 10:00:23,651 INFO [prefetch] step 2 — batch weekly history for 100 tickers
+2026-07-17 10:00:42,877 INFO [prefetch] weekly history done: 100 ok, 0 fail  (38.3s)
+2026-07-17 10:00:42,879 INFO [prefetch] step 3+4 — expirations + chains for 100 tickers (serial)
+2026-07-17 10:03:14,717 INFO [prefetch] done in 190s — hist 101/101, weekly 100/100, exps 99/100, chains 371 (fail 0)
+2026-07-17 10:03:14,719 INFO [scan] cache ready — 671 total keys, 371 chain keys
+2026-07-17 10:03:15,321 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-17 10:03:15,327 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-17 10:03:15,331 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-17 10:03:16,072 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-17 10:03:16,173 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-17 10:03:16,480 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-17 10:03:21,771 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-17 10:03:21,804 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:03:22,026 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-17 10:03:22,040 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-17 10:03:22,060 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-17 10:03:22,537 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-17 10:03:22,696 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-17 10:03:27,727 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:03:27,822 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:03:28,025 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:03:30,887 WARNING analyze_ticker(KLAC) failed: Expiration `2026-09-18` cannot be found. Available expirations are: []
+2026-07-17 10:03:31,500 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:03:31,502 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:03:31,534 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:03:31,535 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:03:36,750 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:03:44,035 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:03:44,593 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:03:44,718 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:03:50,368 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:03:54,492 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:03:55,348 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:03:55,363 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:03:55,395 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:03:57,081 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:03:59,385 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:02,159 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:02,357 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:03,178 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:03,180 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:04:03,207 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:04,277 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:04,279 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:04,509 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:04:06,274 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:11,755 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:11,810 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:12,656 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:04:14,804 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:14,805 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:18,090 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:18,265 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:18,301 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:04:18,333 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:04:19,865 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:19,878 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:22,707 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:04:24,633 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:25,794 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:25,875 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:04:26,072 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:04:26,338 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:26,845 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:26,848 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:28,113 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:28,134 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:28,263 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:04:31,111 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:04:32,554 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:32,604 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:35,612 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:35,616 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:35,994 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:36,003 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:36,226 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:04:36,414 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:36,448 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:39,292 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:39,411 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:39,426 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:04:39,566 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:04:40,944 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:04:41,652 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:41,657 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:41,707 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:41,736 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:04:42,369 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:04:42,456 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:04:43,021 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:43,023 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:44,362 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:45,871 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:04:48,673 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:04:49,443 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:04:52,815 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:52,817 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:04:52,876 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:53,150 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:04:53,797 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:53,819 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:04:53,945 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:56,137 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:04:56,578 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:59,198 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:59,198 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:59,225 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:04:59,438 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:05:01,751 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:05:10,016 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:05:10,100 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:05:10,656 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:05:11,026 WARNING analyze_ticker(AMT) failed: Expiration `2026-10-16` cannot be found. Available expirations are: []
+2026-07-17 10:05:11,027 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:05:11,029 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:05:11,285 WARNING analyze_ticker(EQIX) failed: Expiration `2026-09-18` cannot be found. Available expirations are: []
+2026-07-17 10:05:11,732 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:05:13,350 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:05:15,549 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:05:15,600 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:05:15,601 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:05:15,978 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:05:15,979 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:05:16,413 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-07-17 10:05:19,621 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-07-17 10:05:21,067 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-07-17 10:05:21,080 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-07-17 10:05:21,696 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-07-17 10:05:22,545 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-07-17 10:05:23,027 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:05:23,048 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:05:23,117 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:05:27,373 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-07-17 10:05:27,709 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-07-17 10:05:27,795 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-07-17 10:05:28,262 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:05:28,362 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:05:28,749 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:05:37,086 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 10:05:37,960 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:05:43,671 WARNING analyze_ticker(TGT) failed: 'NoneType' object has no attribute 'copy'
+2026-07-17 10:05:45,648 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 10:05:51,482 INFO ml_cache disk file is stale (65157s) — trying DuckDB
+2026-07-17 10:05:56,313 INFO ml_cache loaded from DuckDB fallback: 82 tickers
+2026-07-17 10:05:56,739 INFO [filter] 860 rejected, 22 survived — gate breakdown: {'expected_roi': 520, 'iv_edge': 57, 'strikes_incomplete': 237, 'min_profit': 46}
+2026-07-17 10:05:57,703 INFO Paper trade #1: 20260717AM_LRCX_COV_1  credit=5.400  expiry=2026-07-24
+2026-07-17 10:05:59,692 INFO Training snapshot written for paper trade 20260717AM_LRCX_COV_1
+2026-07-17 10:06:00,291 INFO Paper trade #2: 20260717AM_APP_COV_2  credit=4.200  expiry=2026-07-31
+2026-07-17 10:06:00,891 INFO Training snapshot written for paper trade 20260717AM_APP_COV_2
+2026-07-17 10:06:01,262 INFO Paper trade #3: 20260717AM_NEM_COV_3  credit=0.200  expiry=2026-07-24
+2026-07-17 10:06:02,858 INFO Training snapshot written for paper trade 20260717AM_NEM_COV_3
+2026-07-17 10:07:53,457 INFO [scan_morning] scan snapshots: 187 saved, 6 skipped (opened), 0 errors
+2026-07-17 10:07:53,458 INFO Scan snapshots: 187 saved, 6 skipped

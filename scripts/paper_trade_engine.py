@@ -480,6 +480,24 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
 
     scan_tag  = "AM" if scan_time == "morning" else "PM"
     p         = {**DEFAULT_PARAMS, **(params or {})}
+
+    # Paper-trade parameter overrides from settings.toml [paper_trades]
+    try:
+        from pathlib import Path as _Ppt
+        try:
+            import tomllib as _tlpt
+        except ImportError:
+            import tomli as _tlpt
+        _pt_cfg = _tlpt.loads(
+            (_Ppt(__file__).resolve().parent.parent / "config" / "settings.toml")
+            .read_text(encoding="utf-8")
+        ).get("paper_trades", {})
+        for _key in ("min_open_interest",):
+            if _key in _pt_cfg and _key in p:
+                p[_key] = type(p[_key])(_pt_cfg[_key])
+    except Exception:
+        pass
+
     short_p   = {**p, "min_dte": 7, "max_dte": 10}   # weekly expiry pass
 
     def _fetch_ticker_rows(ticker):
@@ -497,16 +515,29 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
             log.warning(f"analyze_ticker({ticker}, short_dte) failed: {e}")
         return results
 
-    from scripts.data_fetch import warmup_data_sources
+    from scripts.data_fetch import warmup_data_sources, clear_scan_cache
     warmup_data_sources(log)
 
+    # Phase 1 — serial I/O prefetch (main thread, before any workers start).
+    # Batch-downloads price history, then fetches expirations + chains one ticker
+    # at a time at a controlled rate. Workers in Phase 2 read from cache only.
+    from scripts.scan_prefetch import prefetch_scan_data
+    prefetch_scan_data(list(PAPER_WATCHLIST), p, short_p, log_obj=log)
+
     from concurrent.futures import ThreadPoolExecutor, as_completed
+    from scripts.data_fetch import _SCAN_CACHE
+    _chain_keys = sum(1 for k in _SCAN_CACHE if k.startswith("chain:"))
+    log.info(f"[scan] cache ready — {len(_SCAN_CACHE)} total keys, {_chain_keys} chain keys")
+
     rows = []
-    _max_workers = 2   # reduced to avoid E*TRADE/yfinance rate limiting (test)
+    # Phase 2 — pure-compute workers: cache hits only, zero live API calls.
+    _max_workers = 8
     with ThreadPoolExecutor(max_workers=_max_workers) as _pool:
         _futures = {_pool.submit(_fetch_ticker_rows, t): t for t in PAPER_WATCHLIST}
         for _fut in as_completed(_futures):
             rows.extend(_fut.result())
+
+    clear_scan_cache()  # release prefetch memory after workers finish
 
     row_by_ticker = {r["ticker"]: r for r in rows}
 
@@ -521,6 +552,9 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
             from scripts.regime_predictor import predict_all as _pa
             _pr = _pa(list(row_by_ticker.keys()))
             _ml_snapshot = {p["ticker"]: p for p in _pr.get("predictions", []) if p.get("ok")}
+            # Persist so Flask process and other consumers see these predictions
+            if _ml_snapshot:
+                _mlc.set_from_snapshot(_ml_snapshot)
     except Exception as _mle:
         log.warning(f"ML snapshot unavailable — confidence gate bypassed: {_mle}")
 

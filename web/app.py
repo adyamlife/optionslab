@@ -49,8 +49,8 @@ app.secret_key = os.environ.get("SECRET_KEY") or _SECRET_KEY or os.urandom(24)
 # logging.getLogger(__name__)) write to the same files, regardless of
 # whether they're called from a gunicorn worker or a background thread.
 import logging as _logging
-_LOG_DIR = Path(__file__).parent.parent / "data"
-_LOG_DIR.mkdir(exist_ok=True)
+_LOG_DIR = Path(__file__).parent.parent / "data" / "logs"
+_LOG_DIR.mkdir(parents=True, exist_ok=True)
 
 _fmt = _logging.Formatter("%(asctime)s %(levelname)-8s %(name)s: %(message)s",
                            datefmt="%Y-%m-%d %H:%M:%S")
@@ -1992,6 +1992,562 @@ def api_record_position_action():
     actions.append(payload)
     _POS_ACTIONS_PATH.write_text(_json.dumps(actions, indent=2), encoding="utf-8")
     return jsonify({"ok": True})
+
+
+# ── Compare / Analyse page ────────────────────────────────────────────────────
+
+@app.route("/compare")
+def page_compare():
+    if not session.get("user"):
+        return redirect(url_for("login"))
+    from config.watchlist import WATCHLIST, PAPER_WATCHLIST
+    all_tickers = sorted(set(WATCHLIST) | set(PAPER_WATCHLIST))
+    return render_template("compare.html", page="compare", watchlist_tickers=all_tickers)
+
+
+@app.route("/api/compare/ticker-data")
+def api_compare_ticker_data():
+    """Return price history + metrics for one ticker (for Compare and Monitor tabs)."""
+    ticker = (request.args.get("ticker") or "").strip().upper()
+    period = request.args.get("period", "3mo")   # 1mo 3mo 6mo 1y
+    if not ticker:
+        return jsonify({"ok": False, "error": "ticker required"}), 400
+
+    valid_periods = {"1mo", "3mo", "6mo", "1y"}
+    if period not in valid_periods:
+        period = "3mo"
+
+    try:
+        import yfinance as yf
+        from scripts.data_fetch import (
+            get_iv_rank_proxy, get_atm_iv, get_rsi, get_adx,
+            get_hv_and_iv_premium, get_beta, get_next_earnings_date,
+            get_relative_volume, get_trend, get_macd, get_ema200,
+            get_news_sentiment, get_weekly_trend, get_options_flow,
+            get_iv_term_structure, get_sector_context, get_vol_skew,
+        )
+        from scripts.ml_cache import ml_cache as _mlc
+
+        t = yf.Ticker(ticker)
+
+        # ── Price history (for TradingView) ───────────────────────────────────
+        hist = t.history(period=period, interval="1d", auto_adjust=True)
+        price_series = []
+        if not hist.empty:
+            for dt, row in hist.iterrows():
+                ts = dt.strftime("%Y-%m-%d") if hasattr(dt, "strftime") else str(dt)[:10]
+                price_series.append({"time": ts, "value": round(float(row["Close"]), 4)})
+
+        # Current price
+        fi    = t.fast_info
+        price = float(getattr(fi, "last_price", None) or getattr(fi, "regular_market_price", None) or 0)
+
+        # Company name (best-effort)
+        try:
+            info = t.info
+            name = info.get("shortName") or info.get("longName") or ticker
+        except Exception:
+            name = ticker
+
+        # ── Metrics ───────────────────────────────────────────────────────────
+        def _safe(fn, *args, default=None):
+            try:
+                return fn(*args)
+            except Exception:
+                return default
+
+        # hist is already fetched above for price_series; use it for all metrics
+        # ATM IV: need options chain
+        atm_iv = None
+        try:
+            spot = price or float(hist["Close"].iloc[-1])
+            exp_list = t.options
+            if exp_list:
+                chain = t.option_chain(exp_list[0])
+                atm_iv = get_atm_iv(chain.calls, chain.puts, spot)
+        except Exception:
+            pass
+
+        # IV rank proxy uses hist + atm_iv fallback
+        iv_rank    = _safe(get_iv_rank_proxy, hist, atm_iv or 0.25, default=None)
+        hv_data    = _safe(get_hv_and_iv_premium, hist, atm_iv or 0.01, default={}) or {}
+        hv20       = hv_data.get("hv20")
+        iv_premium = hv_data.get("iv_premium")
+        rsi        = _safe(get_rsi, hist, default=None)
+        adx        = _safe(get_adx, hist, default=None)
+        rel_vol    = _safe(get_relative_volume, hist, default=None)
+
+        # Beta needs SPY history
+        beta = None
+        try:
+            from scripts.data_fetch import get_price_history
+            spy_hist = get_price_history("SPY")
+            beta = get_beta(hist, spy_hist, window=60)
+        except Exception:
+            pass
+
+        # Trend label
+        trend = _safe(get_trend, hist, default=None)
+
+        # Earnings: days until next
+        earn_days = None
+        ex_div    = None
+        try:
+            ed = get_next_earnings_date(t)
+            if ed:
+                from datetime import date as _date
+                earn_days = (ed - _date.today()).days
+            # Ex-dividend date
+            _info = t.info if 'info' in dir(t) else {}
+            _exd  = _info.get("exDividendDate")
+            if _exd:
+                import datetime as _dt
+                ex_div = _dt.date.fromtimestamp(_exd).isoformat()
+        except Exception:
+            pass
+
+        # EMA200
+        ema200_val, ema200_pos = None, None
+        try:
+            ema200_val, ema200_pos = get_ema200(hist)
+        except Exception:
+            pass
+
+        # MACD
+        macd_data = _safe(get_macd, hist, default={}) or {}
+
+        # Weekly trend (needs longer history)
+        weekly_trend = None
+        try:
+            hist_6mo = t.history(period="6mo", interval="1wk", auto_adjust=True)
+            if not hist_6mo.empty:
+                weekly_trend = get_weekly_trend(ticker, 10, 20, 0.005)
+        except Exception:
+            pass
+
+        # PCR (put/call ratio from options chain)
+        pcr, pcr_sentiment = None, None
+        try:
+            if exp_list:
+                chain = t.option_chain(exp_list[0])
+                _flow = _safe(get_options_flow, ticker, exp_list[0], chain.calls, chain.puts, default={}) or {}
+                pcr           = _flow.get("pcr")
+                pcr_sentiment = _flow.get("pcr_sentiment")
+        except Exception:
+            pass
+
+        # IV term structure (front vs back expiry)
+        iv_term = None
+        try:
+            if exp_list and len(exp_list) >= 2:
+                from datetime import date as _date2
+                import math as _math
+                _today = _date2.today()
+                def _dte(exp_str):
+                    return max(1, (_date2.fromisoformat(exp_str) - _today).days)
+                _f_dte = _dte(exp_list[0])
+                _b_dte = _dte(exp_list[1])
+                _spot  = price or float(hist["Close"].iloc[-1])
+                _iv_term_data = _safe(
+                    get_iv_term_structure, t, exp_list[0], exp_list[1],
+                    _spot, _f_dte, _b_dte, default={}
+                ) or {}
+                iv_term = _iv_term_data.get("term_structure")
+        except Exception:
+            pass
+
+        # News sentiment (string label only)
+        news_sentiment = None
+        try:
+            _ns = get_news_sentiment(t)
+            if isinstance(_ns, dict):
+                news_sentiment = _ns.get("sentiment")
+            elif isinstance(_ns, str):
+                news_sentiment = _ns
+        except Exception:
+            pass
+
+        # IV skew
+        iv_skew = None
+        try:
+            if exp_list:
+                chain = t.option_chain(exp_list[0])
+                _spot = price or float(hist["Close"].iloc[-1])
+                _skew = _safe(get_vol_skew, chain.calls, chain.puts, _spot, default={}) or {}
+                iv_skew = _skew.get("skew_pct")
+        except Exception:
+            pass
+
+        # Sector ETF + trend
+        sector_etf, sector_trend = None, None
+        try:
+            _sec = _safe(get_sector_context, ticker, atm_iv or 0.25, default={}) or {}
+            sector_etf   = _sec.get("sector_etf")
+            sector_trend = _sec.get("sector_trend")
+        except Exception:
+            pass
+
+        # ── ML predictions from cache ──────────────────────────────────────
+        ml = _mlc.get(ticker) or {}
+        regime      = ml.get("regime_label")
+        regime_probs= ml.get("regime_probs", {})
+        p_win       = ml.get("p_win")
+        confidence  = ml.get("confidence")
+        pred_return = ml.get("pred_return")
+        pred_vol    = ml.get("pred_vol")
+
+        return jsonify({
+            "ok":      True,
+            "ticker":  ticker,
+            "name":    name,
+            "price":   round(price, 2),
+            "price_series": price_series,
+            "metrics": {
+                "iv_rank":    round(iv_rank, 1)    if iv_rank    is not None else None,
+                "hv20":       round(hv20 * 100, 1) if hv20       is not None else None,
+                "atm_iv":     round(atm_iv * 100, 1) if atm_iv   is not None else None,
+                "iv_premium": round(iv_premium * 100, 1) if iv_premium is not None else None,
+                "rsi":        round(rsi, 1)        if rsi        is not None else None,
+                "adx":        round(adx, 1)        if adx        is not None else None,
+                "beta":       round(beta, 2)        if beta       is not None else None,
+                "rel_vol":    round(rel_vol, 2)    if rel_vol    is not None else None,
+                "trend":         trend,
+                "weekly_trend":  weekly_trend,
+                "earn_days":     earn_days,
+                "ex_div":        ex_div,
+                "ema200":        round(ema200_val, 2) if ema200_val is not None else None,
+                "ema200_pos":    ema200_pos,
+                "macd":          round(macd_data.get("macd"), 3) if macd_data.get("macd") is not None else None,
+                "macd_trend":    macd_data.get("trend"),
+                "pcr":           pcr,
+                "pcr_sentiment": pcr_sentiment,
+                "iv_term":       iv_term,
+                "news_sentiment":news_sentiment,
+                "iv_skew":       round(iv_skew, 1) if iv_skew is not None else None,
+                "sector_etf":    sector_etf,
+                "sector_trend":  sector_trend,
+                "regime":        regime,
+                "regime_probs": regime_probs,
+                "p_win":      round(p_win * 100, 1)       if p_win       is not None else None,
+                "confidence": round(confidence * 100, 1)  if confidence  is not None else None,
+                "pred_return":round(pred_return * 100, 2) if pred_return is not None else None,
+                "pred_vol":   round(pred_vol * 100, 1)    if pred_vol    is not None else None,
+            },
+        })
+    except Exception as e:
+        app.logger.exception("api_compare_ticker_data failed for %s", ticker)
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+
+@app.route("/api/compare/open-trades")
+def api_compare_open_trades():
+    """Return open trades for the Monitor tab dropdown.
+    ?source=live|paper|all (default: all)
+    """
+    source = (request.args.get("source") or "all").strip().lower()
+    try:
+        open_trades = []
+
+        # Paper trades
+        if source in ("all", "paper"):
+            for t in pte.load_trades():
+                if t.get("status") != "open":
+                    continue
+                open_trades.append({
+                    "id":            t["id"],
+                    "ticker":        t["ticker"],
+                    "structure":     t["structure"],
+                    "expiry":        t["expiry"],
+                    "entry_credit":  t.get("entry_credit", 0),
+                    "max_profit":    t.get("max_profit"),
+                    "max_loss":      t.get("max_loss"),
+                    "profit_target": t.get("profit_target"),
+                    "stop_loss":     t.get("stop_loss"),
+                    "spot_at_entry": t.get("spot_at_entry"),
+                    "entered_at":    t.get("entered_at"),
+                    "dte_at_entry":  t.get("dte_at_entry"),
+                    "strikes":       t.get("strikes", {}),
+                    "ml_p_win":      t.get("ml_p_win"),
+                    "signal_rating": t.get("signal_rating"),
+                    "source":        "paper",
+                })
+
+        # Live positions — fetch from E*TRADE (same as /api/etrade-positions)
+        if source in ("all", "live"):
+            if not etrade.is_authenticated():
+                if source == "live":
+                    return jsonify({"ok": False, "error": "Not authenticated with E*TRADE", "auth_required": True}), 401
+                # source=all: skip live silently, still return paper trades
+            else:
+                try:
+                    raw_positions = etrade.get_positions() or []
+                    live_groups   = pfp.analyze_groups(pfp.positions_to_groups(raw_positions))
+                    for g in live_groups:
+                        ticker = g.get("ticker")
+                        for sp in g.get("spreads", []):
+                            expiry = sp.get("expiry", "")
+                            desc   = sp.get("desc", "")
+                            open_trades.append({
+                                "id":            f"{ticker}-{expiry}-{desc}"[:40],
+                                "ticker":        ticker,
+                                "structure":     desc,
+                                "expiry":        expiry,
+                                "entry_credit":  sp.get("entry_credit_ps", 0),
+                                "max_profit":    sp.get("max_profit_ps"),
+                                "max_loss":      sp.get("max_loss_ps"),
+                                "profit_target": None,
+                                "stop_loss":     None,
+                                "spot_at_entry": sp.get("ul_price"),
+                                "entered_at":    None,
+                                "dte_at_entry":  sp.get("dte"),
+                                "strikes":       {},
+                                "ml_p_win":      None,
+                                "signal_rating": None,
+                                "source":        "live",
+                            })
+                except Exception as _le:
+                    app.logger.warning("api_compare_open_trades: E*TRADE fetch failed: %s", _le)
+
+        # Sort: live first, then paper; within each group newest first
+        open_trades.sort(key=lambda x: (0 if x["source"] == "live" else 1,
+                                        -(x.get("entered_at") or "").__lt__("")))
+        return jsonify({"ok": True, "trades": open_trades})
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+
+@app.route("/api/compare/hedge-suggest")
+def api_compare_hedge_suggest():
+    """Return complementary structure suggestions for an open trade (live or paper)."""
+    trade_id = (request.args.get("trade_id") or "").strip()
+    if not trade_id:
+        return jsonify({"ok": False, "error": "trade_id required"}), 400
+    try:
+        from datetime import date as _date
+        import yfinance as _yf
+        from scripts.ml_cache import ml_cache as _mlc
+
+        # Search paper trades first, then live E*TRADE positions
+        trade = next((t for t in pte.load_trades() if t["id"] == trade_id), None)
+        trade_source = "paper"
+        if trade is None and etrade.is_authenticated():
+            try:
+                raw_live = etrade.get_positions() or []
+                live_groups = pfp.analyze_groups(pfp.positions_to_groups(raw_live))
+                for g in live_groups:
+                    for sp in g.get("spreads", []):
+                        expiry = sp.get("expiry", "")
+                        desc   = sp.get("desc", "")
+                        sid    = f"{g['ticker']}-{expiry}-{desc}"[:40]
+                        if sid == trade_id:
+                            trade = {
+                                "ticker":       g["ticker"],
+                                "structure":    desc,
+                                "expiry":       expiry,
+                                "entry_credit": sp.get("entry_credit_ps", 0),
+                                "max_profit":   sp.get("max_profit_ps"),
+                                "max_loss":     sp.get("max_loss_ps"),
+                                "dte_at_entry": sp.get("dte"),
+                            }
+                            trade_source = "live"
+                            break
+                    if trade:
+                        break
+            except Exception as _le:
+                app.logger.warning("hedge-suggest: E*TRADE lookup failed: %s", _le)
+        if not trade:
+            return jsonify({"ok": False, "error": "trade not found"}), 404
+
+        ticker    = trade["ticker"]
+        structure = trade.get("structure", "")
+        ec        = trade.get("entry_credit", 0)
+        expiry    = trade.get("expiry", "")
+        strikes   = trade.get("strikes", {})
+
+        # Current price
+        fi    = _yf.Ticker(ticker).fast_info
+        spot  = float(getattr(fi, "last_price", None) or getattr(fi, "regular_market_price", None) or 0)
+
+        # DTE
+        dte = 0
+        if expiry:
+            try:
+                dte = (_date.fromisoformat(expiry) - _date.today()).days
+            except Exception:
+                pass
+
+        # Latest mark from snapshots (last snapshot entry)
+        snaps       = trade.get("snapshots", [])
+        last_snap   = snaps[-1] if snaps else {}
+        cur_mark    = last_snap.get("mark", ec)
+        unreal_pct  = round((ec - cur_mark) / ec * 100, 1) if ec else 0
+
+        # Regime from ML cache
+        ml      = _mlc.get(ticker) or {}
+        regime  = ml.get("regime_label", "Unknown")
+
+        suggestions = _build_hedge_suggestions(structure, ec, cur_mark, unreal_pct, dte, spot, strikes, regime)
+
+        entered_at = trade.get("entered_at") or trade.get("entry_date")
+        return jsonify({
+            "ok":          True,
+            "ticker":      ticker,
+            "structure":   structure,
+            "expiry":      expiry,
+            "dte":         dte,
+            "spot":        round(spot, 2),
+            "entry_credit":ec,
+            "current_mark":round(cur_mark, 4),
+            "unrealized_pct": unreal_pct,
+            "regime":      regime,
+            "entered_at":  entered_at,
+            "source":      trade_source,
+            "suggestions": suggestions,
+        })
+    except Exception as e:
+        app.logger.exception("api_compare_hedge_suggest failed for trade %s", trade_id)
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+
+def _build_hedge_suggestions(structure, ec, cur_mark, unreal_pct, dte, spot, strikes, regime):
+    """Rule-based complementary structure suggestions for an open position."""
+    out = []
+
+    # ── Universal: profit management ──────────────────────────────────────────
+    if unreal_pct >= 70 and dte <= 7:
+        out.append({
+            "type":   "roll",
+            "icon":   "⟳",
+            "action": "Roll Forward",
+            "why":    f"Position is {unreal_pct:.0f}% profitable with only {dte}d left. Close and re-enter same structure at next expiry to capture more theta.",
+        })
+    elif unreal_pct >= 50:
+        out.append({
+            "type":   "profit",
+            "icon":   "✓",
+            "action": "Consider Taking Partial Profit",
+            "why":    f"Position has captured {unreal_pct:.0f}% of max profit. Closing now locks in most of the gain with less time risk.",
+        })
+
+    # ── Structure-specific ────────────────────────────────────────────────────
+    s = structure.lower()
+
+    if "put credit spread" in s or "bull put" in s or "cash secured put" in s:
+        if regime in ("Bearish", "Bear"):
+            out.append({
+                "type":   "hedge",
+                "icon":   "⚡",
+                "action": "Add Bear Call Spread → Iron Condor",
+                "why":    "Regime is Bearish. Selling a call spread above current price converts this to an Iron Condor — collect additional credit while capping upside risk.",
+            })
+        short_put = strikes.get("short_put") or strikes.get("short")
+        if short_put and spot < float(short_put) * 1.04:
+            out.append({
+                "type":   "warning",
+                "icon":   "⚠",
+                "action": "Roll Put Spread Down",
+                "why":    f"Price (${spot:.2f}) is approaching the short put at ${short_put}. Consider rolling the put spread lower to reduce assignment risk.",
+            })
+
+    elif "call credit spread" in s or "bear call" in s:
+        if regime in ("Bullish", "Bull"):
+            out.append({
+                "type":   "hedge",
+                "icon":   "⚡",
+                "action": "Add Bull Put Spread → Iron Condor",
+                "why":    "Regime is Bullish. Adding a put spread below current price creates an Iron Condor — collect more premium while hedging downside.",
+            })
+        short_call = strikes.get("short_call") or strikes.get("short")
+        if short_call and spot > float(short_call) * 0.96:
+            out.append({
+                "type":   "warning",
+                "icon":   "⚠",
+                "action": "Roll Call Spread Up",
+                "why":    f"Price (${spot:.2f}) is approaching the short call at ${short_call}. Roll the call spread higher to reduce assignment risk.",
+            })
+
+    elif "iron condor" in s:
+        short_call = strikes.get("short_call")
+        short_put  = strikes.get("short_put")
+        if short_call and spot > float(short_call) * 0.97:
+            out.append({
+                "type":   "warning",
+                "icon":   "⚠",
+                "action": "Roll Call Side Up",
+                "why":    f"Price (${spot:.2f}) is testing the short call at ${short_call}. Roll the call spread up to widen the profit range.",
+            })
+        elif short_put and spot < float(short_put) * 1.03:
+            out.append({
+                "type":   "warning",
+                "icon":   "⚠",
+                "action": "Roll Put Side Down",
+                "why":    f"Price (${spot:.2f}) is testing the short put at ${short_put}. Roll the put spread down to widen the profit range.",
+            })
+        if unreal_pct < -80:
+            out.append({
+                "type":   "exit",
+                "icon":   "✕",
+                "action": "Close Position",
+                "why":    "Position is near max loss. Closing now limits further drawdown versus holding to expiry.",
+            })
+
+    elif "covered call" in s:
+        out.append({
+            "type":   "hedge",
+            "icon":   "⚡",
+            "action": "Add Protective Put (Collar)",
+            "why":    "Buy an OTM put below current price to create a Collar — the premium collected on the call partially funds the put protection.",
+        })
+        short_call = strikes.get("short_call") or strikes.get("call")
+        if short_call and spot > float(short_call) * 0.98:
+            out.append({
+                "type":   "warning",
+                "icon":   "⚠",
+                "action": "Roll Call Up or Out",
+                "why":    f"Price is near the short call at ${short_call}. Roll up or out to avoid forced assignment on your shares.",
+            })
+
+    elif "long call" in s and "spread" not in s:
+        out.append({
+            "type":   "hedge",
+            "icon":   "⚡",
+            "action": "Sell OTM Call → Bull Call Spread",
+            "why":    "Selling a higher-strike call against your long call converts it to a bull call spread, recovering cost basis and limiting theta decay.",
+        })
+
+    elif "long put" in s and "spread" not in s:
+        out.append({
+            "type":   "hedge",
+            "icon":   "⚡",
+            "action": "Sell OTM Put → Bear Put Spread",
+            "why":    "Selling a lower-strike put against your long put converts it to a bear put spread, recovering cost basis and reducing net debit.",
+        })
+
+    elif "long strangle" in s:
+        out.append({
+            "type":   "hedge",
+            "icon":   "⚡",
+            "action": "Convert to Iron Condor",
+            "why":    "Sell a tighter strangle inside your existing long legs to create an Iron Condor — this recovers some debit paid if the expected move doesn't materialise.",
+        })
+
+    elif "risk reversal" in s or "jade lizard" in s:
+        out.append({
+            "type":   "hedge",
+            "icon":   "⚡",
+            "action": "Buy Protective Put",
+            "why":    "Add a far-OTM put to cap the undefined downside risk of the short put leg.",
+        })
+
+    if not out:
+        out.append({
+            "type":   "info",
+            "icon":   "ℹ",
+            "action": "Hold — No Action Needed",
+            "why":    f"Position is within normal range ({unreal_pct:.0f}% of max profit, {dte}d to expiry). Monitor Greeks as expiry approaches.",
+        })
+
+    return out
 
 
 if __name__ == "__main__":

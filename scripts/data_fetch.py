@@ -15,6 +15,7 @@ _YF_CONCURRENCY = threading.Semaphore(5)
 
 _EARNINGS_CACHE_PATH = Path(__file__).parent.parent / "data" / "earnings_cache.json"
 _OI_CACHE_PATH       = Path(__file__).parent.parent / "data" / "oi_cache.json"
+_OI_CACHE_LOCK       = threading.Lock()
 _SECRETS_PATH        = Path(__file__).parent.parent / "config" / "secrets.toml"
 
 # ── FRED API ──────────────────────────────────────────────────────────────────
@@ -82,6 +83,28 @@ _tls = threading.local()
 def set_force_yfinance(val: bool) -> None:
     _tls.force_yfinance = val
 
+# ── Scan prefetch cache ───────────────────────────────────────────────────────
+# Populated by scan_prefetch.prefetch_scan_data() before the ThreadPoolExecutor
+# starts. data_fetch functions check here first so workers make zero live API
+# calls, eliminating crumb expiry and rate-limit failures.
+_SCAN_CACHE: dict = {}
+_SC_LOCK = threading.Lock()
+
+
+def _sc_get(key: str):
+    with _SC_LOCK:
+        return _SCAN_CACHE.get(key)
+
+
+def set_scan_cache(data: dict) -> None:
+    with _SC_LOCK:
+        _SCAN_CACHE.update(data)
+
+
+def clear_scan_cache() -> None:
+    with _SC_LOCK:
+        _SCAN_CACHE.clear()
+
 # ── Live risk-free rate (^IRX = 13-week T-bill annualised yield) ──────────────
 _rfr_cache: float | None = None
 _rfr_cached_at: float = 0.0
@@ -109,6 +132,9 @@ def get_risk_free_rate() -> float:
 
 
 def get_price_history(ticker, period="1y"):
+    cached = _sc_get(f"ph:{ticker}")
+    if cached is not None and not cached.empty:
+        return cached
     return yf.Ticker(ticker).history(period=period)
 
 
@@ -134,6 +160,10 @@ def _get_expirations(ticker_obj) -> list[str]:
     prevents pick_expiry from selecting a date that neither chain can serve.
     """
     ticker_str = getattr(ticker_obj, "ticker", None)
+    if ticker_str:
+        cached = _sc_get(f"exps:{ticker_str}")
+        if cached is not None:
+            return cached
     with _YF_CONCURRENCY:
         yf_exps = list(ticker_obj.options)      # always fetch; cheap + cached
     if ticker_str and _use_etrade("expirations"):
@@ -318,6 +348,16 @@ def get_live_spot(ticker_str: str) -> dict | None:
 
 def get_option_chain(ticker_obj, expiry, spot=None, dte=None):
     ticker_str = getattr(ticker_obj, "ticker", None)
+    if ticker_str:
+        cached = _sc_get(f"chain:{ticker_str}:{expiry}")
+        if cached is not None:
+            raw_calls, raw_puts = cached
+            calls = raw_calls.copy()
+            puts  = raw_puts.copy()
+            if spot is not None and dte is not None:
+                calls = _fill_bid_ask(calls, spot, dte, "call")
+                puts  = _fill_bid_ask(puts,  spot, dte, "put")
+            return calls, puts
     if ticker_str and _use_etrade("option_chain"):
         et_calls, et_puts = _try_et_chain(ticker_str, expiry, spot, dte)
         if et_calls is not None:
@@ -365,7 +405,7 @@ def get_iv_rank_proxy(hist, atm_iv, window=30, ticker=None):
     # Index ETFs: use VIX percentile as the IV rank
     if ticker and ticker.upper() in _VIX_INDEX_TICKERS:
         try:
-            vix_hist = yf.Ticker("^VIX").history(period="1y")
+            vix_hist = _sc_get("ph:^VIX") or yf.Ticker("^VIX").history(period="1y")
             if not vix_hist.empty:
                 vix_now = vix_hist["Close"].iloc[-1]
                 rank = float((vix_hist["Close"] < vix_now).mean() * 100)
@@ -604,7 +644,9 @@ def get_analyst_rec_change(ticker_obj, days: int = 5) -> int | None:
 def get_weekly_trend(ticker, sma_short, sma_long, band_pct):
     """Same trend classification as get_trend(), but on weekly bars -
     used as a higher-timeframe confirmation signal."""
-    hist = yf.Ticker(ticker).history(period="3y", interval="1wk")
+    cached = _sc_get(f"wk:{ticker}")
+    hist = cached if (cached is not None and not cached.empty) else \
+        yf.Ticker(ticker).history(period="3y", interval="1wk")
     if hist.empty or len(hist) < sma_long:
         return "N/A"
     return get_trend(hist, sma_short, sma_long, band_pct)
@@ -778,25 +820,26 @@ def get_options_flow(ticker, expiry, calls, puts):
     vol_oi_ratio = round(total_vol / total_oi, 2) if total_oi > 0 else 0.0
     unusual = bool(total_oi > 0 and total_vol > 3 * total_oi)
 
-    # OI delta vs previous run
-    cache = _load_oi_cache()
-    key = f"{ticker}:{expiry}"
-    prev = cache.get(key)
-    if prev:
-        oi_delta_calls = int(call_oi - prev.get("call_oi", 0))
-        oi_delta_puts  = int(put_oi  - prev.get("put_oi",  0))
-    else:
-        oi_delta_calls = None
-        oi_delta_puts  = None
+    # OI delta vs previous run — lock so concurrent workers don't race on the tmp file
+    with _OI_CACHE_LOCK:
+        cache = _load_oi_cache()
+        key = f"{ticker}:{expiry}"
+        prev = cache.get(key)
+        if prev:
+            oi_delta_calls = int(call_oi - prev.get("call_oi", 0))
+            oi_delta_puts  = int(put_oi  - prev.get("put_oi",  0))
+        else:
+            oi_delta_calls = None
+            oi_delta_puts  = None
 
-    cache[key] = {
-        "date": today_str,
-        "call_oi": call_oi,
-        "put_oi":  put_oi,
-        "call_vol": call_vol,
-        "put_vol":  put_vol,
-    }
-    _save_oi_cache(cache)
+        cache[key] = {
+            "date": today_str,
+            "call_oi": call_oi,
+            "put_oi":  put_oi,
+            "call_vol": call_vol,
+            "put_vol":  put_vol,
+        }
+        _save_oi_cache(cache)
 
     return {
         "pcr": pcr,
@@ -956,7 +999,7 @@ def get_sector_context(ticker_str: str, atm_iv: float, hist_period: str = "3mo")
 
     try:
         from config import rules
-        etf_hist = yf.Ticker(etf).history(period=hist_period)
+        etf_hist = get_price_history(etf, period=hist_period)
         if etf_hist.empty or len(etf_hist) < rules.SMA_LONG + 2:
             return result
         etf_close = etf_hist["Close"].squeeze()
@@ -1040,11 +1083,11 @@ def get_index_trends(spy_hist=None, qqq_hist=None, iwm_hist=None, period: str = 
 
     try:
         if spy_hist is None:
-            spy_hist = yf.Ticker("SPY").history(period=period)
+            spy_hist = get_price_history("SPY", period=period)
         if qqq_hist is None:
-            qqq_hist = yf.Ticker("QQQ").history(period=period)
+            qqq_hist = get_price_history("QQQ", period=period)
         if iwm_hist is None:
-            iwm_hist = yf.Ticker("IWM").history(period=period)
+            iwm_hist = get_price_history("IWM", period=period)
     except Exception:
         pass
 
@@ -1405,7 +1448,7 @@ def get_iv_rank_52w(ticker_str, atm_iv):
     Returns None on failure.
     """
     try:
-        hist = yf.Ticker(ticker_str).history(period="1y")
+        hist = get_price_history(ticker_str, period="1y")
         if hist.empty or len(hist) < 60:
             return None
         close    = hist["Close"].squeeze()

@@ -19,7 +19,7 @@ watchlist = [
   # Software / cloud
   "PLTR", "SNOW", "MDB", "ORCL", "CRM", "NOW", "NET", "TEAM", "SAP",
   # Software (new +)
-  "ADBE", "INTU",
+  "ADBE", "INTU", "RGTI",
 
   # ── Communication Services ───────────────────────────────────────────────
   "GOOGL", "META", "NFLX", "SPOT",
@@ -317,8 +317,13 @@ bonus_scale = 0.15
 #   regardless of margin setting (e.g. strategies you are not yet comfortable with).
 [paper_trades]
 margin_account     = false
-exclude_structures = ["Cash Secured Put"]
-min_profit_amount  = 0.50    # paper-trade override: lower gate vs live ($0.50/sh)
+exclude_structures  = ["Covered Call"]  # requires owning 100 shares — not paper-tradeable without shares
+min_profit_amount   = 0.50    # paper-trade override: lower gate vs live ($0.50/sh)
+min_confidence      = 0.50    # paper-trade override: all outcomes are training data, 0.70 is too strict
+min_open_interest   = 50      # paper-trade override: allow thinner strikes (live uses 200)
+max_theta_per_day   = 0.0     # paper-trade override: disable theta gate entirely (collect all structures)
+min_expected_roi    = 0.075   # paper-trade override: 7.5% vs 10% live (but ROI gate now uses per-share units)
+min_liquidity_score = 0.30    # paper-trade override: collect diverse structures (live uses 0.60)
 
 [ai]
 primary_provider  = "groq"

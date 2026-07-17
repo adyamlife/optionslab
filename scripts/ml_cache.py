@@ -22,11 +22,15 @@ Usage:
 from __future__ import annotations
 
 import copy
+import json
 import logging
 import time
 import threading
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Optional
+
+_DISK_PATH = Path(__file__).resolve().parent.parent / "data" / "ml_cache.json"
 
 logger = logging.getLogger(__name__)
 
@@ -155,6 +159,7 @@ class MLPredictionCache:
             logger.info(
                 "ml_cache refreshed: %d tickers in %.2fs", n, elapsed
             )
+            self.save(source="morning_scan")
             # Return ticker count only — full list can be hundreds of symbols
             return {
                 "ok":           True,
@@ -186,6 +191,102 @@ class MLPredictionCache:
         )
         t.start()
 
+    # ── Disk persistence ──────────────────────────────────────────────────────
+
+    def save(self, source: str = "scan") -> None:
+        """
+        Write current cache to disk (JSON for fast cross-process IPC) and to
+        DuckDB (for historical tracking, drift analysis, and training-data joins).
+        """
+        with self._lock:
+            refreshed_at = self._refreshed_at
+            snapshot = copy.deepcopy(self._by_ticker)
+
+        # ── JSON fast path (cross-process IPC) ───────────────────────────────
+        payload = {
+            "refreshed_at": refreshed_at.isoformat() if refreshed_at else None,
+            "by_ticker":    snapshot,
+        }
+        try:
+            _DISK_PATH.parent.mkdir(parents=True, exist_ok=True)
+            _DISK_PATH.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+            logger.debug("ml_cache saved to disk: %d tickers", len(snapshot))
+        except Exception:
+            logger.exception("ml_cache.save() failed — disk write error")
+
+        # ── DuckDB historical record ──────────────────────────────────────────
+        if snapshot and refreshed_at:
+            try:
+                from scripts.db import insert_ml_predictions
+                n = insert_ml_predictions(
+                    snapshot,
+                    scanned_at=refreshed_at.isoformat(),
+                    source=source,
+                )
+                logger.debug("ml_cache saved %d rows to DuckDB ml_predictions", n)
+            except Exception:
+                logger.exception("ml_cache.save() — DuckDB write failed (non-fatal)")
+
+    def load_from_disk(self) -> bool:
+        """
+        Load cache from disk (JSON first, DuckDB fallback if JSON is missing/stale).
+        Returns True if data was loaded, False otherwise.
+        Called once at module init so the Flask process starts warm.
+        """
+        # ── JSON fast path ────────────────────────────────────────────────────
+        if _DISK_PATH.exists():
+            try:
+                payload       = json.loads(_DISK_PATH.read_text(encoding="utf-8"))
+                refreshed_str = payload.get("refreshed_at")
+                by_ticker     = payload.get("by_ticker") or {}
+                if refreshed_str and by_ticker:
+                    refreshed_at = datetime.fromisoformat(refreshed_str)
+                    age = (datetime.now(timezone.utc) - refreshed_at).total_seconds()
+                    if age <= _STALE_SECONDS:
+                        with self._lock:
+                            self._by_ticker    = by_ticker
+                            self._refreshed_at = refreshed_at
+                        logger.info(
+                            "ml_cache loaded from disk: %d tickers, age %.0fs",
+                            len(by_ticker), age,
+                        )
+                        return True
+                    logger.info("ml_cache disk file is stale (%.0fs) — trying DuckDB", age)
+            except Exception:
+                logger.exception("ml_cache.load_from_disk() JSON read failed — trying DuckDB")
+
+        # ── DuckDB fallback ───────────────────────────────────────────────────
+        try:
+            from scripts.db import load_latest_ml_predictions
+            preds = load_latest_ml_predictions()
+            if preds:
+                with self._lock:
+                    self._by_ticker    = preds
+                    self._refreshed_at = datetime.now(timezone.utc)
+                logger.info("ml_cache loaded from DuckDB fallback: %d tickers", len(preds))
+                return True
+        except Exception:
+            logger.exception("ml_cache.load_from_disk() DuckDB fallback failed")
+
+        return False
+
+    def set_from_snapshot(self, snapshot: dict[str, dict]) -> None:
+        """
+        Populate the cache from an externally-computed predict_all snapshot dict
+        {ticker: pred_result}. Called by paper_trade_engine after it runs predict_all
+        so the Flask process inherits the data via disk persistence.
+        """
+        if not snapshot:
+            return
+        with self._lock:
+            self._by_ticker    = {k: v for k, v in snapshot.items() if v.get("ok")}
+            self._refreshed_at = datetime.now(timezone.utc)
+            n = len(self._by_ticker)
+        logger.info("ml_cache populated from external snapshot: %d tickers", n)
+        self.save(source="paper_trade_engine")
+
 
 # Module-level singleton — imported everywhere
 ml_cache = MLPredictionCache()
+# Auto-load from disk so the Flask process starts warm without a fresh scan
+ml_cache.load_from_disk()

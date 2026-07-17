@@ -33,6 +33,7 @@
         <a href="/ml-admin" data-nav="ml-admin" {% if page == 'ml-admin' %}class="active"{% endif %}>ML Data</a>
         <a href="/scheduler" data-nav="scheduler" {% if page == 'scheduler' %}class="active"{% endif %}>Scheduler</a>
         <a href="/mispricing" data-nav="mispricing" {% if page == 'mispricing' %}class="active"{% endif %}>Mispricing</a>
+        <a href="/compare" data-nav="compare" {% if page == 'compare' %}class="active"{% endif %}>Compare</a>
       {% endif %}
       <a href="/logout" class="nav-logout" title="Sign out">&#x2192; Sign out</a>
     {% endif %}
@@ -46,6 +47,7 @@
 
   <script>window.__FEATURES__ = {{ features | tojson }};</script>
   <script src="/static/js/common.js?v={{ asset_v }}"></script>
+  <script src="/static/js/metric-help.js?v={{ asset_v }}"></script>
   {% block scripts %}{% endblock %}
 </body>
 </html>
