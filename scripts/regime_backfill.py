@@ -605,7 +605,35 @@ def build_ticker_features(ticker: str, period="2y", vix_close: pd.Series = None,
 
 
 def build_regime_dataset(period="2y", out_path=None) -> dict:
-    from scripts.db import connect, TABLE
+    from scripts.db import connect, TABLE, table_exists
+    from datetime import date, timedelta
+
+    # Extend period so we never drop history that's already in the table.
+    # Each month we wait, a "2y" window shifts forward and would silently lose
+    # the oldest month.  Check the earliest date present and stretch period if needed.
+    try:
+        with connect() as _con:
+            if table_exists(_con, TABLE):
+                _row = _con.execute(f"SELECT MIN(date) FROM {TABLE}").fetchone()
+                if _row and _row[0]:
+                    earliest = _row[0]  # datetime.date or string
+                    if isinstance(earliest, str):
+                        from datetime import datetime
+                        earliest = datetime.strptime(earliest, "%Y-%m-%d").date()
+                    days_needed = (date.today() - earliest).days + 30  # 30-day buffer
+                    needed_years = days_needed / 365.25
+                    # Parse current period (e.g. "2y", "3y") and use the larger
+                    current_years = float(period.rstrip("ymd")) if period.endswith("y") else 2.0
+                    if needed_years > current_years:
+                        period = f"{int(needed_years) + 1}y"
+                        import logging as _log
+                        _log.getLogger(__name__).info(
+                            "build_regime_dataset: extending period to %s to preserve "
+                            "existing history back to %s", period, earliest
+                        )
+    except Exception:
+        pass  # if DB doesn't exist yet, use the default period as-is
+
     vix_close, spy_close, qqq_close, iwm_close = _fetch_market_context(period)
     macro_series  = _fetch_macro_series(period)
     cross_asset   = _fetch_cross_asset_series(period)

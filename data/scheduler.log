@@ -190,3 +190,131 @@ C:\Python312\python\python.exe (PID 9972)
 2026-07-13 17:51:31 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 221.45s
 2026-07-13 17:58:59 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 317.33s
 2026-07-13 18:20:39 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 204.62s
+2026-07-16 09:54:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-16 09:55:03 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 327.63s
+2026-07-16 09:56:17 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 376.25s
+2026-07-16 10:00:00 WARNING  scripts.paper_trade_engine: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-16 10:00:59 WARNING  scripts.paper_trade_engine: analyze_ticker(NVDA) failed: 'NoneType' object has no attribute 'copy'
+2026-07-16 10:06:06 WARNING  scripts.paper_trade_engine: analyze_ticker(LLY, short_dte) failed: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Project Y\\web\\..\\data\\oi_cache.json.tmp' -> 'C:\\Project Y\\web\\..\\data\\oi_cache.json'
+2026-07-16 10:06:47 WARNING  scripts.paper_trade_engine: analyze_ticker(MS) failed: 'NoneType' object has no attribute 'copy'
+2026-07-16 10:07:20 WARNING  scripts.paper_trade_engine: analyze_ticker(RTX) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:20 WARNING  scripts.paper_trade_engine: analyze_ticker(HON, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:20 WARNING  scripts.paper_trade_engine: analyze_ticker(RTX, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:21 WARNING  scripts.paper_trade_engine: analyze_ticker(COP) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:21 WARNING  scripts.paper_trade_engine: analyze_ticker(COP, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:21 WARNING  scripts.paper_trade_engine: analyze_ticker(CVX) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:22 WARNING  scripts.paper_trade_engine: analyze_ticker(CVX, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:22 WARNING  scripts.paper_trade_engine: analyze_ticker(NEE) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:22 WARNING  scripts.paper_trade_engine: analyze_ticker(NEE, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:23 WARNING  scripts.paper_trade_engine: analyze_ticker(VST) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:23 WARNING  scripts.paper_trade_engine: analyze_ticker(VST, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:23 WARNING  scripts.paper_trade_engine: analyze_ticker(FCX) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:24 WARNING  scripts.paper_trade_engine: analyze_ticker(FCX, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:24 WARNING  scripts.paper_trade_engine: analyze_ticker(AMT) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:24 WARNING  scripts.paper_trade_engine: analyze_ticker(AMT, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:24 WARNING  scripts.paper_trade_engine: analyze_ticker(SOFI) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:25 WARNING  scripts.paper_trade_engine: analyze_ticker(SOFI, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:25 WARNING  scripts.paper_trade_engine: analyze_ticker(EQIX, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:26 WARNING  scripts.paper_trade_engine: analyze_ticker(IWM) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:26 WARNING  scripts.paper_trade_engine: analyze_ticker(IWM, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:26 WARNING  scripts.paper_trade_engine: analyze_ticker(GLD, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:26 WARNING  scripts.paper_trade_engine: analyze_ticker(XLE) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:26 WARNING  scripts.paper_trade_engine: analyze_ticker(XLE, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:27 WARNING  scripts.paper_trade_engine: analyze_ticker(C) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:27 WARNING  scripts.paper_trade_engine: analyze_ticker(C, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:28 WARNING  scripts.paper_trade_engine: analyze_ticker(WFC, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:28 WARNING  scripts.paper_trade_engine: analyze_ticker(SCHW) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:28 WARNING  scripts.paper_trade_engine: analyze_ticker(SCHW, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:29 WARNING  scripts.paper_trade_engine: analyze_ticker(AXP, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:29 WARNING  scripts.paper_trade_engine: analyze_ticker(PFE) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:29 WARNING  scripts.paper_trade_engine: analyze_ticker(PFE, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:30 WARNING  scripts.paper_trade_engine: analyze_ticker(MRK) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:30 WARNING  scripts.paper_trade_engine: analyze_ticker(MRK, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:30 WARNING  scripts.paper_trade_engine: analyze_ticker(MRNA, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:30 WARNING  scripts.paper_trade_engine: analyze_ticker(JNJ) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:31 WARNING  scripts.paper_trade_engine: analyze_ticker(JNJ, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:31 WARNING  scripts.paper_trade_engine: analyze_ticker(TGT, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:31 WARNING  scripts.paper_trade_engine: analyze_ticker(UPS) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:32 WARNING  scripts.paper_trade_engine: analyze_ticker(UPS, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:32 WARNING  scripts.paper_trade_engine: analyze_ticker(FDX) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:32 WARNING  scripts.paper_trade_engine: analyze_ticker(FDX, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:33 WARNING  scripts.paper_trade_engine: analyze_ticker(SLB, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:33 WARNING  scripts.paper_trade_engine: analyze_ticker(T) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:34 WARNING  scripts.paper_trade_engine: analyze_ticker(T, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:34 WARNING  scripts.paper_trade_engine: analyze_ticker(VZ, short_dte) failed: Too Many Requests. Rate limited. Try after a while.
+2026-07-16 10:07:36 INFO     scripts.candidate_ranker: [filter] 635 rejected, 0 survived — gate breakdown: {'strikes_incomplete': 382, 'theta': 113, 'min_profit': 22, 'iv_edge': 32, 'expected_roi': 15, 'ml_confidence': 71}
+2026-07-16 10:07:47 WARNING  scripts.training_data_collector: Scan snapshot write failed for ARM: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 5636)
+2026-07-16 10:07:47 WARNING  scripts.training_data_collector: Scan snapshot write failed for MU: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 5636)
+2026-07-16 10:07:47 WARNING  scripts.training_data_collector: Scan snapshot write failed for MU: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 5636)
+2026-07-16 10:07:47 WARNING  scripts.training_data_collector: Scan snapshot write failed for INTC: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+2026-07-16 10:09:21 INFO     scripts.training_data_collector: [scan_morning] scan snapshots: 142 saved, 0 skipped (opened), 4 errors
+2026-07-16 10:09:21 INFO     scripts.paper_trade_engine: Scan snapshots: 142 saved, 0 skipped
+2026-07-16 10:24:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-16 10:30:34 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 383.85s
+2026-07-16 11:54:05 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 285.25s
+2026-07-16 11:54:06 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 281.50s
+2026-07-16 11:54:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-16 12:00:14 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 363.75s
+2026-07-16 12:08:15 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 281.04s
+2026-07-16 12:21:06 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 278.17s
+2026-07-16 12:28:58 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 283.14s
+2026-07-16 12:54:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-16 12:59:58 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 348.03s
+2026-07-16 13:24:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-16 13:30:36 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 386.55s
+2026-07-16 13:54:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-16 14:00:00 WARNING  scripts.paper_trade_engine: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-16 14:00:04 INFO     scripts.paper_trade_engine: [prefetch] step 1 — batch daily history for 101 tickers
+2026-07-16 14:00:23 INFO     scripts.paper_trade_engine: [prefetch] daily history done: 101 ok, 0 fail  (19.2s)
+2026-07-16 14:00:23 INFO     scripts.paper_trade_engine: [prefetch] step 2 — batch weekly history for 100 tickers
+2026-07-16 14:00:41 INFO     scripts.paper_trade_engine: [prefetch] weekly history done: 100 ok, 0 fail  (37.5s)
+2026-07-16 14:00:41 INFO     scripts.paper_trade_engine: [prefetch] step 3+4 — expirations + chains for 100 tickers (serial)
+2026-07-16 14:01:38 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 447.83s
+2026-07-16 14:02:50 INFO     scripts.paper_trade_engine: [prefetch] done in 167s — hist 101/101, weekly 100/100, exps 100/100, chains 390 (fail 0)
+2026-07-16 14:02:50 INFO     scripts.paper_trade_engine: [scan] cache ready — 691 total keys, 390 chain keys
+2026-07-16 14:03:11 WARNING  scripts.paper_trade_engine: analyze_ticker(KLAC) failed: 'NoneType' object has no attribute 'copy'
+2026-07-16 14:05:20 WARNING  scripts.paper_trade_engine: analyze_ticker(AMT) failed: Expiration `2026-10-16` cannot be found. Available expirations are: []
+2026-07-16 14:05:22 WARNING  scripts.paper_trade_engine: analyze_ticker(EQIX) failed: 'NoneType' object has no attribute 'copy'
+2026-07-16 14:05:23 WARNING  scripts.paper_trade_engine: analyze_ticker(AMT, short_dte) failed: Expiration `2026-10-16` cannot be found. Available expirations are: []
+2026-07-16 14:05:29 WARNING  scripts.paper_trade_engine: analyze_ticker(WFC) failed: 'NoneType' object has no attribute 'copy'
+2026-07-16 14:05:46 WARNING  scripts.paper_trade_engine: analyze_ticker(TGT, short_dte) failed: Expecting value: line 1 column 1 (char 0)
+2026-07-16 14:06:03 INFO     scripts.candidate_ranker: [filter] 1029 rejected, 32 survived — gate breakdown: {'expected_roi': 589, 'liquidity_score': 1, 'strikes_incomplete': 295, 'min_profit': 91, 'iv_edge': 53}
+2026-07-16 14:06:04 INFO     scripts.paper_trade_engine: Paper trade #1: 20260716PM_APP_COV_1  credit=4.000  expiry=2026-07-24
+2026-07-16 14:06:05 INFO     scripts.training_data_collector: Training snapshot written for paper trade 20260716PM_APP_COV_1
+2026-07-16 14:06:05 INFO     scripts.paper_trade_engine: Paper trade #2: 20260716PM_TXN_COV_2  credit=3.600  expiry=2026-07-24
+2026-07-16 14:06:06 INFO     scripts.training_data_collector: Training snapshot written for paper trade 20260716PM_TXN_COV_2
+2026-07-16 14:06:07 INFO     scripts.paper_trade_engine: Paper trade #3: 20260716PM_LRCX_COV_3  credit=5.250  expiry=2026-07-24
+2026-07-16 14:06:08 INFO     scripts.training_data_collector: Training snapshot written for paper trade 20260716PM_LRCX_COV_3
+2026-07-16 14:08:42 INFO     scripts.training_data_collector: [scan_afternoon] scan snapshots: 186 saved, 6 skipped (opened), 0 errors
+2026-07-16 14:08:42 INFO     scripts.paper_trade_engine: Scan snapshots: 186 saved, 6 skipped
+2026-07-16 14:24:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-16 14:26:53 INFO     scripts.ml_cache: ml_cache loaded from disk: 82 tickers, age 1516s
+2026-07-16 14:31:33 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 279.46s
+2026-07-16 14:35:14 INFO     scripts.ml_cache: ml_cache loaded from disk: 82 tickers, age 221s
+2026-07-16 14:41:13 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 359.01s
+2026-07-16 14:54:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-16 14:56:36 INFO     scripts.ml_cache: ml_cache loaded from disk: 82 tickers, age 923s
+2026-07-16 14:56:51 INFO     scripts.ml_cache: ml_cache loaded from disk: 82 tickers, age 939s
+2026-07-16 14:57:20 INFO     scripts.ml_cache: ml_cache loaded from disk: 82 tickers, age 968s
+2026-07-16 14:57:31 INFO     scripts.ml_cache: ml_cache loaded from disk: 82 tickers, age 979s
+2026-07-16 14:59:54 INFO     scripts.ml_cache: ml_cache loaded from disk: 82 tickers, age 1121s
+2026-07-16 15:04:10 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 256.07s
+2026-07-16 15:09:21 INFO     scripts.ml_cache: ml_cache loaded from disk: 82 tickers, age 311s
+2026-07-16 15:09:39 INFO     scripts.ml_cache: ml_cache loaded from disk: 82 tickers, age 329s
+2026-07-16 15:10:13 INFO     scripts.ml_cache: ml_cache loaded from disk: 82 tickers, age 363s
+2026-07-16 15:10:30 INFO     scripts.ml_cache: ml_cache loaded from disk: 82 tickers, age 380s
+2026-07-16 15:14:45 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 254.94s
+2026-07-16 15:24:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-16 15:29:37 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 327.58s
+2026-07-16 15:54:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-16 15:59:54 INFO     scripts.ml_cache: ml_cache refreshed: 82 tickers in 344.35s

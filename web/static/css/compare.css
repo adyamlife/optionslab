@@ -1,0 +1,206 @@
+/* compare.css — Ticker Compare & Monitor page */
+
+/* ── Layout ──────────────────────────────────────────────────────────────── */
+.cmp-wrap        { max-width: 1320px; margin: 0 auto; padding: 0 1rem 3rem; }
+.cmp-header      { display: flex; align-items: flex-start; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+.cmp-header h2   { margin: 0 0 0.2rem; font-size: 1.3rem; color: var(--clr-primary); }
+.cmp-header p    { margin: 0; font-size: 0.85rem; color: var(--clr-text-muted); }
+
+/* ── Tabs ────────────────────────────────────────────────────────────────── */
+.cmp-tab-nav     { display: flex; gap: 0; border-bottom: 2px solid var(--clr-border); margin-bottom: 1.4rem; }
+.cmp-tab-btn     {
+  padding: 0.55rem 1.4rem; border: none; background: none; cursor: pointer;
+  font-size: 0.9rem; color: var(--clr-text-muted); border-bottom: 3px solid transparent;
+  margin-bottom: -2px; transition: color 0.15s, border-color 0.15s;
+}
+.cmp-tab-btn.active { color: var(--clr-primary); border-bottom-color: var(--clr-primary); font-weight: 600; }
+.cmp-tab-btn:hover:not(.active) { color: var(--clr-primary-mid); }
+.cmp-tab-panel   { display: none; }
+.cmp-tab-panel.active { display: block; }
+
+/* ── Ticker autocomplete ─────────────────────────────────────────────────── */
+.ac-wrap         { position: relative; }
+.ac-input        { width: 120px; }
+.ac-list         {
+  position: absolute; top: calc(100% + 3px); left: 0; z-index: 200;
+  min-width: 160px; max-height: 220px; overflow-y: auto;
+  margin: 0; padding: 0; list-style: none;
+  background: var(--clr-surface); border: 1px solid var(--clr-border);
+  border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,.12);
+  display: none;
+}
+.ac-list.open    { display: block; }
+.ac-list li      {
+  padding: 0.38rem 0.75rem; cursor: pointer;
+  font-size: 0.88rem; color: var(--clr-text);
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.ac-list li:hover,
+.ac-list li.ac-active { background: var(--clr-primary); color: #fff; }
+.ac-ticker       { font-weight: 700; min-width: 52px; }
+.ac-name         { font-size: 0.78rem; opacity: 0.8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 130px; }
+
+/* ── Inputs row ──────────────────────────────────────────────────────────── */
+.cmp-inputs      {
+  display: flex; gap: 0.75rem; align-items: flex-end; flex-wrap: wrap;
+  background: var(--clr-surface); border: 1px solid var(--clr-border);
+  border-radius: 8px; padding: 1rem 1.2rem; margin-bottom: 1.2rem;
+}
+.cmp-field       { display: flex; flex-direction: column; gap: 0.3rem; }
+.cmp-field label { font-size: 0.75rem; font-weight: 600; color: var(--clr-text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.cmp-field input,
+.cmp-field select {
+  padding: 0.42rem 0.7rem; border: 1px solid var(--clr-border); border-radius: 6px;
+  font-size: 0.9rem; background: var(--clr-bg); color: var(--clr-text);
+  min-width: 90px;
+}
+.cmp-field input:focus, .cmp-field select:focus { outline: 2px solid var(--clr-primary-mid); border-color: transparent; }
+.cmp-vs          { padding-bottom: 0.45rem; font-weight: 700; color: var(--clr-text-subtle); font-size: 1rem; }
+.cmp-btn         {
+  padding: 0.5rem 1.4rem; background: var(--clr-primary); color: #fff;
+  border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem;
+  font-weight: 600; white-space: nowrap; align-self: flex-end;
+  transition: background 0.15s;
+}
+.cmp-btn:hover   { background: var(--clr-primary-dark); }
+.cmp-btn:disabled{ background: var(--clr-border-mid); cursor: not-allowed; }
+
+/* ── Ticker header badges ─────────────────────────────────────────────────── */
+.cmp-ticker-badges { display: flex; gap: 0.6rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
+.cmp-badge      {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.3rem 0.75rem; border-radius: 20px; font-size: 0.82rem; font-weight: 600;
+}
+.cmp-badge-a    { background: #e8f0fe; color: #1a56c4; border: 1px solid #c0d4f7; }
+.cmp-badge-b    { background: #fef3e2; color: #b45309; border: 1px solid #fcd38b; }
+.cmp-badge-price{ font-size: 0.78rem; font-weight: 400; opacity: 0.75; }
+
+/* ── Chart panels ────────────────────────────────────────────────────────── */
+.cmp-chart-panel {
+  background: var(--clr-surface); border: 1px solid var(--clr-border);
+  border-radius: 8px; padding: 1rem 1.2rem; margin-bottom: 1.1rem;
+}
+.cmp-chart-panel h3 {
+  margin: 0 0 0.8rem; font-size: 0.95rem; font-weight: 600;
+  color: var(--clr-text-dark); display: flex; align-items: center; gap: 0.5rem;
+}
+.cmp-chart-panel h3 .hint { font-size: 0.78rem; font-weight: 400; color: var(--clr-text-subtle); }
+#cmp-price-chart  { height: 300px; }
+#cmp-metrics-plot { height: 320px; }
+#cmp-regime-plot  { height: 200px; }
+
+/* ── Metrics comparison grid ─────────────────────────────────────────────── */
+.cmp-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.1rem; }
+@media (max-width: 700px) { .cmp-grid-2 { grid-template-columns: 1fr; } }
+
+/* ── Metric rows table ────────────────────────────────────────────────────── */
+.cmp-metric-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+.cmp-metric-table th {
+  text-align: left; font-size: 0.75rem; text-transform: uppercase;
+  letter-spacing: 0.04em; color: var(--clr-text-subtle);
+  padding: 0.35rem 0.6rem; border-bottom: 2px solid var(--clr-border);
+}
+.cmp-metric-table td { padding: 0.4rem 0.6rem; border-bottom: 1px solid var(--clr-border-light); vertical-align: middle; }
+.cmp-metric-table tr:last-child td { border-bottom: none; }
+.cmp-metric-table tr:hover td { background: var(--clr-surface-alt); }
+.cmp-val-a { color: #1a56c4; font-weight: 600; font-variant-numeric: tabular-nums; }
+.cmp-val-b { color: #b45309; font-weight: 600; font-variant-numeric: tabular-nums; }
+.cmp-val-na{ color: var(--clr-text-subtle); font-style: italic; }
+
+/* ── Correlation badge ────────────────────────────────────────────────────── */
+.cmp-corr-row  { display: flex; gap: 1.2rem; align-items: center; flex-wrap: wrap; margin-bottom: 1.1rem; }
+.cmp-corr-card {
+  background: var(--clr-surface); border: 1px solid var(--clr-border);
+  border-radius: 8px; padding: 0.8rem 1.2rem; display: flex; flex-direction: column; gap: 0.2rem;
+}
+.cmp-corr-label{ font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--clr-text-subtle); }
+.cmp-corr-val  { font-size: 1.5rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.cmp-corr-note { font-size: 0.78rem; color: var(--clr-text-muted); }
+
+/* ── Earnings / info chips ────────────────────────────────────────────────── */
+.cmp-chip      {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  padding: 0.25rem 0.65rem; border-radius: 12px; font-size: 0.78rem; font-weight: 600;
+}
+.cmp-chip-warn { background: #fff7e0; color: #92600a; border: 1px solid #fcd38b; }
+.cmp-chip-ok   { background: var(--clr-pass-bg); color: var(--clr-pass-dark); border: 1px solid var(--clr-pass-lighter); }
+.cmp-chip-info { background: var(--clr-primary-faint); color: var(--clr-primary-text); border: 1px solid var(--clr-primary-border); }
+
+/* ── Monitor source filter ────────────────────────────────────────────────── */
+.mon-source-checks { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 0.25rem; }
+.mon-src-label     { display: flex; align-items: center; gap: 0.4rem; cursor: pointer;
+                     font-size: 0.86rem; color: var(--clr-text); }
+.mon-src-label input[type=checkbox] { cursor: pointer; }
+.mon-src-tag       { display: inline-block; font-size: 0.68rem; font-weight: 700;
+                     padding: 0.1rem 0.4rem; border-radius: 4px; letter-spacing: 0.04em; }
+.mon-src-live      { background: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; }
+.mon-src-paper     { background: #e8f0fe; color: #1a56c4; border: 1px solid #c0d4f7; }
+
+/* ── Monitor tab ─────────────────────────────────────────────────────────── */
+.mon-inputs  {
+  background: var(--clr-surface); border: 1px solid var(--clr-border);
+  border-radius: 8px; padding: 1rem 1.2rem; margin-bottom: 1.2rem;
+  display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;
+}
+.mon-inputs select { min-width: 280px; }
+
+.mon-grid    { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.1rem; }
+@media (max-width: 800px) { .mon-grid { grid-template-columns: 1fr; } }
+
+/* ── Position detail card ────────────────────────────────────────────────── */
+.mon-pos-card {
+  background: var(--clr-surface); border: 1px solid var(--clr-border);
+  border-radius: 8px; padding: 1rem 1.2rem;
+}
+.mon-pos-card h3 { margin: 0 0 0.8rem; font-size: 0.95rem; font-weight: 600; color: var(--clr-text-dark); }
+.mon-stat-grid{ display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.6rem; }
+.mon-stat    {
+  background: var(--clr-surface-alt); border: 1px solid var(--clr-border);
+  border-radius: 6px; padding: 0.5rem 0.7rem;
+}
+.mon-stat-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--clr-text-subtle); }
+.mon-stat-val   { font-size: 1.05rem; font-weight: 700; color: var(--clr-text-dark); font-variant-numeric: tabular-nums; margin-top: 0.1rem; }
+.mon-stat-val.pos { color: var(--clr-pass-dark); }
+.mon-stat-val.neg { color: var(--clr-danger-dark); }
+
+/* ── Regime alert ────────────────────────────────────────────────────────── */
+.mon-regime-alert {
+  border-radius: 8px; padding: 0.75rem 1rem;
+  display: flex; align-items: center; gap: 0.6rem;
+  font-size: 0.86rem; margin-bottom: 1.1rem;
+}
+.mon-regime-alert.bull  { background: #e8f5e9; border: 1px solid var(--clr-pass-lighter); color: #1b5e20; }
+.mon-regime-alert.bear  { background: #fde8e8; border: 1px solid #f9b3b3; color: #b71c1c; }
+.mon-regime-alert.neutral{ background: var(--clr-primary-faint); border: 1px solid var(--clr-primary-border); color: var(--clr-primary-text); }
+.mon-regime-icon{ font-size: 1.2rem; }
+
+/* ── Hedge suggestion cards ────────────────────────────────────────────────── */
+.hedge-list  { display: flex; flex-direction: column; gap: 0.6rem; margin-top: 0.2rem; }
+.hedge-card  {
+  background: var(--clr-surface-alt); border: 1px solid var(--clr-border);
+  border-radius: 8px; padding: 0.75rem 1rem; display: flex; gap: 0.7rem; align-items: flex-start;
+}
+.hedge-icon  { font-size: 1.2rem; min-width: 1.4rem; margin-top: 0.05rem; }
+.hedge-action{ font-size: 0.9rem; font-weight: 700; color: var(--clr-text-dark); margin-bottom: 0.2rem; }
+.hedge-why   { font-size: 0.82rem; color: var(--clr-text-muted); line-height: 1.4; }
+.hedge-card.hedge  { border-left: 3px solid var(--clr-primary-mid); }
+.hedge-card.hedge .hedge-icon { color: var(--clr-primary-mid); }
+.hedge-card.warning{ border-left: 3px solid var(--clr-warn); }
+.hedge-card.warning .hedge-icon{ color: var(--clr-warn); }
+.hedge-card.profit { border-left: 3px solid var(--clr-pass-dark); }
+.hedge-card.profit .hedge-icon { color: var(--clr-pass-dark); }
+.hedge-card.roll   { border-left: 3px solid #7c3aed; }
+.hedge-card.roll .hedge-icon   { color: #7c3aed; }
+.hedge-card.exit   { border-left: 3px solid var(--clr-danger-dark); }
+.hedge-card.exit .hedge-icon   { color: var(--clr-danger-dark); }
+.hedge-card.info   { border-left: 3px solid var(--clr-border-mid); }
+
+/* ── Chart containers (Monitor) ──────────────────────────────────────────── */
+#mon-price-chart   { height: 260px; }
+#mon-pnl-chart     { height: 200px; }
+
+
+/* ── Status / loading ─────────────────────────────────────────────────────── */
+.cmp-status  { font-size: 0.84rem; color: var(--clr-text-muted); min-height: 1.2em; margin-bottom: 0.5rem; }
+.cmp-loading { opacity: 0.5; pointer-events: none; }
+.cmp-empty   { padding: 2rem; text-align: center; color: var(--clr-text-subtle); font-size: 0.9rem; }

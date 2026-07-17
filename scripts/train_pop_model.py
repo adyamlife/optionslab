@@ -17,17 +17,24 @@ result.
 Run standalone: python -m scripts.train_pop_model
 Output: data/models/pop_classifier.joblib
 """
+import argparse
 import logging
 import sys
 from pathlib import Path
+
+import hashlib
+import json
+import subprocess
+from datetime import datetime, timezone
 
 import joblib
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.impute import SimpleImputer
 from sklearn.metrics import accuracy_score, brier_score_loss, classification_report, confusion_matrix, roc_auc_score
-from sklearn.preprocessing import LabelEncoder
-from sklearn.utils.class_weight import compute_sample_weight
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import OrdinalEncoder
 from xgboost import XGBClassifier
 
 from scripts.training_data_collector import _load_all, load_chain_index, enrich_candidate_greeks
@@ -85,8 +92,14 @@ CANDIDATE_CATEGORICAL_COLS = ["structure", "is_credit"]
 MIN_LABELED_ROWS = 100  # below this, a train/test split is statistically meaningless
 
 
-def load_labeled_dataframe() -> pd.DataFrame:
+def load_labeled_dataframe(extra_data_path: Path | None = None) -> pd.DataFrame:
     records = _load_all()
+    if extra_data_path and Path(extra_data_path).exists():
+        import json
+        with open(extra_data_path) as f:
+            extra = [json.loads(line) for line in f if line.strip()]
+        log.info("[POP] Loaded %d extra records from %s", len(extra), extra_data_path)
+        records = list(records) + extra
     chain_index = load_chain_index()   # {ticker: {date: {(strike,opt_type): greeks}}}
     enriched_count = 0
     rows = []
@@ -109,6 +122,7 @@ def load_labeled_dataframe() -> pd.DataFrame:
         if chain_iv is not None:
             row["atm_iv"] = chain_iv
         row["collected_at"] = r.get("collected_at")
+        row["source"]       = r.get("source", "live")
         row["win"] = bool(outcome["win"])
         rows.append(row)
     df = pd.DataFrame(rows)
@@ -126,7 +140,7 @@ def time_based_split(df: pd.DataFrame, test_fraction=0.2):
     Returns 3 values for compatibility with calibrate_models / model_audit callers.
     """
     df = df.copy()
-    df["collected_at"] = pd.to_datetime(df["collected_at"])
+    df["collected_at"] = pd.to_datetime(df["collected_at"], format="mixed", utc=True)
     df = df.sort_values("collected_at")
     cutoff_idx = int(len(df) * (1 - test_fraction))
     train = df.iloc[:cutoff_idx]
@@ -135,12 +149,12 @@ def time_based_split(df: pd.DataFrame, test_fraction=0.2):
     return train, test, cutoff_val
 
 
-def _three_way_time_split(df: pd.DataFrame, val_fraction=0.15, test_fraction=0.15):
+def _three_way_time_split(df: pd.DataFrame, val_fraction=0.10, test_fraction=0.10):
     """Row-count three-way chronological split: train / val / test.
     val is used to fit the probability calibrator; test is the uncontaminated holdout.
     """
     df = df.copy()
-    df["collected_at"] = pd.to_datetime(df["collected_at"])
+    df["collected_at"] = pd.to_datetime(df["collected_at"], format="mixed", utc=True)
     df = df.sort_values("collected_at")
     n = len(df)
     val_idx  = int(n * (1 - val_fraction - test_fraction))
@@ -162,25 +176,37 @@ def build_feature_matrix(df: pd.DataFrame, encoders: dict = None, fit: bool = Fa
                 if col in df.columns
                 else pd.Series(["unknown"] * len(df), index=df.index))
         if fit:
-            enc = LabelEncoder()
-            all_classes = sorted(set(vals.tolist()) | {"unknown"})
-            enc.fit(all_classes)
-            X[col] = enc.transform(vals)
+            categories = sorted(set(vals.tolist()) | {"unknown"})
+            enc = OrdinalEncoder(
+                categories=[categories],
+                handle_unknown="use_encoded_value",
+                unknown_value=-1,
+            )
+            enc.fit(vals.values.reshape(-1, 1))
             encoders[col] = enc
+        enc = encoders.get(col)
+        if enc is None:
+            X[col] = -1
         else:
-            enc = encoders.get(col)
-            if enc is None:
-                X[col] = 0
-            else:
-                known = set(enc.classes_)
-                safe_vals = vals.map(lambda v: v if v in known else "unknown")
-                X[col] = enc.transform(safe_vals)
+            X[col] = enc.transform(vals.values.reshape(-1, 1)).ravel()
 
     return X, encoders
 
 
-def train(out_path=_MODEL_PATH) -> dict:
-    df = load_labeled_dataframe()
+def train(out_path=_MODEL_PATH, extra_data_path=None, exclude_before: str = None,
+          etrade_only: bool = False) -> dict:
+    df = load_labeled_dataframe(extra_data_path=extra_data_path)
+    if etrade_only:
+        before = len(df)
+        if "source" in df.columns:
+            df = df[df["source"] == "etrade_history"]
+        log.info("[POP] etrade-only: kept %d / %d rows", len(df), before)
+    if exclude_before:
+        cutoff = pd.to_datetime(exclude_before, utc=True)
+        before = len(df)
+        df["_cat"] = pd.to_datetime(df["collected_at"], format="mixed", utc=True)
+        df = df[df["_cat"] >= cutoff].drop(columns=["_cat"])
+        log.info("[POP] Excluded %d rows collected before %s", before - len(df), exclude_before)
     if len(df) < MIN_LABELED_ROWS:
         return {
             "ok": False,
@@ -204,36 +230,58 @@ def train(out_path=_MODEL_PATH) -> dict:
     y_val   = val_df["win"].astype(int).values
     y_test  = test_df["win"].astype(int).values
 
+    n_neg = int((y_train == 0).sum())
+    n_pos = int((y_train == 1).sum())
+    spw   = n_neg / n_pos if n_pos > 0 else 1.0
+
     model = XGBClassifier(
-        n_estimators=200, max_depth=4, learning_rate=0.05,
+        n_estimators=300, max_depth=4, learning_rate=0.05,
         subsample=0.8, colsample_bytree=0.8,
+        scale_pos_weight=spw,
         objective="binary:logistic", eval_metric="logloss",
+        early_stopping_rounds=20,
         random_state=42, n_jobs=-1,
     )
-    sample_weight = compute_sample_weight(class_weight="balanced", y=y_train)
-    model.fit(X_train, y_train, sample_weight=sample_weight)
+    model.fit(X_train, y_train,
+              eval_set=[(X_val, y_val)],
+              verbose=False)
 
     y_pred = model.predict(X_test)
     y_prob = model.predict_proba(X_test)[:, 1]
     acc    = float(accuracy_score(y_test, y_pred))
     auc    = float(roc_auc_score(y_test, y_prob)) if len(set(y_test)) > 1 else None
-    report = classification_report(y_test, y_pred, target_names=["Loss", "Win"], output_dict=True)
+    report = classification_report(y_test, y_pred, target_names=["Loss", "Win"],
+                                   output_dict=True, zero_division=0)
     cm     = confusion_matrix(y_test, y_pred).tolist()
 
     # Feature importances keyed by actual column name — immune to ordering drift
     feature_importances = dict(zip(X_train.columns.tolist(), model.feature_importances_.tolist()))
 
+    all_feat_cols = NUMERIC_COLS + CANDIDATE_NUMERIC_COLS + CATEGORICAL_COLS + CANDIDATE_CATEGORICAL_COLS
+    feat_hash = hashlib.md5(json.dumps(sorted(all_feat_cols)).encode()).hexdigest()[:8]
+    try:
+        git_sha = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"],
+                                          cwd=str(_ROOT), stderr=subprocess.DEVNULL).decode().strip()
+    except Exception:
+        git_sha = "unknown"
+
     out_path.parent.mkdir(parents=True, exist_ok=True)
     artifact = {
-        "model":            model,
-        "feature_encoders": encoders,
-        "numeric_cols":     NUMERIC_COLS + CANDIDATE_NUMERIC_COLS,
-        "categorical_cols": CATEGORICAL_COLS + CANDIDATE_CATEGORICAL_COLS,
-        "trained_on_rows":  len(train_df),
-        "val_rows":         len(val_df),
-        "test_rows":        len(test_df),
-        "accuracy":         round(acc, 4),
-        "auc":              round(auc, 4) if auc is not None else None,
+        "model":              model,
+        "feature_encoders":   encoders,
+        "numeric_cols":       NUMERIC_COLS + CANDIDATE_NUMERIC_COLS,
+        "categorical_cols":   CATEGORICAL_COLS + CANDIDATE_CATEGORICAL_COLS,
+        "feature_schema_hash": feat_hash,
+        "trained_on_rows":    len(train_df),
+        "val_rows":           len(val_df),
+        "test_rows":          len(test_df),
+        "total_labeled_rows": len(df),
+        "class_balance":      {"win": int(n_pos), "loss": int(n_neg)},
+        "accuracy":           round(acc, 4),
+        "auc":                round(auc, 4) if auc is not None else None,
+        "trained_at":         datetime.now(timezone.utc).isoformat(),
+        "git_sha":            git_sha,
+        "best_iteration":     model.best_iteration,
     }
     joblib.dump(artifact, out_path)
 
@@ -256,10 +304,13 @@ def train(out_path=_MODEL_PATH) -> dict:
     # ── Random Forest comparison (stronger model, not a naive baseline) ───────
     rf_comparison = None
     try:
-        rf = RandomForestClassifier(
-            n_estimators=200, max_depth=None, min_samples_leaf=5,
-            class_weight="balanced", n_jobs=-1, random_state=42,
-        )
+        rf = Pipeline([
+            ("imputer", SimpleImputer(strategy="mean")),
+            ("clf", RandomForestClassifier(
+                n_estimators=200, max_depth=None, min_samples_leaf=5,
+                class_weight="balanced", n_jobs=-1, random_state=42,
+            )),
+        ])
         rf.fit(X_train, y_train)
         rf_pred  = rf.predict(X_test)
         rf_prob  = rf.predict_proba(X_test)[:, 1]
@@ -287,17 +338,28 @@ def train(out_path=_MODEL_PATH) -> dict:
         "model_path":   str(out_path),
         "brier_before": round(brier_before, 4) if brier_before is not None else None,
         "brier_after":  round(brier_after, 4)  if brier_after  is not None else None,
-        "rf_comparison": rf_comparison,
+        "rf_comparison":    rf_comparison,
+        "best_iteration":   model.best_iteration,
     }
 
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    result = train()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--extra-data", type=Path, default=None,
+                        help="Path to a JSONL file of extra labeled snapshots (e.g. etrade_labeled_trades.jsonl)")
+    parser.add_argument("--exclude-before", type=str, default=None,
+                        help="Exclude rows collected before this date (YYYY-MM-DD).")
+    parser.add_argument("--etrade-only", action="store_true", default=False,
+                        help="Train only on E*TRADE history rows (source=etrade_history), "
+                             "ignoring live DuckDB paper trades.")
+    args = parser.parse_args()
+    result = train(extra_data_path=args.extra_data, exclude_before=args.exclude_before,
+                   etrade_only=args.etrade_only)
     if not result.get("ok"):
         print("NOT READY:", result.get("error"))
         sys.exit(0)
-    print(f"Train rows: {result['train_rows']} | Val rows: {result['val_rows']} | Test rows: {result['test_rows']}")
+    print(f"Train rows: {result['train_rows']} | Val rows: {result['val_rows']} | Test rows: {result['test_rows']} | Best iteration: {result.get('best_iteration', '?')}")
     rf = result.get("rf_comparison") or {}
     print(f"\n{'Metric':<26} {'XGBoost':>10} {'RandomForest':>14}")
     print("-" * 52)

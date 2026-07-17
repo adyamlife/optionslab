@@ -1,0 +1,886 @@
+{% extends "base.html" %}
+{% set page = "compare" %}
+{% block title %}Ticker Compare — Options Strategy Lab{% endblock %}
+
+{% block head %}
+  <link rel="stylesheet" href="/static/css/compare.css?v={{ asset_v }}">
+  <!-- TradingView Lightweight Charts v3 (v4+ removed addLineSeries) -->
+  <script src="https://unpkg.com/lightweight-charts@3.8.0/dist/lightweight-charts.standalone.production.js"></script>
+  <!-- Plotly -->
+  <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+{% endblock %}
+
+{% block body %}
+<main class="cmp-wrap">
+
+  <div class="cmp-header">
+    <div>
+      <h2>Ticker Compare &amp; Monitor</h2>
+      <p>Compare two tickers pre-trade, or monitor an open position for hedge &amp; roll opportunities.</p>
+    </div>
+  </div>
+
+  <!-- Tab nav -->
+  <div class="cmp-tab-nav">
+    <button class="cmp-tab-btn active" data-tab="compare">Compare (Pre-Trade)</button>
+    <button class="cmp-tab-btn" data-tab="monitor">Monitor Position</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       TAB 1 — COMPARE
+  ══════════════════════════════════════════════════════════════════ -->
+  <div class="cmp-tab-panel active" data-tab="compare">
+
+    <!-- Inputs -->
+    <div class="cmp-inputs">
+      <div class="cmp-field">
+        <label>Ticker A</label>
+        <div class="ac-wrap">
+          <input id="cmp-ticker-a" class="ac-input" type="text" placeholder="e.g. NVDA" maxlength="10" autocomplete="off" style="text-transform:uppercase">
+          <ul class="ac-list" id="ac-list-a"></ul>
+        </div>
+      </div>
+      <div class="cmp-vs" id="cmp-vs-label">vs</div>
+      <div class="cmp-field">
+        <label>Ticker B <span style="font-weight:400;opacity:0.6">(optional)</span></label>
+        <div class="ac-wrap">
+          <input id="cmp-ticker-b" class="ac-input" type="text" placeholder="e.g. SPY" maxlength="10" autocomplete="off" style="text-transform:uppercase">
+          <ul class="ac-list" id="ac-list-b"></ul>
+        </div>
+      </div>
+      <div class="cmp-field">
+        <label>Period</label>
+        <select id="cmp-period">
+          <option value="1mo">1 Month</option>
+          <option value="3mo" selected>3 Months</option>
+          <option value="6mo">6 Months</option>
+          <option value="1y">1 Year</option>
+        </select>
+      </div>
+      <button id="cmp-fetch-btn" class="cmp-btn">Compare</button>
+    </div>
+
+    <div id="cmp-status" class="cmp-status"></div>
+
+    <!-- Hidden until data loaded -->
+    <div id="cmp-results" style="display:none">
+
+      <!-- Ticker badges -->
+      <div class="cmp-ticker-badges">
+        <span class="cmp-badge cmp-badge-a" id="cmp-badge-a">—</span>
+        <span class="cmp-badge cmp-badge-b" id="cmp-badge-b">—</span>
+      </div>
+
+      <!-- Price chart -->
+      <div class="cmp-chart-panel">
+        <h3>Normalised Price <span class="hint">(both rebased to 100 at start of period)</span></h3>
+        <div id="cmp-price-chart"></div>
+        <div style="display:flex; gap:1.2rem; margin-top:0.5rem; font-size:0.78rem;">
+          <span style="display:flex;align-items:center;gap:0.3rem"><span style="width:18px;height:3px;background:#1a56c4;display:inline-block;border-radius:2px"></span> <span id="cmp-legend-a">—</span></span>
+          <span style="display:flex;align-items:center;gap:0.3rem"><span style="width:18px;height:3px;background:#e97c00;display:inline-block;border-radius:2px"></span> <span id="cmp-legend-b">—</span></span>
+        </div>
+      </div>
+
+      <!-- Correlation row -->
+      <div class="cmp-corr-row" id="cmp-corr-row"></div>
+
+      <!-- Metrics chart -->
+      <div class="cmp-chart-panel">
+        <h3>Key Metrics Comparison</h3>
+        <div id="cmp-metrics-plot"></div>
+      </div>
+
+      <!-- ML / regime chart -->
+      <div class="cmp-chart-panel">
+        <h3>ML Regime Probabilities</h3>
+        <div id="cmp-regime-plot"></div>
+      </div>
+
+      <!-- Detailed metrics table -->
+      <div class="cmp-grid-2">
+        <div class="cmp-chart-panel" style="margin-bottom:0">
+          <h3>All Metrics</h3>
+          <table class="cmp-metric-table" id="cmp-metrics-table">
+            <thead><tr>
+              <th>Metric</th>
+              <th id="cmp-th-a">A</th>
+              <th id="cmp-th-b">B</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="cmp-chart-panel" style="margin-bottom:0">
+          <h3>ML Model Outputs</h3>
+          <table class="cmp-metric-table" id="cmp-ml-table">
+            <thead><tr>
+              <th>Signal</th>
+              <th id="cmp-ml-th-a">A</th>
+              <th id="cmp-ml-th-b">B</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /cmp-results -->
+  </div><!-- /compare tab -->
+
+
+  <!-- ══════════════════════════════════════════════════════════════
+       TAB 2 — MONITOR POSITION
+  ══════════════════════════════════════════════════════════════════ -->
+  <div class="cmp-tab-panel" data-tab="monitor">
+
+    <!-- Position selector -->
+    <div class="mon-inputs">
+      <div class="cmp-field">
+        <label>Show trades from</label>
+        <div class="mon-source-checks">
+          <label class="mon-src-label"><input type="checkbox" id="mon-src-live" checked> <span class="mon-src-tag mon-src-live">LIVE</span> Live Positions</label>
+          <label class="mon-src-label"><input type="checkbox" id="mon-src-paper" checked> <span class="mon-src-tag mon-src-paper">PAPER</span> Paper Trades</label>
+        </div>
+      </div>
+      <div class="cmp-field">
+        <label>Open Position</label>
+        <select id="mon-trade-select" style="min-width:320px">
+          <option value="">— Select an open trade —</option>
+        </select>
+      </div>
+      <div class="cmp-field">
+        <label>Compare vs</label>
+        <select id="mon-index-select">
+          <option value="SPY">SPY (S&amp;P 500)</option>
+          <option value="QQQ">QQQ (Nasdaq)</option>
+          <option value="IWM">IWM (Russell 2000)</option>
+        </select>
+      </div>
+      <button id="mon-load-btn" class="cmp-btn">Load</button>
+    </div>
+
+    <div id="mon-status" class="cmp-status"></div>
+
+    <div id="mon-results" style="display:none">
+
+      <!-- Regime alert -->
+      <div id="mon-regime-alert" class="mon-regime-alert neutral">
+        <span class="mon-regime-icon" id="mon-regime-icon">◉</span>
+        <span id="mon-regime-text">—</span>
+      </div>
+
+      <div class="mon-grid">
+
+        <!-- Position detail -->
+        <div class="mon-pos-card">
+          <h3 id="mon-pos-title">Position</h3>
+          <div class="mon-stat-grid" id="mon-stat-grid"></div>
+        </div>
+
+        <!-- Hedge suggestions -->
+        <div class="mon-pos-card">
+          <h3>Complementary Structures</h3>
+          <div class="hedge-list" id="mon-hedge-list">
+            <div class="cmp-empty">Load a position to see suggestions.</div>
+          </div>
+        </div>
+
+      </div><!-- /mon-grid -->
+
+      <!-- Price chart vs index since entry -->
+      <div class="cmp-chart-panel">
+        <h3>Price Since Entry <span class="hint">(normalised to 100 at entry date)</span></h3>
+        <div id="mon-price-chart"></div>
+        <div style="display:flex; gap:1.2rem; margin-top:0.5rem; font-size:0.78rem;">
+          <span style="display:flex;align-items:center;gap:0.3rem"><span style="width:18px;height:3px;background:#1a56c4;display:inline-block;border-radius:2px"></span> <span id="mon-legend-ticker">Ticker</span></span>
+          <span style="display:flex;align-items:center;gap:0.3rem"><span style="width:18px;height:3px;background:#e97c00;display:inline-block;border-radius:2px"></span> <span id="mon-legend-index">SPY</span></span>
+        </div>
+      </div>
+
+      <!-- IV & metrics since entry -->
+      <div class="cmp-chart-panel">
+        <h3>Current Ticker Metrics</h3>
+        <div id="mon-metrics-plot" style="height:240px"></div>
+      </div>
+
+    </div><!-- /mon-results -->
+  </div><!-- /monitor tab -->
+
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+// Metric help — delegates to MetricHelp global (metric-help.js loaded in base)
+// ─────────────────────────────────────────────────────────────────────────────
+const METRIC_HELP = MetricHelp.METRIC_HELP;
+const ML_HELP     = MetricHelp.ML_HELP;
+function _helpBtn(key, map) { return MetricHelp.btn(key, map); }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Helpers
+// ─────────────────────────────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const fmt = (v, suffix='', decimals=1) =>
+  v == null ? '<span class="cmp-val-na">—</span>'
+            : `<span>${(+v).toFixed(decimals)}${suffix}</span>`;
+const fmtColA = (v, suffix='', decimals=1) =>
+  v == null ? '<span class="cmp-val-na">—</span>'
+            : `<span class="cmp-val-a">${(+v).toFixed(decimals)}${suffix}</span>`;
+const fmtColB = (v, suffix='', decimals=1) =>
+  v == null ? '<span class="cmp-val-na">—</span>'
+            : `<span class="cmp-val-b">${(+v).toFixed(decimals)}${suffix}</span>`;
+
+function normalize(series) {
+  if (!series || !series.length) return [];
+  const base = series[0].value;
+  if (!base) return series;
+  return series.map(p => ({ time: p.time, value: +(p.value / base * 100).toFixed(4) }));
+}
+
+function pearsonCorr(a, b) {
+  // align by time
+  const mapA = Object.fromEntries(a.map(p => [p.time, p.value]));
+  const mapB = Object.fromEntries(b.map(p => [p.time, p.value]));
+  const keys = Object.keys(mapA).filter(k => mapB[k] != null);
+  if (keys.length < 5) return null;
+  const va = keys.map(k => mapA[k]);
+  const vb = keys.map(k => mapB[k]);
+  const ma = va.reduce((s,x) => s+x,0)/va.length;
+  const mb = vb.reduce((s,x) => s+x,0)/vb.length;
+  const num = keys.reduce((s,_,i) => s + (va[i]-ma)*(vb[i]-mb), 0);
+  const da  = Math.sqrt(va.reduce((s,x) => s+(x-ma)**2, 0));
+  const db  = Math.sqrt(vb.reduce((s,x) => s+(x-mb)**2, 0));
+  return da && db ? +(num/(da*db)).toFixed(3) : null;
+}
+
+function corrLabel(c) {
+  if (c == null) return '';
+  const a = Math.abs(c);
+  if (a >= 0.8) return c > 0 ? 'Strong positive' : 'Strong negative';
+  if (a >= 0.5) return c > 0 ? 'Moderate positive' : 'Moderate negative';
+  if (a >= 0.2) return c > 0 ? 'Weak positive' : 'Weak negative';
+  return 'Near-zero';
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Tab switching
+// ─────────────────────────────────────────────────────────────────────────────
+document.querySelectorAll('.cmp-tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.cmp-tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.cmp-tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelector(`.cmp-tab-panel[data-tab="${btn.dataset.tab}"]`).classList.add('active');
+    if (btn.dataset.tab === 'monitor') loadOpenTrades();
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TradingView chart state
+// ─────────────────────────────────────────────────────────────────────────────
+let _cmpChart = null, _cmpSerA = null, _cmpSerB = null;
+let _monChart = null, _monSerA = null, _monSerB = null;
+
+function initCompareChart() {
+  const el = $('cmp-price-chart');
+  el.innerHTML = '';
+  _cmpChart = LightweightCharts.createChart(el, {
+    width: el.clientWidth, height: 300,
+    layout: { background: { color: 'transparent' }, textColor: '#555' },
+    grid: { vertLines: { color: '#e8e8e8' }, horzLines: { color: '#e8e8e8' } },
+    crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+    rightPriceScale: { borderColor: '#ddd' },
+    timeScale: { borderColor: '#ddd', timeVisible: false },
+  });
+  _cmpSerA = _cmpChart.addLineSeries({ color: '#1a56c4', lineWidth: 2, priceLineVisible: false });
+  _cmpSerB = _cmpChart.addLineSeries({ color: '#e97c00', lineWidth: 2, priceLineVisible: false });
+}
+
+function initMonitorChart() {
+  const el = $('mon-price-chart');
+  el.innerHTML = '';
+  _monChart = LightweightCharts.createChart(el, {
+    width: el.clientWidth, height: 260,
+    layout: { background: { color: 'transparent' }, textColor: '#555' },
+    grid: { vertLines: { color: '#e8e8e8' }, horzLines: { color: '#e8e8e8' } },
+    crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+    rightPriceScale: { borderColor: '#ddd' },
+    timeScale: { borderColor: '#ddd', timeVisible: false },
+  });
+  _monSerA = _monChart.addLineSeries({ color: '#1a56c4', lineWidth: 2, priceLineVisible: false });
+  _monSerB = _monChart.addLineSeries({ color: '#e97c00', lineWidth: 2, priceLineVisible: false });
+}
+
+window.addEventListener('resize', () => {
+  if (_cmpChart) _cmpChart.applyOptions({ width: $('cmp-price-chart').clientWidth });
+  if (_monChart) _monChart.applyOptions({ width: $('mon-price-chart').clientWidth });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Compare tab — fetch + render
+// ─────────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// Ticker autocomplete
+// ─────────────────────────────────────────────────────────────────────────────
+const AC_TICKERS = {{ watchlist_tickers | tojson }};
+
+// Minimal name map for common tickers — filled lazily from API responses
+const _nameCache = {};
+
+function makeAutocomplete(inputId, listId) {
+  const inp  = $(inputId);
+  const list = $(listId);
+  let activeIdx = -1;
+
+  function showSuggestions(q) {
+    const uq = q.toUpperCase();
+    const matches = uq.length < 1 ? [] :
+      AC_TICKERS.filter(t => t.startsWith(uq)).slice(0, 8);
+    if (!matches.length) { list.classList.remove('open'); return; }
+    list.innerHTML = matches.map((t, i) => {
+      const name = _nameCache[t] ? `<span class="ac-name">${_nameCache[t]}</span>` : '';
+      return `<li data-ticker="${t}" class="${i === activeIdx ? 'ac-active' : ''}">
+                <span class="ac-ticker">${t}</span>${name}</li>`;
+    }).join('');
+    list.classList.add('open');
+    activeIdx = -1;
+  }
+
+  inp.addEventListener('input', e => {
+    inp.value = inp.value.toUpperCase();
+    showSuggestions(inp.value);
+  });
+
+  inp.addEventListener('keydown', e => {
+    const items = list.querySelectorAll('li');
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      activeIdx = Math.min(activeIdx + 1, items.length - 1);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      activeIdx = Math.max(activeIdx - 1, -1);
+    } else if (e.key === 'Enter') {
+      if (activeIdx >= 0 && items[activeIdx]) {
+        inp.value = items[activeIdx].dataset.ticker;
+        list.classList.remove('open');
+        activeIdx = -1;
+      } else {
+        list.classList.remove('open');
+        runCompare();
+      }
+      return;
+    } else if (e.key === 'Escape') {
+      list.classList.remove('open'); return;
+    } else { return; }
+    items.forEach((li, i) => li.classList.toggle('ac-active', i === activeIdx));
+  });
+
+  list.addEventListener('mousedown', e => {
+    const li = e.target.closest('li');
+    if (li) { inp.value = li.dataset.ticker; list.classList.remove('open'); }
+  });
+
+  document.addEventListener('click', e => {
+    if (!inp.contains(e.target) && !list.contains(e.target))
+      list.classList.remove('open');
+  });
+}
+
+makeAutocomplete('cmp-ticker-a', 'ac-list-a');
+makeAutocomplete('cmp-ticker-b', 'ac-list-b');
+
+// Cache company names as compare results come in
+function cacheNames(data) {
+  if (data && data.ticker && data.name) _nameCache[data.ticker] = data.name;
+}
+
+$('cmp-fetch-btn').addEventListener('click', runCompare);
+
+async function fetchTickerData(ticker, period) {
+  const r = await fetch(`/api/compare/ticker-data?ticker=${encodeURIComponent(ticker)}&period=${period}`);
+  return r.json();
+}
+
+async function runCompare() {
+  const ta = $('cmp-ticker-a').value.trim().toUpperCase();
+  const tb = $('cmp-ticker-b').value.trim().toUpperCase();
+  const period = $('cmp-period').value;
+  if (!ta) { $('cmp-status').textContent = 'Enter at least Ticker A.'; return; }
+
+  const single = !tb;
+  $('cmp-status').textContent = single ? `Fetching data for ${ta}…` : `Fetching data for ${ta} and ${tb}…`;
+  $('cmp-fetch-btn').disabled = true;
+  $('cmp-results').style.display = 'none';
+
+  try {
+    if (single) {
+      const dA = await fetchTickerData(ta, period);
+      cacheNames(dA);
+      if (!dA.ok) throw new Error(dA.error || `Failed for ${ta}`);
+      $('cmp-status').textContent = '';
+      $('cmp-results').style.display = '';
+      renderSingle(dA);
+    } else {
+      const [dA, dB] = await Promise.all([fetchTickerData(ta, period), fetchTickerData(tb, period)]);
+      cacheNames(dA); cacheNames(dB);
+      if (!dA.ok) throw new Error(dA.error || `Failed for ${ta}`);
+      if (!dB.ok) throw new Error(dB.error || `Failed for ${tb}`);
+      $('cmp-status').textContent = '';
+      $('cmp-results').style.display = '';
+      renderCompare(dA, dB);
+    }
+  } catch(e) {
+    $('cmp-status').textContent = `Error: ${e.message}`;
+  } finally {
+    $('cmp-fetch-btn').disabled = false;
+  }
+}
+
+function renderSingle(d) {
+  const ta = d.ticker;
+  const m  = d.metrics;
+
+  // Badges — show A only, hide B
+  $('cmp-badge-a').innerHTML = `${ta} <span class="cmp-badge-price">$${d.price.toFixed(2)}</span>`;
+  $('cmp-badge-b').style.display = 'none';
+  $('cmp-legend-a').textContent = `${ta} — ${d.name}`;
+  $('cmp-legend-b').style.display = 'none';
+
+  // Column headers: A = ticker name, hide B column
+  $('cmp-th-a').textContent = ta;   $('cmp-th-b').style.display = 'none';
+  $('cmp-ml-th-a').textContent = ta; $('cmp-ml-th-b').style.display = 'none';
+
+  // Price chart (single line)
+  initCompareChart();
+  const normA = normalize(d.price_series);
+  if (normA.length) _cmpSerA.setData(normA);
+  _cmpSerB.setData([]);
+  _cmpChart.timeScale().fitContent();
+
+  // Correlation row: show return + earnings only
+  const retA = normA.length > 1 ? (normA[normA.length-1].value - 100).toFixed(1) : null;
+  const earnChip = m.earn_days != null
+    ? `<span class="cmp-chip ${m.earn_days <= 7 ? 'cmp-chip-warn' : 'cmp-chip-ok'}">📅 Earnings in ${m.earn_days}d</span>`
+    : '';
+  $('cmp-corr-row').innerHTML = `
+    <div class="cmp-corr-card">
+      <div class="cmp-corr-label">Period Return</div>
+      <div class="cmp-corr-val" style="color:#1a56c4">${retA != null ? retA + '%' : '—'}</div>
+    </div>
+    ${earnChip ? `<div style="display:flex;align-items:center">${earnChip}</div>` : ''}
+  `;
+
+  // Metrics bar chart (single series)
+  const metricNames = ['IV Rank', 'HV20 %', 'ATM IV %', 'RSI', 'ADX'];
+  const metricVals  = [m.iv_rank, m.hv20, m.atm_iv, m.rsi, m.adx];
+  Plotly.newPlot('cmp-metrics-plot', [
+    { type: 'bar', name: ta, x: metricNames, y: metricVals, marker: { color: '#1a56c4' } },
+  ], {
+    margin: { t: 10, b: 40, l: 40, r: 10 },
+    paper_bgcolor: 'transparent', plot_bgcolor: 'transparent',
+    font: { size: 12, color: '#555' },
+    showlegend: false,
+    yaxis: { gridcolor: '#eee' },
+  }, { responsive: true, displayModeBar: false });
+
+  // Regime chart (single ticker)
+  const rp = m.regime_probs || {};
+  if (Object.keys(rp).length > 0) {
+    const regimes = ['Bull', 'Bear', 'Neutral'];
+    Plotly.newPlot('cmp-regime-plot', [
+      { type: 'bar', name: ta, x: regimes, y: regimes.map(r => +(rp[r] || 0).toFixed(3)),
+        marker: { color: ['#4caf50','#ef5350','#7c9fc9'] } },
+    ], {
+      margin: { t: 10, b: 40, l: 50, r: 10 },
+      paper_bgcolor: 'transparent', plot_bgcolor: 'transparent',
+      font: { size: 12, color: '#555' }, showlegend: false,
+      yaxis: { tickformat: '.0%', gridcolor: '#eee', range: [0, 1] },
+    }, { responsive: true, displayModeBar: false });
+  } else {
+    $('cmp-regime-plot').innerHTML = '<div class="cmp-empty">ML regime data not available — run morning scan to populate.</div>';
+  }
+
+  // Metrics table — single value column, hide B td
+  const rows = [
+    ['IV Rank', m.iv_rank, '%', 1],
+    ['HV20', m.hv20, '%', 1],
+    ['ATM IV', m.atm_iv, '%', 1],
+    ['IV Premium', m.iv_premium, 'pp', 1],
+    ['IV Skew', m.iv_skew, '%', 1],
+    ['IV Term', m.iv_term, '', 0, true],
+    ['RSI', m.rsi, '', 1],
+    ['ADX', m.adx, '', 1],
+    ['Beta vs SPY', m.beta, '', 2],
+    ['Rel. Volume', m.rel_vol, '×', 2],
+    ['Trend', m.trend, '', 0, true],
+    ['Trend W', m.weekly_trend, '', 0, true],
+    ['EMA200', m.ema200_pos, '', 0, true],
+    ['MACD', m.macd_trend, '', 0, true],
+    ['PCR', m.pcr, '', 2],
+    ['News', m.news_sentiment, '', 0, true],
+    ['Sector ETF', m.sector_etf ? `${m.sector_etf} ${m.sector_trend || ''}`.trim() : null, '', 0, true],
+    ['Earn. Days', m.earn_days, 'd', 0],
+    ['Ex-Div', m.ex_div, '', 0, true],
+  ];
+  $('cmp-metrics-table').querySelector('tbody').innerHTML = rows.map(([name, va, sfx, dec, isStr]) => `
+    <tr>
+      <td><span class="mh-label">${name}</span>${_helpBtn(name, METRIC_HELP)}</td>
+      <td>${isStr ? (va ? `<span class="cmp-val-a">${va}</span>` : '<span class="cmp-val-na">—</span>')
+                  : (va != null ? `<span class="cmp-val-a">${(+va).toFixed(dec)}${sfx}</span>` : '<span class="cmp-val-na">—</span>')}</td>
+      <td style="display:none"></td>
+    </tr>`).join('');
+
+  // ML table — single value column
+  const mlRows = [
+    ['Regime', m.regime, '', 0, true],
+    ['p(Win)', m.p_win, '%', 1],
+    ['Confidence', m.confidence, '%', 1],
+    ['Pred. Return', m.pred_return, '%', 2],
+    ['Pred. Vol', m.pred_vol, '%', 1],
+  ];
+  const mlAllNull = [m.regime, m.p_win, m.confidence, m.pred_return, m.pred_vol].every(v => v == null);
+  $('cmp-ml-table').querySelector('tbody').innerHTML =
+    (mlAllNull ? `<tr><td colspan="2" class="cmp-val-na" style="padding:0.6rem;font-style:italic;font-size:0.82rem">
+      ML outputs are populated during the morning scan. Run a scan or wait for the next scheduled run.</td></tr>` : '')
+    + mlRows.map(([name, va, sfx, dec, isStr]) => `
+    <tr>
+      <td><span class="mh-label">${name}</span>${_helpBtn(name, ML_HELP)}</td>
+      <td>${isStr ? (va ? `<span class="cmp-val-a">${va}</span>` : '<span class="cmp-val-na">—</span>')
+                  : (va != null ? `<span class="cmp-val-a">${(+va).toFixed(dec)}${sfx}</span>` : '<span class="cmp-val-na">—</span>')}</td>
+      <td style="display:none"></td>
+    </tr>`).join('');
+}
+
+function _resetSingleModeDOM() {
+  // Restore elements that renderSingle hides, so renderCompare works cleanly after
+  $('cmp-badge-b').style.display = '';
+  $('cmp-legend-b').style.display = '';
+  $('cmp-th-b').style.display = '';
+  $('cmp-ml-th-b').style.display = '';
+}
+
+function renderCompare(dA, dB) {
+  _resetSingleModeDOM();
+  const ta = dA.ticker, tb = dB.ticker;
+  const mA = dA.metrics, mB = dB.metrics;
+
+  // Badges
+  $('cmp-badge-a').innerHTML = `${ta} <span class="cmp-badge-price">$${dA.price.toFixed(2)}</span>`;
+  $('cmp-badge-b').innerHTML = `${tb} <span class="cmp-badge-price">$${dB.price.toFixed(2)}</span>`;
+  $('cmp-legend-a').textContent = `${ta} — ${dA.name}`;
+  $('cmp-legend-b').textContent = `${tb} — ${dB.name}`;
+  $('cmp-th-a').textContent = ta; $('cmp-th-b').textContent = tb;
+  $('cmp-ml-th-a').textContent = ta; $('cmp-ml-th-b').textContent = tb;
+
+  // Price chart
+  initCompareChart();
+  const normA = normalize(dA.price_series);
+  const normB = normalize(dB.price_series);
+  if (normA.length) _cmpSerA.setData(normA);
+  if (normB.length) _cmpSerB.setData(normB);
+  _cmpChart.timeScale().fitContent();
+
+  // Correlation
+  const corr = pearsonCorr(dA.price_series, dB.price_series);
+  const corrColor = corr == null ? '#888'
+    : corr > 0.6 ? '#1a7f37' : corr < -0.3 ? '#c0392b' : '#b7791f';
+
+  // Returns
+  const retA = normA.length > 1 ? (normA[normA.length-1].value - 100).toFixed(1) : null;
+  const retB = normB.length > 1 ? (normB[normB.length-1].value - 100).toFixed(1) : null;
+
+  // Earnings chips
+  const earnChipA = mA.earn_days != null
+    ? `<span class="cmp-chip ${mA.earn_days <= 7 ? 'cmp-chip-warn' : 'cmp-chip-ok'}">📅 ${ta} earnings in ${mA.earn_days}d</span>`
+    : '';
+  const earnChipB = mB.earn_days != null
+    ? `<span class="cmp-chip ${mB.earn_days <= 7 ? 'cmp-chip-warn' : 'cmp-chip-ok'}">📅 ${tb} earnings in ${mB.earn_days}d</span>`
+    : '';
+
+  $('cmp-corr-row').innerHTML = `
+    <div class="cmp-corr-card">
+      <div class="cmp-corr-label">Correlation (${$('cmp-period').value})</div>
+      <div class="cmp-corr-val" style="color:${corrColor}">${corr != null ? corr.toFixed(2) : '—'}</div>
+      <div class="cmp-corr-note">${corrLabel(corr)}</div>
+    </div>
+    <div class="cmp-corr-card">
+      <div class="cmp-corr-label">Period Return</div>
+      <div style="display:flex;gap:0.8rem;margin-top:0.1rem">
+        <div><span style="color:#1a56c4;font-weight:700;font-size:1.1rem">${retA != null ? retA + '%' : '—'}</span> <span style="font-size:0.78rem;color:#666">${ta}</span></div>
+        <div><span style="color:#e97c00;font-weight:700;font-size:1.1rem">${retB != null ? retB + '%' : '—'}</span> <span style="font-size:0.78rem;color:#666">${tb}</span></div>
+      </div>
+    </div>
+    ${earnChipA || earnChipB ? `<div style="display:flex;flex-direction:column;gap:0.4rem;justify-content:center">${earnChipA}${earnChipB}</div>` : ''}
+  `;
+
+  // Metrics bar chart (Plotly)
+  const metricNames  = ['IV Rank', 'HV20 %', 'ATM IV %', 'RSI', 'ADX'];
+  const metricKeysA  = [mA.iv_rank, mA.hv20, mA.atm_iv, mA.rsi, mA.adx];
+  const metricKeysB  = [mB.iv_rank, mB.hv20, mB.atm_iv, mB.rsi, mB.adx];
+
+  Plotly.newPlot('cmp-metrics-plot', [
+    { type: 'bar', name: ta, x: metricNames, y: metricKeysA, marker: { color: '#1a56c4' } },
+    { type: 'bar', name: tb, x: metricNames, y: metricKeysB, marker: { color: '#e97c00' } },
+  ], {
+    barmode: 'group', margin: { t: 10, b: 40, l: 40, r: 10 },
+    paper_bgcolor: 'transparent', plot_bgcolor: 'transparent',
+    font: { size: 12, color: '#555' },
+    legend: { orientation: 'h', x: 0.5, xanchor: 'center', y: 1.08 },
+    yaxis: { gridcolor: '#eee' },
+  }, { responsive: true, displayModeBar: false });
+
+  // Regime probability chart
+  const regimes = ['Bull', 'Bear', 'Neutral'];
+  const rpA = mA.regime_probs || {};
+  const rpB = mB.regime_probs || {};
+  const hasRegimeData = Object.keys(rpA).length > 0 || Object.keys(rpB).length > 0;
+
+  if (hasRegimeData) {
+    Plotly.newPlot('cmp-regime-plot', [
+      { type: 'bar', name: ta, x: regimes, y: regimes.map(r => +(rpA[r] || 0).toFixed(3)),
+        marker: { color: ['#4caf50','#ef5350','#7c9fc9'].map(c => c) } },
+      { type: 'bar', name: tb, x: regimes, y: regimes.map(r => +(rpB[r] || 0).toFixed(3)),
+        marker: { color: ['#4caf50','#ef5350','#7c9fc9'], opacity: 0.55 } },
+    ], {
+      barmode: 'group', margin: { t: 10, b: 40, l: 50, r: 10 },
+      paper_bgcolor: 'transparent', plot_bgcolor: 'transparent',
+      font: { size: 12, color: '#555' },
+      legend: { orientation: 'h', x: 0.5, xanchor: 'center', y: 1.08 },
+      yaxis: { tickformat: '.0%', gridcolor: '#eee', range: [0, 1] },
+    }, { responsive: true, displayModeBar: false });
+  } else {
+    $('cmp-regime-plot').innerHTML = '<div class="cmp-empty">ML regime data not available — run morning scan to populate.</div>';
+  }
+
+  // Metrics table
+  const rows = [
+    ['IV Rank', mA.iv_rank, mB.iv_rank, '%', 1],
+    ['HV20', mA.hv20, mB.hv20, '%', 1],
+    ['ATM IV', mA.atm_iv, mB.atm_iv, '%', 1],
+    ['IV Premium', mA.iv_premium, mB.iv_premium, 'pp', 1],
+    ['IV Skew', mA.iv_skew, mB.iv_skew, '%', 1],
+    ['IV Term', mA.iv_term, mB.iv_term, '', 0, true],
+    ['RSI', mA.rsi, mB.rsi, '', 1],
+    ['ADX', mA.adx, mB.adx, '', 1],
+    ['Beta vs SPY', mA.beta, mB.beta, '', 2],
+    ['Rel. Volume', mA.rel_vol, mB.rel_vol, '×', 2],
+    ['Trend', mA.trend, mB.trend, '', 0, true],
+    ['Trend W', mA.weekly_trend, mB.weekly_trend, '', 0, true],
+    ['EMA200', mA.ema200_pos, mB.ema200_pos, '', 0, true],
+    ['MACD', mA.macd_trend, mB.macd_trend, '', 0, true],
+    ['PCR', mA.pcr, mB.pcr, '', 2],
+    ['News', mA.news_sentiment, mB.news_sentiment, '', 0, true],
+    ['Sector ETF', mA.sector_etf ? `${mA.sector_etf} ${mA.sector_trend || ''}`.trim() : null,
+                   mB.sector_etf ? `${mB.sector_etf} ${mB.sector_trend || ''}`.trim() : null, '', 0, true],
+    ['Earn. Days', mA.earn_days, mB.earn_days, 'd', 0],
+    ['Ex-Div', mA.ex_div, mB.ex_div, '', 0, true],
+  ];
+
+  $('cmp-metrics-table').querySelector('tbody').innerHTML = rows.map(([name, va, vb, sfx, dec, isStr]) => `
+    <tr>
+      <td><span class="mh-label">${name}</span>${_helpBtn(name, METRIC_HELP)}</td>
+      <td>${isStr ? (va ? `<span class="cmp-val-a">${va}</span>` : '<span class="cmp-val-na">—</span>')
+                  : (va != null ? `<span class="cmp-val-a">${(+va).toFixed(dec)}${sfx}</span>` : '<span class="cmp-val-na">—</span>')}</td>
+      <td>${isStr ? (vb ? `<span class="cmp-val-b">${vb}</span>` : '<span class="cmp-val-na">—</span>')
+                  : (vb != null ? `<span class="cmp-val-b">${(+vb).toFixed(dec)}${sfx}</span>` : '<span class="cmp-val-na">—</span>')}</td>
+    </tr>`).join('');
+
+  // ML table
+  const mlRows = [
+    ['Regime', mA.regime, mB.regime, '', 0, true],
+    ['p(Win)', mA.p_win, mB.p_win, '%', 1],
+    ['Confidence', mA.confidence, mB.confidence, '%', 1],
+    ['Pred. Return', mA.pred_return, mB.pred_return, '%', 2],
+    ['Pred. Vol', mA.pred_vol, mB.pred_vol, '%', 1],
+  ];
+
+  const mlAllNull = [mA.regime, mA.p_win, mA.confidence, mA.pred_return, mA.pred_vol,
+                     mB.regime, mB.p_win, mB.confidence, mB.pred_return, mB.pred_vol].every(v => v == null);
+
+  $('cmp-ml-table').querySelector('tbody').innerHTML =
+    (mlAllNull ? `<tr><td colspan="3" class="cmp-val-na" style="padding:0.6rem;font-style:italic;font-size:0.82rem">
+      ML outputs are populated during the morning scan. Run a scan or wait for the next scheduled run.</td></tr>` : '')
+    + mlRows.map(([name, va, vb, sfx, dec, isStr]) => `
+    <tr>
+      <td><span class="mh-label">${name}</span>${_helpBtn(name, ML_HELP)}</td>
+      <td>${isStr ? (va ? `<span class="cmp-val-a">${va}</span>` : '<span class="cmp-val-na">—</span>')
+                  : (va != null ? `<span class="cmp-val-a">${(+va).toFixed(dec)}${sfx}</span>` : '<span class="cmp-val-na">—</span>')}</td>
+      <td>${isStr ? (vb ? `<span class="cmp-val-b">${vb}</span>` : '<span class="cmp-val-na">—</span>')
+                  : (vb != null ? `<span class="cmp-val-b">${(+vb).toFixed(dec)}${sfx}</span>` : '<span class="cmp-val-na">—</span>')}</td>
+    </tr>`).join('');
+}
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Monitor tab
+// ─────────────────────────────────────────────────────────────────────────────
+async function loadOpenTrades() {
+  const wantLive  = $('mon-src-live').checked;
+  const wantPaper = $('mon-src-paper').checked;
+  const source    = wantLive && wantPaper ? 'all' : wantLive ? 'live' : wantPaper ? 'paper' : 'none';
+  const sel = $('mon-trade-select');
+  const prevId = sel.value;
+  sel.innerHTML = '<option value="">Loading…</option>';
+
+  if (source === 'none') {
+    sel.innerHTML = '<option value="">— Select at least one source —</option>';
+    return;
+  }
+  try {
+    const r = await fetch(`/api/compare/open-trades?source=${source}`);
+    const d = await r.json();
+    if (!d.ok) { sel.innerHTML = '<option value="">Error loading trades</option>'; return; }
+    sel.innerHTML = '<option value="">— Select an open trade —</option>';
+    d.trades.forEach(t => {
+      const opt = document.createElement('option');
+      opt.value = t.id;
+      const tag   = t.source === 'live' ? '[LIVE]' : '[PAPER]';
+      const entry = (t.entry_credit || 0).toFixed(2);
+      opt.textContent = `${tag} ${t.ticker} · ${t.structure} · ${t.expiry} · $${entry}`;
+      opt.dataset.ticker = t.ticker;
+      opt.dataset.source = t.source;
+      if (t.id === prevId) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    if (d.trades.length === 0) {
+      sel.innerHTML = '<option value="">No open trades for selected source(s)</option>';
+    }
+  } catch(e) {
+    console.error('loadOpenTrades', e);
+    sel.innerHTML = '<option value="">Error loading trades</option>';
+  }
+}
+
+// Reload dropdown when checkboxes change
+['mon-src-live', 'mon-src-paper'].forEach(id => {
+  document.getElementById(id).addEventListener('change', loadOpenTrades);
+});
+
+$('mon-load-btn').addEventListener('click', runMonitor);
+
+async function runMonitor() {
+  const tradeId = $('mon-trade-select').value;
+  const idx     = $('mon-index-select').value;
+  if (!tradeId) { $('mon-status').textContent = 'Select an open trade first.'; return; }
+
+  $('mon-status').textContent = 'Loading position data…';
+  $('mon-load-btn').disabled = true;
+  $('mon-results').style.display = 'none';
+
+  try {
+    const selEl   = $('mon-trade-select');
+    const ticker  = selEl.options[selEl.selectedIndex].dataset.ticker;
+    const period  = '3mo';
+
+    const [hedgeR, tickerR, idxR] = await Promise.all([
+      fetch(`/api/compare/hedge-suggest?trade_id=${encodeURIComponent(tradeId)}`).then(r => r.json()),
+      fetchTickerData(ticker, period),
+      fetchTickerData(idx, period),
+    ]);
+
+    if (!hedgeR.ok)  throw new Error(hedgeR.error || 'Hedge suggest failed');
+    if (!tickerR.ok) throw new Error(tickerR.error || `Data failed for ${ticker}`);
+
+    $('mon-status').textContent = '';
+    $('mon-results').style.display = '';
+    renderMonitor(hedgeR, tickerR, idxR, idx);
+  } catch(e) {
+    $('mon-status').textContent = `Error: ${e.message}`;
+  } finally {
+    $('mon-load-btn').disabled = false;
+  }
+}
+
+function renderMonitor(hedge, tickerD, idxD, idxTicker) {
+  const t = hedge.ticker;
+  const m = tickerD.metrics;
+
+  // Regime alert
+  const regime = hedge.regime || m.regime || 'Unknown';
+  const alertEl = $('mon-regime-alert');
+  alertEl.className = 'mon-regime-alert ' +
+    (regime.toLowerCase().includes('bull') ? 'bull' :
+     regime.toLowerCase().includes('bear') ? 'bear' : 'neutral');
+  const regimeIcon = regime.toLowerCase().includes('bull') ? '▲' :
+                     regime.toLowerCase().includes('bear') ? '▼' : '◉';
+  $('mon-regime-icon').textContent = regimeIcon;
+  $('mon-regime-text').textContent =
+    `Current ML Regime: ${regime}` +
+    (m.confidence != null ? ` · Confidence: ${m.confidence.toFixed(1)}%` : '') +
+    (m.p_win != null ? ` · p(Win): ${m.p_win.toFixed(1)}%` : '');
+
+  // Position stats
+  $('mon-pos-title').textContent = `${t} — ${hedge.structure}`;
+  const unrPct  = hedge.unrealized_pct;
+  const unrSign = unrPct >= 0 ? 'pos' : 'neg';
+
+  $('mon-stat-grid').innerHTML = [
+    ['Expiry', hedge.expiry],
+    ['DTE', `${hedge.dte}d`],
+    ['Entry Credit', `$${hedge.entry_credit.toFixed(2)}`],
+    ['Current Mark', `$${hedge.current_mark.toFixed(4)}`],
+    ['Unrealised P&L', `${unrPct >= 0 ? '+' : ''}${unrPct.toFixed(1)}%`, unrSign],
+    ['Current Price', `$${hedge.spot.toFixed(2)}`],
+    ['IV Rank', m.iv_rank != null ? m.iv_rank.toFixed(1) + '%' : '—'],
+    ['HV20', m.hv20 != null ? m.hv20.toFixed(1) + '%' : '—'],
+    ['RSI', m.rsi != null ? m.rsi.toFixed(1) : '—'],
+    ['ADX', m.adx != null ? m.adx.toFixed(1) : '—'],
+    ['Trend', m.trend || '—'],
+    ['Beta', m.beta != null ? m.beta.toFixed(2) : '—'],
+  ].map(([label, val, cls]) => `
+    <div class="mon-stat">
+      <div class="mon-stat-label">${label}</div>
+      <div class="mon-stat-val ${cls||''}">${val}</div>
+    </div>`).join('');
+
+  // Hedge suggestions
+  $('mon-hedge-list').innerHTML = hedge.suggestions.map(s => `
+    <div class="hedge-card ${s.type}">
+      <div class="hedge-icon">${s.icon}</div>
+      <div>
+        <div class="hedge-action">${s.action}</div>
+        <div class="hedge-why">${s.why}</div>
+      </div>
+    </div>`).join('');
+
+  // Price chart vs index — trim to entry date
+  const entryDate = hedge.entered_at ? hedge.entered_at.slice(0, 10) : null;
+  const filterFrom = series => entryDate
+    ? series.filter(p => p.time >= entryDate)
+    : series;
+
+  const rawA = filterFrom(tickerD.price_series);
+  const rawB = filterFrom(idxD.price_series || []);
+  const normA = normalize(rawA);
+  const normB = normalize(rawB);
+
+  initMonitorChart();
+  if (normA.length) _monSerA.setData(normA);
+  if (normB.length) _monSerB.setData(normB);
+  _monChart.timeScale().fitContent();
+
+  $('mon-legend-ticker').textContent = t;
+  $('mon-legend-index').textContent  = idxTicker;
+
+  // Metrics bar (single ticker)
+  Plotly.newPlot('mon-metrics-plot', [{
+    type: 'bar',
+    x: ['IV Rank', 'HV20 %', 'ATM IV %', 'RSI', 'ADX'],
+    y: [m.iv_rank, m.hv20, m.atm_iv, m.rsi, m.adx],
+    marker: { color: '#1a56c4' },
+    text: [m.iv_rank, m.hv20, m.atm_iv, m.rsi, m.adx].map(v => v != null ? v.toFixed(1) : 'n/a'),
+    textposition: 'outside',
+  }], {
+    margin: { t: 20, b: 40, l: 40, r: 10 },
+    paper_bgcolor: 'transparent', plot_bgcolor: 'transparent',
+    font: { size: 12, color: '#555' },
+    yaxis: { gridcolor: '#eee' },
+  }, { responsive: true, displayModeBar: false });
+}
+
+// Pre-load open trades when page first opens if on monitor tab
+if (document.querySelector('.cmp-tab-btn[data-tab="monitor"]').classList.contains('active')) {
+  loadOpenTrades();
+}
+</script>
+{% endblock %}

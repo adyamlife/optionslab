@@ -963,7 +963,7 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
         cc_credit    = short_call_cc["bid"]
         cc_breakeven = round(short_call_cc["strike"] - cc_credit, 2)  # cost basis minus premium
         cc_max_profit = round(short_call_cc["strike"] - spot + cc_credit, 2)  # profit if called away
-        cc_pop       = round((1.0 + abs(float(short_call_cc.get("delta") or 0))) * 100, 1)  # approx probability called away
+        cc_pop       = round((1.0 - abs(float(short_call_cc.get("delta") or 0))) * 100, 1)  # probability call expires OTM
         meets_profit, profit_msg = profit_note(cc_credit, min_profit_amount)
         # Greeks: short call — flip sign vs long call
         _cc_iv = float(short_call_cc.get("impliedVolatility") or 0)

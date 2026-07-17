@@ -199,11 +199,13 @@ function _signalPillClass(rating) {
 }
 
 // ── Shared chip helper (used by renderTopTrades, buildTickerCard, buildMlExplainBlock) ──
-const mkChip = (label, value, cls, tip) =>
-  `<div class="tc-metric" title="${tip ?? ""}">
-    <span class="tc-metric-label">${label}</span>
-    <span class="tc-metric-value${cls ? " " + cls : ""}">${value}</span>
+const mkChip = (label, value, cls, tip) => {
+  const helpBtn = (typeof MetricHelp !== 'undefined') ? MetricHelp.btn(label) : '';
+  return `<div class="tc-metric" title="${tip ?? ''}">
+    <span class="tc-metric-label">${label}${helpBtn}</span>
+    <span class="tc-metric-value${cls ? ' ' + cls : ''}">${value}</span>
   </div>`;
+};
 
 // ── ML Explanation block (shared by top-3 and per-ticker cards) ──────────────
 /**
@@ -684,15 +686,15 @@ function buildTickerCard(row) {
       <div class="tc-trade-metrics">
         <div class="tc-trade-metric">
           <span class="tc-trade-metric-value">${popVal}</span>
-          <span class="tc-trade-metric-label">POP</span>
+          <span class="tc-trade-metric-label">POP${(typeof MetricHelp!=='undefined')?MetricHelp.btn('POP'):''}</span>
         </div>
         <div class="tc-trade-metric">
           <span class="tc-trade-metric-value ${profitCls}">${profitVal}</span>
-          <span class="tc-trade-metric-label">Max Profit</span>
+          <span class="tc-trade-metric-label">Max Profit${(typeof MetricHelp!=='undefined')?MetricHelp.btn('Max Profit'):''}</span>
         </div>
         <div class="tc-trade-metric">
           <span class="tc-trade-metric-value ${lossCls}">${lossVal}</span>
-          <span class="tc-trade-metric-label">Max Loss</span>
+          <span class="tc-trade-metric-label">Max Loss${(typeof MetricHelp!=='undefined')?MetricHelp.btn('Max Loss'):''}</span>
         </div>
         <div class="tc-trade-metric" title="Annualised return = (Max Profit / Capital) × (365 / DTE). Calendar/Diagonal: N/A (path-dependent).">
           <span class="tc-trade-metric-value ${annGainCls}">${annGainPct}</span>

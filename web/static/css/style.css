@@ -3732,3 +3732,33 @@ span.pt-live-loading {
 }
 .ml-pred-table th { color: var(--muted, #888); font-weight: 600; }
 .ml-pred-table tbody tr:hover { background: var(--bg-alt, #111); }
+
+/* ── Metric help button & tooltip (metric-help.js) — app-wide ────────────── */
+.mh-label        { margin-right: 0.3rem; }
+.mh-btn          {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.1rem; height: 1.1rem; border-radius: 50%;
+  border: 1px solid var(--clr-border-mid, #ccc);
+  background: var(--clr-surface-alt, #f5f5f5);
+  color: var(--clr-text-subtle, #888);
+  font-size: 0.68rem; font-weight: 700;
+  cursor: pointer; vertical-align: middle; line-height: 1;
+  padding: 0; flex-shrink: 0;
+  transition: background 0.12s, color 0.12s;
+}
+.mh-btn:hover    { background: var(--clr-primary, #1a56c4); color: #fff; border-color: var(--clr-primary, #1a56c4); }
+.mh-tip          {
+  position: absolute; z-index: 9999;
+  max-width: 300px; padding: 0.65rem 0.85rem;
+  background: var(--clr-surface, #fff); border: 1px solid var(--clr-border, #ddd);
+  border-radius: 8px; box-shadow: 0 6px 20px rgba(0,0,0,.14);
+  font-size: 0.82rem; color: var(--clr-text, #222); line-height: 1.5;
+  pointer-events: none;
+}
+.mh-tip strong   { display: block; margin-bottom: 0.3rem; color: var(--clr-primary, #1a56c4); font-size: 0.86rem; }
+.mh-tip p        { margin: 0 0 0.45rem; }
+.mh-calc         {
+  font-size: 0.75rem; color: var(--clr-text-subtle, #888);
+  border-top: 1px solid var(--clr-border-light, #eee);
+  padding-top: 0.35rem; margin-top: 0.1rem;
+}
