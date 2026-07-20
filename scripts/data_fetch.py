@@ -983,10 +983,11 @@ def get_sector_context(ticker_str: str, atm_iv: float, hist_period: str = "3mo")
     """
     from scripts.market_context import SECTOR_TO_ETF
     result = {
-        "sector_etf":      None,
-        "sector_trend":    None,
-        "sector_rsi":      None,
-        "sector_iv_ratio": None,
+        "sector_etf":       None,
+        "sector_trend":     None,
+        "sector_rsi":       None,
+        "sector_iv_ratio":  None,
+        "sector_return_1d": None,  # yesterday's 1-day return for the sector ETF
     }
     try:
         sector = yf.Ticker(ticker_str).info.get("sector", "")
@@ -1010,6 +1011,11 @@ def get_sector_context(ticker_str: str, atm_iv: float, hist_period: str = "3mo")
         rs    = gain / loss.replace(0, float("nan"))
         rsi_val = (100 - 100 / (1 + rs)).iloc[-1]
         result["sector_rsi"] = round(float(rsi_val), 1) if not pd.isna(rsi_val) else None
+
+        # 1-day return
+        if len(etf_close) >= 2:
+            ret_1d = (etf_close.iloc[-1] - etf_close.iloc[-2]) / etf_close.iloc[-2]
+            result["sector_return_1d"] = round(float(ret_1d), 5)
 
         # Trend (same SMA logic as analyze.py get_trend)
         if len(etf_close) >= rules.SMA_LONG:
@@ -1311,17 +1317,20 @@ def get_macro_context(dte: int | None = None) -> dict:
 
 def get_vix_context() -> dict:
     """
-    VIX level, VVIX (vol-of-vol), and VIX term structure slope.
+    VIX level, VVIX (vol-of-vol), VIX term structure slope, and MOVE index.
 
     vvix:           ^VVIX last price. >120 = vol regime unstable, avoid selling premium
     vix_3m:         ^VIX3M last price (3-month expected vol)
     vix_term_slope: ^VIX / ^VIX3M. >1 = backwardation (near-term fear), <1 = contango (calm)
+    move_index:     ^MOVE last price. Bond market vol index; >130 = rates unstable,
+                    cross-asset stress signal. Elevated MOVE + elevated VIX = avoid
+                    premium-selling across all asset classes.
 
     Returns dict — any field can be None if fetch fails.
     """
-    result = {"vvix": None, "vix_3m": None, "vix_term_slope": None}
+    result = {"vvix": None, "vix_3m": None, "vix_term_slope": None, "move_index": None}
     try:
-        data = yf.download(["^VVIX", "^VIX3M", "^VIX"], period="2d",
+        data = yf.download(["^VVIX", "^VIX3M", "^VIX", "^MOVE"], period="2d",
                            auto_adjust=True, progress=False)
         close = data["Close"] if "Close" in data.columns else data
         def _last(sym):
@@ -1333,8 +1342,10 @@ def get_vix_context() -> dict:
         vvix   = _last("^VVIX")
         vix_3m = _last("^VIX3M")
         vix    = _last("^VIX")
-        result["vvix"]  = round(vvix,  1) if vvix  else None
-        result["vix_3m"] = round(vix_3m, 2) if vix_3m else None
+        move   = _last("^MOVE")
+        result["vvix"]       = round(vvix,  1) if vvix  else None
+        result["vix_3m"]     = round(vix_3m, 2) if vix_3m else None
+        result["move_index"] = round(move,  1) if move  else None
         if vix and vix_3m and vix_3m > 0:
             result["vix_term_slope"] = round(vix / vix_3m, 4)
     except Exception:

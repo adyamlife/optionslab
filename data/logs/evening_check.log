@@ -1,0 +1,32 @@
+2026-07-17 17:00:02,618 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-17 17:00:05,249 INFO EXPIRED 20260617_ARQQ_CAL_1: ul=17.399999618530273  P&L=$-85.00  LOSS
+2026-07-17 17:00:05,256 INFO [eval] trade 20260617_ARQQ_CAL_1 outcome recorded: loss -20.5%
+2026-07-17 17:00:05,364 INFO EXPIRED 20260618_BTC_PUT_2: ul=28.350000381469727  P&L=$-79.00  LOSS
+2026-07-17 17:00:05,365 INFO [eval] trade 20260618_BTC_PUT_2 outcome recorded: loss -35.8%
+2026-07-17 17:00:05,399 INFO EXPIRED 20260619_ARQQ_CAL_2: ul=17.399999618530273  P&L=$-100.00  LOSS
+2026-07-17 17:00:05,402 INFO [eval] trade 20260619_ARQQ_CAL_2 outcome recorded: loss -25.0%
+2026-07-17 17:00:05,437 INFO EXPIRED 20260622_BTC_PUT_1: ul=28.350000381469727  P&L=$-115.00  LOSS
+2026-07-17 17:00:05,438 INFO [eval] trade 20260622_BTC_PUT_1 outcome recorded: loss -62.2%
+2026-07-17 17:00:05,467 INFO EXPIRED 20260623_BTC_PUT_3: ul=28.350000381469727  P&L=$-40.00  LOSS
+2026-07-17 17:00:05,468 INFO [eval] trade 20260623_BTC_PUT_3 outcome recorded: loss -66.7%
+2026-07-17 17:00:05,499 INFO EXPIRED 20260625_ARQQ_CAL_3: ul=17.399999618530273  P&L=$-105.00  LOSS
+2026-07-17 17:00:05,633 INFO [eval] trade 20260625_ARQQ_CAL_3 outcome recorded: loss -26.6%
+2026-07-17 17:00:05,756 INFO EXPIRED 20260629_NVDA_PUT_2: ul=202.63999938964844  P&L=$-90.00  LOSS
+2026-07-17 17:00:05,757 INFO [eval] trade 20260629_NVDA_PUT_2 outcome recorded: loss -56.2%
+2026-07-17 17:00:05,896 INFO EXPIRED 20260629_SPY_IRO_3: ul=743.155029296875  P&L=$84.00  WIN
+2026-07-17 17:00:05,897 INFO [eval] trade 20260629_SPY_IRO_3 outcome recorded: win +100.0%
+2026-07-17 17:00:06,006 INFO EXPIRED 20260702_ACHR_PUT_1: ul=4.460000038146973  P&L=$23.00  WIN
+2026-07-17 17:00:06,007 INFO [eval] trade 20260702_ACHR_PUT_1 outcome recorded: win +33.3%
+2026-07-17 17:00:06,038 INFO EXPIRED 20260702_ARQQ_CAL_2: ul=17.399999618530273  P&L=$-115.00  LOSS
+2026-07-17 17:00:06,039 INFO [eval] trade 20260702_ARQQ_CAL_2 outcome recorded: loss -29.9%
+2026-07-17 17:00:06,081 INFO EXPIRED 20260702_SPY_CAL_3: ul=743.155029296875  P&L=$-78.00  LOSS
+2026-07-17 17:00:06,082 INFO [eval] trade 20260702_SPY_CAL_3 outcome recorded: loss -63.9%
+2026-07-17 17:00:09,146 INFO IV surface flag on 20260706_QUBT_PUT_2: short strike 7.5 now +54.0vp expensive — consider closing
+2026-07-17 17:00:10,744 INFO IV surface flag on 20260706_SMR_PUT_2: short strike 7.5 now -2.7vp cheap — vol moved against position
+2026-07-17 17:00:13,932 INFO IV surface flag on 20260707_QUBT_PUT_3: short strike 7.5 now +54.0vp expensive — consider closing
+2026-07-17 17:00:21,124 WARNING _current_mark failed for WMT: name 's' is not defined
+2026-07-17 17:00:21,246 WARNING _current_mark failed for SHOP: name 's' is not defined
+2026-07-17 17:00:21,372 WARNING _current_mark failed for V: name 's' is not defined
+2026-07-17 17:00:21,481 WARNING _current_mark failed for RTX: name 's' is not defined
+2026-07-17 17:00:26,605 INFO CLOSED (stop loss) 20260717AM_NEM_COV_3: mark=1.16  P&L=$-96.00 (-480.0% of max)
+2026-07-17 17:00:26,607 INFO [eval] trade 20260717AM_NEM_COV_3 outcome recorded: loss -480.0%

@@ -1928,6 +1928,36 @@ def api_paper_trades_live_marks():
                     headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
 
+@app.route("/api/quotes")
+def api_quotes():
+    """Return current spot prices for a comma-separated list of tickers.
+    Usage: /api/quotes?tickers=AAPL,NVDA,SPY
+    Returns: {"AAPL": 213.45, "NVDA": 118.20, ...}
+    """
+    tickers_param = request.args.get("tickers", "")
+    tickers = [t.strip().upper() for t in tickers_param.split(",") if t.strip()]
+    if not tickers:
+        return jsonify({})
+    try:
+        import yfinance as yf
+        data = yf.download(tickers, period="1d", interval="1m",
+                           progress=False, auto_adjust=True)
+        prices = {}
+        if len(tickers) == 1:
+            close = data.get("Close")
+            if close is not None and not close.empty:
+                prices[tickers[0]] = round(float(close.iloc[-1]), 2)
+        else:
+            close = data.get("Close")
+            if close is not None:
+                for t in tickers:
+                    if t in close.columns and not close[t].dropna().empty:
+                        prices[t] = round(float(close[t].dropna().iloc[-1]), 2)
+        return jsonify(prices)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 @app.route("/api/paper-trades/delete/<trade_id>", methods=["DELETE"])
 def api_delete_paper_trade(trade_id):
     trades = pte.load_trades()

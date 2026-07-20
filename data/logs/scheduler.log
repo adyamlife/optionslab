@@ -1,0 +1,27 @@
+2026-07-17 14:58:45 INFO     scripts.ml_cache: ml_cache disk file is stale (82730s) — trying DuckDB
+2026-07-17 14:58:45 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 82 tickers
+2026-07-17 14:58:49 INFO     scripts.ml_cache: ml_cache disk file is stale (82735s) — trying DuckDB
+2026-07-17 14:58:49 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 82 tickers
+2026-07-17 15:03:21 INFO     scripts.ml_cache: ml_cache refreshed: 83 tickers in 275.56s
+2026-07-17 15:03:21 INFO     scripts.ml_cache: ml_cache refreshed: 83 tickers in 271.81s
+2026-07-17 15:03:21 ERROR    scripts.ml_cache: ml_cache.save() — DuckDB write failed (non-fatal)
+Traceback (most recent call last):
+  File "C:\Project Y\web\..\scripts\ml_cache.py", line 221, in save
+    n = insert_ml_predictions(
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Project Y\web\..\scripts\db.py", line 672, in insert_ml_predictions
+    with connect() as con:
+         ^^^^^^^^^
+  File "C:\Project Y\web\..\scripts\db.py", line 25, in connect
+    return duckdb.connect(str(_DB_PATH))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_duckdb.IOException: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:24:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-17 15:30:23 INFO     scripts.ml_cache: ml_cache refreshed: 83 tickers in 373.56s
+2026-07-17 15:34:25 INFO     scripts.ml_cache: ml_cache loaded from disk: 83 tickers, age 242s
+2026-07-17 15:39:25 INFO     scripts.ml_cache: ml_cache refreshed: 83 tickers in 299.78s
+2026-07-17 15:54:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-17 16:00:12 INFO     scripts.ml_cache: ml_cache refreshed: 83 tickers in 361.82s

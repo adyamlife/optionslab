@@ -631,16 +631,32 @@ def predict_ticker(ticker: str, today_row: dict | None = None) -> dict:
             # pred_std: directional disagreement across three probability signals
             _pred_std = float(np.std([_p_up_t, _p_up, _p_iv]))
 
+            _p_flat  = result.get("p_flat")  or 0.333
+            _p_down2 = result.get("p_down")  or 0.333
+            _eps2    = 1e-9
+            _dir_entropy = -sum(
+                p * math.log(p + _eps2) for p in [_p_down2, _p_flat, _p_up]
+            )
+            _iv_confidence = abs(_p_iv - 0.5) * 2.0
+
             meta_row = {
-                "p_uptrend":         _p_up_t,
-                "p_downtrend":       _p_down,
-                "p_rangebound":      _p_range,
-                "p_return_gt10":     result.get("p_return_gt10") or 0.161,
-                "expected_vol":      result.get("expected_vol") or 0.25,
-                "p_up":              _p_up,
-                "iv_expanding_prob": _p_iv,
-                "regime_entropy":    round(_regime_entropy, 4),
-                "pred_std":          round(_pred_std, 4),
+                "p_uptrend":          _p_up_t,
+                "p_downtrend":        _p_down,
+                "p_rangebound":       _p_range,
+                "p_return_gt10":      result.get("p_return_gt10")     or 0.161,
+                "p_return_positive":  result.get("p_return_positive") or 0.500,
+                "p_return_gt5":       result.get("p_return_gt5")      or 0.300,
+                "p_top_decile":       result.get("p_top_decile")      or 0.100,
+                "return_score":       result.get("return_score")      or 0.250,
+                "expected_vol":       result.get("expected_vol")      or 0.25,
+                "p_up":               _p_up,
+                "p_flat":             _p_flat,
+                "p_down":             _p_down2,
+                "iv_expanding_prob":  _p_iv,
+                "regime_entropy":     round(_regime_entropy, 4),
+                "pred_std":           round(_pred_std, 4),
+                "direction_entropy":  round(_dir_entropy, 4),
+                "iv_confidence":      round(_iv_confidence, 4),
             }
             X_meta = pd.DataFrame([meta_row])[art["meta_features"]]
             p_meta = float(art["model"].predict_proba(X_meta)[0][1])
@@ -658,7 +674,12 @@ def predict_ticker(ticker: str, today_row: dict | None = None) -> dict:
         try:
             from scripts.train_pop_model import build_feature_matrix as _pop_features
             X_pop, _ = _pop_features(pd.DataFrame([today_row]), encoders=art.get("feature_encoders"), fit=False)
-            result["pop_score"] = round(float(art["model"].predict_proba(X_pop)[0][1]), 4)
+            dropped = art.get("dropped_cols") or []
+            if dropped:
+                X_pop = X_pop.drop(columns=[c for c in dropped if c in X_pop.columns])
+            pop_prob = round(float(art["model"].predict_proba(X_pop)[0][1]), 4)
+            result["pop_score"] = pop_prob
+            result["pop_threshold"] = art.get("optimal_threshold", 0.5)
         except Exception as e:
             result["pop_score"] = None
             warnings.append(f"POP model error: {e}")

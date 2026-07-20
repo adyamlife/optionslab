@@ -25,23 +25,7 @@ from sklearn.preprocessing import LabelEncoder
 from xgboost import XGBClassifier
 
 
-class _BlendedMultiClassifier:
-    """0.5 XGBoost + 0.5 CatBoost blend for multi-class. Drop-in predict_proba."""
-    def __init__(self, xgb_m, cb_m):
-        self._xgb = xgb_m
-        self._cb  = cb_m
-
-    def predict_proba(self, X):
-        return 0.5 * self._xgb.predict_proba(X) + 0.5 * self._cb.predict_proba(X)
-
-    def predict(self, X):
-        import numpy as _np
-        return _np.argmax(self.predict_proba(X), axis=1)
-
-    @property
-    def feature_importances_(self):
-        return self._xgb.feature_importances_ if hasattr(self._xgb, "feature_importances_") \
-               else self._cb.feature_importances_
+from scripts.blended_classifier import BlendedMultiClassifier as _BlendedMultiClassifier
 
 _ROOT = Path(__file__).resolve().parent.parent
 _DATA_PATH = _ROOT / "data" / "regime_training.csv"   # kept for tune_hyperparams import compat

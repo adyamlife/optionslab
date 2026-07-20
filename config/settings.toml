@@ -261,6 +261,11 @@ kelly_min_pct    = 0.01   # floor: always risk at least this % when gate passes
 # Risk limits (informational - these are checked and surfaced in the UI;
 # the system will warn when these thresholds are approached)
 [risk_limits]
+# Circuit breakers: set circuit_breakers_enabled = true to enforce daily/weekly
+# loss halts and buying-power checks. Keep false until models are well-calibrated
+# and enough live paper trades exist to validate the thresholds.
+circuit_breakers_enabled = false
+
 max_open_positions       = 5     # max simultaneous open trades across the portfolio
 max_daily_loss_pct       = 0.03  # 3% of capital - stop taking new trades if hit
 max_weekly_loss_pct      = 0.06  # 6% of capital

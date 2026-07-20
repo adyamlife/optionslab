@@ -1,0 +1,593 @@
+2026-07-17 14:58:45 INFO     app: Loaded 55 scheduler run entries from disk
+2026-07-17 14:58:45 INFO     scripts.ml_cache: ml_cache disk file is stale (82730s) — trying DuckDB
+2026-07-17 14:58:45 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 82 tickers
+2026-07-17 14:58:45 INFO     werkzeug: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2026-07-17 14:58:45 INFO     werkzeug: [33mPress CTRL+C to quit[0m
+2026-07-17 14:58:45 INFO     werkzeug:  * Restarting with stat
+2026-07-17 14:58:49 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-17 14:58:49 INFO     app: Loaded 55 scheduler run entries from disk
+2026-07-17 14:58:49 INFO     app: Collect job resuming from last run 15:54 ET — next run 15:24 ET
+2026-07-17 14:58:49 INFO     app: Collect job scheduled every 30m, window 8:00-17:00 ET
+2026-07-17 14:58:49 INFO     app: Scheduler started — morning scan 10:00, afternoon scan 14:00, OI open 9:45, OI close 15:55, daily archive 16:30, evening check 17:00 ET
+2026-07-17 14:58:49 INFO     scripts.ml_cache: ml_cache disk file is stale (82735s) — trying DuckDB
+2026-07-17 14:58:49 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 82 tickers
+2026-07-17 14:58:49 WARNING  werkzeug:  * Debugger is active!
+2026-07-17 14:58:49 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-07-17 14:58:49 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-17 14:58:49 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:58:49] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:58:49 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:58:49] "[32mGET / HTTP/1.1[0m" 302 -
+2026-07-17 14:58:49 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:58:49] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:58:51 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:58:51] "GET /login?next=/ HTTP/1.1" 200 -
+2026-07-17 14:58:52 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:58:52] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:58:52 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:58:52] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:58:52 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:58:52] "[32mGET /paper-trades HTTP/1.1[0m" 302 -
+2026-07-17 14:58:53 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:58:53] "GET /login?next=/paper-trades HTTP/1.1" 200 -
+2026-07-17 14:58:53 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-17 14:58:53 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:58:53] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:58:53 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:58:53] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:58:53 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-17 14:58:54 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:58:54] "GET /static/css/style.css?v=1784314729 HTTP/1.1" 200 -
+2026-07-17 14:58:54 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:58:54] "GET /static/css/login.css?v=1784314729 HTTP/1.1" 200 -
+2026-07-17 14:58:55 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:58:55] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:58:55 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:58:55] "GET /static/css/login.css?v=1784314729 HTTP/1.1" 200 -
+2026-07-17 14:58:55 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:58:55] "GET /static/css/style.css?v=1784314729 HTTP/1.1" 200 -
+2026-07-17 14:58:55 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:58:55] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:58:55 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-17 14:58:56 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:58:56] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:58:56 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:58:56] "[32mGET /favicon.ico HTTP/1.1[0m" 302 -
+2026-07-17 14:58:56 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-17 14:58:56 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:58:56] "GET /login?next=/favicon.ico HTTP/1.1" 200 -
+2026-07-17 14:58:56 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:58:56] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:58:57 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:58:57] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:58:57 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-17 14:58:58 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-17 14:58:58 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:58:58] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:58:59 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:58:59] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:58:59 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:58:59] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:00 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:00] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:00 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:00] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:00 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-17 14:59:00 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-17 14:59:01 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-17 14:59:01 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-17 14:59:01 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:01] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:01 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:01] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:02 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:02] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:02 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:02] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:03 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for TQQQ: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 14:59:03 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:03] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:03 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:03] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:04 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:04] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:04 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:04] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:05 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:05] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:05 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:05] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:06 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:06] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:06 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:06] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:06 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for NVDA: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+2026-07-17 14:59:07 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:07] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:07 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:07] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:08 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:08] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:08 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:08] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:09 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:09] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:09 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:09] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:10 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:10] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:10 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:10] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:10 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for MSFT: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 14244)
+2026-07-17 14:59:11 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:11] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:11 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:11] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:12 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:12] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:12 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:12] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:12 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:12] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:13 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:13] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:13 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:13] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:14 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:14] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:14 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:14] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:15 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:15] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:15 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:15] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:16 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:16] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:16 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:16] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:17 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:17] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:17 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for AVGO: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 14:59:17 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:17] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:18 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:18] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:18 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:18] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:19 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:19] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:19 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:19] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:20 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:20] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:20 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:20] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:20 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:20] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:21 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for AMD: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 14244)
+2026-07-17 14:59:21 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:21] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:21 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:21] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:22 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:22] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:22 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:22] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:23 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:23] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:23 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:23] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:24 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for TSM: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 14244)
+2026-07-17 14:59:24 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:24] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:24 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:24] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:25 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:25] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:25 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:25] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:26 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:26] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:26 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:26] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:27 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:27] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:27 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:27] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:28 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:28] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:28 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:28] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:29 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:29] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:29 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:29] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:30 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:30] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:30 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:30] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:31 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:31] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:31 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:31] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:32 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:32] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:32 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:32] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:33 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:33] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:33 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:33] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:34 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:34] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:34 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:34] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:34 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:34] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:35 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:35] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:35 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:35] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:36 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:36] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:36 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:36] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:37 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:37] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:37 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:37] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:38 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:38] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:38 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:38] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:39 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:39] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:39 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:39] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:40 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:40] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:40 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:40] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:40 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:40] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:41 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:41] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:41 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:41] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:42 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:42] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:42 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:42] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:43 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:43] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:43 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:43] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:44 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:44] "[32mGET / HTTP/1.1[0m" 302 -
+2026-07-17 14:59:44 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:44] "GET /login?next=/ HTTP/1.1" 200 -
+2026-07-17 14:59:44 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:44] "[36mGET /static/css/style.css?v=1784314729 HTTP/1.1[0m" 304 -
+2026-07-17 14:59:44 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:44] "[36mGET /static/css/login.css?v=1784314729 HTTP/1.1[0m" 304 -
+2026-07-17 14:59:44 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:44] "[32mGET /favicon.ico HTTP/1.1[0m" 302 -
+2026-07-17 14:59:45 INFO     werkzeug: 127.0.0.1 - - [17/Jul/2026 14:59:45] "GET /login?next=/favicon.ico HTTP/1.1" 200 -
+2026-07-17 14:59:48 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for ASML: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 14244)
+2026-07-17 14:59:52 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for LRCX: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 14244)
+2026-07-17 15:00:22 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for NET: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 14244)
+2026-07-17 15:00:26 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for TEAM: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:00:32 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for ADBE: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:00:35 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for INTU: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 14244)
+2026-07-17 15:00:44 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for META: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 14244)
+2026-07-17 15:00:47 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for NFLX: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 14244)
+2026-07-17 15:00:56 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for TMUS: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 14244)
+2026-07-17 15:00:59 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for TSLA: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:01:02 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for AMZN: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:01:16 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for APP: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:01:29 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for ULTA: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:01:33 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for COST: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:01:36 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for WMT: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:01:39 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for PG: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:01:42 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for LLY: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:01:48 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for ISRG: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 14244)
+2026-07-17 15:01:51 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for ABBV: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 14244)
+2026-07-17 15:01:54 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for BSX: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:02:00 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for AMGN: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 14244)
+2026-07-17 15:02:03 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for V: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 14244)
+2026-07-17 15:02:12 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for JPM: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+2026-07-17 15:02:15 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for GS: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:02:24 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for GE: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:02:26 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for ETN: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 14244)
+2026-07-17 15:02:46 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for XOM: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:02:55 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for OXY: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 14244)
+2026-07-17 15:03:15 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for AMT: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:03:17 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for EQIX: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 14244)
+2026-07-17 15:03:21 INFO     scripts.ml_cache: ml_cache refreshed: 83 tickers in 275.56s
+2026-07-17 15:03:21 INFO     scripts.ml_cache: ml_cache refreshed: 83 tickers in 271.81s
+2026-07-17 15:03:21 ERROR    scripts.ml_cache: ml_cache.save() — DuckDB write failed (non-fatal)
+Traceback (most recent call last):
+  File "C:\Project Y\web\..\scripts\ml_cache.py", line 221, in save
+    n = insert_ml_predictions(
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Project Y\web\..\scripts\db.py", line 672, in insert_ml_predictions
+    with connect() as con:
+         ^^^^^^^^^
+  File "C:\Project Y\web\..\scripts\db.py", line 25, in connect
+    return duckdb.connect(str(_DB_PATH))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_duckdb.IOException: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:24:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-17 15:24:14 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-17 15:24:14 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-17 15:24:14 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-17 15:24:15 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-17 15:24:15 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-17 15:24:15 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-17 15:24:15 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-17 15:24:16 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-17 15:24:37 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-17 15:24:37 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-17 15:24:39 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-17 15:24:40 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-17 15:24:41 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-17 15:24:41 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-17 15:24:41 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-17 15:24:43 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-17 15:24:50 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 15:24:51 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 15:24:51 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-17 15:24:53 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-17 15:25:01 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:25:03 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:25:03 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 15:25:04 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 15:25:04 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 15:25:10 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 15:25:20 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:25:20 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:25:29 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:25:30 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 15:25:30 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:25:30 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:25:34 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:25:37 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 15:25:37 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 15:25:39 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 15:25:39 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:25:39 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:25:43 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:25:43 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 15:25:48 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:25:51 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 15:25:52 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:25:52 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:25:53 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:25:53 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:25:59 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:26:01 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:26:10 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for ARM: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:26:13 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for INTC: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:26:16 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for QCOM: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:26:19 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for TXN: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:26:23 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for KLAC: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:26:27 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for ASML: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:26:30 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for LRCX: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:26:34 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for CDNS: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:26:37 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for SNPS: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:26:40 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for PLTR: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+2026-07-17 15:26:43 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for SNOW: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:26:46 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for MDB: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:26:50 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for ORCL: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:26:53 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for CRM: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:26:57 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for NOW: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:27:00 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for NET: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:27:07 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for SAP: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:27:14 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for INTU: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:27:18 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for RGTI: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:27:38 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for TMUS: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:27:44 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for AMZN: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:28:17 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for COST: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9668)
+2026-07-17 15:28:32 INFO     app: _run_in_bg(training_collect) done in 262.4s
+2026-07-17 15:30:23 INFO     scripts.ml_cache: ml_cache refreshed: 83 tickers in 373.56s
+2026-07-17 15:34:20 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\paper_trade_engine.py', reloading
+2026-07-17 15:34:20 INFO     werkzeug:  * Restarting with stat
+2026-07-17 15:34:25 INFO     app: Loaded 56 scheduler run entries from disk
+2026-07-17 15:34:25 INFO     app: Collect job resuming from last run 15:24 ET — next run 15:54 ET
+2026-07-17 15:34:25 INFO     app: Collect job scheduled every 30m, window 8:00-17:00 ET
+2026-07-17 15:34:25 INFO     app: Scheduler started — morning scan 10:00, afternoon scan 14:00, OI open 9:45, OI close 15:55, daily archive 16:30, evening check 17:00 ET
+2026-07-17 15:34:25 INFO     scripts.ml_cache: ml_cache loaded from disk: 83 tickers, age 242s
+2026-07-17 15:34:25 WARNING  werkzeug:  * Debugger is active!
+2026-07-17 15:34:25 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-07-17 15:34:29 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-17 15:34:29 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-17 15:34:33 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-17 15:34:34 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-17 15:34:36 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-17 15:34:37 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-17 15:39:25 INFO     scripts.ml_cache: ml_cache refreshed: 83 tickers in 299.78s
+2026-07-17 15:54:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-17 15:54:13 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-17 15:54:14 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-17 15:54:14 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-17 15:54:15 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-17 15:54:15 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-17 15:54:15 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-17 15:54:16 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-17 15:54:16 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-17 15:54:20 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 15:54:24 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-17 15:54:28 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-17 15:54:29 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-17 15:54:31 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-17 15:54:31 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-17 15:54:33 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-17 15:54:35 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-17 15:54:35 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-17 15:54:35 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-17 15:54:38 ERROR    yfinance: HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-17 15:54:38 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:54:38 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:54:40 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:54:41 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:54:42 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:54:46 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:54:47 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 15:54:56 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:54:56 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:54:56 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:55:00 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:55:00 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 15:55:00 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 15:55:08 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:55:16 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:55:16 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:55:16 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:55:17 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:55:20 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 15:55:20 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:55:23 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:55:31 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:55:32 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:55:32 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 15:55:32 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 15:55:33 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:55:33 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:55:33 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:55:33 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:55:33 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 15:55:33 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 15:55:41 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:55:41 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:55:45 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-17 15:55:45 ERROR    yfinance: HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-17 15:55:58 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for INTC: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 10452)
+2026-07-17 15:56:01 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for QCOM: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 10452)
+2026-07-17 15:56:04 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for TXN: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 10452)
+2026-07-17 15:56:07 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for KLAC: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 10452)
+2026-07-17 15:56:15 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for LRCX: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 10452)
+2026-07-17 15:56:18 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for CDNS: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 10452)
+2026-07-17 15:56:21 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for SNPS: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 10452)
+2026-07-17 15:56:25 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for PLTR: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 10452)
+2026-07-17 15:56:28 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for SNOW: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 10452)
+2026-07-17 15:56:31 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for MDB: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 10452)
+2026-07-17 15:56:34 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for ORCL: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 10452)
+2026-07-17 15:56:47 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for TEAM: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 10452)
+2026-07-17 15:56:51 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for SAP: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 10452)
+2026-07-17 15:57:20 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for DIS: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 10452)
+2026-07-17 15:57:30 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for AMZN: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 10452)
+2026-07-17 15:57:33 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for UBER: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 10452)
+2026-07-17 15:57:40 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for MELI: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+2026-07-17 15:58:05 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for COST: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 10452)
+2026-07-17 15:58:16 WARNING  scripts.regime_history: [regime_history] record_and_streak failed for LLY: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 10452)
+2026-07-17 15:58:29 INFO     app: _run_in_bg(training_collect) done in 259.0s
+2026-07-17 16:00:00 WARNING  scripts.data_archive: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-17 16:00:12 INFO     scripts.ml_cache: ml_cache refreshed: 83 tickers in 361.82s
+2026-07-17 16:06:06 INFO     scripts.data_archive: T0-C OI snapshot (close): 94 tickers, 5 errors
+2026-07-17 16:06:06 INFO     app: _run_in_bg(oi_close) done in 366.8s

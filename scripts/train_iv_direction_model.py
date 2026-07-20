@@ -37,22 +37,7 @@ from xgboost import XGBClassifier
 _ROOT = Path(__file__).resolve().parent.parent
 
 
-class _BlendedBinaryClassifier:
-    """0.5 XGBoost + 0.5 CatBoost probability blend. Drop-in predict_proba replacement."""
-    def __init__(self, xgb_m, cb_m):
-        self._xgb = xgb_m
-        self._cb  = cb_m
-
-    def predict_proba(self, X):
-        return 0.5 * self._xgb.predict_proba(X) + 0.5 * self._cb.predict_proba(X)
-
-    def predict(self, X):
-        return (self.predict_proba(X)[:, 1] >= 0.5).astype(int)
-
-    @property
-    def feature_importances_(self):
-        return self._xgb.feature_importances_ if hasattr(self._xgb, "feature_importances_") \
-               else self._cb.feature_importances_
+from scripts.blended_classifier import BlendedBinaryClassifier as _BlendedBinaryClassifier
 _DATA_PATH = _ROOT / "data" / "regime_training.csv"  # kept for import compat
 _MODEL_PATH = _ROOT / "data" / "models" / "iv_direction_classifier.joblib"
 

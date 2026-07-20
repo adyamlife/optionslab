@@ -60,8 +60,8 @@ import pandas as pd
 # Injecting the classes into __main__ before any load() call fixes this.
 import sys as _sys
 from scripts.calibrate_models import IsotonicCalibrator, _load_isotonic_calibrator  # noqa: F401
-from scripts.train_direction_model   import _BlendedMultiClassifier          # noqa: F401
-from scripts.train_iv_direction_model import _BlendedBinaryClassifier        # noqa: F401
+from scripts.blended_classifier import BlendedMultiClassifier  as _BlendedMultiClassifier   # noqa: F401
+from scripts.blended_classifier import BlendedBinaryClassifier as _BlendedBinaryClassifier  # noqa: F401
 
 _main = _sys.modules.get("__main__")
 if _main is not None:

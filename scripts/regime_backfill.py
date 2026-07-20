@@ -213,6 +213,7 @@ def _fetch_cross_asset_series(period: str = "2y") -> dict:
       spy_above_50ma       — 1 if SPY > 50-day SMA, else 0  (shorter-term breadth)
       bond_vol_proxy       — TLT 20-day realized vol annualized (MOVE index proxy)
       qqq_rs               — QQQ / SPY ratio (growth vs. value relative strength)
+      move_index           — ^MOVE daily close (bond market vol; >130 = rates unstable)
     """
     result: dict = {
         "credit_spread_proxy": None,
@@ -220,9 +221,10 @@ def _fetch_cross_asset_series(period: str = "2y") -> dict:
         "spy_above_50ma":      None,
         "bond_vol_proxy":      None,
         "qqq_rs":              None,
+        "move_index":          None,
     }
     try:
-        data = yf.download(["HYG", "LQD", "SPY", "TLT", "QQQ"], period=period,
+        data = yf.download(["HYG", "LQD", "SPY", "TLT", "QQQ", "^MOVE"], period=period,
                            auto_adjust=True, progress=False)
         close = data["Close"] if "Close" in data.columns else data
 
@@ -234,11 +236,12 @@ def _fetch_cross_asset_series(period: str = "2y") -> dict:
             except Exception:
                 return None
 
-        hyg = _s("HYG")
-        lqd = _s("LQD")
-        spy = _s("SPY")
-        tlt = _s("TLT")
-        qqq = _s("QQQ")
+        hyg  = _s("HYG")
+        lqd  = _s("LQD")
+        spy  = _s("SPY")
+        tlt  = _s("TLT")
+        qqq  = _s("QQQ")
+        move = _s("^MOVE")
 
         if hyg is not None and lqd is not None:
             lqd_al = lqd.reindex(hyg.index).ffill()
@@ -258,6 +261,9 @@ def _fetch_cross_asset_series(period: str = "2y") -> dict:
         if qqq is not None and spy is not None:
             spy_al = spy.reindex(qqq.index).ffill()
             result["qqq_rs"] = (qqq / spy_al.replace(0, np.nan)).round(4)
+
+        if move is not None:
+            result["move_index"] = move.round(2)
     except Exception:
         pass
     return result
@@ -569,6 +575,10 @@ def build_ticker_features(ticker: str, period="2y", vix_close: pd.Series = None,
         "qqq_rs": (
             pd.Series(dates).map(cross_asset["qqq_rs"].to_dict()).values
             if cross_asset and cross_asset.get("qqq_rs") is not None else np.nan
+        ),
+        "move_index": (
+            pd.Series(dates).map(cross_asset["move_index"].to_dict()).values
+            if cross_asset and cross_asset.get("move_index") is not None else np.nan
         ),
     })
 
@@ -923,6 +933,10 @@ def _build_today_row(ticker: str, lookback="6mo", vix_close: pd.Series = None, s
         "qqq_rs": (
             cross_asset["qqq_rs"].get(today_date)
             if cross_asset and cross_asset.get("qqq_rs") is not None else None
+        ),
+        "move_index": (
+            cross_asset["move_index"].get(today_date)
+            if cross_asset and cross_asset.get("move_index") is not None else None
         ),
         # Tier 5 — macro context (market-wide, passed from caller)
         "yield_10y":      macro_ctx.get("yield_10y"),

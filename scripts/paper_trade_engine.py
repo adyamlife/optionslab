@@ -54,13 +54,95 @@ def _load_settings() -> dict:
         cfg  = tomllib.loads((_ROOT / "config" / "settings.toml").read_text(encoding="utf-8"))
         mgmt    = cfg.get("management", {})
         capital = cfg.get("capital", {})
+        risk    = cfg.get("risk_limits", {})
         return {
-            "profit_target_pct": float(mgmt.get("profit_target_pct", 0.50)),
-            "stop_loss_mult":    float(mgmt.get("stop_loss_mult",    3.0)),
-            "max_risk_pct":      float(capital.get("max_risk_pct",   0.12)),
+            "profit_target_pct":   float(mgmt.get("profit_target_pct",    0.50)),
+            "stop_loss_mult":      float(mgmt.get("stop_loss_mult",        3.0)),
+            "max_risk_pct":        float(capital.get("max_risk_pct",       0.12)),
+            "capital_amount":      float(capital.get("amount",          1000.0)),
+            "max_daily_loss_pct":       float(risk.get("max_daily_loss_pct",        0.03)),
+            "max_weekly_loss_pct":      float(risk.get("max_weekly_loss_pct",       0.06)),
+            "circuit_breakers_enabled": bool(risk.get("circuit_breakers_enabled",  False)),
         }
     except Exception:
         return dict(_SETTINGS_DEFAULTS)
+
+
+def check_circuit_breakers(trades: list) -> dict:
+    """
+    Check daily and weekly realized-loss circuit breakers against closed trades.
+
+    Returns:
+      {
+        "ok": bool,               # False = halt new trades
+        "daily_loss":   float,    # realized P&L today (negative = loss)
+        "weekly_loss":  float,    # realized P&L this Mon-today window
+        "daily_limit":  float,    # dollar threshold for daily halt
+        "weekly_limit": float,    # dollar threshold for weekly halt
+        "breaches":     [str],    # human-readable breach descriptions
+        "buying_power": float,    # capital_amount - sum of open capital_required
+      }
+    """
+    s         = _load_settings()
+    if not s.get("circuit_breakers_enabled", False):
+        return {
+            "ok": True, "enabled": False,
+            "daily_loss": 0.0, "weekly_loss": 0.0,
+            "daily_limit": 0.0, "weekly_limit": 0.0,
+            "breaches": [], "buying_power": s.get("capital_amount", 1000.0),
+        }
+    capital   = s["capital_amount"]
+    daily_lim = capital * s["max_daily_loss_pct"]
+    week_lim  = capital * s["max_weekly_loss_pct"]
+
+    today     = date.today()
+    # Week window: Monday of the current week through today
+    week_start = today - timedelta(days=today.weekday())
+
+    daily_pnl  = 0.0
+    weekly_pnl = 0.0
+    open_capital = 0.0
+
+    for t in trades:
+        exit_info = t.get("exit") or {}
+        pnl = exit_info.get("pnl_total")
+        if pnl is not None:
+            try:
+                exit_date = date.fromisoformat(exit_info.get("ts", "")[:10])
+            except ValueError:
+                continue
+            if exit_date == today:
+                daily_pnl += pnl
+            if week_start <= exit_date <= today:
+                weekly_pnl += pnl
+        if t.get("status") == "open":
+            open_capital += float(
+                t.get("capital_required") or t.get("max_loss") or 0
+            ) * 100  # per-share → per-contract
+
+    breaches = []
+    if daily_pnl < 0 and abs(daily_pnl) >= daily_lim:
+        breaches.append(
+            f"Daily loss ${abs(daily_pnl):.2f} ≥ limit ${daily_lim:.2f} "
+            f"({s['max_daily_loss_pct']:.0%} of capital) — halting new trades today."
+        )
+    if weekly_pnl < 0 and abs(weekly_pnl) >= week_lim:
+        breaches.append(
+            f"Weekly loss ${abs(weekly_pnl):.2f} ≥ limit ${week_lim:.2f} "
+            f"({s['max_weekly_loss_pct']:.0%} of capital) — halting until Monday."
+        )
+
+    buying_power = max(0.0, capital - open_capital)
+
+    return {
+        "ok":           len(breaches) == 0,
+        "daily_loss":   round(daily_pnl,  2),
+        "weekly_loss":  round(weekly_pnl, 2),
+        "daily_limit":  round(daily_lim,  2),
+        "weekly_limit": round(week_lim,   2),
+        "breaches":     breaches,
+        "buying_power": round(buying_power, 2),
+    }
 
 
 # Read at module load for backwards-compat constants; callers that care about
@@ -457,6 +539,57 @@ def _select_top3(rows, ml_snapshot: dict | None = None, open_positions: list | N
     return result
 
 
+# ── ML scores snapshot at trade entry ─────────────────────────────────────────
+
+def _ml_scores_at_entry(candidate: dict, ml_snapshot: dict) -> dict:
+    """
+    Capture the ML model outputs at the moment a paper trade is entered.
+    Stored verbatim in the trade record so post-hoc analysis can ask:
+    "Did the model signal match the outcome?"
+
+    Includes model version metadata (trained_at, git_sha) so future audits
+    can identify which model version was live when each trade was taken.
+    """
+    ticker = candidate.get("ticker", "")
+    ml     = (ml_snapshot or {}).get(ticker) or {}
+
+    scores = {
+        "regime":            ml.get("regime"),
+        "regime_prob":       ml.get("regime_prob"),
+        "expected_return":   ml.get("expected_return"),
+        "expected_vol":      ml.get("expected_vol"),
+        "expected_move_pct": ml.get("expected_move_pct"),
+        "iv_direction":      ml.get("iv_direction"),
+        "iv_expanding_prob": ml.get("iv_expanding_prob"),
+        "pop_score":         ml.get("pop_score"),
+        "pop_threshold":     ml.get("pop_threshold"),
+        "meta_score":        ml.get("meta_score"),
+        "is_anomaly":        ml.get("is_anomaly"),
+        "anomaly_score":     ml.get("anomaly_score"),
+        "model_versions":    {},
+    }
+
+    # Capture trained_at + git_sha for each model artifact that was loaded.
+    import joblib
+    for name, path in [
+        ("pop",       _ROOT / "data" / "models" / "pop_classifier.joblib"),
+        ("regime",    _ROOT / "data" / "models" / "regime_classifier.joblib"),
+        ("return",    _ROOT / "data" / "models" / "return_regressor.joblib"),
+        ("vol",       _ROOT / "data" / "models" / "volatility_regressor.joblib"),
+        ("meta",      _ROOT / "data" / "models" / "meta_ensemble.joblib"),
+    ]:
+        try:
+            art = joblib.load(path)
+            scores["model_versions"][name] = {
+                "trained_at": art.get("trained_at"),
+                "git_sha":    art.get("git_sha"),
+            }
+        except Exception:
+            pass
+
+    return scores
+
+
 # ── Morning scan ──────────────────────────────────────────────────────────────
 
 def run_morning_scan(params=None, force=False, scan_time="morning"):
@@ -560,6 +693,30 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
 
     trades      = load_trades()
     open_trades = [t for t in trades if t.get("status") == "open"]
+
+    # ── Circuit breakers — halt before doing any work if limits are breached ──
+    cb = check_circuit_breakers(trades)
+    if not cb["ok"]:
+        for breach in cb["breaches"]:
+            log.warning("[circuit breaker] %s", breach)
+        return {
+            "ok":             False,
+            "halted":         True,
+            "circuit_breaker": cb,
+            "recorded":       0,
+            "trades":         [],
+        }
+    if cb.get("enabled", True):
+        log.info(
+            "[circuit breaker] OK — daily P&L $%.2f / limit $%.2f | "
+            "weekly P&L $%.2f / limit $%.2f | buying power $%.2f",
+            cb["daily_loss"], cb["daily_limit"],
+            cb["weekly_loss"], cb["weekly_limit"],
+            cb["buying_power"],
+        )
+    else:
+        log.debug("[circuit breaker] disabled — skipping loss/buying-power enforcement.")
+
     top3 = _select_top3(rows, ml_snapshot=_ml_snapshot, open_positions=open_trades)
     today_str = date.today().strftime("%Y%m%d")
     seen      = {t["id"] for t in trades}
@@ -616,22 +773,18 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
                 log.warning(f"Skipping {c['ticker']} {c['structure']} — short or long strike is None")
                 continue
 
-        # Balance / margin check — log a warning but do not block paper trades
-        try:
-            from scripts.etrade_client import get_account_balance as _get_bal
-            _bal = _get_bal()
-            if _bal:
-                _bchk = check_balance_for_candidate(c, _bal.get("buying_power", 0.0))
-                if not _bchk["ok"]:
-                    log.warning(
-                        f"[capital] {c['ticker']} {c['structure']} — {_bchk['note']}"
-                    )
-                elif _bchk.get("requires_margin"):
-                    log.info(
-                        f"[capital] {c['ticker']} {c['structure']} — {_bchk['note']}"
-                    )
-        except Exception as _be:
-            log.debug(f"[capital] balance check skipped: {_be}")
+        # Buying power check — enforced against circuit breaker's computed figure.
+        from scripts.candidate_provider import compute_capital_required as _cap_req
+        _cap_needed = (_cap_req(c) or 0) * 100  # per-share → per-contract
+        if _cap_needed > 0 and _cap_needed > cb["buying_power"]:
+            log.warning(
+                "[capital] Skipping %s %s — needs $%.2f but only $%.2f buying power available.",
+                c["ticker"], c["structure"], _cap_needed, cb["buying_power"],
+            )
+            continue
+        # Deduct this trade's capital from buying_power so subsequent candidates
+        # in the same loop don't double-count available funds.
+        cb["buying_power"] = max(0.0, cb["buying_power"] - _cap_needed)
 
         trade = {
             "id":           tid,
@@ -672,6 +825,7 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
             "ranker_score":            c.get("ranker_score"),
             "position_size_factor":    c.get("position_size_factor"),
             "suggested_allocation_pct": c.get("suggested_allocation_pct"),
+            "ml_scores_at_entry":      _ml_scores_at_entry(c, _ml_snapshot),
         }
         trades.append(trade)
         new.append(trade)
@@ -697,7 +851,8 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
     except Exception as _snap_err:
         log.warning(f"Scan snapshot bulk write failed: {_snap_err}")
 
-    return {"ok": True, "date": today_str, "recorded": len(new), "trades": new}
+    return {"ok": True, "date": today_str, "recorded": len(new), "trades": new,
+            "circuit_breaker": cb}
 
 
 # ── Evening check ─────────────────────────────────────────────────────────────
@@ -716,10 +871,11 @@ def run_evening_check(force=False):
     from scripts.data_fetch import warmup_data_sources
     warmup_data_sources(log)
 
-    trades  = load_trades()
-    now     = datetime.now(EDT)
-    today   = date.today()
-    updated = []
+    trades        = load_trades()
+    now           = datetime.now(EDT)
+    today         = date.today()
+    updated       = []
+    newly_labeled = 0
 
     for trade in trades:
         if trade["status"] != "open":
@@ -772,6 +928,7 @@ def run_evening_check(force=False):
                 "mfe_pct":        _mfe,
                 "days_held":      _days,
             }
+            newly_labeled += 1
             log.info(f"EXPIRED {trade['id']}: ul={ul_price}  P&L=${trade['exit']['pnl_total']:.2f}  {'WIN' if win else 'LOSS'}")
             try:
                 from scripts.offline_eval import update_trade_outcome as _uto
@@ -826,6 +983,7 @@ def run_evening_check(force=False):
                 # Max profit achieved before expiry
                 trade["status"] = "closed_target"
                 trade["exit"]   = _exit_common("max_profit", hit_tp=True, hit_sl=False)
+                newly_labeled += 1
                 log.info(f"CLOSED (max profit) {trade['id']}: mark={mark}  "
                          f"P&L=${trade['exit']['pnl_total']:.2f} ({pnl_pct_of_max}% of max)")
                 try:
@@ -838,6 +996,7 @@ def run_evening_check(force=False):
                 # Stop-loss triggered
                 trade["status"] = "closed_stop"
                 trade["exit"]   = _exit_common("stop_loss", hit_tp=False, hit_sl=True)
+                newly_labeled += 1
                 log.info(f"CLOSED (stop loss) {trade['id']}: mark={mark}  "
                          f"P&L=${trade['exit']['pnl_total']:.2f} ({pnl_pct_of_max}% of max)")
                 try:
@@ -884,7 +1043,7 @@ def run_evening_check(force=False):
         updated.append(trade["id"])
 
     save_trades(trades)
-    return {"ok": True, "updated": len(updated), "ids": updated}
+    return {"ok": True, "updated": len(updated), "ids": updated, "newly_labeled": newly_labeled}
 
 
 # ── Performance summary ───────────────────────────────────────────────────────
@@ -1094,6 +1253,8 @@ def get_live_marks_iter():
                         mark_data   = {"mark": spread_val, "unrealized": round(spread_val - entry_debit, 4),
                                        "debit_spread": True, "legs": {"long": lo, "short": sh}}
 
+            if mark_data:
+                mark_data["ul_price"] = fetch_underlying_price(ticker)
             yield tid, mark_data if mark_data else {"error": "No quote"}
         except Exception as e:
             log.warning(f"get_live_marks_iter failed for {tid}: {e}")
