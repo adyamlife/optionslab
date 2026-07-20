@@ -200,7 +200,9 @@ CREATE TABLE IF NOT EXISTS {SNAPSHOTS_TABLE} (
     ml_regime          VARCHAR,
     garch_vol_at_entry DOUBLE,
     call_vol           BIGINT,
-    put_vol            BIGINT
+    put_vol            BIGINT,
+    sector_return_1d   DOUBLE,
+    move_index         DOUBLE
 )
 """
 
@@ -398,6 +400,9 @@ def ensure_snapshot_tables() -> None:
             ("forward_3d",          "DOUBLE"),
             ("forward_5d",          "DOUBLE"),
             ("future_hv5d",         "DOUBLE"),
+            # #10/#11 Cross-asset + sector enrichment
+            ("sector_return_1d",    "DOUBLE"),
+            ("move_index",          "DOUBLE"),
         ]:
             try:
                 con.execute(f"ALTER TABLE {SNAPSHOTS_TABLE} ADD COLUMN {col} {typ}")

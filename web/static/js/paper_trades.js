@@ -477,17 +477,18 @@ function renderOpenTradesTable(trades) {
     else if (stk.short != null) strikesStr = `${stk.short}`;
 
     return `
-      <tr>
+      <tr data-trade-id="${esc(t.id)}">
         <td><strong>${esc(t.ticker)}</strong></td>
         <td style="font-size:0.78rem;color:#aaa">${esc(t.structure)}</td>
         <td class="muted">${(t.entered_at ?? "").slice(0, 10) || "—"}</td>
         <td class="muted">${esc(t.expiry ?? "—")}</td>
         <td>${dteLabel(t.expiry)}</td>
         <td class="muted" style="font-size:0.8rem">${esc(strikesStr)}</td>
+        <td class="spot-price muted" data-ticker="${esc(t.ticker)}">…</td>
         <td class="na">$${(t.entry_credit ?? 0).toFixed(3)}</td>
         <td class="muted" style="font-size:0.78rem">${isDebit ? "Debit" : "Max loss"}: $${(t.max_loss ?? 0).toFixed(3)}</td>
-        <td class="${unrCls}">${unr != null ? fmt$(parseFloat(unr), 3) : "—"}</td>
-        <td class="${unrCls}">${unrTotal != null ? fmt$(unrTotal) : "—"}</td>
+        <td class="pt-pnl-ps ${unrCls}">${unr != null ? fmt$(parseFloat(unr), 3) : "—"}</td>
+        <td class="pt-pnl-total ${unrCls}">${unrTotal != null ? fmt$(unrTotal) : "—"}</td>
         <td class="muted" style="font-size:0.78rem">${esc(t.signal_rating ?? "—")}</td>
         <td>
           <button class="pt-del-btn" data-id="${esc(t.id)}" title="Remove this paper trade">✕</button>
@@ -495,7 +496,7 @@ function renderOpenTradesTable(trades) {
       </tr>`;
   }).join("");
 
-  const hdrs = ["Ticker","Structure","Entered","Expiry","DTE","Strikes","Max Profit","Risk","P&amp;L/sh","P&amp;L $","Signal",""];
+  const hdrs = ["Ticker","Structure","Entered","Expiry","DTE","Strikes","Price","Max Profit","Risk","P&amp;L/sh","P&amp;L $","Signal",""];
   const thRow = hdrs.map((h, i) => {
     if (i === hdrs.length - 1) return `<th></th>`;
     const isSorted = _openSortCol === i;
@@ -520,6 +521,23 @@ function renderOpenTradesTable(trades) {
       renderPortfolioSummary(_openTrades, _latestMarks);
     });
   });
+
+  // Fetch current prices for all unique tickers and fill price cells
+  const uniqueTickers = [...new Set(sorted.map(t => t.ticker).filter(Boolean))];
+  if (uniqueTickers.length) {
+    fetch(`/api/quotes?tickers=${uniqueTickers.join(",")}`)
+      .then(r => r.json())
+      .then(prices => {
+        el.querySelectorAll("td.spot-price[data-ticker]").forEach(cell => {
+          const ticker = cell.dataset.ticker;
+          const price  = prices[ticker];
+          cell.textContent = price != null ? `$${price.toFixed(2)}` : "—";
+        });
+      })
+      .catch(() => {
+        el.querySelectorAll("td.spot-price").forEach(cell => cell.textContent = "—");
+      });
+  }
 }
 
 function renderOpenTradesCards(trades) {
@@ -613,8 +631,31 @@ function applyLiveMarks(marksMap) {
   for (const trade of _openTrades) {
     const live = marksMap[trade.id];
     if (!live) continue;
+
+    // Card view
     const cardEl = document.querySelector(`.pt-trade-card[data-id="${CSS.escape(trade.id)}"]`);
     if (cardEl) _patchCardMetrics(cardEl, trade, live);
+
+    // Table view — patch P&L cells and price cell in the open-positions table
+    const tableEl = document.getElementById("pt-open-table");
+    if (tableEl) {
+      // Price cell — keyed by ticker (multiple rows may share ticker)
+      if (live.ul_price != null) {
+        tableEl.querySelectorAll(`td.spot-price[data-ticker="${CSS.escape(trade.ticker)}"]`)
+          .forEach(cell => { cell.textContent = `$${parseFloat(live.ul_price).toFixed(2)}`; cell.classList.remove("muted"); });
+      }
+      // P&L cells — keyed by trade id on the row
+      const row = tableEl.querySelector(`tr[data-trade-id="${CSS.escape(trade.id)}"]`);
+      if (row && live.unrealized != null) {
+        const unr      = parseFloat(live.unrealized);
+        const unrTotal = unr * 100;
+        const cls      = unr >= 0 ? "pass" : "fail";
+        const plSh  = row.querySelector("td.pt-pnl-ps");
+        const plTot = row.querySelector("td.pt-pnl-total");
+        if (plSh)  { plSh.textContent  = fmt$(unr, 3);  plSh.className  = `pt-pnl-ps ${cls}`; }
+        if (plTot) { plTot.textContent = fmt$(unrTotal); plTot.className = `pt-pnl-total ${cls}`; }
+      }
+    }
   }
   renderPortfolioSummary(_openTrades, marksMap);
   renderDayWiseLog(_allTrades, marksMap);
@@ -1050,7 +1091,9 @@ async function loadDashboard() {
     renderClosedTrades(closedTrades);
     renderDayWiseLog(_allTrades);
 
-    // Live marks, Greeks drift and market analysis are fetched on demand via "Analyze All" button
+    // Auto-fetch live marks on page load to show real-time P&L and price in the table
+    if (openTrades.length > 0) fetchLiveMarks();
+    startLiveRefresh();
 
     // Phase 3: Record performance
     if (typeof window.PerformanceMonitor !== 'undefined') {

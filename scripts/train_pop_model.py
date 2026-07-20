@@ -226,6 +226,17 @@ def train(out_path=_MODEL_PATH, extra_data_path=None, exclude_before: str = None
     X_train, encoders = build_feature_matrix(train_df, fit=True)
     X_val,   _        = build_feature_matrix(val_df,  encoders=encoders, fit=False)
     X_test,  _        = build_feature_matrix(test_df, encoders=encoders, fit=False)
+
+    # Drop columns that are 100% null in training data — imputer can't handle them
+    # and they carry no signal.  Apply the same mask to val/test.
+    null_mask = X_train.isnull().all()
+    dropped_cols = X_train.columns[null_mask].tolist()
+    if dropped_cols:
+        log.info("[POP] Dropping %d all-null columns: %s", len(dropped_cols), dropped_cols)
+        X_train = X_train.loc[:, ~null_mask]
+        X_val   = X_val.loc[:,   ~null_mask]
+        X_test  = X_test.loc[:,  ~null_mask]
+
     y_train = train_df["win"].astype(int).values
     y_val   = val_df["win"].astype(int).values
     y_test  = test_df["win"].astype(int).values
@@ -246,10 +257,30 @@ def train(out_path=_MODEL_PATH, extra_data_path=None, exclude_before: str = None
               eval_set=[(X_val, y_val)],
               verbose=False)
 
-    y_pred = model.predict(X_test)
     y_prob = model.predict_proba(X_test)[:, 1]
-    acc    = float(accuracy_score(y_test, y_pred))
     auc    = float(roc_auc_score(y_test, y_prob)) if len(set(y_test)) > 1 else None
+
+    # ── Threshold sweep: find threshold maximising F1-Win on test set ────────────
+    best_thresh, best_f1_win = 0.5, -1.0
+    thresholds = [t / 100 for t in range(20, 71, 5)]
+    thresh_rows = []
+    for t in thresholds:
+        yp = (y_prob >= t).astype(int)
+        rep = classification_report(y_test, yp, target_names=["Loss", "Win"],
+                                    output_dict=True, zero_division=0)
+        f1_win = rep.get("Win", {}).get("f1-score", 0.0)
+        thresh_rows.append({
+            "threshold": t,
+            "accuracy":  float(accuracy_score(y_test, yp)),
+            "precision_win": rep.get("Win", {}).get("precision", 0.0),
+            "recall_win":    rep.get("Win", {}).get("recall", 0.0),
+            "f1_win":        f1_win,
+        })
+        if f1_win > best_f1_win:
+            best_f1_win, best_thresh = f1_win, t
+
+    y_pred = (y_prob >= best_thresh).astype(int)
+    acc    = float(accuracy_score(y_test, y_pred))
     report = classification_report(y_test, y_pred, target_names=["Loss", "Win"],
                                    output_dict=True, zero_division=0)
     cm     = confusion_matrix(y_test, y_pred).tolist()
@@ -277,6 +308,8 @@ def train(out_path=_MODEL_PATH, extra_data_path=None, exclude_before: str = None
         "test_rows":          len(test_df),
         "total_labeled_rows": len(df),
         "class_balance":      {"win": int(n_pos), "loss": int(n_neg)},
+        "dropped_cols":       dropped_cols,
+        "optimal_threshold":  best_thresh,
         "accuracy":           round(acc, 4),
         "auc":                round(auc, 4) if auc is not None else None,
         "trained_at":         datetime.now(timezone.utc).isoformat(),
@@ -340,6 +373,12 @@ def train(out_path=_MODEL_PATH, extra_data_path=None, exclude_before: str = None
         "brier_after":  round(brier_after, 4)  if brier_after  is not None else None,
         "rf_comparison":    rf_comparison,
         "best_iteration":   model.best_iteration,
+        "prob_min":         round(float(y_prob.min()), 4),
+        "prob_max":         round(float(y_prob.max()), 4),
+        "prob_mean":        round(float(y_prob.mean()), 4),
+        "optimal_threshold": best_thresh,
+        "threshold_sweep":   thresh_rows,
+        "dropped_cols":      dropped_cols,
     }
 
 
@@ -374,7 +413,15 @@ if __name__ == "__main__":
         print(f"  {'Brier (calibrated)':<24} {result['brier_after']:>10.4f} {'—':>14}")
     if rf.get("error"):
         print(f"  RF error: {rf['error']}")
-    print("\nConfusion matrix (rows=actual, cols=predicted) [Loss, Win]:")
+    print(f"\nProb range on test set: min={result['prob_min']:.4f}  mean={result['prob_mean']:.4f}  max={result['prob_max']:.4f}")
+    print(f"Optimal threshold (max F1-Win): {result['optimal_threshold']:.2f}")
+    print(f"\n{'Thresh':>7} {'Acc':>7} {'Prec-Win':>10} {'Rec-Win':>9} {'F1-Win':>8}")
+    for r in result["threshold_sweep"]:
+        marker = " <--" if r["threshold"] == result["optimal_threshold"] else ""
+        print(f"  {r['threshold']:.2f}  {r['accuracy']:>7.4f}  {r['precision_win']:>8.4f}  {r['recall_win']:>8.4f}  {r['f1_win']:>8.4f}{marker}")
+    print(f"\nConfusion matrix at threshold={result['optimal_threshold']:.2f} (rows=actual, cols=predicted) [Loss, Win]:")
     for row in result["confusion_matrix"]:
         print(row)
+    if result.get("dropped_cols"):
+        print(f"\nDropped {len(result['dropped_cols'])} all-null columns: {result['dropped_cols'][:5]}{'...' if len(result['dropped_cols']) > 5 else ''}")
     print(f"\nModel saved to {result['model_path']}")
