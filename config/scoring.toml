@@ -136,10 +136,12 @@ flow         = 1.0    # flow/sentiment matter most when price drifts
 
 [rating]
 strong   =  0.50
-moderate =  0.20
-neutral  =  0.0
-weak     = -0.20
-# below weak → Conflicted
+moderate =  0.10   # lower bound of Moderate; 10–50% of max
+neutral  = -0.10   # lower bound of symmetric Neutral band; -10%–+10% of max
+weak     = -0.20   # lower bound of Weak; -20%–-10% of max
+# below -20% → Conflicted
+# Neutral is a band, not a point: scores within ±10% of the regime max produce "Neutral"
+# regardless of sign, so a tiny negative score no longer jumps directly to "Weak".
 
 # ── Hard gate thresholds (skip trade regardless of score) ─────────────────────
 
@@ -148,6 +150,11 @@ earnings_blackout_days  = 7
 dividend_blackout_days  = 5    # skip if ex-div falls within trade window (future)
 min_open_interest       = 50
 bid_ask_max_pct         = 0.30  # skip leg if (ask-bid)/mid > 30% (future)
+
+# ── Structure selection gates ─────────────────────────────────────────────────
+# Move here rather than hardcoding in select_structure() so backtesting can tune them.
+min_alignment_pct = 0.15   # winner must clear this or result is "No Trade"
+near_tie_margin   = 0.05   # pct gap below which two candidates are flagged as a near-tie
 
 # ── Penalty parameters (reduce score, don't block) ────────────────────────────
 

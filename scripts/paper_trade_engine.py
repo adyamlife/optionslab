@@ -463,16 +463,65 @@ def _expiry_pnl(trade, ul_price):
     return None, None   # Calendar, Diagonal, Jade Lizard — path-dependent
 
 
+# ── Capital-rejected persistence ──────────────────────────────────────────────
+
+def _persist_capital_rejected(entries: list) -> None:
+    """Append capital-rejected trade entries to data/capital_rejected.jsonl."""
+    if not entries:
+        return
+    import json as _json
+    from datetime import datetime as _dt
+    _path = Path(__file__).resolve().parent.parent / "data" / "capital_rejected.jsonl"
+    _path.parent.mkdir(parents=True, exist_ok=True)
+    _now = _dt.now()
+    _date_str = _now.strftime("%Y-%m-%d")
+    _time_str = _now.strftime("%H:%M:%S")
+    with open(_path, "a", encoding="utf-8") as _f:
+        for entry in entries:
+            _f.write(_json.dumps({"date": _date_str, "scan_time": _time_str, **entry}) + "\n")
+    log.info("[capital_rejected] %d entries persisted to capital_rejected.jsonl", len(entries))
+
+
+def load_capital_rejected(days: int = 30) -> list[dict]:
+    """Read capital_rejected.jsonl and return entries grouped by date, newest first."""
+    import json as _json
+    from datetime import datetime as _dt, timedelta as _td
+    _path = Path(__file__).resolve().parent.parent / "data" / "capital_rejected.jsonl"
+    if not _path.exists():
+        return []
+    cutoff = (_dt.now() - _td(days=days)).strftime("%Y-%m-%d")
+    by_date: dict[str, list] = {}
+    try:
+        with open(_path, encoding="utf-8") as _f:
+            for line in _f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    rec = _json.loads(line)
+                except Exception:
+                    continue
+                d = rec.get("date", "")
+                if d < cutoff:
+                    continue
+                by_date.setdefault(d, []).append(rec)
+    except Exception as e:
+        log.warning("[capital_rejected] Failed to read file: %s", e)
+        return []
+    return [{"date": d, "trades": by_date[d]} for d in sorted(by_date, reverse=True)]
+
+
 # ── Select top-3 (mirrors app.py build_top_trades without AI) ────────────────
 
-def _select_top3(rows, ml_snapshot: dict | None = None, open_positions: list | None = None):
-    """Return top-3 enterable candidates using the shared filter/rank pipeline.
+def _select_top3(rows, ml_snapshot: dict | None = None, open_positions: list | None = None, buying_power: float | None = None):
+    """Return (candidates, cap_rejected) using the shared filter/rank pipeline.
 
     ml_snapshot: {ticker: pred_result} from predict_all or ml_cache. When
     provided it is attached to each row as row["ml"] so the confidence gate
     and Kelly sizing have access to pred_dist. When absent the ML gate is
     bypassed (backward compatible).
     open_positions: list of currently open trade dicts for portfolio risk check.
+    cap_rejected: list of dicts for trades filtered by Gate 10 (capital feasibility).
     """
     from scripts.candidate_ranker import rank_candidates
     from scripts.candidate_provider import kelly_from_pred_dist
@@ -490,12 +539,17 @@ def _select_top3(rows, ml_snapshot: dict | None = None, open_positions: list | N
     except Exception:
         _excluded = set()
 
-    # Request extra candidates so excluded ones don't shrink the final list
-    _n_fetch = 3 + len(_excluded) * 2 + 3
-    items = rank_candidates(rows, n=_n_fetch, quality_floor=0, open_positions=open_positions or [], paper_trade=True)
+    # Request extra candidates so excluded ones and capital-blocked ones don't shrink the final list.
+    # Capital gate in run_morning_scan can reject the top items (e.g. expensive debit spreads vs
+    # low buying power), so fetch enough that there are fallbacks after those rejections.
+    _n_fetch = max(15, 3 + len(_excluded) * 2 + 6)
+    _cap_rejected_out: list = []
+    items = rank_candidates(rows, n=_n_fetch, quality_floor=0, open_positions=open_positions or [], paper_trade=True, buying_power=buying_power, _cap_rejected_out=_cap_rejected_out)
+    # Return up to _n_fetch candidates (not capped at 3 here) so the caller's
+    # capital gate and strike checks can skip expensive candidates and still fill 3 slots.
     result = []
     for item in items:
-        if len(result) >= 3:
+        if len(result) >= _n_fetch:
             break
         row, c = item["row"], item["candidate"]
         if c["structure"] in _excluded:
@@ -536,7 +590,7 @@ def _select_top3(rows, ml_snapshot: dict | None = None, open_positions: list | N
             "pred_dist":        pred_dist,
             "kelly":            kelly,
         })
-    return result
+    return result, _cap_rejected_out
 
 
 # ── ML scores snapshot at trade entry ─────────────────────────────────────────
@@ -717,14 +771,20 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
     else:
         log.debug("[circuit breaker] disabled — skipping loss/buying-power enforcement.")
 
-    top3 = _select_top3(rows, ml_snapshot=_ml_snapshot, open_positions=open_trades)
+    candidates, _cap_rejected = _select_top3(rows, ml_snapshot=_ml_snapshot, open_positions=open_trades, buying_power=cb["buying_power"])
+    _persist_capital_rejected(_cap_rejected)
     today_str = date.today().strftime("%Y%m%d")
     seen      = {t["id"] for t in trades}
     new       = []
+    rank      = 0  # incremented only when a trade is actually recorded
 
-    for rank, c in enumerate(top3, 1):
+    for c in candidates:
+        if len(new) >= 3:
+            break
+        rank += 1
         tid = f"{today_str}{scan_tag}_{c['ticker']}_{c['structure'][:3].upper()}_{rank}"
         if tid in seen:
+            rank -= 1  # slot not consumed
             continue
 
         ep = _entry_price(c)
@@ -750,6 +810,7 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
                 f"[paper_trade] Skipping {c['ticker']} {c['structure']} "
                 f"— requires_margin=True but paper_trades.margin_account=false"
             )
+            rank -= 1
             continue
 
         if _cst is not None and _cst.strike_schema == _SS.IRON_CONDOR:
@@ -761,26 +822,30 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
             }
             if any(v is None for v in strike_dict.values()):
                 log.warning(f"Skipping {c['ticker']} Iron Condor — one or more strikes are None: {strike_dict}")
+                rank -= 1
                 continue
         elif _cst is not None and _cst.strike_schema == _SS.SINGLE_LEG:
             strike_dict = {"short": c.get("short_strike")}
             if strike_dict["short"] is None:
                 log.warning(f"Skipping {c['ticker']} {c['structure']} — short strike is None")
+                rank -= 1
                 continue
         else:
             strike_dict = {"short": c.get("short_strike"), "long": c.get("long_strike")}
             if strike_dict["short"] is None or strike_dict["long"] is None:
                 log.warning(f"Skipping {c['ticker']} {c['structure']} — short or long strike is None")
+                rank -= 1
                 continue
 
         # Buying power check — enforced against circuit breaker's computed figure.
         from scripts.candidate_provider import compute_capital_required as _cap_req
-        _cap_needed = (_cap_req(c) or 0) * 100  # per-share → per-contract
+        _cap_needed = _cap_req(c) or 0  # already per-contract (×100 done inside compute_capital_required)
         if _cap_needed > 0 and _cap_needed > cb["buying_power"]:
             log.warning(
                 "[capital] Skipping %s %s — needs $%.2f but only $%.2f buying power available.",
                 c["ticker"], c["structure"], _cap_needed, cb["buying_power"],
             )
+            rank -= 1
             continue
         # Deduct this trade's capital from buying_power so subsequent candidates
         # in the same loop don't double-count available funds.

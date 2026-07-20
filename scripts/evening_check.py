@@ -2,10 +2,13 @@
 """
 Standalone entry point for Windows Task Scheduler — runs at 5:00 PM EDT.
 Schedule: daily Mon-Fri.
+
+Monday evenings also run the weekly model monitor (feature drift + Brier trend).
 """
 import sys
 import json
 import logging
+from datetime import date
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -80,5 +83,31 @@ if result.get("newly_labeled", 0) > 0:
         logging.error("[FAILURES] Analysis failed: %s", _e)
 else:
     logging.info("[POP] No new labels tonight — skipping retrain and failure analysis.")
+
+# ── Weekly model monitor (Mondays only) ─────────────────────────────────────
+if date.today().weekday() == 0:  # 0 = Monday
+    logging.info("[MONITOR] Monday — running weekly model health check.")
+    try:
+        from scripts.model_monitor import run_monitor as _mm_run
+        _mr = _mm_run()
+        logging.info(
+            "[MONITOR] drift=%s  degraded=%s  flagged_features=%d",
+            _mr.get("drift_status", "?"),
+            _mr.get("degraded_models") or "none",
+            _mr.get("n_flagged", 0),
+        )
+        if _mr.get("degraded_models"):
+            logging.warning(
+                "[MONITOR] Models degraded — consider retraining: %s",
+                _mr["degraded_models"],
+            )
+        if _mr.get("n_flagged", 0) > 3:
+            logging.warning(
+                "[MONITOR] %d features show distribution shift: %s",
+                _mr["n_flagged"],
+                _mr["flagged_features"][:5],
+            )
+    except Exception as _e:
+        logging.error("[MONITOR] Weekly health check failed: %s", _e)
 
 sys.exit(0)

@@ -17,6 +17,11 @@ ml_conviction_meta = 10
 ml_conviction_conf = 0.80
 # Gate 0 volatility route: candidates admitted if ML expects a large expected move
 expected_move_threshold = 0.12
+# Gate 10: capital feasibility — fraction of buying power a single trade may use.
+# Reserves headroom for commissions, assignment margin swings, concurrent trades,
+# and intraday BP fluctuations. 0.80 = a single trade can consume at most 80% of BP.
+# Set to 1.0 to disable the reservation (use full buying power).
+max_capital_utilization = 1.0
 
 [weights]
 # Composite score weights — must sum to 1.0

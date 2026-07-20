@@ -14,6 +14,35 @@
 .btn-sm:hover { background:var(--surface3); }
 .card { background:var(--surface1); border:1px solid var(--border); border-radius:6px; padding:1rem 1.2rem; }
 
+/* ── Capital-Rejected Trades ─────────────────────────────── */
+.crj-day { margin-bottom:1.2rem; }
+.crj-day-hdr { display:flex; align-items:center; gap:.75rem; padding:.35rem 0 .5rem; border-bottom:1px solid var(--border); margin-bottom:.6rem; }
+.crj-day-date { font-size:.82rem; font-weight:600; color:var(--text-muted); font-variant-numeric:tabular-nums; }
+.crj-day-count { font-size:.78rem; color:var(--text-muted); }
+.crj-trades { display:flex; flex-direction:column; gap:.6rem; }
+.crj-card { border:1px solid var(--border); border-radius:6px; overflow:hidden; }
+.crj-card-top { background:var(--err-bg, rgba(248,113,113,.08)); border-bottom:1px solid var(--border); padding:.55rem .9rem; display:flex; align-items:center; justify-content:space-between; }
+.crj-ticker { font-size:.95rem; font-weight:700; color:var(--err, #f87171); }
+.crj-struct { font-size:.82rem; color:var(--text-muted); margin-left:.5rem; }
+.crj-badge { font-size:.7rem; font-weight:600; letter-spacing:.04em; padding:2px 8px; border-radius:3px; background:var(--err, #f87171); color:#fff; }
+.crj-card-body { padding:.7rem .9rem; display:flex; flex-direction:column; gap:.6rem; }
+.crj-cap-grid { display:grid; grid-template-columns:1fr 1fr; gap:.6rem; }
+.crj-cap-block { border:1px solid var(--border-faint, #2a2a2a); border-radius:4px; padding:.45rem .65rem; }
+.crj-cap-label { font-size:.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.05em; margin-bottom:.2rem; }
+.crj-cap-amount { font-size:1.05rem; font-weight:600; font-variant-numeric:tabular-nums; }
+.crj-bad { color:var(--err, #f87171); }
+.crj-ok  { color:var(--text-muted); }
+.crj-bar-wrap { display:flex; align-items:center; gap:.4rem; margin-top:.3rem; }
+.crj-bar { flex:1; height:3px; border-radius:2px; background:var(--border); overflow:hidden; }
+.crj-bar-fill { height:100%; border-radius:2px; background:var(--err, #f87171); }
+.crj-bar-pct { font-size:.72rem; color:var(--text-muted); white-space:nowrap; }
+.crj-shortfall { font-size:.75rem; color:var(--err, #f87171); margin-top:.25rem; }
+.crj-meta { display:grid; grid-template-columns:1fr 1fr; gap:0 1.2rem; border-top:1px solid var(--border-faint, #2a2a2a); padding-top:.5rem; }
+.crj-meta-row { display:flex; justify-content:space-between; align-items:center; padding:.18rem 0; border-bottom:1px solid var(--border-faint, #2a2a2a); font-size:.8rem; }
+.crj-meta-row:last-child { border-bottom:none; }
+.crj-key { color:var(--text-muted); }
+.crj-val { font-weight:600; font-variant-numeric:tabular-nums; }
+
 /* ── Model Audit ─────────────────────────────────────────── */
 .audit-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1rem; margin-top:.5rem; }
 .audit-card { /*background:var(--surface2,#1a1a1a);*/ border:1px solid var(--border); border-radius:5px; padding:.75rem .9rem; }
