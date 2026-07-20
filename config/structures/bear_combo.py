@@ -4,8 +4,8 @@ BEAR_COMBO = OptionStructure(
     name          = "Bear Combo",
     is_credit     = False,        # usually net debit (put debit > call credit); can flip
     option_type   = "both",
-    iv_env        = "High",
-    trend         = "Downtrend",
+    allowed_iv      = ("High",),
+    allowed_trends  = ("Downtrend",),
     strike_schema = StrikeSchema.NONE,   # 4 legs, custom field names
     expiry_pnl_fn = "bear_combo",
     # put debit side: long put delta (closer to ATM for directional exposure)

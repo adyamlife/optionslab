@@ -1,0 +1,115 @@
+2026-07-20 10:00:08,238 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-20 10:00:08,249 INFO [prefetch] step 1 — batch daily history for 102 tickers
+2026-07-20 10:00:29,102 INFO [prefetch] daily history done: 102 ok, 0 fail  (20.9s)
+2026-07-20 10:00:29,102 INFO [prefetch] step 2 — batch weekly history for 101 tickers
+2026-07-20 10:00:46,342 INFO [prefetch] weekly history done: 101 ok, 0 fail  (38.1s)
+2026-07-20 10:00:46,345 INFO [prefetch] step 3+4 — expirations + chains for 101 tickers (serial)
+2026-07-20 10:02:25,198 INFO [prefetch] done in 137s — hist 102/102, weekly 101/101, exps 101/101, chains 213 (fail 0)
+2026-07-20 10:02:25,200 INFO [scan] cache ready — 517 total keys, 213 chain keys
+2026-07-20 10:02:25,715 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-20 10:02:25,718 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-20 10:02:25,722 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-20 10:02:26,174 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-20 10:02:26,202 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-20 10:02:26,752 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-20 10:02:27,476 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-20 10:02:37,206 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:02:38,497 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:02:39,728 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-20 10:02:40,532 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-20 10:02:40,825 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-20 10:02:41,728 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-20 10:02:51,102 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:02:51,216 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:02:55,614 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:02:55,722 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:03:11,534 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-20 10:03:11,733 WARNING analyze_ticker(LRCX, short_dte) failed: 'NoneType' object has no attribute 'copy'
+2026-07-20 10:03:16,429 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:03:23,285 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:03:28,470 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:03:30,657 WARNING analyze_ticker(SNOW, short_dte) failed: Expiration `2026-09-18` cannot be found. Available expirations are: []
+2026-07-20 10:03:32,943 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-20 10:03:37,635 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:03:38,367 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-20 10:03:40,463 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-20 10:03:40,553 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-20 10:03:48,592 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:03:52,988 WARNING analyze_ticker(RGTI, short_dte) failed: Expiration `2026-09-18` cannot be found. Available expirations are: []
+2026-07-20 10:03:53,377 WARNING analyze_ticker(TEAM, short_dte) failed: 'NoneType' object has no attribute 'copy'
+2026-07-20 10:03:54,140 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:03:56,719 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:03:56,763 WARNING analyze_ticker(INTU, short_dte) failed: 'NoneType' object has no attribute 'copy'
+2026-07-20 10:03:56,767 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:03:56,924 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:03:58,146 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-20 10:03:59,589 WARNING analyze_ticker(NFLX, short_dte) failed: 'NoneType' object has no attribute 'copy'
+2026-07-20 10:03:59,639 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:04:09,703 WARNING analyze_ticker(MELI, short_dte) failed: 'NoneType' object has no attribute 'copy'
+2026-07-20 10:04:11,872 WARNING analyze_ticker(UBER, short_dte) failed: 'NoneType' object has no attribute 'copy'
+2026-07-20 10:04:18,507 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:04:18,537 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:04:18,543 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-20 10:04:20,724 WARNING analyze_ticker(NKE, short_dte) failed: 'NoneType' object has no attribute 'copy'
+2026-07-20 10:04:20,864 WARNING analyze_ticker(APP, short_dte) failed: 'NoneType' object has no attribute 'copy'
+2026-07-20 10:04:43,801 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:04:44,042 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:04:46,495 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:04:46,497 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:04:46,499 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:04:46,517 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:04:58,077 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:04:58,170 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:05:04,618 ERROR HTTP Error 503: upstream connect error or disconnect/reset before headers. retried and the latest reset reason: connection timeout
+2026-07-20 10:05:05,936 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:05:05,988 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:05:06,249 WARNING analyze_ticker(BSX, short_dte) failed: Expiration `2026-09-18` cannot be found. Available expirations are: []
+2026-07-20 10:05:07,114 WARNING analyze_ticker(WMT, short_dte) failed: Expiration `2026-09-18` cannot be found. Available expirations are: []
+2026-07-20 10:05:20,160 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:05:23,278 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:05:23,771 WARNING analyze_ticker(BAC, short_dte) failed: 'NoneType' object has no attribute 'copy'
+2026-07-20 10:05:31,107 WARNING analyze_ticker(CAT, short_dte) failed: Expiration `2026-09-18` cannot be found. Available expirations are: []
+2026-07-20 10:05:31,156 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:05:31,193 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:05:31,257 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-20 10:05:31,713 WARNING analyze_ticker(DE, short_dte) failed: Expiration `2026-09-18` cannot be found. Available expirations are: []
+2026-07-20 10:05:32,163 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-20 10:05:37,664 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:05:39,669 WARNING analyze_ticker(OXY, short_dte) failed: Expiration `2026-09-18` cannot be found. Available expirations are: []
+2026-07-20 10:05:41,092 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:05:52,328 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:05:52,369 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-07-20 10:05:52,680 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-07-20 10:05:54,148 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-07-20 10:05:54,319 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-07-20 10:05:54,420 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-07-20 10:05:55,027 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-07-20 10:05:57,037 WARNING analyze_ticker(VST, short_dte) failed: 'NoneType' object has no attribute 'copy'
+2026-07-20 10:05:58,796 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:06:00,262 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:06:00,476 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:06:00,884 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:06:02,068 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-07-20 10:06:03,465 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-07-20 10:06:06,783 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:06:07,580 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-07-20 10:06:08,284 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:06:08,935 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-07-20 10:06:16,557 WARNING analyze_ticker(WFC, short_dte) failed: 'NoneType' object has no attribute 'copy'
+2026-07-20 10:06:22,031 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: LOW"}}}
+2026-07-20 10:06:23,188 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:06:23,190 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:06:23,330 ERROR HTTP Error 503: upstream connect error or disconnect/reset before headers. retried and the latest reset reason: remote connection failure, transport failure reason: delayed connect error: Connection refused
+2026-07-20 10:06:24,166 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-20 10:06:27,731 WARNING analyze_ticker(MRNA, short_dte) failed: 'NoneType' object has no attribute 'copy'
+2026-07-20 10:06:28,858 WARNING analyze_ticker(JNJ, short_dte) failed: Expiration `2026-09-18` cannot be found. Available expirations are: []
+2026-07-20 10:06:31,755 ERROR HTTP Error 503: upstream connect error or disconnect/reset before headers. retried and the latest reset reason: remote connection failure, transport failure reason: delayed connect error: Connection refused
+2026-07-20 10:06:54,080 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: LOW"}}}
+2026-07-20 10:06:57,830 INFO ml_cache disk file is stale (238006s) — trying DuckDB
+2026-07-20 10:06:59,827 INFO ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 10:06:59,903 INFO [filter] 333 rejected, 156 survived — gate breakdown: {'expected_roi': 125, 'strikes_incomplete': 139, 'iv_edge': 30, 'min_profit': 23, 'ml_confidence': 16}
+2026-07-20 10:07:00,511 WARNING [capital] Skipping MSFT Call Debit Spread — needs $83500.00 but only $1000.00 buying power available.
+2026-07-20 10:07:01,459 WARNING [capital] Skipping META Put Debit Spread — needs $200000.00 but only $1000.00 buying power available.
+2026-07-20 10:07:02,054 WARNING [capital] Skipping SPY Put Debit Spread — needs $46200.00 but only $1000.00 buying power available.
+2026-07-20 10:08:12,445 INFO [scan_morning] scan snapshots: 116 saved, 0 skipped (opened), 0 errors
+2026-07-20 10:08:12,456 INFO Scan snapshots: 116 saved, 0 skipped

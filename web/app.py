@@ -1156,6 +1156,16 @@ def api_paper_trades_summary():
         return jsonify({"ok": False, "error": str(e)}), 500
 
 
+@app.route("/api/paper-trades/capital-rejected")
+def api_capital_rejected():
+    try:
+        days = int(request.args.get("days", 30))
+        data = pte.load_capital_rejected(days=days)
+        return jsonify({"ok": True, "days": data, "total_days": len(data)})
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+
 _scan_status = {}
 _run_history  = []   # in-memory, seeded from disk on startup, newest last
 _RUN_HISTORY_MAX  = 500

@@ -127,19 +127,59 @@ def max_score(regime: str) -> float:
 
 # ── Rating ────────────────────────────────────────────────────────────────────
 
-def score_to_rating(score: float, regime: str) -> str:
-    """Convert a raw weighted score to a human label using toml thresholds."""
+def score_to_rating(pct: float) -> str:
+    """
+    Convert a normalised percentage to a qualitative label.
+
+    Accepts pct = score / effective_max, where effective_max is the sum of
+    weights for sub-factors that were applicable to the structure being scored.
+    Callers are responsible for normalisation; this function has no knowledge
+    of regimes, budgets, or raw scores — it is a pure threshold lookup.
+
+    Neutral is a ±10% band so that small-magnitude positive and negative
+    scores produce the same label rather than jumping between Weak and Neutral
+    on tiny score changes (see scoring.toml [rating] for thresholds).
+    """
     cfg = _cfg()
     r   = cfg["rating"]
-    mx  = max_score(regime)
-    if mx == 0:
-        return "Neutral"
-    pct = score / mx
     if pct >= r["strong"]:   return "Strong"
     if pct >= r["moderate"]: return "Moderate"
     if pct >= r["neutral"]:  return "Neutral"
     if pct >= r["weak"]:     return "Weak"
     return "Conflicted"
+
+
+# ── Regime explainability ────────────────────────────────────────────────────
+
+_REGIME_EXPLANATIONS: dict[str, str] = {
+    "fear":       ("High VIX + weak futures — macro context dominates; "
+                   "technical signals are less discriminating in correlated sell-offs"),
+    "calm_trend": ("Low VIX + strong trend (ADX) — price action is highly reliable; "
+                   "technical signals carry double the normal weight"),
+    "chop":       ("No clear macro regime — flow and oscillator signals carry more "
+                   "weight than trend; technicals are noisier than usual"),
+}
+
+
+def regime_explanation(regime: str) -> str:
+    """Human-readable sentence describing why this regime shifted the weight profile."""
+    return _REGIME_EXPLANATIONS.get(regime, f"Regime '{regime}' — standard weighting")
+
+
+def weight_profile(regime: str) -> dict[str, float]:
+    """
+    Effective budget for each factor in the given regime.
+
+    Returns the actual budget (base × budget_mult) so the UI can show
+    'why did flow matter less today?' without the user knowing how weights work.
+    """
+    cfg = _cfg()
+    result: dict[str, float] = {}
+    for factor in cfg["factors"]:
+        base = float(cfg["factors"][factor]["budget"])
+        mult = cfg["regime"][regime]["budget_mult"].get(factor, 1.0)
+        result[factor] = round(base * mult, 4)
+    return result
 
 
 # ── Gate / penalty accessors ──────────────────────────────────────────────────

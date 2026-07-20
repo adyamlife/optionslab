@@ -319,7 +319,8 @@ def evaluate_candidate(row: dict, candidate: dict) -> dict:
     score, reasons, adjustments, ml_summary, verdict_cap = _apply_ml_signals(
         score, reasons, row.get("ml"), candidate.get("structure")
     )
-    verdict = sc.score_to_rating(score, regime)
+    _max = sc.max_score(regime) or 1.0
+    verdict = sc.score_to_rating(score / _max)
     if verdict_cap and _RATING_ORDER.get(verdict, 0) > _RATING_ORDER.get(verdict_cap, 0):
         verdict = verdict_cap
 
@@ -413,31 +414,43 @@ def evaluate_position(row: dict, position: dict) -> dict:
     score, reasons, adjustments, ml_summary, verdict_cap = _apply_ml_signals(
         score, reasons, row.get("ml"), structure
     )
-    verdict = sc.score_to_rating(score, regime)
+    _max = sc.max_score(regime) or 1.0
+    verdict = sc.score_to_rating(score / _max)
     if verdict_cap and _RATING_ORDER.get(verdict, 0) > _RATING_ORDER.get(verdict_cap, 0):
         verdict = verdict_cap
-    if urgent and verdict in ("Strong", "Moderate", "Neutral"):
-        verdict = "Weak"  # time pressure should never read as fine
+
+    # Signal quality and execution urgency are separate concerns.
+    # verdict reflects market/signal alignment; time_warning carries the DTE constraint.
+    # A technically sound position should not read as "Weak" just because time is short.
+    time_warning = (f"Only {dte}d to expiry — theta decay critical." if urgent else None)
 
     if verdict in ("Strong", "Moderate"):
-        action = ("Consider taking profits or trailing a stop."
-                  if (pnl_pct is not None and pnl_pct >= 50)
-                  else "Hold — thesis intact.")
+        if urgent:
+            action = "Signal intact, but time is short — close for remaining credit or roll to next expiry."
+        elif pnl_pct is not None and pnl_pct >= 50:
+            action = "Consider taking profits or trailing a stop."
+        else:
+            action = "Hold — thesis intact."
     elif verdict in ("Weak", "Conflicted"):
-        action = ("Close or roll soon — limited time left and conditions have turned."
-                  if urgent
-                  else "Re-evaluate thesis — consider rolling, hedging, or closing.")
-    else:
-        action = "No action needed yet — keep watching trend and time decay."
+        if urgent:
+            action = "Close or roll soon — limited time left and conditions have turned."
+        else:
+            action = "Re-evaluate thesis — consider rolling, hedging, or closing."
+    else:  # Neutral
+        if urgent:
+            action = f"Mixed signals with only {dte}d remaining — lean toward closing to avoid last-week decay."
+        else:
+            action = "No action needed yet — keep watching trend and time decay."
 
     return {
-        "verdict":     verdict,
-        "verdict_cls": _RATING_CLASS.get(verdict, "warn"),
-        "score":       round(score, 3),
-        "bias":        get_structure_bias(structure),
-        "reasons":     reasons,
-        "action":      action,
-        "adjustments": adjustments,
-        "ml_summary":  ml_summary,
-        "confidence":  "Low" if verdict_cap else "Normal",
+        "verdict":      verdict,
+        "verdict_cls":  _RATING_CLASS.get(verdict, "warn"),
+        "score":        round(score, 3),
+        "bias":         get_structure_bias(structure),
+        "reasons":      reasons,
+        "action":       action,
+        "time_warning": time_warning,
+        "adjustments":  adjustments,
+        "ml_summary":   ml_summary,
+        "confidence":   "Low" if verdict_cap else "Normal",
     }

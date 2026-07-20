@@ -20,6 +20,12 @@ from scripts.data_fetch import (
     get_max_pain, get_oi_concentration, get_vix_context, get_macro_context,
 )
 from scripts.black_scholes import delta as bs_delta, theta as bs_theta, gamma as bs_gamma, vega as bs_vega
+from scripts.binomial_pricer import (
+    price as _bin_price,
+    delta as _bin_delta,
+    theta as _bin_theta,
+    should_use_binomial as _should_use_binomial,
+)
 import yfinance as yf
 from config import scoring as sc
 
@@ -56,6 +62,40 @@ def _net_greeks(spot, T, long_row, short_row, option_type, short_T=None, r=RISK_
                 round(l_gm - s_gm, 6), round(l_vg - s_vg, 4))
     except Exception:
         return None, None, None, None
+
+
+def _option_price(
+    spot:        float,
+    strike:      float,
+    T:           float,
+    r:           float,
+    sigma:       float,
+    option_type: str,
+    days_to_ex_div: int | None = None,
+    is_index:    bool = False,
+) -> float:
+    """
+    Return option price using CRR binomial tree when early exercise is relevant
+    (individual stock puts, or calls near ex-dividend date), otherwise Black-Scholes.
+
+    Index options (SPX, SPY, QQQ) are always European — BS is exact.
+    """
+    if not is_index and _should_use_binomial(option_type, int(T * 365) if T else 0, days_to_ex_div):
+        try:
+            return _bin_price(spot, strike, T, r, sigma, option_type, american=True)
+        except Exception:
+            pass  # fall through to BS on any numeric error
+    # Black-Scholes (European)
+    from scipy.stats import norm
+    import math
+    if T <= 0 or sigma <= 0:
+        return max(spot - strike, 0) if option_type == "call" else max(strike - spot, 0)
+    d1 = (math.log(spot / strike) + (r + 0.5 * sigma ** 2) * T) / (sigma * math.sqrt(T))
+    d2 = d1 - sigma * math.sqrt(T)
+    disc_K = strike * math.exp(-r * T)
+    if option_type == "call":
+        return float(spot * norm.cdf(d1) - disc_K * norm.cdf(d2))
+    return float(disc_K * norm.cdf(-d2) - spot * norm.cdf(-d1))
 
 
 # STRUCTURE_MATRIX, ALL_STRUCTURES imported from config.structures above
@@ -238,254 +278,583 @@ def loss_note(max_loss, max_loss_limit):
     return meets, note
 
 
-def compute_signal_alignment(recommended_structure, trend, weekly_trend, rsi, macd_trend, news_sentiment,
-                              adx=None, rel_volume=None, pcr=None, pcr_sentiment=None,
-                              ema200_position=None, iv_term_shape=None,
-                              short_interest=None, vol_skew_pct=None,
-                              analyst_label=None, iv_premium=None,
-                              regime="chop"):
+def compute_signal_alignment(
+    recommended_structure: str,
+    trend, weekly_trend, rsi, macd_trend, news_sentiment,
+    adx=None, rel_volume=None, pcr=None, pcr_sentiment=None,
+    ema200_position=None, iv_term_shape=None,
+    short_interest=None, vol_skew_pct=None,
+    analyst_label=None, iv_premium=None,
+    regime="chop",
+) -> dict:
     """
-    Score how well technical and flow signals agree with the recommended structure.
-    Each sub-factor contributes ±get_sub_weight(factor, sub, regime) instead of flat ±1,
-    so the total budget per factor stays constant regardless of how sub-weights are tuned.
-    Returns a dict with score, rating, and notes.
-    """
-    score = 0.0
-    notes = []
+    Score how well current signals support the given structure.
 
-    def w(factor, sub):
+    Each sub-factor contributes ±weight where weight = get_sub_weight(factor, sub, regime).
+    Both the contribution and the applicable weight are tracked independently so that
+    pct = score / effective_max is comparable across structures with different numbers
+    of applicable checks — a structure with fewer applicable sub-factors is not penalised
+    by the global regime budget.
+
+    effective_max is the sum of weights for all checks *applicable* to this structure —
+    meaning the structure has a scoring rule for that sub-factor. A check that fired with
+    value=0 (neutral zone, e.g. ADX 20–25) still enters effective_max because the
+    evidence existed; only checks where the structure has no rule at all are excluded.
+
+    Returns:
+        score         — raw weighted sum (positive = aligned, negative = conflicted)
+        effective_max — sum of weights for applicable checks (always ≥ 0)
+        pct           — score / effective_max; comparable across structures for ranking
+        rating        — qualitative label from score_to_rating(pct)
+        notes         — flat list of all explanations (scored + monitoring)
+        contributions — scored items only, with rich metadata for UI/audit
+        regime        — regime used for weight computation
+    """
+    score         = 0.0
+    effective_max = 0.0
+    contributions: list[dict] = []
+    notes:         list[str]  = []
+
+    def w(factor: str, sub: str) -> float:
         return sc.get_sub_weight(factor, sub, regime)
+
+    def _add(factor: str, subfactor: str, wt: float, value: float, explanation: str) -> None:
+        """
+        Record an applicable check.
+
+        wt always enters effective_max (the check was applicable to this structure).
+        value=0 means the signal was neutral — the denominator still grows, keeping
+        pct honest. value=0 entries are NOT added to contributions or notes since
+        they add no signal and would clutter the UI.
+        """
+        nonlocal score, effective_max
+        score         += value
+        effective_max += wt
+        if value != 0:
+            contributions.append({
+                "factor":       factor,
+                "subfactor":    subfactor,
+                "weight":       round(wt, 4),
+                "contribution": round(value, 4),
+                "direction":    "positive" if value > 0 else "negative",
+                "explanation":  explanation,
+            })
+            if explanation:
+                notes.append(explanation)
+
+    def _note(explanation: str) -> None:
+        """Monitoring note only — no score, not in contributions."""
+        notes.append(explanation)
 
     # ── Technical signals ─────────────────────────────────────────────────────
 
-    # --- EMA 200 (institutional trend filter) ---
+    # EMA 200 — institutional trend filter
     if ema200_position is not None:
-        bullish_structures = ("Put Credit Spread", "Call Debit Spread", "Diagonal Spread", "Risk Reversal", "Financed Long Call", "Ratio Call Backspread")
-        bearish_structures = ("Call Credit Spread", "Put Debit Spread", "Bear Combo", "Financed Long Put", "Ratio Put Backspread")
+        _bullish = ("Put Credit Spread", "Call Debit Spread", "Diagonal Spread",
+                    "Risk Reversal", "Financed Long Call", "Ratio Call Backspread")
+        _bearish = ("Call Credit Spread", "Put Debit Spread", "Bear Combo",
+                    "Financed Long Put", "Ratio Put Backspread")
         wt = w("technical", "ema200")
-        if recommended_structure in bullish_structures:
+        if recommended_structure in _bullish:
             if ema200_position == "above":
-                score += wt; notes.append("Price above EMA200 — institutional uptrend confirms bullish bias")
+                _add("Technical", "EMA200", wt, +wt,
+                     "Price above EMA200 — institutional uptrend confirms bullish bias")
             else:
-                score -= wt; notes.append("Price below EMA200 — institutional downtrend is headwind for bullish trade")
-        elif recommended_structure in bearish_structures:
+                _add("Technical", "EMA200", wt, -wt,
+                     "Price below EMA200 — institutional downtrend is headwind for bullish trade")
+        elif recommended_structure in _bearish:
             if ema200_position == "below":
-                score += wt; notes.append("Price below EMA200 — institutional downtrend confirms bearish bias")
+                _add("Technical", "EMA200", wt, +wt,
+                     "Price below EMA200 — institutional downtrend confirms bearish bias")
             else:
-                score -= wt; notes.append("Price above EMA200 — institutional uptrend is headwind for bearish trade")
+                _add("Technical", "EMA200", wt, -wt,
+                     "Price above EMA200 — institutional uptrend is headwind for bearish trade")
         elif recommended_structure in ("Iron Condor", "Calendar Spread"):
-            notes.append(f"Price {ema200_position} EMA200 — monitor for trend resumption out of range")
+            _note(f"Price {ema200_position} EMA200 — monitor for trend resumption out of range")
 
-    # --- Weekly trend ---
+    # Weekly trend
     if weekly_trend and weekly_trend not in ("N/A", "Range-bound"):
         wt = w("technical", "weekly_trend")
         if weekly_trend == trend:
-            score += wt; notes.append(f"weekly trend confirms {trend}")
+            _add("Technical", "Weekly Trend", wt, +wt,
+                 f"Weekly trend confirms {trend}")
         else:
-            score -= wt; notes.append(f"weekly trend ({weekly_trend}) conflicts with daily ({trend})")
+            _add("Technical", "Weekly Trend", wt, -wt,
+                 f"Weekly trend ({weekly_trend}) conflicts with daily ({trend})")
 
-    # --- ADX (trend strength) ---
+    # ADX — trend strength / choppiness
     if adx is not None:
         wt          = w("technical", "adx")
-        directional = recommended_structure in (
+        _directional = recommended_structure in (
             "Put Credit Spread", "Call Credit Spread", "Call Debit Spread", "Put Debit Spread"
         )
-        neutral     = recommended_structure in ("Iron Condor", "Calendar Spread")
-        if adx > 25:
-            if directional:
-                score += wt; notes.append(f"ADX {adx} strong trend — confirms directional trade")
-            elif neutral:
-                score -= wt; notes.append(f"ADX {adx} strong trend — breakout risk for neutral trade")
-        elif adx < 20:
-            if directional:
-                score -= wt; notes.append(f"ADX {adx} choppy market — weak case for directional trade")
-            elif neutral:
-                score += wt; notes.append(f"ADX {adx} choppy range — supports neutral trade")
+        _neutral_struct = recommended_structure in ("Iron Condor", "Calendar Spread")
+        if _directional or _neutral_struct:
+            if adx > 25:
+                if _directional:
+                    _add("Technical", "ADX", wt, +wt,
+                         f"ADX {adx:.0f} strong trend — confirms directional trade")
+                else:
+                    _add("Technical", "ADX", wt, -wt,
+                         f"ADX {adx:.0f} strong trend — breakout risk for neutral trade")
+            elif adx < 20:
+                if _directional:
+                    _add("Technical", "ADX", wt, -wt,
+                         f"ADX {adx:.0f} choppy market — weak case for directional trade")
+                else:
+                    _add("Technical", "ADX", wt, +wt,
+                         f"ADX {adx:.0f} choppy range — supports neutral trade")
+            else:
+                # ADX 20–25: indeterminate — still applicable evidence, contributes 0 to score
+                _add("Technical", "ADX", wt, 0, "")
 
-    # --- RSI ---
+    # RSI
     if rsi is not None:
         wt = w("technical", "rsi")
         if recommended_structure == "Put Credit Spread":
+            # All RSI values produce a contribution (no neutral zone for this structure)
             if rsi < 50:
-                score -= wt; notes.append(f"RSI {rsi} below midline — weak bullish momentum")
+                _add("Technical", "RSI", wt, -wt,
+                     f"RSI {rsi:.0f} below midline — weak bullish momentum")
             elif rsi > 70:
-                score -= wt; notes.append(f"RSI {rsi} overbought — pullback risk")
+                _add("Technical", "RSI", wt, -wt,
+                     f"RSI {rsi:.0f} overbought — pullback risk")
             else:
-                score += wt; notes.append(f"RSI {rsi} healthy for uptrend")
+                _add("Technical", "RSI", wt, +wt,
+                     f"RSI {rsi:.0f} healthy for uptrend")
         elif recommended_structure == "Call Credit Spread":
             if rsi > 50:
-                score -= wt; notes.append(f"RSI {rsi} above midline — weak bearish momentum")
+                _add("Technical", "RSI", wt, -wt,
+                     f"RSI {rsi:.0f} above midline — weak bearish momentum")
             elif rsi < 30:
-                score -= wt; notes.append(f"RSI {rsi} oversold — bounce risk")
+                _add("Technical", "RSI", wt, -wt,
+                     f"RSI {rsi:.0f} oversold — bounce risk")
             else:
-                score += wt; notes.append(f"RSI {rsi} healthy for downtrend")
+                _add("Technical", "RSI", wt, +wt,
+                     f"RSI {rsi:.0f} healthy for downtrend")
         elif recommended_structure in ("Iron Condor", "Calendar Spread"):
             if 40 <= rsi <= 60:
-                score += wt; notes.append(f"RSI {rsi} neutral — supports range-bound")
+                _add("Technical", "RSI", wt, +wt,
+                     f"RSI {rsi:.0f} neutral — supports range-bound")
             elif rsi > 70 or rsi < 30:
-                score -= wt; notes.append(f"RSI {rsi} extended — breakout/breakdown risk for neutral trade")
+                _add("Technical", "RSI", wt, -wt,
+                     f"RSI {rsi:.0f} extended — breakout/breakdown risk for neutral trade")
+            else:
+                # RSI 30–40 or 60–70: mild momentum present — applicable but ambiguous
+                _add("Technical", "RSI", wt, 0, "")
         elif recommended_structure == "Call Debit Spread":
             if 50 <= rsi <= 70:
-                score += wt; notes.append(f"RSI {rsi} bullish momentum")
+                _add("Technical", "RSI", wt, +wt,
+                     f"RSI {rsi:.0f} bullish momentum")
             elif rsi < 40:
-                score -= wt; notes.append(f"RSI {rsi} weak for bullish trade")
+                _add("Technical", "RSI", wt, -wt,
+                     f"RSI {rsi:.0f} weak for bullish trade")
+            else:
+                # RSI 40–50: neither confirming nor contradicting — applicable, 0 contribution
+                _add("Technical", "RSI", wt, 0, "")
         elif recommended_structure == "Put Debit Spread":
             if 30 <= rsi <= 50:
-                score += wt; notes.append(f"RSI {rsi} bearish momentum")
+                _add("Technical", "RSI", wt, +wt,
+                     f"RSI {rsi:.0f} bearish momentum")
             elif rsi > 60:
-                score -= wt; notes.append(f"RSI {rsi} strong — weak bearish case")
+                _add("Technical", "RSI", wt, -wt,
+                     f"RSI {rsi:.0f} strong — weak bearish case")
+            else:
+                # RSI 50–60: momentum neutral for downside trade — applicable, 0 contribution
+                _add("Technical", "RSI", wt, 0, "")
 
-    # --- MACD ---
+    # MACD
     if macd_trend and macd_trend not in ("N/A",):
         wt = w("technical", "macd")
-        bullish_structures = ("Put Credit Spread", "Call Debit Spread", "Risk Reversal", "Financed Long Call", "Ratio Call Backspread")
-        bearish_structures = ("Call Credit Spread", "Put Debit Spread", "Bear Combo", "Financed Long Put", "Ratio Put Backspread")
-        neutral_structures = ("Iron Condor", "Calendar Spread")
-        if recommended_structure in bullish_structures:
+        _bullish = ("Put Credit Spread", "Call Debit Spread", "Risk Reversal",
+                    "Financed Long Call", "Ratio Call Backspread")
+        _bearish = ("Call Credit Spread", "Put Debit Spread", "Bear Combo",
+                    "Financed Long Put", "Ratio Put Backspread")
+        if recommended_structure in _bullish:
             if macd_trend == "Bullish":
-                score += wt; notes.append("MACD Bullish confirms upside bias")
+                _add("Technical", "MACD", wt, +wt, "MACD Bullish confirms upside bias")
             else:
-                score -= wt; notes.append("MACD Bearish conflicts with upside bias")
-        elif recommended_structure in bearish_structures:
+                _add("Technical", "MACD", wt, -wt, "MACD Bearish conflicts with upside bias")
+        elif recommended_structure in _bearish:
             if macd_trend == "Bearish":
-                score += wt; notes.append("MACD Bearish confirms downside bias")
+                _add("Technical", "MACD", wt, +wt, "MACD Bearish confirms downside bias")
             else:
-                score -= wt; notes.append("MACD Bullish conflicts with downside bias")
-        elif recommended_structure in neutral_structures:
-            notes.append(f"MACD {macd_trend} — watch for breakout")
+                _add("Technical", "MACD", wt, -wt, "MACD Bullish conflicts with downside bias")
+        elif recommended_structure in ("Iron Condor", "Calendar Spread"):
+            _note(f"MACD {macd_trend} — watch for breakout")
 
-    # --- IV Term Structure (technical edge for calendars/diagonals) ---
+    # IV Term Structure — edge signal for calendars and diagonals only
     if iv_term_shape is not None:
-        wt       = w("technical", "vol_skew")   # reuses vol_skew budget until dedicated sub added
-        cal_diag = recommended_structure in ("Calendar Spread", "Diagonal Spread")
-        if cal_diag:
+        wt = w("technical", "vol_skew")   # reuses vol_skew budget; dedicated sub can be added later
+        if recommended_structure in ("Calendar Spread", "Diagonal Spread"):
             if iv_term_shape == "Backwardation":
-                score += wt; notes.append("IV backwardation — selling richer near-term vol adds edge to time spread")
+                _add("Technical", "IV Term Structure", wt, +wt,
+                     "IV backwardation — selling richer near-term vol adds edge to time spread")
             elif iv_term_shape == "Contango":
-                score -= wt; notes.append("IV contango — no near-term vol premium; time spread has no vol-edge advantage")
+                _add("Technical", "IV Term Structure", wt, -wt,
+                     "IV contango — no near-term vol premium; time spread has no vol-edge advantage")
             else:
-                notes.append("Flat IV term structure — neutral vol edge for calendar/diagonal")
+                # Flat term structure: applicable check, but no vol-edge in either direction
+                _add("Technical", "IV Term Structure", wt, 0, "")
+                _note("Flat IV term structure — neutral vol edge for calendar/diagonal")
 
-    # ── Flow signals ──────────────────────────────────────────────────────────
+    # ── Flow signals ─────────────────────────────────────────────────────────
 
-    # --- News sentiment ---
+    # News sentiment
     if news_sentiment and news_sentiment not in ("Neutral", "N/A"):
         wt = w("flow", "news")
-        bullish_structures = ("Put Credit Spread", "Call Debit Spread", "Risk Reversal", "Financed Long Call", "Ratio Call Backspread")
-        bearish_structures = ("Call Credit Spread", "Put Debit Spread", "Bear Combo", "Financed Long Put", "Ratio Put Backspread")
-        if recommended_structure in bullish_structures:
+        _bullish = ("Put Credit Spread", "Call Debit Spread", "Risk Reversal",
+                    "Financed Long Call", "Ratio Call Backspread")
+        _bearish = ("Call Credit Spread", "Put Debit Spread", "Bear Combo",
+                    "Financed Long Put", "Ratio Put Backspread")
+        if recommended_structure in _bullish:
             if news_sentiment == "Bullish":
-                score += wt; notes.append("news sentiment Bullish — supports upside trade")
+                _add("Flow", "News", wt, +wt,
+                     "News sentiment Bullish — supports upside trade")
             elif news_sentiment == "Bearish":
-                score -= wt; notes.append("news sentiment Bearish — headwind for upside trade")
-        elif recommended_structure in bearish_structures:
+                _add("Flow", "News", wt, -wt,
+                     "News sentiment Bearish — headwind for upside trade")
+        elif recommended_structure in _bearish:
             if news_sentiment == "Bearish":
-                score += wt; notes.append("news sentiment Bearish — supports downside trade")
+                _add("Flow", "News", wt, +wt,
+                     "News sentiment Bearish — supports downside trade")
             elif news_sentiment == "Bullish":
-                score -= wt; notes.append("news sentiment Bullish — headwind for downside trade")
+                _add("Flow", "News", wt, -wt,
+                     "News sentiment Bullish — headwind for downside trade")
         elif recommended_structure in ("Iron Condor", "Calendar Spread"):
             if news_sentiment == "Mixed":
-                score += wt; notes.append("mixed news — consistent with range-bound expectation")
+                _add("Flow", "News", wt, +wt,
+                     "Mixed news — consistent with range-bound expectation")
             elif news_sentiment in ("Bullish", "Bearish"):
-                score -= wt; notes.append(f"news {news_sentiment} — directional bias adds breakout risk to neutral trade")
+                _add("Flow", "News", wt, -wt,
+                     f"News {news_sentiment} — directional bias adds breakout risk to neutral trade")
 
-    # --- Put/Call Ratio ---
+    # Put/Call Ratio
     if pcr_sentiment and pcr_sentiment not in ("Neutral", "N/A"):
         wt = w("flow", "pcr")
-        bullish_structures = ("Put Credit Spread", "Call Debit Spread", "Risk Reversal", "Financed Long Call", "Ratio Call Backspread")
-        bearish_structures = ("Call Credit Spread", "Put Debit Spread", "Bear Combo", "Financed Long Put", "Ratio Put Backspread")
-        if recommended_structure in bullish_structures:
+        _bullish = ("Put Credit Spread", "Call Debit Spread", "Risk Reversal",
+                    "Financed Long Call", "Ratio Call Backspread")
+        _bearish = ("Call Credit Spread", "Put Debit Spread", "Bear Combo",
+                    "Financed Long Put", "Ratio Put Backspread")
+        if recommended_structure in _bullish:
             if pcr_sentiment == "Bullish":
-                score += wt; notes.append(f"PCR {pcr} call-heavy OI — confirms upside bias")
+                _add("Flow", "PCR", wt, +wt,
+                     f"PCR {pcr} call-heavy OI — confirms upside bias")
             elif pcr_sentiment == "Bearish":
-                score -= wt; notes.append(f"PCR {pcr} put-heavy OI — headwind for upside trade")
-        elif recommended_structure in bearish_structures:
+                _add("Flow", "PCR", wt, -wt,
+                     f"PCR {pcr} put-heavy OI — headwind for upside trade")
+        elif recommended_structure in _bearish:
             if pcr_sentiment == "Bearish":
-                score += wt; notes.append(f"PCR {pcr} put-heavy OI — confirms downside bias")
+                _add("Flow", "PCR", wt, +wt,
+                     f"PCR {pcr} put-heavy OI — confirms downside bias")
             elif pcr_sentiment == "Bullish":
-                score -= wt; notes.append(f"PCR {pcr} call-heavy OI — headwind for downside trade")
+                _add("Flow", "PCR", wt, -wt,
+                     f"PCR {pcr} call-heavy OI — headwind for downside trade")
         elif recommended_structure in ("Iron Condor", "Calendar Spread"):
-            if pcr_sentiment == "Neutral":
-                score += wt; notes.append(f"PCR {pcr} neutral OI balance — consistent with range-bound")
-            elif pcr_sentiment in ("Bullish", "Bearish"):
-                notes.append(f"PCR {pcr} {pcr_sentiment.lower()} — directional OI skew adds breakout risk")
+            # pcr_sentiment "Neutral" is already filtered by the outer guard;
+            # Bullish/Bearish for neutral structures is a monitoring note only
+            _note(f"PCR {pcr} {(pcr_sentiment or '').lower()} — directional OI skew adds breakout risk")
 
-    # --- Relative Volume ---
-    if rel_volume is not None:
+    # Relative Volume — confirmation-only signal (never penalises)
+    # Applicable to directional structures only; neutral structs don't benefit from vol confirmation.
+    if rel_volume is not None and trend != "Range-bound":
         wt = w("flow", "rel_volume")
-        if rel_volume > 1.5 and trend != "Range-bound":
-            score += wt; notes.append(f"Rel volume {rel_volume}x — elevated volume confirms move")
-        elif rel_volume < 0.5:
-            notes.append(f"Rel volume {rel_volume}x — thin volume, low conviction")
+        if rel_volume > 1.5:
+            _add("Flow", "Relative Volume", wt, +wt,
+                 f"Rel volume {rel_volume:.1f}x — elevated volume confirms move")
+        else:
+            # Normal or thin volume: no confirmation, but also not a contradiction.
+            # Still enters effective_max so pct is not artificially inflated.
+            _add("Flow", "Relative Volume", wt, 0, "")
+            if rel_volume < 0.5:
+                _note(f"Rel volume {rel_volume:.1f}x — thin volume, low conviction")
 
-    # --- Analyst sentiment (buy/hold/sell consensus) ---
+    # Analyst consensus
     if analyst_label and analyst_label not in ("N/A", "Neutral"):
         wt = w("flow", "analyst")
-        bullish_structures = ("Put Credit Spread", "Call Debit Spread", "Risk Reversal", "Financed Long Call", "Ratio Call Backspread")
-        bearish_structures = ("Call Credit Spread", "Put Debit Spread", "Bear Combo", "Financed Long Put", "Ratio Put Backspread")
-        if recommended_structure in bullish_structures:
+        _bullish = ("Put Credit Spread", "Call Debit Spread", "Risk Reversal",
+                    "Financed Long Call", "Ratio Call Backspread")
+        _bearish = ("Call Credit Spread", "Put Debit Spread", "Bear Combo",
+                    "Financed Long Put", "Ratio Put Backspread")
+        if recommended_structure in _bullish:
             if analyst_label == "Bullish":
-                score += wt; notes.append("Analyst consensus Bullish — supports upside trade")
+                _add("Flow", "Analyst", wt, +wt,
+                     "Analyst consensus Bullish — supports upside trade")
             elif analyst_label == "Bearish":
-                score -= wt; notes.append("Analyst consensus Bearish — headwind for upside trade")
-        elif recommended_structure in bearish_structures:
+                _add("Flow", "Analyst", wt, -wt,
+                     "Analyst consensus Bearish — headwind for upside trade")
+        elif recommended_structure in _bearish:
             if analyst_label == "Bearish":
-                score += wt; notes.append("Analyst consensus Bearish — confirms downside trade")
+                _add("Flow", "Analyst", wt, +wt,
+                     "Analyst consensus Bearish — confirms downside trade")
             elif analyst_label == "Bullish":
-                score -= wt; notes.append("Analyst consensus Bullish — headwind for bearish trade")
+                _add("Flow", "Analyst", wt, -wt,
+                     "Analyst consensus Bullish — headwind for bearish trade")
         elif recommended_structure in ("Iron Condor", "Calendar Spread"):
             if analyst_label in ("Bullish", "Bearish"):
-                score -= wt * 0.5
-                notes.append(f"Analyst consensus {analyst_label} — directional bias adds breakout risk to neutral trade")
+                half_wt = wt * 0.5
+                _add("Flow", "Analyst", half_wt, -half_wt,
+                     f"Analyst consensus {analyst_label} — directional bias adds breakout risk to neutral trade")
 
-    # --- IV premium / discount over HV20 ---
+    # IV Premium vs HV20
     if iv_premium is not None:
         wt = w("technical", "iv_premium")
-        if iv_premium > 0.03:        # IV at least 3 ppt above HV — options are rich
-            if is_credit := recommended_structure in CREDIT_STRUCTURES:
-                score += wt; notes.append(f"IV premium {iv_premium*100:+.1f}% over HV20 — selling rich options adds edge")
+        if iv_premium > 0.03:       # IV at least 3 ppt above HV — options are rich
+            if recommended_structure in CREDIT_STRUCTURES:
+                _add("Technical", "IV Premium", wt, +wt,
+                     f"IV premium {iv_premium*100:+.1f}% over HV20 — selling rich options adds edge")
             else:
-                score -= wt; notes.append(f"IV premium {iv_premium*100:+.1f}% over HV20 — buying expensive options reduces edge")
-        elif iv_premium < -0.03:     # IV at least 3 ppt below HV — options are cheap
+                _add("Technical", "IV Premium", wt, -wt,
+                     f"IV premium {iv_premium*100:+.1f}% over HV20 — buying expensive options reduces edge")
+        elif iv_premium < -0.03:    # IV at least 3 ppt below HV — options are cheap
             if recommended_structure not in CREDIT_STRUCTURES:
-                score += wt; notes.append(f"IV discount {iv_premium*100:+.1f}% vs HV20 — buying cheap options adds edge")
+                _add("Technical", "IV Premium", wt, +wt,
+                     f"IV discount {iv_premium*100:+.1f}% vs HV20 — buying cheap options adds edge")
             else:
-                score -= wt; notes.append(f"IV discount {iv_premium*100:+.1f}% vs HV20 — selling cheap options reduces edge")
+                _add("Technical", "IV Premium", wt, -wt,
+                     f"IV discount {iv_premium*100:+.1f}% vs HV20 — selling cheap options reduces edge")
+        else:
+            # |iv_premium| ≤ 0.03: IV near parity — applicable evidence but no pricing edge either way
+            _add("Technical", "IV Premium", wt, 0, "")
 
-    # --- Short interest (squeeze risk) ---
+    # Short interest — squeeze risk
     if short_interest is not None:
         wt = w("flow", "short_interest")
-        bullish_structures = ("Put Credit Spread", "Call Debit Spread", "Risk Reversal", "Financed Long Call", "Ratio Call Backspread")
-        bearish_structures = ("Call Credit Spread", "Put Debit Spread", "Bear Combo", "Financed Long Put", "Ratio Put Backspread")
+        _bullish = ("Put Credit Spread", "Call Debit Spread", "Risk Reversal",
+                    "Financed Long Call", "Ratio Call Backspread")
+        _bearish = ("Call Credit Spread", "Put Debit Spread", "Bear Combo",
+                    "Financed Long Put", "Ratio Put Backspread")
         if short_interest > 20:
-            if recommended_structure in bullish_structures:
-                score += wt; notes.append(f"Short interest {short_interest:.1f}% — high short float, squeeze risk favors upside")
-            elif recommended_structure in bearish_structures:
-                score -= wt; notes.append(f"Short interest {short_interest:.1f}% — potential squeeze is headwind for bearish trade")
+            if recommended_structure in _bullish:
+                _add("Flow", "Short Interest", wt, +wt,
+                     f"Short interest {short_interest:.1f}% — high short float, squeeze risk favors upside")
+            elif recommended_structure in _bearish:
+                _add("Flow", "Short Interest", wt, -wt,
+                     f"Short interest {short_interest:.1f}% — potential squeeze is headwind for bearish trade")
         elif short_interest < 3:
-            if recommended_structure in bearish_structures:
-                score += wt; notes.append(f"Short interest {short_interest:.1f}% — low short float supports steady downside")
+            if recommended_structure in _bearish:
+                _add("Flow", "Short Interest", wt, +wt,
+                     f"Short interest {short_interest:.1f}% — low short float supports steady downside")
 
-    # --- Vol skew (put vs call IV imbalance) ---
+    # Vol skew — put vs call IV imbalance
     if vol_skew_pct is not None:
         wt = w("technical", "vol_skew")
         if vol_skew_pct > 5:
-            # put IV > call IV — market pricing in more downside risk
-            if recommended_structure in ("Put Credit Spread",):
-                score -= wt; notes.append(f"Vol skew +{vol_skew_pct:.1f}% — elevated put IV suggests downside fear, caution for short put")
+            if recommended_structure == "Put Credit Spread":
+                _add("Technical", "Vol Skew", wt, -wt,
+                     f"Vol skew +{vol_skew_pct:.1f}% — elevated put IV suggests downside fear, caution for short put")
             elif recommended_structure in ("Put Debit Spread", "Call Credit Spread"):
-                score += wt; notes.append(f"Vol skew +{vol_skew_pct:.1f}% — bearish skew, puts richly priced — supports bearish trade")
-            elif recommended_structure in ("Iron Condor",):
-                score += wt; notes.append(f"Vol skew +{vol_skew_pct:.1f}% — selling rich put IV in condor adds edge")
+                _add("Technical", "Vol Skew", wt, +wt,
+                     f"Vol skew +{vol_skew_pct:.1f}% — bearish skew, puts richly priced — supports bearish trade")
+            elif recommended_structure == "Iron Condor":
+                _add("Technical", "Vol Skew", wt, +wt,
+                     f"Vol skew +{vol_skew_pct:.1f}% — selling rich put IV in condor adds edge")
         elif vol_skew_pct < -5:
-            # call IV > put IV — unusual, often pre-breakout
-            if recommended_structure in ("Call Debit Spread",):
-                score += wt; notes.append(f"Vol skew {vol_skew_pct:.1f}% — calls richer than puts, market pricing upside move")
-            elif recommended_structure in ("Call Credit Spread",):
-                score -= wt; notes.append(f"Vol skew {vol_skew_pct:.1f}% — elevated call IV, breakout risk for short call")
+            if recommended_structure == "Call Debit Spread":
+                _add("Technical", "Vol Skew", wt, +wt,
+                     f"Vol skew {vol_skew_pct:.1f}% — calls richer than puts, market pricing upside move")
+            elif recommended_structure == "Call Credit Spread":
+                _add("Technical", "Vol Skew", wt, -wt,
+                     f"Vol skew {vol_skew_pct:.1f}% — elevated call IV, breakout risk for short call")
 
-    rating = sc.score_to_rating(score, regime)
-    return {"score": round(score, 3), "rating": rating, "notes": notes, "regime": regime}
+    pct    = round(score / effective_max, 4) if effective_max > 0 else 0.0
+    rating = sc.score_to_rating(pct)
+    return {
+        "score":              round(score, 4),
+        "effective_max":      round(effective_max, 4),
+        "pct":                pct,
+        "rating":             rating,
+        "notes":              notes,
+        "regime":             regime,
+        "regime_explanation": sc.regime_explanation(regime),
+        "weight_profile":     sc.weight_profile(regime),
+        "contributions":      contributions,
+    }
+
+
+def _dte_quality(dte: int | None, structure_name: str) -> tuple[float, list[dict]]:
+    """
+    Return (multiplier, execution_notes) reflecting how well the available DTE
+    matches the structure's preferred theta/gamma window from the registry.
+
+    This is NOT a signal about the market — it is an execution quality check.
+    It is applied AFTER signal alignment scoring and kept separate so that
+    a DTE penalty is never confused with a market disagreement.
+
+    The multiplier range is [0.5, 1.0]:
+      - 1.0 = DTE is inside the structure's ideal window (no penalty)
+      - 0.5 = gamma danger zone (DTE < 14) — theta/gamma ratio has inverted
+
+    Registry is the authority on ideal_lo / ideal_hi via structure.dte_min /
+    structure.dte_max. No strategy-specific hardcoding here.
+
+    Future: this function can be extended to accept a per-candidate dte once
+    the data model tracks candidate-specific expiries (Calendar front-leg DTE
+    differs from the global dte; that distinction belongs in a future refactor).
+    """
+    if dte is None:
+        return 1.0, []
+
+    from config.structures import get_or_none
+    st = get_or_none(structure_name)
+    if st is None:
+        return 1.0, []
+
+    ideal_lo = st.dte_min or 21
+    ideal_hi = st.dte_max or 50
+    notes: list[dict] = []
+
+    if ideal_lo <= dte <= ideal_hi:
+        return 1.0, []
+
+    if dte < 14:
+        notes.append({
+            "type":     "dte",
+            "severity": "critical",
+            "message":  (f"DTE {dte} is in the gamma danger zone (below 14) — "
+                         f"theta/gamma ratio has inverted for {structure_name}"),
+        })
+        return 0.50, notes
+
+    if dte < ideal_lo:
+        # Linear interpolation: 0.50 at DTE=14, 1.0 at DTE=ideal_lo
+        q = 0.50 + 0.50 * (dte - 14) / max(ideal_lo - 14, 1)
+        notes.append({
+            "type":     "dte",
+            "severity": "warning",
+            "message":  (f"DTE {dte} below preferred {ideal_lo}–{ideal_hi} window — "
+                         f"gamma exposure elevated for {structure_name}"),
+        })
+        return round(q, 2), notes
+
+    if dte > 60:
+        notes.append({
+            "type":     "dte",
+            "severity": "info",
+            "message":  (f"DTE {dte} above preferred {ideal_lo}–{ideal_hi} window — "
+                         f"theta decay slow; more directional drift exposure"),
+        })
+        return 0.80, notes
+
+    # ideal_hi < dte ≤ 60: slightly long but not excessive
+    notes.append({
+        "type":     "dte",
+        "severity": "info",
+        "message":  (f"DTE {dte} above preferred {ideal_lo}–{ideal_hi} window — "
+                     f"acceptable but not optimal for {structure_name}"),
+    })
+    return 0.90, notes
+
+
+def select_structure(
+    iv_env:     str,
+    trend:      str,
+    signals:    dict,
+    regime:     str,
+    dte:        int | None = None,
+    min_pct:    float | None = None,
+    min_margin: float | None = None,
+) -> dict:
+    """
+    Choose the best-fitting structure for the current market conditions.
+
+    Pipeline (order matters):
+      1. Candidate shortlist — registry lookup: (iv_env, trend) → candidate names
+      2. Signal alignment — compute_signal_alignment() per candidate; pct = score /
+         effective_max (comparable across structures with different applicable checks)
+      3. DTE quality — _dte_quality() multiplier applied AFTER alignment; keeps
+         'the market looks good' separate from 'this contract is well-timed'
+      4. trade_quality_pct = signal pct × dte_quality — ranking and gates use this
+      5. No Trade gate — winner.trade_quality_pct < min_alignment_pct
+      6. Near-tie gate — both candidates must clear min_pct; only then is a small
+         gap meaningful (a weak market with two marginal candidates is not a near-tie)
+
+    Output separates two distinct questions:
+      signal_alignment   — what does the market say about the structure?
+      execution_quality  — is this specific contract well-timed?
+
+    Args:
+        signals:    kwargs for compute_signal_alignment() (minus structure + regime)
+        dte:        days-to-expiry of the selected front contract; used for DTE quality.
+                    None = skip DTE adjustment (preliminary call before options data).
+        min_pct:    minimum trade_quality_pct to recommend any trade.
+                    Defaults to scoring.toml gates.min_alignment_pct.
+        min_margin: gap below which two candidates are flagged as a near-tie.
+                    Defaults to scoring.toml gates.near_tie_margin.
+    """
+    from config.structures import STRUCTURE_CANDIDATES
+
+    if min_pct is None:
+        min_pct = sc.gate("min_alignment_pct") or 0.15
+    if min_margin is None:
+        min_margin = sc.gate("near_tie_margin") or 0.05
+
+    candidate_names = STRUCTURE_CANDIDATES.get((iv_env, trend), [])
+    if not candidate_names:
+        return {
+            "structure":        "No Trade",
+            "signal_alignment": None,
+            "execution_quality": None,
+            "alignment":        None,
+            "candidates":       [],
+            "near_tie":         False,
+            "near_tie_with":    None,
+        }
+
+    scored: list[dict] = []
+    for name in candidate_names:
+        alignment            = compute_signal_alignment(name, **signals, regime=regime)
+        dq, exec_notes       = _dte_quality(dte, name)
+        trade_quality_pct    = round(alignment["pct"] * dq, 4)
+
+        scored.append({
+            "structure": name,
+
+            # signal_alignment: what the market says — never touched by DTE
+            "signal_alignment": {
+                "pct":    alignment["pct"],
+                "rating": alignment["rating"],
+            },
+
+            # execution_quality: how well this specific contract is timed
+            "execution_quality": {
+                "dte_quality":       dq,
+                "trade_quality_pct": trade_quality_pct,
+                "notes":             exec_notes,
+                # future: liquidity_quality, earnings_quality multiply here
+            },
+
+            # trade_quality_pct at top level for sort/gate convenience
+            "trade_quality_pct": trade_quality_pct,
+
+            # full alignment detail preserved for contributions / explainability
+            "alignment": alignment,
+        })
+
+    scored.sort(key=lambda x: x["trade_quality_pct"], reverse=True)
+
+    winner    = scored[0]
+    runner_up = scored[1] if len(scored) > 1 else None
+    no_trade  = winner["trade_quality_pct"] < min_pct
+
+    # Near-tie requires BOTH candidates to be genuinely viable (each clears min_pct).
+    # Winner at 16%, runner at 15% is a weak setup, not structural ambiguity.
+    near_tie = (
+        not no_trade
+        and runner_up is not None
+        and runner_up["trade_quality_pct"] >= min_pct
+        and (winner["trade_quality_pct"] - runner_up["trade_quality_pct"]) < min_margin
+    )
+
+    return {
+        "structure":         "No Trade" if no_trade else winner["structure"],
+        "signal_alignment":  None if no_trade else winner["signal_alignment"],
+        "execution_quality": None if no_trade else winner["execution_quality"],
+        "alignment":         None if no_trade else winner["alignment"],
+        "candidates":        scored,
+        "near_tie":          near_tie,
+        "near_tie_with":     runner_up["structure"] if near_tie else None,
+    }
 
 
 # ---------- "Best EV" search for the rulebook-recommended structure ----------
@@ -679,7 +1048,7 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
     iv_env = "High" if (iv_rank is not None and iv_rank >= p["iv_rank_high_threshold"]) else "Low"
     result["iv_env"] = iv_env
 
-    # Preliminary recommended structure (will be recalculated later if options available)
+    # Preliminary structure — signals not yet available; select_structure() replaces this below
     recommended_structure = STRUCTURE_MATRIX.get((iv_env, trend), "No Trade")
     result["recommended_structure"] = recommended_structure
 
@@ -834,24 +1203,37 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
     iv_env = "High" if (iv_rank is not None and iv_rank >= p["iv_rank_high_threshold"]) else "Low"
     result["iv_env"] = iv_env
 
-    recommended_structure = STRUCTURE_MATRIX[(iv_env, trend)]
-    result["recommended_structure"] = recommended_structure
-
-    signal = compute_signal_alignment(
-        recommended_structure, trend, weekly_trend, rsi, macd_trend, news["sentiment"],
-        adx=adx, rel_volume=rel_volume, pcr=flow["pcr"], pcr_sentiment=flow["pcr_sentiment"],
+    _signals = dict(
+        trend=trend, weekly_trend=weekly_trend, rsi=rsi,
+        macd_trend=macd_trend, news_sentiment=news["sentiment"],
+        adx=adx, rel_volume=rel_volume,
+        pcr=flow["pcr"], pcr_sentiment=flow["pcr_sentiment"],
         ema200_position=ema200_position,
         iv_term_shape=iv_ts["shape"] if iv_ts else None,
         short_interest=short_interest,
         vol_skew_pct=vol_skew_data["skew_pct"] if vol_skew_data else None,
         analyst_label=analyst["label"],
         iv_premium=hv_data["iv_premium"] if hv_data else None,
-        regime=regime,
     )
-    result["regime"] = regime
-    result["signal_score"] = signal["score"]
-    result["signal_rating"] = signal["rating"]
-    result["signal_notes"] = signal["notes"]
+    selection = select_structure(iv_env, trend, _signals, regime, dte=dte)
+    recommended_structure = selection["structure"]
+    result["recommended_structure"] = recommended_structure
+
+    _sa  = selection["signal_alignment"]  or {}   # market says…
+    _eq  = selection["execution_quality"] or {}   # contract timing…
+    _aln = selection["alignment"]         or {}   # full detail
+
+    result["regime"]                = regime
+    result["signal_score"]          = _aln.get("score")
+    result["signal_pct"]            = _sa.get("pct")
+    result["signal_rating"]         = _sa.get("rating")
+    result["signal_notes"]          = _aln.get("notes", [])
+    result["trade_quality_pct"]     = _eq.get("trade_quality_pct")
+    result["dte_quality"]           = _eq.get("dte_quality")
+    result["execution_notes"]       = _eq.get("notes", [])
+    result["signal_candidates"]     = selection["candidates"]
+    result["signal_near_tie"]       = selection["near_tie"]
+    result["signal_near_tie_with"]  = selection["near_tie_with"]
 
     T = dte / 365.0
     _hv_fallback = result.get("hv20") or None

@@ -25,3 +25,117 @@ C:\Python312\python\python.exe (PID 9668)
 2026-07-17 15:39:25 INFO     scripts.ml_cache: ml_cache refreshed: 83 tickers in 299.78s
 2026-07-17 15:54:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
 2026-07-17 16:00:12 INFO     scripts.ml_cache: ml_cache refreshed: 83 tickers in 361.82s
+2026-07-20 10:58:39 INFO     scripts.ml_cache: ml_cache disk file is stale (241108s) — trying DuckDB
+2026-07-20 10:58:41 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 10:58:43 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 10:58:43 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.99s
+2026-07-20 10:58:47 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 10:58:48 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 10:58:48 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.28s
+2026-07-20 11:24:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-20 11:24:11 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 11:24:11 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.24s
+2026-07-20 11:33:24 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 11:33:26 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 11:33:26 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.51s
+2026-07-20 11:41:47 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 11:41:48 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 11:41:48 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.14s
+2026-07-20 11:46:51 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 11:46:53 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 11:46:53 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.46s
+2026-07-20 11:54:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-20 11:54:11 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 11:54:11 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.47s
+2026-07-20 11:55:07 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 11:55:08 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 11:55:08 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.30s
+2026-07-20 11:59:22 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 11:59:23 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 11:59:23 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.26s
+2026-07-20 11:59:32 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 11:59:34 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 11:59:34 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.12s
+2026-07-20 11:59:42 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 11:59:43 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 11:59:43 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.18s
+2026-07-20 11:59:50 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 11:59:51 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 11:59:51 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.10s
+2026-07-20 12:00:05 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 12:00:13 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 12:00:22 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 12:00:40 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 12:00:40 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 17.69s
+2026-07-20 12:06:19 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 12:06:20 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 12:06:20 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.43s
+2026-07-20 12:09:55 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 12:09:56 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 12:09:56 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.03s
+2026-07-20 12:24:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-20 12:24:12 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 12:24:12 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.62s
+2026-07-20 12:28:13 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 12:28:14 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 12:28:14 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.08s
+2026-07-20 12:28:35 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 12:28:36 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 12:28:36 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.19s
+2026-07-20 12:54:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-20 12:54:12 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 12:54:12 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.52s
+2026-07-20 13:23:39 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 13:23:41 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 13:23:41 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.53s
+2026-07-20 13:24:24 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 13:24:25 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 13:24:25 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.27s
+2026-07-20 13:28:40 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 13:28:41 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 13:28:41 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.03s
+2026-07-20 13:32:56 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 13:32:57 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 13:32:57 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 0.95s
+2026-07-20 13:33:02 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 13:33:03 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 13:33:03 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.03s
+2026-07-20 13:33:26 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 13:33:28 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 13:33:28 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.31s
+2026-07-20 13:54:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-20 13:54:12 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 13:54:12 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.62s
+2026-07-20 14:00:00 WARNING  scripts.paper_trade_engine: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-20 14:00:00 INFO     scripts.paper_trade_engine: [prefetch] step 1 — batch daily history for 102 tickers
+2026-07-20 14:00:00 INFO     scripts.paper_trade_engine: [prefetch] daily history done: 0 ok, 102 fail  (0.8s)
+2026-07-20 14:00:00 INFO     scripts.paper_trade_engine: [prefetch] step 2 — batch weekly history for 101 tickers
+2026-07-20 14:00:01 INFO     scripts.paper_trade_engine: [prefetch] weekly history done: 0 ok, 101 fail  (1.5s)
+2026-07-20 14:00:01 INFO     scripts.paper_trade_engine: [prefetch] step 3+4 — expirations + chains for 101 tickers (serial)
+2026-07-20 14:00:13 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 14:00:38 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 14:00:50 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 14:01:04 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 14:01:19 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 14:01:29 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 14:01:38 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 14:01:50 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 14:01:50 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 12.08s
+2026-07-20 14:01:57 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 14:01:59 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 14:01:59 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 2.28s
+2026-07-20 14:02:30 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 14:02:31 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 14:02:31 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.02s
+2026-07-20 14:24:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-20 14:24:11 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 14:24:11 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.00s
+2026-07-20 14:49:12 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 14:49:14 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 14:49:14 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.16s
+2026-07-20 14:49:22 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 14:49:23 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 14:49:23 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 0.94s
+2026-07-20 14:54:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-20 14:54:11 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 14:54:11 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.32s

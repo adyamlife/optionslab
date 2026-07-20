@@ -54,12 +54,12 @@ class OptionStructure:
     hedge computation, by paper_trade_engine.py for pricing/P&L, and
     serialised into API responses consumed by JS.
     """
-    name:           str
-    is_credit:      bool
-    option_type:    str             # "put" | "call" | "both" | "calendar"
-    iv_env:         str             # "High" | "Low" | "Any"
-    trend:          str             # "Uptrend" | "Downtrend" | "Range-bound" | "Any"
-    strike_schema:  StrikeSchema
+    name:            str
+    is_credit:       bool
+    option_type:     str                  # "put" | "call" | "both" | "calendar"
+    allowed_iv:      tuple[str, ...]      # subset of {"High", "Low"}
+    allowed_trends:  tuple[str, ...]      # subset of {"Uptrend", "Downtrend", "Range-bound"}
+    strike_schema:   StrikeSchema
     expiry_pnl_fn:  str             # key for expiry P&L dispatch in paper_trade_engine + JS
     hedge:          HedgeDef
 

@@ -4,8 +4,8 @@ LEAPS_LONG_CALL = OptionStructure(
     name          = "LEAPS Long Call",
     is_credit     = False,
     option_type   = "call",
-    iv_env        = "Any",           # selected manually; not tied to a single regime slot
-    trend         = "Any",
+    allowed_iv      = ("Low",),           # selected manually; not tied to a single regime slot
+    allowed_trends  = ("Uptrend",),
     strike_schema = StrikeSchema.SINGLE_LEG,
     expiry_pnl_fn = "leaps_long_call",
 

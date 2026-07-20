@@ -1,0 +1,527 @@
+<title>Structure Selection — Process Flow</title>
+<style>
+  :root {
+    --bg:        #0C1628;
+    --bg2:       #111f3a;
+    --bg3:       #172440;
+    --border:    #1e3358;
+    --text:      #e2e8f0;
+    --muted:     #7a95b8;
+    --teal:      #00C9A7;
+    --teal-dim:  rgba(0,201,167,0.12);
+    --amber:     #F5A623;
+    --amber-dim: rgba(245,166,35,0.12);
+    --indigo:    #818CF8;
+    --indigo-dim:rgba(129,140,248,0.12);
+    --emerald:   #34D399;
+    --emerald-dim:rgba(52,211,153,0.12);
+    --rose:      #F87171;
+    --rose-dim:  rgba(248,113,113,0.12);
+    --mono:      'Courier New','Consolas',monospace;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg:#f0f4fb;--bg2:#e3eaf6;--bg3:#d6e0f0;--border:#b8c8e0;
+      --text:#1a2a44;--muted:#5a7090;
+      --teal-dim:rgba(0,150,120,.10);--amber-dim:rgba(180,100,0,.10);
+      --indigo-dim:rgba(80,80,200,.10);--emerald-dim:rgba(20,150,100,.10);
+      --rose-dim:rgba(200,60,60,.10);
+    }
+  }
+  :root[data-theme="light"]{--bg:#f0f4fb;--bg2:#e3eaf6;--bg3:#d6e0f0;--border:#b8c8e0;--text:#1a2a44;--muted:#5a7090;--teal-dim:rgba(0,150,120,.10);--amber-dim:rgba(180,100,0,.10);--indigo-dim:rgba(80,80,200,.10);--emerald-dim:rgba(20,150,100,.10);--rose-dim:rgba(200,60,60,.10);}
+  :root[data-theme="dark"]{--bg:#0C1628;--bg2:#111f3a;--bg3:#172440;--border:#1e3358;--text:#e2e8f0;--muted:#7a95b8;--teal-dim:rgba(0,201,167,.12);--amber-dim:rgba(245,166,35,.12);--indigo-dim:rgba(129,140,248,.12);--emerald-dim:rgba(52,211,153,.12);--rose-dim:rgba(248,113,113,.12);}
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-size:13px;line-height:1.5;padding:20px 16px 48px;}
+
+  h1{font-size:18px;font-weight:700;letter-spacing:-.3px;margin-bottom:3px;}
+  .subtitle{font-size:12px;color:var(--muted);margin-bottom:6px;}
+  .changelog{font-size:11px;color:var(--amber);background:var(--amber-dim);border:1px solid var(--amber);border-radius:6px;padding:6px 10px;margin-bottom:22px;display:flex;align-items:center;gap:6px;}
+
+  .stage-label{display:inline-flex;align-items:center;gap:7px;font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:3px 10px;border-radius:20px;margin-bottom:8px;}
+  .stage-label.teal{background:var(--teal-dim);color:var(--teal);border:1px solid var(--teal);}
+  .stage-label.amber{background:var(--amber-dim);color:var(--amber);border:1px solid var(--amber);}
+  .stage-label.indigo{background:var(--indigo-dim);color:var(--indigo);border:1px solid var(--indigo);}
+  .stage-label.emerald{background:var(--emerald-dim);color:var(--emerald);border:1px solid var(--emerald);}
+  .stage-num{width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex-shrink:0;}
+  .teal .stage-num{background:var(--teal);color:#0C1628;}
+  .amber .stage-num{background:var(--amber);color:#0C1628;}
+  .indigo .stage-num{background:var(--indigo);color:#0C1628;}
+  .emerald .stage-num{background:var(--emerald);color:#0C1628;}
+
+  .card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;}
+  .card.teal-card{border-color:rgba(0,201,167,.35);}
+  .card.amber-card{border-color:rgba(245,166,35,.35);}
+  .card.indigo-card{border-color:rgba(129,140,248,.35);}
+  .card.emerald-card{border-color:rgba(52,211,153,.35);}
+
+  .signal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;}
+  .sig-group{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:9px 10px;}
+  .sig-group-title{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid var(--border);}
+  .sig-field{font-family:var(--mono);font-size:10.5px;padding:2px 0;display:flex;align-items:baseline;gap:4px;}
+  .fname{color:var(--muted);}
+  .fval{color:var(--teal);font-weight:600;}
+  .fval.amber{color:var(--amber);}
+  .fval.indigo{color:var(--indigo);}
+
+  .arrow-down{display:flex;flex-direction:column;align-items:center;margin:10px 0;}
+  .arrow-line{width:2px;height:18px;background:var(--border);}
+  .arrow-head{width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--border);}
+  .arrow-label{font-size:10px;color:var(--muted);background:var(--bg);padding:1px 8px;border-radius:10px;border:1px solid var(--border);white-space:nowrap;margin-bottom:-4px;}
+
+  .key-token{font-family:var(--mono);font-size:12px;background:var(--amber-dim);border:1px solid var(--amber);color:var(--amber);padding:4px 10px;border-radius:6px;font-weight:700;}
+  .candidate-chip{font-family:var(--mono);font-size:10.5px;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:4px 10px;border-radius:6px;display:inline-flex;align-items:center;gap:5px;}
+  .chip-rank{font-size:9px;background:var(--indigo);color:#0C1628;width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;}
+
+  .scoring-engine{background:var(--indigo-dim);border:1px solid var(--indigo);border-radius:10px;padding:14px 16px;}
+  .engine-title{font-size:13px;font-weight:700;color:var(--indigo);margin-bottom:12px;}
+
+  .checks-table{width:100%;border-collapse:collapse;font-size:11px;font-family:var(--mono);}
+  .checks-table th{text-align:left;padding:4px 8px;color:var(--muted);font-size:9.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;border-bottom:1px solid var(--border);}
+  .checks-table td{padding:4px 8px;border-bottom:1px solid rgba(30,51,88,.5);vertical-align:middle;}
+  .c-pos{color:var(--emerald);font-weight:700;text-align:right;}
+  .c-neg{color:var(--rose);font-weight:700;text-align:right;}
+  .c-neu{color:var(--muted);text-align:right;}
+  .c-name{color:var(--text);}
+  .c-sig{color:var(--muted);font-size:10px;}
+
+  /* NEW: effective_max legend */
+  .emax-legend{margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;}
+  .emax-item{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted);}
+  .emax-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+  .formula-box{margin-top:12px;background:var(--bg3);border-radius:8px;padding:10px 14px;font-family:var(--mono);font-size:11.5px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .fml-label{color:var(--muted);font-size:10px;}
+  .fml-sep{color:var(--border);font-size:16px;}
+
+  .gates-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .gate-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 12px;}
+  .gate-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--amber);margin-bottom:6px;}
+  .gate-rule{font-family:var(--mono);font-size:10.5px;color:var(--text);margin-bottom:3px;}
+  .gate-outcome{font-size:10px;color:var(--muted);}
+  .yes{color:var(--emerald);font-weight:700;}
+  .no{color:var(--rose);font-weight:700;}
+  .toml-tag{font-size:9px;background:var(--amber-dim);color:var(--amber);border:1px solid var(--amber);border-radius:3px;padding:1px 4px;font-family:var(--mono);vertical-align:middle;}
+
+  .output-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .out-box{background:var(--emerald-dim);border:1px solid rgba(52,211,153,.3);border-radius:8px;padding:10px 12px;}
+  .out-box.secondary{background:var(--bg3);border-color:var(--border);}
+  .out-box.regime-box{background:var(--indigo-dim);border-color:rgba(129,140,248,.3);}
+  .out-field{font-family:var(--mono);font-size:10.5px;margin-bottom:3px;display:flex;gap:4px;align-items:baseline;flex-wrap:wrap;}
+  .ok{color:var(--muted);}
+  .ov{color:var(--emerald);font-weight:700;}
+  .ov.indigo{color:var(--indigo);}
+  .ov.amber{color:var(--amber);}
+
+  /* confidence taxonomy */
+  .conf-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;}
+  .conf-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:9px 11px;}
+  .conf-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px;}
+  .conf-rule{font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:3px;}
+  .conf-out{font-size:10px;color:var(--muted);}
+
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:24px;padding-top:16px;border-top:1px solid var(--border);}
+  .legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);}
+  .legend-dot{width:8px;height:8px;border-radius:50%;}
+
+  .new-badge{font-size:8px;font-weight:700;background:var(--amber);color:#0C1628;border-radius:3px;padding:1px 4px;vertical-align:middle;margin-left:3px;}
+  .changed-badge{font-size:8px;font-weight:700;background:var(--indigo);color:#0C1628;border-radius:3px;padding:1px 4px;vertical-align:middle;margin-left:3px;}
+
+  @media(max-width:520px){.gates-row,.output-grid,.conf-grid{grid-template-columns:1fr;}.signal-grid{grid-template-columns:1fr 1fr;}}
+</style>
+
+<h1>Structure Selection — Process Flow</h1>
+<p class="subtitle">How a ticker's signals flow through the engine to select an options strategy</p>
+<div class="changelog">
+  ⚡ Updated — effective_max = applicable (not fired) &nbsp;·&nbsp; gates in scoring.toml &nbsp;·&nbsp; regime explanation in output &nbsp;·&nbsp; near-tie both-must-clear fix
+</div>
+
+<!-- ══ STAGE 1 ══ -->
+<div class="stage-label teal"><span class="stage-num">1</span>Raw Market Data</div>
+<div class="card teal-card">
+  <div class="signal-grid">
+    <div class="sig-group">
+      <div class="sig-group-title">Price History</div>
+      <div class="sig-field"><span class="fname">hist</span><span class="fval">yfinance 6mo OHLCV</span></div>
+      <div class="sig-field"><span class="fname">spot</span><span class="fval">current price</span></div>
+    </div>
+    <div class="sig-group">
+      <div class="sig-group-title">Options Chain</div>
+      <div class="sig-field"><span class="fname">calls / puts</span><span class="fval">front expiry</span></div>
+      <div class="sig-field"><span class="fname">back_expiry</span><span class="fval">calendar / diag</span></div>
+    </div>
+    <div class="sig-group">
+      <div class="sig-group-title">Market Context</div>
+      <div class="sig-field"><span class="fname">VIX</span><span class="fval">regime flag</span></div>
+      <div class="sig-field"><span class="fname">SPY hist</span><span class="fval">rel-strength</span></div>
+      <div class="sig-field"><span class="fname">futures</span><span class="fval">regime flag</span></div>
+    </div>
+    <div class="sig-group">
+      <div class="sig-group-title">External Data</div>
+      <div class="sig-field"><span class="fname">news feed</span><span class="fval">NLP score</span></div>
+      <div class="sig-field"><span class="fname">analyst ratings</span><span class="fval">consensus</span></div>
+      <div class="sig-field"><span class="fname">short float</span><span class="fval">squeeze risk</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="arrow-down"><div class="arrow-line"></div><div class="arrow-label">signal extraction</div><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+<!-- ══ STAGE 2 ══ -->
+<div class="stage-label teal"><span class="stage-num">2</span>Derived Signals + Regime Detection</div>
+<div class="card teal-card">
+  <div class="signal-grid">
+    <div class="sig-group">
+      <div class="sig-group-title">📈 Trend / Momentum</div>
+      <div class="sig-field"><span class="fname">trend</span><span class="fval">Uptrend | Down | Range</span></div>
+      <div class="sig-field"><span class="fname">weekly_trend</span><span class="fval">confirms / conflicts</span></div>
+      <div class="sig-field"><span class="fname">ema200_position</span><span class="fval">above | below</span></div>
+      <div class="sig-field"><span class="fname">macd_trend</span><span class="fval">Bullish | Bearish</span></div>
+      <div class="sig-field"><span class="fname">rsi</span><span class="fval amber">0 – 100</span></div>
+      <div class="sig-field"><span class="fname">adx</span><span class="fval amber">0 – 50+</span></div>
+    </div>
+    <div class="sig-group">
+      <div class="sig-group-title">📊 Vol / IV</div>
+      <div class="sig-field"><span class="fname">iv_env</span><span class="fval">High | Low</span></div>
+      <div class="sig-field"><span class="fname">iv_rank_proxy</span><span class="fval amber">0 – 1</span></div>
+      <div class="sig-field"><span class="fname">iv_premium</span><span class="fval">atm_iv − hv20</span></div>
+      <div class="sig-field"><span class="fname">vol_skew_pct</span><span class="fval">put IV − call IV</span></div>
+      <div class="sig-field"><span class="fname">iv_term_shape</span><span class="fval">Contango | Back | Flat</span></div>
+    </div>
+    <div class="sig-group">
+      <div class="sig-group-title">🌊 Flow / Sentiment</div>
+      <div class="sig-field"><span class="fname">pcr_sentiment</span><span class="fval">Bullish | Bearish | Neutral</span></div>
+      <div class="sig-field"><span class="fname">news_sentiment</span><span class="fval">Bullish | Bearish | Mixed</span></div>
+      <div class="sig-field"><span class="fname">analyst_label</span><span class="fval">Bullish | Bearish | Neutral</span></div>
+      <div class="sig-field"><span class="fname">short_interest</span><span class="fval amber">% float</span></div>
+      <div class="sig-field"><span class="fname">rel_volume</span><span class="fval amber">× avg vol</span></div>
+    </div>
+    <div class="sig-group" style="border-color:rgba(129,140,248,.4);">
+      <div class="sig-group-title" style="color:var(--indigo)">⚡ Regime — weight multiplier</div>
+      <div class="sig-field"><span class="fname">regime</span><span class="fval indigo">fear | calm_trend | chop</span></div>
+      <div style="margin-top:6px;font-size:9.5px;color:var(--muted)">Governs <strong style="color:var(--text)">budget_mult</strong> per factor:</div>
+      <div style="font-family:var(--mono);font-size:9.5px;margin-top:4px;display:grid;gap:2px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;color:var(--muted);font-size:9px;padding-bottom:2px;border-bottom:1px solid var(--border)"><span>factor</span><span style="text-align:center">fear</span><span style="text-align:right">calm_trend</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;"><span style="color:var(--text)">technical</span><span style="color:var(--muted);text-align:center">×1.0</span><span style="color:var(--emerald);text-align:right">×2.0</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;"><span style="color:var(--text)">market_ctx</span><span style="color:var(--emerald);text-align:center">×2.0</span><span style="color:var(--muted);text-align:right">×0.8</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;"><span style="color:var(--text)">flow</span><span style="color:var(--rose);text-align:center">×0.3</span><span style="color:var(--muted);text-align:right">×0.5</span></div>
+      </div>
+      <div style="margin-top:6px;font-size:9px;color:var(--indigo)">→ Surfaces in output as regime_explanation + weight_profile <span class="new-badge">NEW</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="arrow-down"><div class="arrow-line"></div><div class="arrow-label">(iv_env, trend) key → registry lookup</div><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+<!-- ══ STAGE 3 ══ -->
+<div class="stage-label amber"><span class="stage-num">3</span>Candidate Shortlist — STRUCTURE_CANDIDATES</div>
+<div class="card amber-card">
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+    <div class="key-token">(iv_env, trend)</div>
+    <span style="color:var(--border);font-size:18px">→</span>
+    <span style="font-size:11px;color:var(--muted)">registry dict → list of eligible structures (from allowed_iv + allowed_trends tuples)</span>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;">
+    <div class="sig-group">
+      <div class="sig-group-title" style="color:var(--amber)">("High","Uptrend")</div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">
+        <span class="candidate-chip"><span class="chip-rank">1</span>Put Credit Spread</span>
+        <span class="candidate-chip"><span class="chip-rank">2</span>Jade Lizard</span>
+        <span class="candidate-chip"><span class="chip-rank">3</span>Cash Secured Put</span>
+        <span class="candidate-chip"><span class="chip-rank">4</span>Covered Call</span>
+      </div>
+    </div>
+    <div class="sig-group">
+      <div class="sig-group-title" style="color:var(--amber)">("Low","Uptrend")</div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">
+        <span class="candidate-chip"><span class="chip-rank">1</span>Call Debit Spread</span>
+        <span class="candidate-chip"><span class="chip-rank">2</span>Diagonal</span>
+        <span class="candidate-chip"><span class="chip-rank">3</span>LEAPS Long Call</span>
+        <span class="candidate-chip"><span class="chip-rank">4</span>Risk Reversal</span>
+        <span class="candidate-chip"><span class="chip-rank">5</span>Fin. Long Call</span>
+      </div>
+    </div>
+    <div class="sig-group">
+      <div class="sig-group-title" style="color:var(--amber)">("High","Range-bound")</div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">
+        <span class="candidate-chip"><span class="chip-rank">1</span>Iron Condor</span>
+        <span class="candidate-chip"><span class="chip-rank">2</span>Jade Lizard</span>
+        <span class="candidate-chip"><span class="chip-rank">3</span>Covered Call</span>
+        <span class="candidate-chip"><span class="chip-rank">4</span>Naked Put</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="arrow-down"><div class="arrow-line"></div><div class="arrow-label">score each candidate independently</div><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+<!-- ══ STAGE 4 ══ -->
+<div class="stage-label indigo"><span class="stage-num">4</span>Signal Alignment Scoring — compute_signal_alignment()</div>
+<div class="scoring-engine">
+  <div class="engine-title">Called once per candidate &nbsp;·&nbsp; weights = get_sub_weight(factor, sub, regime)</div>
+
+  <!-- effective_max explanation callout -->
+  <div style="background:var(--bg3);border:1px solid var(--indigo);border-radius:8px;padding:10px 13px;margin-bottom:12px;font-size:11px;">
+    <strong style="color:var(--indigo)">effective_max = applicable weight sum <span class="changed-badge">CHANGED</span></strong>
+    <div style="color:var(--muted);margin-top:5px;line-height:1.6">
+      A check enters <code style="color:var(--indigo)">effective_max</code> when the structure has a scoring rule for it —
+      regardless of whether the signal value was positive, negative, or in a neutral zone.
+      Only checks where <em>no rule exists</em> for this structure are excluded entirely.
+    </div>
+    <div class="emax-legend" style="margin-top:8px;">
+      <div class="emax-item"><div class="emax-dot" style="background:var(--emerald)"></div>Fires positive — score +wt, effective_max +wt, appears in contributions[]</div>
+      <div class="emax-item"><div class="emax-dot" style="background:var(--rose)"></div>Fires negative — score −wt, effective_max +wt, appears in contributions[]</div>
+      <div class="emax-item"><div class="emax-dot" style="background:var(--muted)"></div>Neutral zone — score +0, effective_max +wt, silent (no UI noise)</div>
+      <div class="emax-item"><div class="emax-dot" style="background:var(--border)"></div>Not applicable — score +0, effective_max unchanged</div>
+    </div>
+  </div>
+
+  <div style="overflow-x:auto">
+  <table class="checks-table">
+    <thead>
+      <tr>
+        <th>Sub-Factor</th>
+        <th>Signal</th>
+        <th>Applicable To</th>
+        <th>Neutral Zone</th>
+        <th style="text-align:right">Weight</th>
+        <th style="text-align:right">Contribution</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="c-name">EMA200</td>
+        <td class="c-sig">ema200_position</td>
+        <td class="c-sig">bullish / bearish structs</td>
+        <td class="c-sig">—</td>
+        <td class="c-neu">technical.ema200</td>
+        <td class="c-pos">+wt / −wt</td>
+      </tr>
+      <tr>
+        <td class="c-name">Weekly Trend</td>
+        <td class="c-sig">weekly_trend vs trend</td>
+        <td class="c-sig">all (when not N/A)</td>
+        <td class="c-sig">—</td>
+        <td class="c-neu">technical.weekly_trend</td>
+        <td class="c-pos">+wt / −wt</td>
+      </tr>
+      <tr style="background:rgba(129,140,248,.05)">
+        <td class="c-name">ADX <span class="changed-badge">CHANGED</span></td>
+        <td class="c-sig">adx value</td>
+        <td class="c-sig">directional + neutral structs</td>
+        <td class="c-sig" style="color:var(--indigo)">20–25 → 0, +wt to eff_max</td>
+        <td class="c-neu">technical.adx</td>
+        <td class="c-pos">+wt / 0 / −wt</td>
+      </tr>
+      <tr style="background:rgba(129,140,248,.05)">
+        <td class="c-name">RSI <span class="changed-badge">CHANGED</span></td>
+        <td class="c-sig">rsi value</td>
+        <td class="c-sig">PCS, CCS, IC, Cal, CDS, PDS</td>
+        <td class="c-sig" style="color:var(--indigo)">per-structure mid-ranges → 0</td>
+        <td class="c-neu">technical.rsi</td>
+        <td class="c-pos">+wt / 0 / −wt</td>
+      </tr>
+      <tr>
+        <td class="c-name">MACD</td>
+        <td class="c-sig">macd_trend</td>
+        <td class="c-sig">bullish / bearish structs</td>
+        <td class="c-sig">—</td>
+        <td class="c-neu">technical.macd</td>
+        <td class="c-pos">+wt / −wt</td>
+      </tr>
+      <tr style="background:rgba(129,140,248,.05)">
+        <td class="c-name">IV Term Shape <span class="changed-badge">CHANGED</span></td>
+        <td class="c-sig">iv_term_shape</td>
+        <td class="c-sig">Calendar, Diagonal only</td>
+        <td class="c-sig" style="color:var(--indigo)">Flat → 0 + monitor note</td>
+        <td class="c-neu">technical.vol_skew</td>
+        <td class="c-pos">+wt / 0 / −wt</td>
+      </tr>
+      <tr style="background:rgba(129,140,248,.05)">
+        <td class="c-name">IV Premium <span class="changed-badge">CHANGED</span></td>
+        <td class="c-sig">atm_iv − hv20</td>
+        <td class="c-sig">credit vs debit structs</td>
+        <td class="c-sig" style="color:var(--indigo)">|iv_premium| ≤ 3% → 0</td>
+        <td class="c-neu">technical.iv_premium</td>
+        <td class="c-pos">+wt / 0 / −wt</td>
+      </tr>
+      <tr>
+        <td class="c-name">Vol Skew</td>
+        <td class="c-sig">vol_skew_pct</td>
+        <td class="c-sig">put/call heavy structs</td>
+        <td class="c-sig">—</td>
+        <td class="c-neu">technical.vol_skew</td>
+        <td class="c-pos">+wt / −wt</td>
+      </tr>
+      <tr>
+        <td class="c-name">News Sentiment</td>
+        <td class="c-sig">news_sentiment</td>
+        <td class="c-sig">bullish / bearish / neutral structs</td>
+        <td class="c-sig">—</td>
+        <td class="c-neu">flow.news</td>
+        <td class="c-pos">+wt / −wt</td>
+      </tr>
+      <tr>
+        <td class="c-name">PCR</td>
+        <td class="c-sig">pcr_sentiment</td>
+        <td class="c-sig">bullish / bearish structs</td>
+        <td class="c-sig">—</td>
+        <td class="c-neu">flow.pcr</td>
+        <td class="c-pos">+wt / −wt</td>
+      </tr>
+      <tr style="background:rgba(129,140,248,.05)">
+        <td class="c-name">Rel Volume <span class="changed-badge">CHANGED</span></td>
+        <td class="c-sig">rel_volume</td>
+        <td class="c-sig">directional structs (trend ≠ Range)</td>
+        <td class="c-sig" style="color:var(--indigo)">≤ 1.5× → 0 (confirm-only)</td>
+        <td class="c-neu">flow.rel_volume</td>
+        <td class="c-pos">+wt / 0 only</td>
+      </tr>
+      <tr>
+        <td class="c-name">Analyst</td>
+        <td class="c-sig">analyst_label</td>
+        <td class="c-sig">bullish / bearish structs</td>
+        <td class="c-sig">—</td>
+        <td class="c-neu">flow.analyst</td>
+        <td class="c-pos">+wt / −wt</td>
+      </tr>
+      <tr>
+        <td class="c-name">Short Interest</td>
+        <td class="c-sig">short_interest %</td>
+        <td class="c-sig">bullish (squeeze) / bearish</td>
+        <td class="c-sig">—</td>
+        <td class="c-neu">flow.short_interest</td>
+        <td class="c-pos">+wt / −wt</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="formula-box">
+    <div><span class="fml-label">score</span> <strong style="color:var(--indigo)">= Σ contributions</strong></div>
+    <span class="fml-sep">|</span>
+    <div><span class="fml-label">effective_max</span> <strong style="color:var(--amber)">= Σ wt for applicable checks (incl. neutral zones)</strong></div>
+    <span class="fml-sep">|</span>
+    <div><span class="fml-label">pct</span> <strong style="color:var(--teal)">= score ÷ effective_max</strong> <span style="color:var(--muted);font-size:10px;margin-left:4px">→ comparable across structures</span></div>
+  </div>
+</div>
+
+<div class="arrow-down"><div class="arrow-line"></div><div class="arrow-label">rank + gates</div><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+<!-- ══ STAGE 5 ══ -->
+<div class="stage-label amber"><span class="stage-num">5</span>Ranking &amp; Decision Gates — select_structure()</div>
+<div class="card amber-card">
+  <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">
+    Candidates sorted by <strong style="color:var(--teal)">pct</strong> descending. Thresholds now read from
+    <code style="color:var(--amber);font-size:10.5px">scoring.toml [gates]</code> <span class="new-badge">NEW</span>
+    rather than hardcoded.
+  </div>
+  <div class="gates-row">
+    <div class="gate-box">
+      <div class="gate-title">Gate 1 — Min Alignment <span class="toml-tag">min_alignment_pct = 0.15</span></div>
+      <div class="gate-rule">winner.pct &lt; 0.15</div>
+      <div class="gate-outcome">→ <span class="no">No Trade</span> — no candidate has enough signal alignment</div>
+    </div>
+    <div class="gate-box">
+      <div class="gate-title">Gate 2 — Near Tie <span class="toml-tag">near_tie_margin = 0.05</span> <span class="changed-badge">CHANGED</span></div>
+      <div class="gate-rule">winner.pct − runner_up.pct &lt; 0.05</div>
+      <div class="gate-rule" style="color:var(--indigo)">AND runner_up.pct ≥ 0.15</div>
+      <div class="gate-outcome">→ <span class="yes">near_tie = True</span> — both are viable; gap is below margin of victory</div>
+      <div class="gate-outcome" style="margin-top:4px;color:var(--rose)">If runner_up &lt; 0.15: weak market overall, not a near-tie</div>
+    </div>
+  </div>
+</div>
+
+<div class="arrow-down"><div class="arrow-line"></div><div class="arrow-label">result</div><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+<!-- ══ STAGE 6 ══ -->
+<div class="stage-label emerald"><span class="stage-num">6</span>Output — selection dict</div>
+<div class="card emerald-card">
+  <div class="output-grid">
+    <div class="out-box">
+      <div style="font-size:11px;font-weight:700;color:var(--emerald);margin-bottom:8px;">Primary Selection</div>
+      <div class="out-field"><span class="ok">structure</span> <span class="ov">"Put Credit Spread" | "No Trade"</span></div>
+      <div class="out-field"><span class="ok">alignment.score</span> <span class="ov">0.87</span></div>
+      <div class="out-field"><span class="ok">alignment.effective_max</span> <span class="ov amber">1.42 ← applicable weight sum</span></div>
+      <div class="out-field"><span class="ok">alignment.pct</span> <span class="ov">0.61</span></div>
+      <div class="out-field"><span class="ok">alignment.rating</span> <span class="ov">"Strong"</span></div>
+      <div class="out-field"><span class="ok">near_tie</span> <span class="ov amber">True / False</span></div>
+      <div class="out-field"><span class="ok">near_tie_with</span> <span class="ov amber">"Jade Lizard"</span></div>
+      <div class="out-field"><span class="ok">candidates[]</span> <span class="ov indigo">all scored, pct desc</span></div>
+    </div>
+    <div class="out-box regime-box">
+      <div style="font-size:11px;font-weight:700;color:var(--indigo);margin-bottom:8px;">Regime Explainability <span class="new-badge">NEW</span></div>
+      <div class="out-field"><span class="ok">alignment.regime</span> <span class="ov indigo">"fear"</span></div>
+      <div class="out-field"><span class="ok">alignment.regime_explanation</span></div>
+      <div style="font-size:10px;color:var(--muted);padding:5px 8px;background:var(--bg);border-radius:5px;margin:3px 0 6px;font-style:italic">"High VIX + weak futures — macro context dominates; technical signals are less discriminating in correlated sell-offs"</div>
+      <div class="out-field"><span class="ok">alignment.weight_profile</span></div>
+      <div style="font-family:var(--mono);font-size:9.5px;padding:5px 8px;background:var(--bg);border-radius:5px;color:var(--muted)">
+        { "technical":  2.0,<br>
+        &nbsp;&nbsp;"market_ctx": 2.0,<br>
+        &nbsp;&nbsp;"flow":       0.15 }
+      </div>
+    </div>
+  </div>
+
+  <!-- Contributions sample -->
+  <div style="margin-top:10px;">
+    <div style="font-size:11px;font-weight:700;color:var(--indigo);margin-bottom:6px;">alignment.contributions[] — per-check detail for UI / audit</div>
+    <div style="overflow-x:auto">
+    <table class="checks-table">
+      <thead>
+        <tr>
+          <th>factor</th><th>subfactor</th><th style="text-align:right">weight</th><th style="text-align:right">contribution</th><th>direction</th><th>explanation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="c-sig">Technical</td><td class="c-name">EMA200</td><td class="c-pos">0.25</td><td class="c-pos">+0.25</td><td class="c-sig" style="color:var(--emerald)">positive</td><td class="c-sig">"Price above EMA200 — uptrend confirms bullish bias"</td></tr>
+        <tr><td class="c-sig">Technical</td><td class="c-name">ADX</td><td class="c-pos">0.14</td><td class="c-pos">+0.14</td><td class="c-sig" style="color:var(--emerald)">positive</td><td class="c-sig">"ADX 32 strong trend — confirms directional trade"</td></tr>
+        <tr><td class="c-sig">Technical</td><td class="c-name">RSI</td><td class="c-pos">0.14</td><td class="c-neg">−0.14</td><td class="c-sig" style="color:var(--rose)">negative</td><td class="c-sig">"RSI 74 overbought — pullback risk"</td></tr>
+        <tr style="color:var(--muted)"><td class="c-sig">Technical</td><td class="c-sig">IV Premium</td><td class="c-neu">0.12</td><td class="c-neu">0.00</td><td class="c-sig">neutral</td><td class="c-sig"><em>IV near parity — silent, still in effective_max</em></td></tr>
+        <tr style="color:var(--muted)"><td class="c-sig">Flow</td><td class="c-sig">Rel Volume</td><td class="c-neu">0.05</td><td class="c-neu">0.00</td><td class="c-sig">neutral</td><td class="c-sig"><em>Volume normal — confirm-only, no negative</em></td></tr>
+        <tr><td class="c-sig">Flow</td><td class="c-name">News</td><td class="c-pos">0.04</td><td class="c-pos">+0.04</td><td class="c-sig" style="color:var(--emerald)">positive</td><td class="c-sig">"News sentiment Bullish — supports upside trade"</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div style="font-size:10px;color:var(--muted);margin-top:5px;font-style:italic">Neutral-zone rows shown here for illustration — they are silent in production output (no UI noise).</div>
+  </div>
+
+  <!-- Three confidence types -->
+  <div style="margin-top:14px;">
+    <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">Three Distinct Confidence Types — not collapsed into a single "Weak"</div>
+    <div class="conf-grid">
+      <div class="conf-box">
+        <div class="conf-title" style="color:var(--rose)">Poor Market Fit</div>
+        <div class="conf-rule">winner.pct &lt; 0.15</div>
+        <div class="conf-out">No structure is well-supported.<br>→ No Trade</div>
+      </div>
+      <div class="conf-box">
+        <div class="conf-title" style="color:var(--amber)">Structural Ambiguity</div>
+        <div class="conf-rule">near_tie = True</div>
+        <div class="conf-out">Two structures fit similarly.<br>→ Show winner + alternative</div>
+      </div>
+      <div class="conf-box">
+        <div class="conf-title" style="color:var(--indigo)">Execution Risk</div>
+        <div class="conf-rule">liquidity, DTE, earnings</div>
+        <div class="conf-out">Signal is strong; conditions are poor.<br>→ signal_rating + time_warning</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:10px;font-size:11px;color:var(--muted);padding:8px 10px;background:var(--bg3);border-radius:8px;">
+    <strong style="color:var(--text)">rating thresholds (scoring.toml [rating]):</strong>&nbsp;
+    <span style="color:var(--emerald)">Strong ≥ 50%</span> &nbsp;·&nbsp;
+    <span style="color:var(--teal)">Moderate ≥ 10%</span> &nbsp;·&nbsp;
+    <span style="color:var(--muted)">Neutral ±10%</span> &nbsp;·&nbsp;
+    <span style="color:var(--amber)">Weak ≥ −20%</span> &nbsp;·&nbsp;
+    <span style="color:var(--rose)">Conflicted &lt; −20%</span>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><span class="legend-dot" style="background:var(--teal)"></span>Data / Signals</div>
+  <div class="legend-item"><span class="legend-dot" style="background:var(--amber)"></span>Decision / Gate Logic</div>
+  <div class="legend-item"><span class="legend-dot" style="background:var(--indigo)"></span>Scoring Engine / Regime</div>
+  <div class="legend-item"><span class="legend-dot" style="background:var(--emerald)"></span>Output</div>
+  <div class="legend-item" style="margin-left:auto"><span class="changed-badge">CHANGED</span> updated this revision &nbsp; <span class="new-badge">NEW</span> added this revision</div>
+</div>

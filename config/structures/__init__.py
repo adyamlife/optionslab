@@ -73,12 +73,19 @@ ALL_STRUCTURES: list[str] = [s.name for s in _ALL]
 CREDIT_STRUCTURES: set[str] = {s.name for s in _ALL if s.is_credit}
 DEBIT_STRUCTURES:  set[str] = {s.name for s in _ALL if not s.is_credit}
 
-# Situation matrix: (iv_env, trend) → structure name
-# Only includes structures with a specific iv_env + trend (not "Any")
+# Candidate map: (iv_env, trend) → list of structure names eligible to compete.
+# select_structure() in analyze.py uses this for shortlisting; the list is ordered
+# by _ALL registration order, which is the tiebreak when scores are equal.
+STRUCTURE_CANDIDATES: dict[tuple[str, str], list[str]] = {}
+for _s in _ALL:
+    for _iv in _s.allowed_iv:
+        for _tr in _s.allowed_trends:
+            STRUCTURE_CANDIDATES.setdefault((_iv, _tr), []).append(_s.name)
+
+# Legacy single-winner matrix kept for backward compatibility.
+# First registered structure per slot wins; use STRUCTURE_CANDIDATES for ranking.
 STRUCTURE_MATRIX: dict[tuple[str, str], str] = {
-    (s.iv_env, s.trend): s.name
-    for s in _ALL
-    if s.iv_env != "Any" and s.trend != "Any"
+    slot: names[0]
+    for slot, names in STRUCTURE_CANDIDATES.items()
+    if names
 }
-# Explicit no-trade slot not represented by any structure
-STRUCTURE_MATRIX[("Low", "Range-bound")] = "No Trade"

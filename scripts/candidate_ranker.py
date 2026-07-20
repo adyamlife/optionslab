@@ -332,7 +332,7 @@ def _composite_score(row, c, ev, ev_is_proxy: bool = False) -> float:
     return round(score, 2)
 
 
-def filter_candidates(rows, paper_trade: bool = False):
+def filter_candidates(rows, paper_trade: bool = False, buying_power: float | None = None):
     """
     Steps 1-2: Build the candidate universe and apply hard gates.
 
@@ -416,6 +416,7 @@ def filter_candidates(rows, paper_trade: bool = False):
         log.debug(f"[gate:{gate}] {ticker} {struct} → rejected (threshold={threshold}, actual={actual})")
 
     result = []
+    _cap_rejected: list[dict] = []
     for row in rows:
         if (row.get("status") or "").startswith("SKIP"):
             continue
@@ -531,6 +532,43 @@ def filter_candidates(rows, paper_trade: bool = False):
                         _reject(_t, struct, "expected_roi", _min_roi, round(_roi, 3))
                         continue
 
+            # Gate 10: capital feasibility — skip trades that exceed the usable
+            # fraction of available buying power. Runs only when buying_power is
+            # supplied (paper-trade morning scan); live suggestions skip this gate.
+            if buying_power is not None and buying_power > 0:
+                from scripts.candidate_provider import compute_capital_required as _ccr
+                _cap_needed = _ccr(c) or 0.0
+                _util_cap   = _g("gate", "max_capital_utilization", 1.0)
+                _bp_limit   = buying_power * _util_cap
+                if _cap_needed > 0 and _cap_needed > _bp_limit:
+                    log.info(
+                        "[gate:capital] %s %s rejected — required $%.2f > "
+                        "buying_power $%.2f × %.0f%% = $%.2f",
+                        _t, struct, _cap_needed, buying_power, _util_cap * 100, _bp_limit,
+                    )
+                    _reject(_t, struct, "capital_feasibility", round(_bp_limit, 2), round(_cap_needed, 2))
+                    _cap_rejected.append({
+                        "ticker":           _t,
+                        "structure":        struct,
+                        "required_capital": round(_cap_needed, 2),
+                        "buying_power":     round(buying_power, 2),
+                        "bp_limit":         round(_bp_limit, 2),
+                        "shortfall":        round(_cap_needed - _bp_limit, 2),
+                        "long_strike":      c.get("long_strike") or c.get("put_long_strike") or c.get("call_long_strike"),
+                        "short_strike":     c.get("short_strike") or c.get("put_short_strike") or c.get("call_short_strike"),
+                        "expiry":           c.get("expiry"),
+                        "dte":              c.get("dte"),
+                        "pop":              c.get("pop"),
+                        "ev":               round(float(c.get("ev") or 0), 4),
+                        "max_profit":       c.get("max_profit"),
+                        "max_loss":         c.get("max_loss"),
+                        "signal_score":     c.get("signal_score"),
+                        "net_delta":        c.get("net_delta"),
+                        "net_theta":        c.get("net_theta"),
+                        "iv_edge_vp":       c.get("iv_edge_vp"),
+                    })
+                    continue
+
             result.append({
                 "row":           row,
                 "candidate":     c,
@@ -551,7 +589,7 @@ def filter_candidates(rows, paper_trade: bool = False):
         log.info(f"[filter] {len(_rejections)} rejected, {len(result)} survived — "
                  f"gate breakdown: {dict(_by_gate)}")
         log.debug(f"[filter] rejection detail: {_rejections}")
-    return result
+    return result, _cap_rejected
 
 
 def _portfolio_risk_check(best: dict, open_positions: list) -> dict:
@@ -632,7 +670,7 @@ def _suggested_allocation(composite: float) -> float:
     return _g("allocation", "tier3_pct", 1.0)
 
 
-def rank_candidates(rows, n=3, score_fn=None, quality_floor=None, open_positions=None, paper_trade: bool = False):  # noqa: score_fn kept for API compat
+def rank_candidates(rows, n=3, score_fn=None, quality_floor=None, open_positions=None, paper_trade: bool = False, buying_power: float | None = None, _cap_rejected_out: list | None = None):  # noqa: score_fn kept for API compat
     """
     Steps 3-5: Score → best per ticker → quality gate → rank tickers → top-n.
 
@@ -644,7 +682,9 @@ def rank_candidates(rows, n=3, score_fn=None, quality_floor=None, open_positions
     always return the top-n by score regardless of quality threshold — every
     outcome, good or bad, is training data.
     """
-    items = filter_candidates(rows, paper_trade=paper_trade)
+    items, _cap_rej = filter_candidates(rows, paper_trade=paper_trade, buying_power=buying_power)
+    if _cap_rejected_out is not None:
+        _cap_rejected_out.extend(_cap_rej)
     if not items:
         return []
 
