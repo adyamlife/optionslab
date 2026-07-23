@@ -11,6 +11,9 @@ from pathlib import Path
 import duckdb
 import json as _json_mod
 import pandas as pd
+import threading
+
+_DB_WRITE_LOCK = threading.Lock()
 
 _ROOT    = Path(__file__).resolve().parent.parent
 _DB_PATH = _ROOT / "data" / "ml_training.duckdb"
@@ -23,6 +26,26 @@ def connect() -> duckdb.DuckDBPyConnection:
     """Return a new DuckDB connection to the shared database file."""
     _DB_PATH.parent.mkdir(parents=True, exist_ok=True)
     return duckdb.connect(str(_DB_PATH))
+
+
+def get_historical_atm_iv(ticker: str, days_ago: int = 7) -> float | None:
+    """Return the most recent atm_iv for ticker recorded more than days_ago days ago."""
+    with _DB_WRITE_LOCK:
+        with connect() as con:
+            row = con.execute(
+                f"""
+                SELECT atm_iv FROM training_snapshots
+                WHERE ticker = ?
+                  AND atm_iv IS NOT NULL
+                  AND TRY_CAST(collected_at AS TIMESTAMPTZ) < (CURRENT_TIMESTAMP - INTERVAL '{days_ago} days')
+                ORDER BY collected_at DESC
+                LIMIT 1
+                """,
+                [ticker],
+            ).fetchone()
+    if row and row[0] and float(row[0]) > 0:
+        return float(row[0])
+    return None
 
 
 def read_df(query: str | None = None, params: list | None = None) -> pd.DataFrame:
@@ -202,7 +225,8 @@ CREATE TABLE IF NOT EXISTS {SNAPSHOTS_TABLE} (
     call_vol           BIGINT,
     put_vol            BIGINT,
     sector_return_1d   DOUBLE,
-    move_index         DOUBLE
+    move_index         DOUBLE,
+    gate_summary       JSON
 )
 """
 
@@ -403,6 +427,21 @@ def ensure_snapshot_tables() -> None:
             # #10/#11 Cross-asset + sector enrichment
             ("sector_return_1d",    "DOUBLE"),
             ("move_index",          "DOUBLE"),
+            # #8/#14/#15 Gate rejection analytics
+            ("gate_summary",        "JSON"),
+            # IndicatorEngine refactor — were in DDL but missing from migration
+            ("ema200_position",     "VARCHAR"),
+            ("ema200",              "DOUBLE"),
+            # Options analytics signals (Phase 2)
+            ("iv_change_5d",        "DOUBLE"),
+            ("unusual_activity",    "DOUBLE"),
+            # Feature expansion A1-A4 + B1
+            ("iv_hv_ratio",         "DOUBLE"),
+            ("expected_move_pct",   "DOUBLE"),
+            ("term_slope",          "DOUBLE"),
+            ("vol_pcr",             "DOUBLE"),
+            ("pcr_diverge",         "DOUBLE"),
+            ("hy_oas",              "DOUBLE"),
         ]:
             try:
                 con.execute(f"ALTER TABLE {SNAPSHOTS_TABLE} ADD COLUMN {col} {typ}")
@@ -410,6 +449,164 @@ def ensure_snapshot_tables() -> None:
                 pass  # column already exists
         con.commit()
     _snapshot_tables_ready = True
+
+
+_FEATURE_METADATA_DDL = """
+CREATE TABLE IF NOT EXISTS feature_metadata (
+    feature       VARCHAR NOT NULL,
+    version       INTEGER NOT NULL,
+    source_type   VARCHAR,
+    calculation   VARCHAR,
+    depends_on    JSON,
+    introduced_at VARCHAR,
+    deprecated_at VARCHAR,
+    notes         VARCHAR,
+    PRIMARY KEY (feature, version)
+)
+"""
+
+_FEATURE_SNAPSHOTS_DDL = """
+CREATE TABLE IF NOT EXISTS feature_snapshots (
+    ticker          VARCHAR NOT NULL,
+    date            VARCHAR NOT NULL,
+    collected_at    VARCHAR,
+    feature         VARCHAR NOT NULL,
+    feature_version INTEGER DEFAULT 1,
+    value           DOUBLE,
+    confidence      DOUBLE DEFAULT 1.0,
+    source_quality  VARCHAR
+)
+"""
+
+_HY_OAS_DDL = """
+CREATE TABLE IF NOT EXISTS hy_oas_history (
+    date         VARCHAR PRIMARY KEY,
+    value        DOUBLE,
+    collected_at VARCHAR
+)
+"""
+
+_feature_store_ready = False
+
+
+def ensure_feature_store_tables() -> None:
+    global _feature_store_ready
+    if _feature_store_ready:
+        return
+    with connect() as con:
+        con.execute(_FEATURE_METADATA_DDL)
+        con.execute(_FEATURE_SNAPSHOTS_DDL)
+        con.execute(_HY_OAS_DDL)
+        con.execute(
+            "CREATE INDEX IF NOT EXISTS idx_fsnap_ticker_date "
+            "ON feature_snapshots (ticker, date, feature)"
+        )
+        _seed_feature_metadata(con)
+        con.commit()
+    _feature_store_ready = True
+
+
+def _seed_feature_metadata(con) -> None:
+    """Insert version-1 records for all current features if they don't already exist."""
+    from datetime import datetime as _dt
+    now = _dt.utcnow().date().isoformat()
+    features = [
+        ("ema200",            "yfinance", "EMA(200) of close price",                                  None),
+        ("weekly_trend",      "yfinance", "Weekly candle trend vs prior week",                        None),
+        ("adx",               "yfinance", "Average Directional Index (14-period)",                    None),
+        ("rsi",               "yfinance", "RSI(14) on daily closes",                                  None),
+        ("macd_trend",        "yfinance", "MACD histogram trend (rising/falling)",                    None),
+        ("iv_premium",        "options",  "ATM IV - 20d HV (percentage points)",                     ["iv_hv_ratio"]),
+        ("iv_hv_ratio",       "options",  "ATM IV / 20d HV ratio",                                   ["iv_premium"]),
+        ("iv_term_shape",     "options",  "Categorical IV term shape (Contango/Backwardation/Flat)",  ["term_slope"]),
+        ("term_slope",        "options",  "(front_iv - back_iv) continuous slope",                   ["iv_term_shape"]),
+        ("vol_skew_pct",      "options",  "Put IV - Call IV for equidistant OTM strikes",             None),
+        ("news_sentiment",    "derived",  "Aggregated news sentiment label",                          None),
+        ("pcr",               "options",  "Put/Call OI ratio (structural/slow)",                     ["vol_pcr", "pcr_diverge"]),
+        ("vol_pcr",           "options",  "Put/Call volume ratio (tactical/fast)",                   ["pcr", "pcr_diverge"]),
+        ("pcr_diverge",       "derived",  "oi_pcr - vol_pcr signed divergence",                      ["pcr", "vol_pcr"]),
+        ("rel_volume",        "yfinance", "Today volume / 20-day average volume",                    None),
+        ("analyst_label",     "yfinance", "Net analyst recommendation label",                         None),
+        ("short_interest",    "yfinance", "Short interest as % of float",                            None),
+        ("atr_pct",           "yfinance", "ATR(14) as % of spot price",                             None),
+        ("hv30",              "yfinance", "30-day realised vol (annualised)",                        None),
+        ("iv_rank_52w",       "options",  "ATM IV rank vs 52-week IV range [0–1]",                  None),
+        ("earnings_dte",      "yfinance", "Calendar days to next earnings",                          None),
+        ("div_days_to_ex",    "yfinance", "Calendar days to next ex-dividend",                       None),
+        ("max_pain_distance_pct", "options", "(max_pain - spot) / spot * 100",                      None),
+        ("oi_concentration",  "options",  "Fraction of total OI within ±10% of spot",               None),
+        ("iv_change_5d",      "options",  "ATM IV change over last 5 trading days",                 None),
+        ("unusual_activity",  "options",  "Max per-strike OI spike ratio vs rolling avg",            ["oi_concentration"]),
+        ("expected_move_pct", "options",  "(ATM call mid + ATM put mid) / spot",                    ["iv_hv_ratio"]),
+        ("hy_oas",            "fred",     "ICE BofA US HY OAS basis points (BAMLH0A0HYM2)",         None),
+    ]
+    for feat, src, calc, deps in features:
+        try:
+            con.execute(
+                "INSERT INTO feature_metadata (feature, version, source_type, calculation, "
+                "depends_on, introduced_at) VALUES (?, 1, ?, ?, ?, ?)",
+                [feat, src, calc, _json_mod.dumps(deps) if deps else None, now]
+            )
+        except Exception:
+            pass  # already seeded
+
+
+def save_hy_oas(value: float) -> None:
+    """Persist today's HY OAS value into hy_oas_history. Idempotent (upsert by date)."""
+    if value is None:
+        return
+    from datetime import datetime as _dt
+    today = _dt.utcnow().date().isoformat()
+    now   = _dt.utcnow().isoformat()
+    try:
+        ensure_feature_store_tables()
+        with _DB_WRITE_LOCK:
+            with connect() as con:
+                con.execute("DELETE FROM hy_oas_history WHERE date = ?", [today])
+                con.execute(
+                    "INSERT INTO hy_oas_history (date, value, collected_at) VALUES (?, ?, ?)",
+                    [today, value, now]
+                )
+                con.commit()
+    except Exception:
+        pass
+
+
+def persist_feature_snapshot(ticker: str, date_str: str, features: dict) -> None:
+    """Record all computed feature values for a given ticker+date into feature_snapshots.
+
+    Idempotent: existing rows for (ticker, date) are deleted before insert.
+    Only stores non-None values.
+    """
+    if not features:
+        return
+    from datetime import datetime as _dt
+    now = _dt.utcnow().isoformat()
+    rows = [
+        (ticker, date_str, now, feat, 1, val, 1.0, "live")
+        for feat, val in features.items()
+        if val is not None
+    ]
+    if not rows:
+        return
+    try:
+        ensure_feature_store_tables()
+        with _DB_WRITE_LOCK:
+            with connect() as con:
+                con.execute(
+                    "DELETE FROM feature_snapshots WHERE ticker = ? AND date = ?",
+                    [ticker, date_str]
+                )
+                con.executemany(
+                    "INSERT INTO feature_snapshots "
+                    "(ticker, date, collected_at, feature, feature_version, value, confidence, source_quality) "
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                    rows
+                )
+                con.commit()
+    except Exception as _e:
+        import logging as _log
+        _log.getLogger(__name__).warning("persist_feature_snapshot failed for %s: %s: %s", ticker, type(_e).__name__, _e)
 
 
 class _NumpyEncoder(_json_mod.JSONEncoder):

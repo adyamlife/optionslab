@@ -171,6 +171,64 @@ def _fetch_garch_vol(ticker: str) -> float | None:
         return None
 
 
+def _build_gate_summary(candidates: list, row: dict) -> dict:
+    """
+    Build a compact record of every candidate's gate outcome for this snapshot.
+
+    Stored as gate_summary JSON so we can later answer:
+      - How often did the optimizer produce trades that failed liquidity?
+      - Which risk gate rejects the most candidates?
+      - Would relaxing expected_move_max_ratio increase trade availability?
+
+    Schema:
+      {
+        "n_evaluated":         int,   total candidates optimizer found
+        "n_risk_rejected":     int,   failed check_risk_gates()
+        "n_liquidity_rejected":int,   had no bid/ask (no pop/ev)
+        "data_quality_ok":     bool,  from validate_price_data
+        "chain_quality_ok":    bool,  from validate_chain
+        "candidates": [
+          {
+            "structure":         str,
+            "recommended":       bool,
+            "risk_rejected":     bool,
+            "risk_notes":        [str],
+            "liquidity_ok":      bool,   False when pop is None (illiquid legs)
+          }, ...
+        ]
+      }
+    """
+    data_ok  = (row.get("data_quality")  or {}).get("ok")
+    chain_ok = (row.get("chain_quality") or {}).get("ok")
+
+    cand_records = []
+    n_risk = 0
+    n_liq  = 0
+    for c in candidates:
+        risk_rej  = bool(c.get("risk_rejected"))
+        liq_ok    = c.get("pop") is not None   # pop=None means illiquid / no valid combo
+        if risk_rej:
+            n_risk += 1
+        if not liq_ok:
+            n_liq += 1
+        cand_records.append({
+            "structure":     c.get("structure"),
+            "recommended":   bool(c.get("recommended")),
+            "risk_rejected": risk_rej,
+            "risk_notes":    c.get("risk_notes") or [],
+            "liquidity_ok":  liq_ok,
+        })
+
+    return {
+        "n_evaluated":          len(candidates),
+        "n_risk_rejected":      n_risk,
+        "n_liquidity_rejected": n_liq,
+        "data_quality_ok":      data_ok,
+        "chain_quality_ok":     chain_ok,
+        "candidates":           cand_records,
+    }
+
+
 def _build_snapshot_record(ticker: str, vix_price, spy_hist=None,
                            index_trends: dict | None = None,
                            vix_ctx: dict | None = None,
@@ -367,6 +425,14 @@ def _build_snapshot_record(ticker: str, vix_price, spy_hist=None,
         "max_pain_strike":  tier4.get("max_pain_strike"),   # strike minimizing holder value
         "oi_concentration": tier4.get("oi_concentration"),  # % OI within ±2 strikes of ATM
         "wings_iv_ratio":   tier4.get("wings_iv_ratio"),    # 10d put IV ÷ ATM IV
+        "iv_change_5d":     row.get("iv_change_5d"),        # ATM IV Δ vs 5 trading days ago
+        "unusual_activity": row.get("unusual_activity"),    # max per-strike OI spike ratio vs rolling avg
+        "iv_hv_ratio":      row.get("iv_hv_ratio"),
+        "expected_move_pct": row.get("expected_move_pct"),
+        "term_slope":       row.get("term_slope"),
+        "vol_pcr":          row.get("vol_pcr"),
+        "pcr_diverge":      row.get("pcr_diverge"),
+        "hy_oas":           row.get("hy_oas"),
         # ── Tier 5 fields (macro context, market-wide, passed from caller) ─────
         "yield_10y":           (macro_ctx or {}).get("yield_10y"),
         "yield_3m":            (macro_ctx or {}).get("yield_3m"),
@@ -394,6 +460,10 @@ def _build_snapshot_record(ticker: str, vix_price, spy_hist=None,
         "forward_3d":          None,
         "forward_5d":          None,
         "future_hv5d":         None,
+        # ── Gate rejection summary (#8/#14/#15) ──────────────────────────────
+        # Captures every candidate's rejection status at collection time so we
+        # can answer post-hoc: which gate fires most? what's trade availability?
+        "gate_summary":          _build_gate_summary(candidates, row),
         # ───────────────────────────────────────────────────────────────────────
         "labeled":               False,
         "outcome":               None,
@@ -992,7 +1062,9 @@ def write_paper_trade_snapshot(trade: dict, analyze_row: dict) -> None:
         "vix_term_slope": None, "move_index": None, "earnings_inside_expiry": None,
         "news_sentiment_score": None, "analyst_rec_change": None, "short_interest_pct": None,
         "iv_skew_20d": None, "gex_proxy": None, "max_pain_strike": None,
-        "oi_concentration": None, "wings_iv_ratio": None,
+        "oi_concentration": None, "wings_iv_ratio": None, "iv_change_5d": None,
+        "unusual_activity": None, "iv_hv_ratio": None, "expected_move_pct": None,
+        "term_slope": None, "vol_pcr": None, "pcr_diverge": None, "hy_oas": None,
         "yield_10y": None, "yield_3m": None, "yield_curve": None,
         "dollar_index": None, "fed_within_dte": None, "cpi_within_dte": None,
         # Paper trade tracking fields
@@ -1100,6 +1172,16 @@ def write_scan_all_snapshots(rows: list[dict], scan_time: str, opened_tickers: s
                 "iwm_rsi": None, "earnings_inside_expiry": None,
                 "news_sentiment_score": None, "analyst_rec_change": None,
                 "iv_skew_20d": None, "gex_proxy": None, "wings_iv_ratio": None,
+                "iv_change_5d": row.get("iv_change_5d"),
+                "unusual_activity": row.get("unusual_activity"),
+                "iv_hv_ratio":      row.get("iv_hv_ratio"),
+                "expected_move_pct": row.get("expected_move_pct"),
+                "term_slope":       row.get("term_slope"),
+                "vol_pcr":          row.get("vol_pcr"),
+                "pcr_diverge":      row.get("pcr_diverge"),
+                "hy_oas":           row.get("hy_oas"),
+                "max_pain_strike": row.get("max_pain_strike"),
+                "oi_concentration": row.get("oi_concentration"),
                 "yield_10y":      row.get("yield_10y"),
                 "yield_3m":       row.get("yield_3m"),
                 "yield_curve":    row.get("yield_curve"),

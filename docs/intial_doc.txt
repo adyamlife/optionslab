@@ -118,6 +118,10 @@ python -m scripts.train_meta_ensemble
 python -m scripts.train_anomaly_detector
 python -m scripts.analyze_trade_failures
 
+train_all.py
+python -m scripts.calibrate_optimizer  #A meaningful calibration needs ~200+ labeled trades spanning multiple structures and widths
+python -m scripts.calibrate_optimizer --history
+
 # 3. Calibrate all classifiers (now tries Platt fallback when isotonic fails)
 python -m scripts.calibrate_models
 -------------------------

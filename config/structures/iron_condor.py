@@ -1,7 +1,8 @@
-from config.structures._base import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema
+from config.structures._base import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema, SignalProfile, StructureConstraints
 
 IRON_CONDOR = OptionStructure(
     name          = "Iron Condor",
+    abbr          = "ICO",
     is_credit     = True,
     option_type   = "both",
     allowed_iv      = ("High",),
@@ -12,6 +13,9 @@ IRON_CONDOR = OptionStructure(
     short_delta_hi = 0.25,
     min_credit_pct = 0.25,
     capital_type   = "spread_width",
+    # Gate: reject if earnings are within 12 days — IV spike on either wing
+    # converts an IC from a range trade into a defined-loss gap trade.
+    constraints = StructureConstraints(earnings_dte_min=12),
     hedge = HedgeDef(
         structure    = "Buy Wider Wings (Gamma Protection)",
         details      = "Buy a deeper OTM put + deeper OTM call to widen the buffer against extreme gap moves.",
@@ -22,5 +26,10 @@ IRON_CONDOR = OptionStructure(
         delta_change = 0.0,
         opt_type     = "both",
         strike_mode  = HedgeStrikeMode.ONE_WIDTH_BOTH,
+    ),
+    signal_profile = SignalProfile(
+        bias="neutral",
+        needs_trend=True, needs_momentum=True,
+        uses_term_structure=False, uses_skew=True, uses_sentiment=True,
     ),
 )

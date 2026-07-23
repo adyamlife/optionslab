@@ -1,0 +1,716 @@
+{
+  "generated_at": "2026-07-21",
+  "n_recent_snapshots": 4062,
+  "n_baseline_snapshots": 11,
+  "recent_window": "2026-06-21 \u2192 2026-07-21",
+  "baseline_window": "2026-04-22 \u2192 2026-06-21",
+  "flagged_features": [
+    "signal_score"
+  ],
+  "features": {
+    "atm_iv": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 0.506584,
+        "std": 0.24311,
+        "missing_pct": 18.6,
+        "min": 0.0039,
+        "max": 1.642,
+        "n": 3308
+      }
+    },
+    "iv_rank_proxy": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 32.976443,
+        "std": 19.695625,
+        "missing_pct": 1.0,
+        "min": 0.0,
+        "max": 100.0,
+        "n": 4020
+      }
+    },
+    "hv20": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 0.481307,
+        "std": 0.248093,
+        "missing_pct": 18.8,
+        "min": 0.1028,
+        "max": 2.0465,
+        "n": 3297
+      }
+    },
+    "iv_rank_52w": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 73.195245,
+        "std": 24.929032,
+        "missing_pct": 28.6,
+        "min": 0.0,
+        "max": 100.0,
+        "n": 2902
+      }
+    },
+    "iv_term_slope": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 2.058589,
+        "std": 11.638963,
+        "missing_pct": 44.1,
+        "min": 0.0046,
+        "max": 238.6,
+        "n": 2269
+      }
+    },
+    "pcr": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 1.153509,
+        "std": 1.224017,
+        "missing_pct": 18.8,
+        "min": 0.07,
+        "max": 11.78,
+        "n": 3297
+      }
+    },
+    "otm_pcr": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 1.767545,
+        "std": 3.341058,
+        "missing_pct": 37.4,
+        "min": 0.0,
+        "max": 74.758,
+        "n": 2543
+      }
+    },
+    "vol_oi_ratio": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 0.231261,
+        "std": 0.230856,
+        "missing_pct": 28.4,
+        "min": 0.0,
+        "max": 2.79,
+        "n": 2910
+      }
+    },
+    "beta_60d": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 1.267457,
+        "std": 1.541223,
+        "missing_pct": 21.6,
+        "min": -1.263,
+        "max": 5.63,
+        "n": 3185
+      }
+    },
+    "atr_pct": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 4.25504,
+        "std": 2.184735,
+        "missing_pct": 21.4,
+        "min": 0.961,
+        "max": 19.602,
+        "n": 3191
+      }
+    },
+    "rsi": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 51.389449,
+        "std": 15.466694,
+        "missing_pct": 0.8,
+        "min": 6.9,
+        "max": 90.0,
+        "n": 4028
+      }
+    },
+    "adx": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 20.525899,
+        "std": 7.172833,
+        "missing_pct": 0.8,
+        "min": 8.1,
+        "max": 51.6,
+        "n": 4031
+      }
+    },
+    "gex_proxy": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 8200.004742,
+        "std": 36558.689607,
+        "missing_pct": 48.1,
+        "min": -33169.0,
+        "max": 281747.0,
+        "n": 2109
+      }
+    },
+    "oi_concentration": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 34.443427,
+        "std": 23.306531,
+        "missing_pct": 36.7,
+        "min": 0.0824,
+        "max": 100.0,
+        "n": 2571
+      }
+    },
+    "wings_iv_ratio": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 1.019249,
+        "std": 0.03371,
+        "missing_pct": 48.1,
+        "min": 0.9416,
+        "max": 1.2175,
+        "n": 2107
+      }
+    },
+    "iv_skew_20d": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 0.009957,
+        "std": 0.05431,
+        "missing_pct": 48.1,
+        "min": -0.1911,
+        "max": 0.7576,
+        "n": 2107
+      }
+    },
+    "vix": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 16.810928,
+        "std": 0.80105,
+        "missing_pct": 0.8,
+        "min": 15.55,
+        "max": 18.82,
+        "n": 4030
+      }
+    },
+    "vvix": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 93.680113,
+        "std": 4.499143,
+        "missing_pct": 21.4,
+        "min": 87.2,
+        "max": 105.9,
+        "n": 3193
+      }
+    },
+    "vix_3m": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 19.348929,
+        "std": 0.453367,
+        "missing_pct": 21.4,
+        "min": 18.57,
+        "max": 20.7,
+        "n": 3194
+      }
+    },
+    "vix_term_slope": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 0.859965,
+        "std": 0.022456,
+        "missing_pct": 21.4,
+        "min": 0.8228,
+        "max": 0.9146,
+        "n": 3194
+      }
+    },
+    "spy_rsi": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 57.099927,
+        "std": 4.660756,
+        "missing_pct": 32.8,
+        "min": 45.4,
+        "max": 66.3,
+        "n": 2730
+      }
+    },
+    "qqq_rsi": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 43.970733,
+        "std": 2.788219,
+        "missing_pct": 32.8,
+        "min": 39.0,
+        "max": 50.1,
+        "n": 2730
+      }
+    },
+    "iwm_rsi": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 45.228645,
+        "std": 6.056124,
+        "missing_pct": 32.8,
+        "min": 36.3,
+        "max": 61.6,
+        "n": 2730
+      }
+    },
+    "yield_curve": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 0.817751,
+        "std": 0.06831,
+        "missing_pct": 21.4,
+        "min": 0.7,
+        "max": 0.904,
+        "n": 3194
+      }
+    },
+    "dollar_index": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 100.98924,
+        "std": 0.199828,
+        "missing_pct": 32.8,
+        "min": 100.596,
+        "max": 101.314,
+        "n": 2730
+      }
+    },
+    "fed_within_dte": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 0.281465,
+        "std": 0.449784,
+        "missing_pct": 21.4,
+        "min": 0.0,
+        "max": 1.0,
+        "n": 3194
+      }
+    },
+    "cpi_within_dte": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 0.628992,
+        "std": 0.48315,
+        "missing_pct": 21.4,
+        "min": 0.0,
+        "max": 1.0,
+        "n": 3194
+      }
+    },
+    "ppi_within_dte": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 0.0,
+        "std": 0.0,
+        "missing_pct": 82.1,
+        "min": 0.0,
+        "max": 0.0,
+        "n": 728
+      }
+    },
+    "jobs_within_dte": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 0.0,
+        "std": 0.0,
+        "missing_pct": 82.1,
+        "min": 0.0,
+        "max": 0.0,
+        "n": 728
+      }
+    },
+    "opex_within_dte": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 1.0,
+        "std": 0.0,
+        "missing_pct": 82.1,
+        "min": 1.0,
+        "max": 1.0,
+        "n": 728
+      }
+    },
+    "is_opex_week": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 1.0,
+        "std": 0.0,
+        "missing_pct": 82.1,
+        "min": 1.0,
+        "max": 1.0,
+        "n": 728
+      }
+    },
+    "signal_score": {
+      "psi": 15.1871,
+      "flag": "major_shift",
+      "baseline": {
+        "mean": 2.553545,
+        "std": 1.018582,
+        "missing_pct": 0.0,
+        "min": 1.183,
+        "max": 5.0,
+        "n": 11
+      },
+      "recent": {
+        "mean": 0.237634,
+        "std": 0.677286,
+        "missing_pct": 18.7,
+        "min": -1.505,
+        "max": 2.4,
+        "n": 3303
+      }
+    },
+    "iv_pct_rank": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 51.249758,
+        "std": 29.523271,
+        "missing_pct": 84.8,
+        "min": 0.0,
+        "max": 100.0,
+        "n": 619
+      }
+    },
+    "gamma_pct_rank": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 49.704633,
+        "std": 29.724269,
+        "missing_pct": 87.2,
+        "min": 0.0,
+        "max": 100.0,
+        "n": 518
+      }
+    },
+    "volume_pct_rank": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 50.353796,
+        "std": 29.563918,
+        "missing_pct": 84.8,
+        "min": 0.0,
+        "max": 100.0,
+        "n": 619
+      }
+    },
+    "momentum_pct_rank": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 49.75337,
+        "std": 29.718118,
+        "missing_pct": 82.1,
+        "min": 0.0,
+        "max": 100.0,
+        "n": 727
+      }
+    },
+    "oi_pct_rank": {
+      "psi": null,
+      "flag": "insufficient_data",
+      "baseline": {
+        "mean": null,
+        "std": null,
+        "missing_pct": 100.0,
+        "min": null,
+        "max": null
+      },
+      "recent": {
+        "mean": 50.393538,
+        "std": 29.684969,
+        "missing_pct": 84.8,
+        "min": 0.0,
+        "max": 100.0,
+        "n": 619
+      }
+    }
+  }
+}

@@ -1,7 +1,8 @@
-from config.structures._base import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema
+from config.structures._base import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema, SignalProfile
 
 DIAGONAL_SPREAD = OptionStructure(
     name          = "Diagonal Spread",
+    abbr          = "DGS",
     is_credit     = False,
     option_type   = "calendar",
     allowed_iv      = ("Low",),
@@ -22,5 +23,10 @@ DIAGONAL_SPREAD = OptionStructure(
         delta_change = 0.0,
         opt_type     = "both",
         strike_mode  = HedgeStrikeMode.OTM_STRANGLE,
+    ),
+    signal_profile = SignalProfile(
+        bias="directional",
+        needs_trend=True, needs_momentum=True,
+        uses_term_structure=True, uses_skew=True, uses_sentiment=True,
     ),
 )

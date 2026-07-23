@@ -113,3 +113,686 @@
 2026-07-20 10:07:02,054 WARNING [capital] Skipping SPY Put Debit Spread — needs $46200.00 but only $1000.00 buying power available.
 2026-07-20 10:08:12,445 INFO [scan_morning] scan snapshots: 116 saved, 0 skipped (opened), 0 errors
 2026-07-20 10:08:12,456 INFO Scan snapshots: 116 saved, 0 skipped
+2026-07-21 10:00:03,967 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-21 10:00:03,992 INFO [prefetch] step 1 — batch daily history for 102 tickers
+2026-07-21 10:00:20,030 INFO [prefetch] daily history done: 102 ok, 0 fail  (16.0s)
+2026-07-21 10:00:20,030 INFO [prefetch] step 2 — batch weekly history for 101 tickers
+2026-07-21 10:00:36,414 INFO [prefetch] weekly history done: 101 ok, 0 fail  (32.4s)
+2026-07-21 10:00:36,418 INFO [prefetch] step 3+4 — expirations + chains for 101 tickers (serial)
+2026-07-21 10:02:24,782 INFO [prefetch] done in 141s — hist 102/102, weekly 101/101, exps 101/101, chains 394 (fail 0)
+2026-07-21 10:02:24,783 INFO [scan] cache ready — 698 total keys, 394 chain keys
+2026-07-21 10:02:25,255 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-21 10:02:25,273 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-21 10:02:25,416 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-21 10:02:25,893 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-21 10:02:26,081 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-21 10:02:26,127 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-21 10:02:27,103 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-21 10:02:32,161 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:02:32,179 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-21 10:02:32,266 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:02:33,200 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-21 10:02:33,208 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-21 10:02:34,161 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-21 10:02:34,722 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-21 10:02:35,506 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-21 10:02:35,567 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:02:43,553 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:02:53,153 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:02:53,242 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:03:01,937 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:03:02,120 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:03:09,475 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:03:09,583 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:03:15,161 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:03:15,592 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-21 10:03:24,073 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:03:24,085 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:03:24,161 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:03:27,400 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:03:27,422 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:03:33,350 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-21 10:03:33,354 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:03:33,859 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-21 10:03:33,860 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:03:33,881 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-21 10:03:34,492 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-21 10:03:41,410 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:03:42,366 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-21 10:03:46,769 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:03:51,586 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-21 10:03:51,804 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:03:53,528 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-21 10:03:53,673 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:03:53,894 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:03:56,525 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-21 10:03:58,063 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:04:03,355 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-21 10:04:09,013 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:04:10,474 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-21 10:04:13,807 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:04:13,840 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-21 10:04:13,946 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:04:17,377 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:04:17,484 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:04:21,092 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:04:26,561 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:04:28,291 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:04:31,728 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:04:37,592 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:04:37,979 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-21 10:04:38,042 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-21 10:04:38,048 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-21 10:04:41,591 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:04:41,596 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:04:42,269 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:04:42,362 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:04:42,386 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:04:52,759 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-21 10:04:52,849 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:04:53,130 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:04:53,799 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-21 10:04:54,961 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:04:55,128 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:04:57,283 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:04:57,285 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:05:00,176 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:05:01,002 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-21 10:05:01,034 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-21 10:05:01,949 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:05:09,000 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-21 10:05:09,060 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:05:10,868 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-21 10:05:12,981 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:05:13,759 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-07-21 10:05:14,664 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:05:14,688 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:05:14,724 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-07-21 10:05:16,151 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:05:16,152 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-07-21 10:05:16,177 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:05:16,802 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-07-21 10:05:21,767 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:05:21,810 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-21 10:05:22,345 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-07-21 10:05:25,607 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-07-21 10:05:25,854 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-07-21 10:05:26,599 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-07-21 10:05:26,625 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-07-21 10:06:06,381 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: LOW"}}}
+2026-07-21 10:06:09,270 INFO ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 10:06:09,342 INFO [gate:capital] MSFT Call Debit Spread rejected — required $1765.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,343 INFO [gate:capital] MSFT Put Debit Spread rejected — required $2720.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,345 INFO [gate:capital] MSFT Call Debit Spread rejected — required $1525.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,347 INFO [gate:capital] MSFT Put Debit Spread rejected — required $1510.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,349 INFO [gate:capital] AVGO Call Debit Spread rejected — required $2290.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,350 INFO [gate:capital] AVGO Put Debit Spread rejected — required $2490.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,351 INFO [gate:capital] AVGO Call Debit Spread rejected — required $1340.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,352 INFO [gate:capital] AVGO Put Debit Spread rejected — required $1495.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,353 INFO [gate:capital] SPY Bear Combo rejected — required $1098.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,355 INFO [gate:capital] AMD Call Credit Spread rejected — required $3620.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,356 INFO [gate:capital] AMD Call Debit Spread rejected — required $3780.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,357 INFO [gate:capital] AMD Put Debit Spread rejected — required $4200.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,358 INFO [gate:capital] AMD Bear Combo rejected — required $8040.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,359 INFO [gate:capital] AMD Call Debit Spread rejected — required $2820.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,360 INFO [gate:capital] AMD Put Debit Spread rejected — required $4040.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,361 INFO [gate:capital] AMD Bear Combo rejected — required $5025.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,362 INFO [gate:capital] TSM Call Debit Spread rejected — required $1645.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,362 INFO [gate:capital] TSM Put Debit Spread rejected — required $2080.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,363 INFO [gate:capital] TSM Call Debit Spread rejected — required $1710.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,364 INFO [gate:capital] TSM Put Debit Spread rejected — required $1535.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,366 INFO [gate:capital] QCOM Call Debit Spread rejected — required $1039.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,366 INFO [gate:capital] QCOM Put Debit Spread rejected — required $2339.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,371 INFO [gate:capital] QCOM Bear Combo rejected — required $2487.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,372 INFO [gate:capital] QCOM Put Debit Spread rejected — required $1199.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,373 INFO [gate:capital] QCOM Bear Combo rejected — required $1780.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,374 INFO [gate:capital] ARM Put Credit Spread rejected — required $2550.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,375 INFO [gate:capital] ARM Call Debit Spread rejected — required $2810.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,375 INFO [gate:capital] ARM Put Debit Spread rejected — required $3500.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,376 INFO [gate:capital] ARM Bear Combo rejected — required $6950.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,377 INFO [gate:capital] ARM Call Debit Spread rejected — required $1955.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,378 INFO [gate:capital] ARM Risk Reversal rejected — required $1607.20 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,379 INFO [gate:capital] ARM Bear Combo rejected — required $6120.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,380 INFO [gate:capital] LRCX Put Debit Spread rejected — required $2440.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,381 INFO [gate:capital] LRCX Bear Combo rejected — required $6410.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,382 INFO [gate:capital] LRCX Call Debit Spread rejected — required $2750.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,386 INFO [gate:capital] LRCX Put Debit Spread rejected — required $2445.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,387 INFO [gate:capital] LRCX Bear Combo rejected — required $6655.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,388 INFO [gate:capital] ASML Call Debit Spread rejected — required $8700.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,389 INFO [gate:capital] ASML Put Debit Spread rejected — required $7070.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,390 INFO [gate:capital] MU Call Debit Spread rejected — required $6525.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,391 INFO [gate:capital] MU Put Debit Spread rejected — required $6575.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,392 INFO [gate:capital] MU Risk Reversal rejected — required $4446.20 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,392 INFO [gate:capital] MU Bear Combo rejected — required $16260.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,394 INFO [gate:capital] MU Call Debit Spread rejected — required $6030.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,394 INFO [gate:capital] MU Bear Combo rejected — required $12880.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,396 INFO [gate:capital] KLAC Call Debit Spread rejected — required $2000.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,397 INFO [gate:capital] KLAC Put Debit Spread rejected — required $2570.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,398 INFO [gate:capital] KLAC Bear Combo rejected — required $4480.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,399 INFO [gate:capital] SNPS Put Debit Spread rejected — required $1965.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,403 INFO [gate:capital] PLTR Put Debit Spread rejected — required $1011.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,404 INFO [gate:capital] SNOW Call Debit Spread rejected — required $1603.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,405 INFO [gate:capital] SNOW Put Debit Spread rejected — required $1285.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,406 INFO [gate:capital] ORCL Bear Combo rejected — required $1153.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,407 INFO [gate:capital] ORCL Bear Combo rejected — required $1036.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,407 INFO [gate:capital] MDB Put Debit Spread rejected — required $3220.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,408 INFO [gate:capital] MDB Bear Combo rejected — required $4050.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,409 INFO [gate:capital] MDB Call Debit Spread rejected — required $1632.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,409 INFO [gate:capital] MDB Bear Combo rejected — required $4543.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,410 INFO [gate:capital] NET Call Debit Spread rejected — required $1442.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,411 INFO [gate:capital] NET Put Debit Spread rejected — required $1028.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,412 INFO [gate:capital] TEAM Call Debit Spread rejected — required $1085.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,415 INFO [gate:capital] INTU Call Debit Spread rejected — required $1340.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,419 INFO [gate:capital] INTU Put Debit Spread rejected — required $1360.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,419 INFO [gate:capital] ADBE Call Debit Spread rejected — required $1215.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,420 INFO [gate:capital] ADBE Put Debit Spread rejected — required $1185.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,422 INFO [gate:capital] META Call Debit Spread rejected — required $3290.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,423 INFO [gate:capital] META Put Debit Spread rejected — required $2560.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,424 INFO [gate:capital] META Call Debit Spread rejected — required $2750.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,425 INFO [gate:capital] META Put Debit Spread rejected — required $3410.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,426 INFO [gate:capital] AMZN Call Debit Spread rejected — required $1007.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,428 INFO [gate:capital] APP Put Debit Spread rejected — required $2980.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,431 INFO [gate:capital] APP Bear Combo rejected — required $7290.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,435 INFO [gate:capital] APP Call Debit Spread rejected — required $1860.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,436 INFO [gate:capital] APP Put Debit Spread rejected — required $2500.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,437 INFO [gate:capital] APP Bear Combo rejected — required $4110.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,440 INFO [gate:capital] LLY Iron Condor rejected — required $2345.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,441 INFO [gate:capital] LLY Put Debit Spread rejected — required $6000.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,442 INFO [gate:capital] LLY Call Debit Spread rejected — required $2600.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,442 INFO [gate:capital] LLY Put Debit Spread rejected — required $3665.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,443 INFO [gate:capital] ABBV Call Debit Spread rejected — required $1135.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,444 INFO [gate:capital] ISRG Call Debit Spread rejected — required $1120.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,445 INFO [gate:capital] ISRG Put Debit Spread rejected — required $1705.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,450 INFO [gate:capital] UNH Call Debit Spread rejected — required $1133.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,451 INFO [gate:capital] UNH Put Debit Spread rejected — required $1394.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,452 INFO [gate:capital] BRK-B Put Debit Spread rejected — required $1024.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,454 INFO [gate:capital] JPM Put Debit Spread rejected — required $1118.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,454 INFO [gate:capital] GS Call Debit Spread rejected — required $4260.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,455 INFO [gate:capital] GS Call Debit Spread rejected — required $2295.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,456 INFO [gate:capital] GS Put Debit Spread rejected — required $2535.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,457 INFO [gate:capital] GE Put Debit Spread rejected — required $1570.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,458 INFO [gate:capital] MS Put Debit Spread rejected — required $1031.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,459 INFO [gate:capital] DE Put Debit Spread rejected — required $2475.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,460 INFO [gate:capital] CAT Put Debit Spread rejected — required $4870.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,461 INFO [gate:capital] CAT Call Debit Spread rejected — required $4530.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,461 INFO [gate:capital] CAT Put Debit Spread rejected — required $3730.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,468 INFO [gate:capital] VRT Put Credit Spread rejected — required $1665.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,469 INFO [gate:capital] VRT Iron Condor rejected — required $1595.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,470 INFO [gate:capital] VRT Call Debit Spread rejected — required $1600.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,471 INFO [gate:capital] VRT Put Debit Spread rejected — required $2125.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,471 INFO [gate:capital] VRT Bear Combo rejected — required $1770.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,473 INFO [gate:capital] OXY Risk Reversal rejected — required $1036.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,475 INFO [gate:capital] CEG Put Debit Spread rejected — required $1280.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,479 INFO [gate:capital] JNJ Put Debit Spread rejected — required $1122.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,482 INFO [gate:capital] LOW Put Debit Spread rejected — required $1130.00 > buying_power $1000.00 × 100% = $1000.00
+2026-07-21 10:06:09,483 INFO [filter] 687 rejected, 148 survived — gate breakdown: {'expected_roi': 226, 'strikes_incomplete': 242, 'capital_feasibility': 104, 'iv_edge': 36, 'min_profit': 49, 'ml_confidence': 30}
+2026-07-21 10:06:09,499 INFO [capital_rejected] 104 entries persisted to capital_rejected.jsonl
+2026-07-21 10:06:15,171 INFO Paper trade #1: 20260721AM_SPY_PUT_1  credit=21.940  expiry=2026-08-07
+2026-07-21 10:06:17,331 INFO Training snapshot written for paper trade 20260721AM_SPY_PUT_1
+2026-07-21 10:06:17,619 WARNING [capital] Skipping PLTR Call Debit Spread — needs $823.00 but only $194.00 buying power available.
+2026-07-21 10:06:17,892 WARNING [capital] Skipping CEG Call Debit Spread — needs $960.00 but only $194.00 buying power available.
+2026-07-21 10:06:18,354 WARNING [capital] Skipping UNH Call Debit Spread — needs $598.00 but only $194.00 buying power available.
+2026-07-21 10:06:18,616 WARNING [capital] Skipping JPM Call Debit Spread — needs $575.00 but only $194.00 buying power available.
+2026-07-21 10:06:18,899 WARNING [capital] Skipping AMZN Call Debit Spread — needs $937.00 but only $194.00 buying power available.
+2026-07-21 10:06:19,201 WARNING [capital] Skipping V Call Debit Spread — needs $809.00 but only $194.00 buying power available.
+2026-07-21 10:06:19,470 WARNING [capital] Skipping BRK-B Call Debit Spread — needs $679.00 but only $194.00 buying power available.
+2026-07-21 10:06:19,830 WARNING [capital] Skipping NVDA Put Debit Spread — needs $674.00 but only $194.00 buying power available.
+2026-07-21 10:06:20,222 WARNING [capital] Skipping QCOM Call Debit Spread — needs $911.00 but only $194.00 buying power available.
+2026-07-21 10:06:20,549 WARNING [capital] Skipping ORCL Put Debit Spread — needs $887.00 but only $194.00 buying power available.
+2026-07-21 10:06:20,815 WARNING [capital] Skipping CRM Call Debit Spread — needs $707.00 but only $194.00 buying power available.
+2026-07-21 10:06:21,177 WARNING [capital] Skipping WMT Call Debit Spread — needs $249.00 but only $194.00 buying power available.
+2026-07-21 10:06:21,468 WARNING [capital] Skipping TQQQ Put Debit Spread — needs $453.00 but only $194.00 buying power available.
+2026-07-21 10:06:21,778 INFO Paper trade #2: 20260721AM_VRT_COV_2  credit=4.100  expiry=2026-07-31
+2026-07-21 10:06:22,362 INFO Training snapshot written for paper trade 20260721AM_VRT_COV_2
+2026-07-21 10:08:31,425 INFO [scan_morning] scan snapshots: 195 saved, 4 skipped (opened), 0 errors
+2026-07-21 10:08:31,426 INFO Scan snapshots: 195 saved, 4 skipped
+2026-07-22 10:00:06,840 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-22 10:00:06,967 INFO [prefetch] step 1 — batch daily history for 102 tickers
+2026-07-22 10:00:27,264 INFO [prefetch] daily history done: 102 ok, 0 fail  (20.3s)
+2026-07-22 10:00:27,264 INFO [prefetch] step 2 — batch weekly history for 101 tickers
+2026-07-22 10:00:48,991 INFO [prefetch] weekly history done: 101 ok, 0 fail  (42.0s)
+2026-07-22 10:00:48,991 INFO [prefetch] step 3+4 — expirations + chains for 101 tickers (serial)
+2026-07-22 10:04:25,227 INFO [prefetch] done in 258s — hist 102/102, weekly 101/101, exps 101/101, chains 405 (fail 0)
+2026-07-22 10:04:25,235 INFO [scan] cache ready — 709 total keys, 405 chain keys
+2026-07-22 10:04:25,675 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-22 10:04:25,681 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-22 10:04:25,681 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-22 10:04:26,228 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-22 10:04:26,299 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-22 10:04:26,299 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-22 10:04:34,014 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-22 10:04:34,031 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-22 10:04:34,087 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-22 10:04:34,124 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:04:34,219 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:04:34,680 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-22 10:04:34,976 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-22 10:04:35,180 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-22 10:04:35,750 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-22 10:04:45,402 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-22 10:04:47,305 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:04:53,089 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:04:55,138 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-22 10:05:03,039 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-22 10:05:11,623 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:05:11,623 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:05:11,634 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:05:11,821 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:05:18,109 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:05:18,115 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:05:27,322 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-22 10:05:27,350 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:05:27,693 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:05:30,762 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:05:30,785 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:05:30,926 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:05:34,071 WARNING analyze_ticker(SHOP, short_dte) failed: 'NoneType' object has no attribute 'copy'
+2026-07-22 10:05:34,831 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-22 10:05:40,027 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:05:40,038 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:05:40,038 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:05:40,059 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:05:40,059 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:05:40,304 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-22 10:05:40,365 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-22 10:05:43,447 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:05:43,505 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:05:45,463 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-22 10:05:51,794 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-22 10:05:52,596 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-22 10:05:54,351 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:05:54,388 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:05:56,496 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:05:56,514 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:05:57,028 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-22 10:05:57,028 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-22 10:06:01,418 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-22 10:06:05,723 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:06:06,819 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:06:06,855 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-22 10:06:07,302 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:06:07,601 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-22 10:06:09,011 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-22 10:06:13,541 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:06:13,541 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:06:13,568 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:06:13,588 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:06:13,632 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:06:17,949 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:06:19,999 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:06:21,964 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:06:22,093 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:06:25,761 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:06:25,761 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:06:29,015 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-07-22 10:06:30,277 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-07-22 10:06:31,253 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-07-22 10:06:31,807 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-07-22 10:06:31,807 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-07-22 10:06:33,502 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-22 10:06:33,523 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:06:33,558 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-22 10:06:33,594 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:06:34,002 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:06:34,026 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:06:34,043 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:06:34,063 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:06:34,444 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-22 10:06:34,463 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-22 10:06:36,324 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-07-22 10:06:36,594 WARNING analyze_ticker(SCHW) failed: 'NoneType' object has no attribute 'copy'
+2026-07-22 10:06:37,177 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-07-22 10:06:40,118 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:06:40,375 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-07-22 10:06:40,406 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-07-22 10:06:41,263 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-07-22 10:06:43,390 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:06:43,750 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:06:44,246 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-22 10:06:45,971 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-22 10:06:47,769 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-22 10:06:49,673 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:06:49,677 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:06:50,590 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-22 10:06:52,294 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-22 10:06:52,346 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:06:52,346 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:06:52,690 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-22 10:06:54,040 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-22 10:07:12,095 INFO ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-22 10:07:12,173 INFO [gate:capital] AVGO Call Debit Spread rejected — required $2870.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,173 INFO [gate:capital] AVGO Put Debit Spread rejected — required $2435.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,175 INFO [gate:capital] AMD Call Debit Spread rejected — required $4135.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,177 INFO [gate:capital] AMD Put Debit Spread rejected — required $6330.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,178 INFO [gate:capital] AMD Risk Reversal rejected — required $2196.60 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,178 INFO [gate:capital] AMD Bear Combo rejected — required $10445.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,179 INFO [gate:capital] AMD Diagonal Spread rejected — required $3770.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,180 INFO [gate:capital] AMD Call Debit Spread rejected — required $2525.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,180 INFO [gate:capital] AMD Put Debit Spread rejected — required $3300.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,181 INFO [gate:capital] AMD Bear Combo rejected — required $4885.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,181 INFO [gate:capital] AMD Diagonal Spread rejected — required $3880.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,182 INFO [gate:capital] MSFT Call Debit Spread rejected — required $1780.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,183 INFO [gate:capital] MSFT Put Debit Spread rejected — required $2280.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,184 INFO [gate:capital] MSFT Put Debit Spread rejected — required $1610.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,185 INFO [gate:capital] TSM Call Debit Spread rejected — required $2045.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,186 INFO [gate:capital] TSM Put Debit Spread rejected — required $2380.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,187 INFO [gate:capital] TSM Put Debit Spread rejected — required $1685.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,187 INFO [gate:capital] MU Put Credit Spread rejected — required $2380.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,187 INFO [gate:capital] MU Call Debit Spread rejected — required $8375.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,188 INFO [gate:capital] MU Put Debit Spread rejected — required $14165.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,188 INFO [gate:capital] MU Risk Reversal rejected — required $3997.60 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,191 INFO [gate:capital] MU Bear Combo rejected — required $21255.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,192 INFO [gate:capital] MU Call Debit Spread rejected — required $5595.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,193 INFO [gate:capital] MU Risk Reversal rejected — required $5422.60 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,193 INFO [gate:capital] MU Bear Combo rejected — required $11365.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,194 INFO [gate:capital] QCOM Put Debit Spread rejected — required $1590.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,194 INFO [gate:capital] QCOM Bear Combo rejected — required $3819.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,195 INFO [gate:capital] QCOM Diagonal Spread rejected — required $1710.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,195 INFO [gate:capital] QCOM Bear Combo rejected — required $1583.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,195 INFO [gate:capital] ASML Call Debit Spread rejected — required $9330.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,195 INFO [gate:capital] ASML Put Debit Spread rejected — required $10310.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,195 INFO [gate:capital] ASML Put Debit Spread rejected — required $7770.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,195 INFO [gate:capital] LRCX Put Credit Spread rejected — required $1675.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,195 INFO [gate:capital] LRCX Iron Condor rejected — required $1510.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,195 INFO [gate:capital] LRCX Call Debit Spread rejected — required $3585.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,195 INFO [gate:capital] LRCX Put Debit Spread rejected — required $4620.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,195 INFO [gate:capital] LRCX Bear Combo rejected — required $9935.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,195 INFO [gate:capital] LRCX Call Debit Spread rejected — required $2050.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,195 INFO [gate:capital] LRCX Put Debit Spread rejected — required $2530.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,195 INFO [gate:capital] LRCX Bear Combo rejected — required $4440.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,195 INFO [gate:capital] KLAC Call Debit Spread rejected — required $2140.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,195 INFO [gate:capital] KLAC Put Debit Spread rejected — required $3240.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,195 INFO [gate:capital] KLAC Bear Combo rejected — required $3740.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,195 INFO [gate:capital] SNPS Call Debit Spread rejected — required $2220.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,195 INFO [gate:capital] SNPS Put Debit Spread rejected — required $3000.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,195 INFO [gate:capital] SNOW Call Debit Spread rejected — required $1920.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,195 INFO [gate:capital] MDB Call Debit Spread rejected — required $1765.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,195 INFO [gate:capital] MDB Put Debit Spread rejected — required $3335.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,195 INFO [gate:capital] MDB Bear Combo rejected — required $6200.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,195 INFO [gate:capital] MDB Diagonal Spread rejected — required $4290.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,195 INFO [gate:capital] MDB Bear Combo rejected — required $3817.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,195 INFO [gate:capital] ORCL Bear Combo rejected — required $1975.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,215 INFO [gate:capital] TEAM Bear Combo rejected — required $1950.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,215 INFO [gate:capital] INTU Call Debit Spread rejected — required $2400.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,216 INFO [gate:capital] INTU Put Debit Spread rejected — required $3170.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,217 INFO [gate:capital] NET Call Debit Spread rejected — required $1880.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,218 INFO [gate:capital] NET Put Debit Spread rejected — required $2660.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,219 INFO [gate:capital] ARM Put Credit Spread rejected — required $1560.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,219 INFO [gate:capital] ARM Iron Condor rejected — required $1535.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,219 INFO [gate:capital] ARM Call Debit Spread rejected — required $2870.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,220 INFO [gate:capital] ARM Put Debit Spread rejected — required $5530.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,220 INFO [gate:capital] ARM Risk Reversal rejected — required $1533.80 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,221 INFO [gate:capital] ARM Bear Combo rejected — required $6090.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,223 INFO [gate:capital] ARM Call Debit Spread rejected — required $1985.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,224 INFO [gate:capital] ARM Put Debit Spread rejected — required $2805.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,224 INFO [gate:capital] ARM Bear Combo rejected — required $5830.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,224 INFO [gate:capital] ARM Diagonal Spread rejected — required $3265.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,225 INFO [gate:capital] META Call Debit Spread rejected — required $5025.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,226 INFO [gate:capital] META Put Debit Spread rejected — required $3475.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,230 INFO [gate:capital] META Diagonal Spread rejected — required $2705.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,231 INFO [gate:capital] META Call Debit Spread rejected — required $2545.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,232 INFO [gate:capital] META Put Debit Spread rejected — required $3010.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,232 INFO [gate:capital] META Diagonal Spread rejected — required $2760.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,233 INFO [gate:capital] SPOT Call Debit Spread rejected — required $3130.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,234 INFO [gate:capital] SPOT Put Debit Spread rejected — required $2790.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,235 INFO [gate:capital] SPOT Diagonal Spread rejected — required $2845.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,236 INFO [gate:capital] AMZN Put Debit Spread rejected — required $1810.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,236 INFO [gate:capital] APP Call Debit Spread rejected — required $2860.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,237 INFO [gate:capital] APP Put Debit Spread rejected — required $4750.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,239 INFO [gate:capital] APP Bear Combo rejected — required $9830.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,240 INFO [gate:capital] APP Diagonal Spread rejected — required $4580.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,241 INFO [gate:capital] APP Call Debit Spread rejected — required $2560.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,241 INFO [gate:capital] APP Put Debit Spread rejected — required $2100.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,242 INFO [gate:capital] APP Bear Combo rejected — required $2820.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,244 INFO [gate:capital] APP Diagonal Spread rejected — required $4720.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,244 INFO [gate:capital] UNH Diagonal Spread rejected — required $1850.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,244 INFO [gate:capital] MELI Call Debit Spread rejected — required $10120.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,244 INFO [gate:capital] MELI Put Debit Spread rejected — required $13560.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,244 INFO [gate:capital] MELI Diagonal Spread rejected — required $9240.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,244 INFO [gate:capital] GS Call Debit Spread rejected — required $3090.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,244 INFO [gate:capital] GS Put Debit Spread rejected — required $4540.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,244 INFO [gate:capital] GS Call Debit Spread rejected — required $2299.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,244 INFO [gate:capital] ETN Call Debit Spread rejected — required $2285.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,244 INFO [gate:capital] ETN Put Debit Spread rejected — required $2130.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,244 INFO [gate:capital] GE Put Debit Spread rejected — required $1515.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,244 INFO [gate:capital] CAT Call Debit Spread rejected — required $4855.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,244 INFO [gate:capital] CAT Put Debit Spread rejected — required $6580.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,244 INFO [gate:capital] CAT Call Debit Spread rejected — required $2813.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,244 INFO [gate:capital] CAT Put Debit Spread rejected — required $3310.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,263 INFO [gate:capital] DE Call Debit Spread rejected — required $3495.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,263 INFO [gate:capital] DE Put Debit Spread rejected — required $2770.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,264 INFO [gate:capital] DE Call Debit Spread rejected — required $2110.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,264 INFO [gate:capital] DE Put Debit Spread rejected — required $2070.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,265 INFO [gate:capital] LLY Call Debit Spread rejected — required $5820.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,267 INFO [gate:capital] LLY Put Debit Spread rejected — required $6405.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,268 INFO [gate:capital] LLY Put Debit Spread rejected — required $2868.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,268 INFO [gate:capital] VRT Put Credit Spread rejected — required $2500.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,269 INFO [gate:capital] VRT Iron Condor rejected — required $2495.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,269 INFO [gate:capital] VRT Call Debit Spread rejected — required $2305.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,270 INFO [gate:capital] VRT Put Debit Spread rejected — required $3330.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,270 INFO [gate:capital] VRT Bear Combo rejected — required $5835.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,271 INFO [gate:capital] VRT Diagonal Spread rejected — required $3785.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,271 INFO [gate:capital] VRT Call Debit Spread rejected — required $1650.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,272 INFO [gate:capital] VRT Put Debit Spread rejected — required $2215.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,273 INFO [gate:capital] VRT Bear Combo rejected — required $3262.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,275 INFO [gate:capital] CEG Call Debit Spread rejected — required $1775.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,280 INFO [gate:capital] FDX Put Debit Spread rejected — required $1679.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-22 10:07:12,281 INFO [filter] 662 rejected, 202 survived — gate breakdown: {'capital_feasibility': 117, 'expected_roi': 239, 'no_ev_or_pop': 81, 'iv_edge': 49, 'strikes_incomplete': 97, 'min_profit': 39, 'ml_confidence': 40}
+2026-07-22 10:07:12,282 INFO [filter] strikes_incomplete by structure: {'Jade Lizard': 29, 'Iron Condor': 17, 'Call Credit Spread': 15, 'Diagonal Spread': 10, 'Put Credit Spread': 10, 'Calendar Spread': 5, 'Put Debit Spread': 3, 'Call Debit Spread': 3, 'Bear Combo': 2, 'Covered Call': 1, 'Financed Long Call': 1, 'Ratio Put Backspread': 1}
+2026-07-22 10:07:12,322 INFO [capital_rejected] 117 entries persisted to capital_rejected.jsonl
+2026-07-22 10:07:17,768 INFO Paper trade #1: 20260722AM_NET_CDS_1  credit=18.720  expiry=2026-07-31
+2026-07-22 10:07:18,846 INFO Training snapshot written for paper trade 20260722AM_NET_CDS_1
+2026-07-22 10:07:19,723 WARNING [capital] Skipping PLTR Call Debit Spread — needs $794.00 but only $372.00 buying power available.
+2026-07-22 10:07:20,696 WARNING [capital] Skipping JPM Put Debit Spread — needs $1296.00 but only $372.00 buying power available.
+2026-07-22 10:07:21,944 WARNING [capital] Skipping SNOW Call Debit Spread — needs $1042.00 but only $372.00 buying power available.
+2026-07-22 10:07:22,377 WARNING [capital] Skipping GE Call Debit Spread — needs $1055.00 but only $372.00 buying power available.
+2026-07-22 10:07:24,804 WARNING [capital] Skipping UNH Call Debit Spread — needs $682.00 but only $372.00 buying power available.
+2026-07-22 10:07:27,593 WARNING [capital] Skipping SPY Put Debit Spread — needs $607.00 but only $372.00 buying power available.
+2026-07-22 10:07:28,384 WARNING [capital] Skipping CRM Call Debit Spread — needs $604.00 but only $372.00 buying power available.
+2026-07-22 10:07:28,993 WARNING [capital] Skipping ORCL Call Debit Spread — needs $499.00 but only $372.00 buying power available.
+2026-07-22 10:07:29,395 WARNING [capital] Skipping TSM Call Debit Spread — needs $1345.00 but only $372.00 buying power available.
+2026-07-22 10:07:30,025 WARNING [capital] Skipping AMZN Put Debit Spread — needs $1323.00 but only $372.00 buying power available.
+2026-07-22 10:07:30,678 WARNING [capital] Skipping V Call Debit Spread — needs $1113.00 but only $372.00 buying power available.
+2026-07-22 10:07:31,387 WARNING [capital] Skipping VST Call Debit Spread — needs $650.00 but only $372.00 buying power available.
+2026-07-22 10:07:32,014 INFO Paper trade #2: 20260722AM_NFLX_CDS_2  credit=3.590  expiry=2026-07-31
+2026-07-22 10:07:32,636 INFO Training snapshot written for paper trade 20260722AM_NFLX_CDS_2
+2026-07-22 10:07:33,207 WARNING [capital] Skipping AVGO Call Debit Spread — needs $1385.00 but only $231.00 buying power available.
+2026-07-22 10:09:25,430 INFO [scan_morning] scan snapshots: 193 saved, 4 skipped (opened), 0 errors
+2026-07-22 10:09:25,430 INFO Scan snapshots: 193 saved, 4 skipped
+2026-07-23 10:00:04,051 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-23 10:00:04,051 INFO [prefetch] step 1 — batch daily history for 102 tickers
+2026-07-23 10:00:25,253 INFO [prefetch] daily history done: 102 ok, 0 fail  (21.2s)
+2026-07-23 10:00:25,253 INFO [prefetch] step 2 — batch weekly history for 101 tickers
+2026-07-23 10:00:44,660 INFO [prefetch] weekly history done: 101 ok, 0 fail  (40.6s)
+2026-07-23 10:00:44,660 INFO [prefetch] step 3+4 — expirations + chains for 101 tickers (serial)
+2026-07-23 10:03:49,052 INFO [prefetch] done in 225s — hist 102/102, weekly 101/101, exps 101/101, chains 400 (fail 0)
+2026-07-23 10:03:49,052 INFO [scan] cache ready — 704 total keys, 400 chain keys
+2026-07-23 10:03:49,652 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-23 10:03:49,667 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-23 10:03:49,667 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-23 10:03:50,152 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-23 10:03:50,180 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-23 10:03:50,235 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-23 10:03:58,545 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-23 10:03:59,000 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-07-23 10:03:59,159 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:03:59,189 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-23 10:03:59,505 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-07-23 10:04:09,221 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-23 10:04:09,240 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:04:09,706 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-07-23 10:04:29,475 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:05:10,945 WARNING analyze_ticker(MDB, short_dte) failed: cannot convert float NaN to integer
+2026-07-23 10:05:23,076 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:05:23,105 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:05:23,121 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:05:33,119 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:05:33,491 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:05:33,599 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:05:36,275 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-23 10:05:46,367 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-23 10:05:46,387 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:05:46,390 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:05:46,396 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:05:46,400 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:05:48,724 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:05:50,126 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:05:50,136 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:05:52,456 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:05:52,457 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-23 10:05:52,497 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:05:53,806 WARNING analyze_ticker(CVNA, short_dte) failed: cannot convert float NaN to integer
+2026-07-23 10:05:54,234 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:05:54,234 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:05:54,337 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:05:54,343 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:05:54,959 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-23 10:05:54,968 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-23 10:06:04,202 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:06:08,607 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:06:08,616 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:06:08,857 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:06:08,957 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:06:09,073 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:06:18,712 WARNING analyze_ticker(ISRG) failed: cannot convert float NaN to integer
+2026-07-23 10:06:21,305 WARNING analyze_ticker(PG, short_dte) failed: cannot convert float NaN to integer
+2026-07-23 10:06:23,823 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:06:23,823 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:06:23,833 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:06:24,246 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:06:25,227 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-23 10:06:31,684 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:06:39,031 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-23 10:06:39,086 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-23 10:06:46,734 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-23 10:06:46,737 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:06:46,738 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:06:51,787 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-23 10:06:51,827 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-23 10:06:53,881 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-23 10:06:53,903 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-23 10:06:55,583 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:06:55,949 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-23 10:06:56,127 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-07-23 10:06:56,646 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:06:56,646 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:06:56,736 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-23 10:06:57,046 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-23 10:07:00,120 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:07:01,120 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-07-23 10:07:01,131 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-07-23 10:07:02,019 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-07-23 10:07:03,250 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:07:03,656 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-07-23 10:07:04,129 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-23 10:07:08,413 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-07-23 10:07:09,087 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-07-23 10:07:09,088 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:07:09,798 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-07-23 10:07:11,375 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-23 10:07:15,535 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:07:15,763 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-23 10:07:15,845 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:07:16,097 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:07:16,097 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:07:16,113 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:07:16,113 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:07:16,134 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:07:16,185 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:07:16,651 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:07:16,775 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:07:16,851 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-23 10:07:16,920 WARNING analyze_ticker(TGT) failed: 'NoneType' object has no attribute 'copy'
+2026-07-23 10:07:17,656 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-23 10:07:18,263 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:07:18,553 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-07-23 10:07:18,669 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:07:19,770 WARNING analyze_ticker(LOW) failed: cannot convert float NaN to integer
+2026-07-23 10:07:20,190 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:07:20,238 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:07:21,324 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:07:25,281 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:07:25,290 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-07-23 10:07:29,537 INFO ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-23 10:07:29,594 INFO [gate:capital] AVGO Call Debit Spread rejected — required $1560.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,594 INFO [gate:capital] AVGO Put Debit Spread rejected — required $1515.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,597 INFO [gate:capital] TSM Call Debit Spread rejected — required $2485.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,598 INFO [gate:capital] TSM Put Debit Spread rejected — required $1685.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,601 INFO [gate:capital] MSFT Call Debit Spread rejected — required $1610.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,602 INFO [gate:capital] MSFT Put Debit Spread rejected — required $1685.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,603 INFO [gate:capital] QCOM Bear Combo rejected — required $1795.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,604 INFO [gate:capital] QCOM Bear Combo rejected — required $2251.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,604 INFO [gate:capital] ASML Put Debit Spread rejected — required $6750.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,604 INFO [gate:capital] ASML Call Debit Spread rejected — required $5970.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,604 INFO [gate:capital] AMD Call Debit Spread rejected — required $3645.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,604 INFO [gate:capital] AMD Put Debit Spread rejected — required $3570.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,604 INFO [gate:capital] AMD Bear Combo rejected — required $5465.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,604 INFO [gate:capital] AMD Diagonal Spread rejected — required $3385.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,604 INFO [gate:capital] AMD Call Debit Spread rejected — required $2865.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,604 INFO [gate:capital] AMD Put Debit Spread rejected — required $2705.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,604 INFO [gate:capital] AMD Bear Combo rejected — required $5305.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,604 INFO [gate:capital] ARM Call Debit Spread rejected — required $2360.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,604 INFO [gate:capital] ARM Put Debit Spread rejected — required $2345.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,604 INFO [gate:capital] ARM Bear Combo rejected — required $6295.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,604 INFO [gate:capital] ARM Diagonal Spread rejected — required $3405.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,604 INFO [gate:capital] ARM Call Credit Spread rejected — required $2245.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,604 INFO [gate:capital] ARM Iron Condor rejected — required $2065.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,604 INFO [gate:capital] ARM Call Debit Spread rejected — required $2165.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,604 INFO [gate:capital] ARM Put Debit Spread rejected — required $2210.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,623 INFO [gate:capital] ARM Bear Combo rejected — required $4905.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,626 INFO [gate:capital] ARM Diagonal Spread rejected — required $3615.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,628 INFO [gate:capital] MDB Bear Combo rejected — required $4169.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,629 INFO [gate:capital] MDB Diagonal Spread rejected — required $3210.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,630 INFO [gate:capital] LRCX Call Debit Spread rejected — required $2570.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,631 INFO [gate:capital] LRCX Put Debit Spread rejected — required $2470.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,631 INFO [gate:capital] LRCX Bear Combo rejected — required $6375.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,632 INFO [gate:capital] LRCX Call Debit Spread rejected — required $2045.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,633 INFO [gate:capital] LRCX Put Debit Spread rejected — required $2425.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,634 INFO [gate:capital] LRCX Bear Combo rejected — required $4200.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,637 INFO [gate:capital] MU Call Credit Spread rejected — required $2695.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,640 INFO [gate:capital] MU Iron Condor rejected — required $2520.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,641 INFO [gate:capital] MU Call Debit Spread rejected — required $7110.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,642 INFO [gate:capital] MU Bear Combo rejected — required $15000.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,642 INFO [gate:capital] MU Iron Condor rejected — required $3350.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,643 INFO [gate:capital] MU Call Debit Spread rejected — required $6050.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,644 INFO [gate:capital] MU Put Debit Spread rejected — required $6045.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,645 INFO [gate:capital] MU Bear Combo rejected — required $11075.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,648 INFO [gate:capital] META Call Debit Spread rejected — required $3005.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,649 INFO [gate:capital] META Put Debit Spread rejected — required $3120.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,650 INFO [gate:capital] META Call Debit Spread rejected — required $2605.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,650 INFO [gate:capital] META Put Debit Spread rejected — required $2465.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,652 INFO [gate:capital] APP Call Debit Spread rejected — required $3500.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,656 INFO [gate:capital] APP Put Debit Spread rejected — required $3820.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,656 INFO [gate:capital] APP Bear Combo rejected — required $6190.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,656 INFO [gate:capital] APP Diagonal Spread rejected — required $4110.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,656 INFO [gate:capital] APP Put Debit Spread rejected — required $2100.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,656 INFO [gate:capital] APP Bear Combo rejected — required $3470.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,656 INFO [gate:capital] APP Diagonal Spread rejected — required $4970.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,656 INFO [gate:capital] LLY Put Debit Spread rejected — required $5045.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,656 INFO [gate:capital] LLY Put Debit Spread rejected — required $3020.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,656 INFO [gate:capital] GS Call Debit Spread rejected — required $3875.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,656 INFO [gate:capital] GS Call Debit Spread rejected — required $2854.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,656 INFO [gate:capital] GS Put Debit Spread rejected — required $2110.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,656 INFO [gate:capital] ETN Call Debit Spread rejected — required $1650.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,656 INFO [gate:capital] CAT Put Debit Spread rejected — required $4385.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,656 INFO [gate:capital] CAT Call Debit Spread rejected — required $3115.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,656 INFO [gate:capital] CAT Put Debit Spread rejected — required $2880.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,656 INFO [gate:capital] DE Call Debit Spread rejected — required $2045.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,674 INFO [gate:capital] DE Call Debit Spread rejected — required $1745.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,679 INFO [gate:capital] VRT Call Debit Spread rejected — required $2040.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,680 INFO [gate:capital] VRT Put Debit Spread rejected — required $2105.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,681 INFO [gate:capital] VRT Bear Combo rejected — required $3617.00 > buying_power $1500.00 × 100% = $1500.00
+2026-07-23 10:07:29,687 INFO [filter] 734 rejected, 94 survived — gate breakdown: {'capital_feasibility': 68, 'expected_roi': 193, 'no_ev_or_pop': 73, 'ml_confidence': 67, 'iv_edge': 36, 'min_profit': 47, 'strikes_incomplete': 154, 'liquidity': 96}
+2026-07-23 10:07:29,689 INFO [filter] strikes_incomplete by structure: {'Jade Lizard': 30, 'Iron Condor': 22, 'Call Credit Spread': 18, 'Put Credit Spread': 18, 'Calendar Spread': 12, 'Diagonal Spread': 12, 'Put Debit Spread': 10, 'Call Debit Spread': 6, 'Bear Combo': 5, 'Ratio Put Backspread': 4, 'Financed Long Call': 3, 'Financed Long Put': 3, 'Ratio Call Backspread': 3, 'Cash Secured Put': 2, 'Covered Call': 2, 'Risk Reversal': 2, 'Long Strangle': 2}
+2026-07-23 10:07:29,704 INFO [capital_rejected] 68 entries persisted to capital_rejected.jsonl
+2026-07-23 10:07:35,697 INFO Paper trade #1: 20260723AM_PLTR_CDS_1  credit=15.280  expiry=2026-08-07
+2026-07-23 10:07:37,552 INFO Training snapshot written for paper trade 20260723AM_PLTR_CDS_1
+2026-07-23 10:07:37,978 INFO Paper trade #2: 20260723AM_NFLX_CDS_2  credit=4.000  expiry=2026-08-07
+2026-07-23 10:07:38,652 INFO Training snapshot written for paper trade 20260723AM_NFLX_CDS_2
+2026-07-23 10:07:39,273 WARNING [capital] Skipping SPY Put Debit Spread — needs $678.00 but only $628.00 buying power available.
+2026-07-23 10:07:39,886 WARNING [capital] Skipping TSLA Call Debit Spread — needs $1195.00 but only $628.00 buying power available.
+2026-07-23 10:07:40,475 WARNING [capital] Skipping TSM Put Debit Spread — needs $1200.00 but only $628.00 buying power available.
+2026-07-23 10:07:40,991 INFO Paper trade #3: 20260723AM_UNH_PDS_3  credit=11.380  expiry=2026-07-31
+2026-07-23 10:07:41,580 INFO Training snapshot written for paper trade 20260723AM_UNH_PDS_3
+2026-07-23 10:09:49,782 INFO [scan_morning] scan snapshots: 187 saved, 6 skipped (opened), 0 errors
+2026-07-23 10:09:49,784 INFO Scan snapshots: 187 saved, 6 skipped

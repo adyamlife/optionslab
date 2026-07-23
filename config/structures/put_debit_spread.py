@@ -1,7 +1,8 @@
-from config.structures._base import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema
+from config.structures._base import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema, SignalProfile
 
 PUT_DEBIT_SPREAD = OptionStructure(
     name          = "Put Debit Spread",
+    abbr          = "PDS",
     is_credit     = False,
     option_type   = "put",
     allowed_iv      = ("Low",),
@@ -22,5 +23,10 @@ PUT_DEBIT_SPREAD = OptionStructure(
         delta_change = +0.15,
         opt_type     = "call",
         strike_mode  = HedgeStrikeMode.ATM_CALL,
+    ),
+    signal_profile = SignalProfile(
+        bias="bearish",
+        needs_trend=True, needs_momentum=True,
+        uses_term_structure=False, uses_skew=True, uses_sentiment=True,
     ),
 )

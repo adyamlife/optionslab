@@ -1,7 +1,8 @@
-from config.structures._base import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema
+from config.structures._base import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema, SignalProfile
 
 COVERED_CALL = OptionStructure(
     name          = "Covered Call",
+    abbr          = "COV",
     is_credit     = True,
     option_type   = "call",
     allowed_iv      = ("High",),
@@ -22,5 +23,10 @@ COVERED_CALL = OptionStructure(
         delta_change = +0.05,
         opt_type     = "call",
         strike_mode  = HedgeStrikeMode.ONE_WIDTH_ABOVE_HI,
+    ),
+    signal_profile = SignalProfile(
+        bias="neutral",
+        needs_trend=True, needs_momentum=True,
+        uses_term_structure=False, uses_skew=True, uses_sentiment=True,
     ),
 )

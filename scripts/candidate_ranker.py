@@ -69,6 +69,12 @@ def _strikes_complete(c) -> bool:
     if name == "Financed Long Put":
         return all(c.get(k) is not None for k in (
             "short_call_strike", "long_call_strike", "put_strike"))
+    # Calendar: both legs share one ATM strike — only short_strike is required
+    if name in ("Calendar Spread", "Double Calendar"):
+        return c.get("short_strike") is not None
+    # Diagonal: two different strikes, one per expiry
+    if name == "Diagonal Spread":
+        return c.get("short_strike") is not None and c.get("long_strike") is not None
     return c.get("short_strike") is not None and c.get("long_strike") is not None
 
 
@@ -329,6 +335,17 @@ def _composite_score(row, c, ev, ev_is_proxy: bool = False) -> float:
         elif net_vega < 0:
             score -= iv_expand_prob * iv_wt
 
+    # ── Calibration multiplier (empirical win-rate feedback) ──────────────────
+    # Applies the observed avg_return from closed trades in this score bucket as
+    # a final multiplier. Returns 1.0 (neutral) until ≥5 closed trades exist in
+    # the bucket, so no effect until enough real outcome data has accumulated.
+    # Bounded to [0.80, 1.20] to prevent catastrophic reordering during ramp-up.
+    try:
+        from scripts.offline_eval import get_calibration_multiplier as _gcm
+        score *= _gcm(score, min_bucket_n=_g("calibration", "min_bucket_n", 5))
+    except Exception:
+        pass
+
     return round(score, 2)
 
 
@@ -556,8 +573,8 @@ def filter_candidates(rows, paper_trade: bool = False, buying_power: float | Non
                         "shortfall":        round(_cap_needed - _bp_limit, 2),
                         "long_strike":      c.get("long_strike") or c.get("put_long_strike") or c.get("call_long_strike"),
                         "short_strike":     c.get("short_strike") or c.get("put_short_strike") or c.get("call_short_strike"),
-                        "expiry":           c.get("expiry"),
-                        "dte":              c.get("dte"),
+                        "expiry":           row.get("expiry") or c.get("expiry"),
+                        "dte":              row.get("dte")    or c.get("dte"),
                         "pop":              c.get("pop"),
                         "ev":               round(float(c.get("ev") or 0), 4),
                         "max_profit":       c.get("max_profit"),
@@ -566,21 +583,49 @@ def filter_candidates(rows, paper_trade: bool = False, buying_power: float | Non
                         "net_delta":        c.get("net_delta"),
                         "net_theta":        c.get("net_theta"),
                         "iv_edge_vp":       c.get("iv_edge_vp"),
+                        "short_leg_oi":     c.get("short_leg_oi"),
+                        "short_leg_volume": c.get("short_leg_volume"),
+                        "short_leg_ba_pct": c.get("short_leg_ba_pct"),
                     })
                     continue
 
+            # Gate 11: liquidity — short leg OI, volume, and bid-ask spread.
+            # Thresholds from scoring.toml [gate]; defaults are conservative floors
+            # that still allow small-cap names (OI≥50 is already enforced per-leg
+            # by leg_liquid() during chain fetch; ranker floor is a second check
+            # on the worst leg across the whole candidate after optimization).
+            _min_oi_ranker  = _g("gate", "ranker_min_oi",     50)
+            _max_ba_ranker  = _g("gate", "ranker_max_ba_pct",  0.30)
+            _min_vol_ranker = _g("gate", "ranker_min_volume",  10)
+            _cand_oi  = c.get("short_leg_oi")
+            _cand_ba  = c.get("short_leg_ba_pct")
+            _cand_vol = c.get("short_leg_volume")
+            if _min_oi_ranker and _cand_oi is not None and _cand_oi < _min_oi_ranker:
+                _reject(_t, struct, "liquidity", _min_oi_ranker, _cand_oi)
+                log.debug("[gate:liquidity] %s %s — OI %d < %d", _t, struct, _cand_oi, _min_oi_ranker)
+                continue
+            if _max_ba_ranker and _cand_ba is not None and _cand_ba > _max_ba_ranker:
+                _reject(_t, struct, "liquidity", _max_ba_ranker, round(_cand_ba, 3))
+                log.debug("[gate:liquidity] %s %s — spread %.1f%% > %.0f%%", _t, struct, _cand_ba * 100, _max_ba_ranker * 100)
+                continue
+            if _min_vol_ranker and _cand_vol is not None and _cand_vol < _min_vol_ranker:
+                _reject(_t, struct, "liquidity", _min_vol_ranker, _cand_vol)
+                log.debug("[gate:liquidity] %s %s — volume %d < %d", _t, struct, _cand_vol, _min_vol_ranker)
+                continue
+
             result.append({
-                "row":           row,
-                "candidate":     c,
-                "ev":            round(ev, 4),
-                "ev_is_proxy":   ev_is_proxy,
-                "meets_both":    (
+                "row":             row,
+                "candidate":       c,
+                "ev":              round(ev, 4),
+                "ev_is_proxy":     ev_is_proxy,
+                "meets_both":      (
                     bool(c.get("meets_min_profit"))
                     and c.get("meets_max_loss") is not False
                 ),
-                "iv_edge_vp":    iv_edge_vp,
-                "iv_edge_label": iv_edge_label,
-                "pred_dist":     pred_dist,
+                "iv_edge_vp":      iv_edge_vp,
+                "iv_edge_label":   iv_edge_label,
+                "pred_dist":       pred_dist,
+                "liquidity_score": _liq_score,   # Gate 8 score; None when gate disabled
             })
 
     if _rejections:
@@ -588,8 +633,39 @@ def filter_candidates(rows, paper_trade: bool = False, buying_power: float | Non
         _by_gate = _Ctr(r["gate"] for r in _rejections)
         log.info(f"[filter] {len(_rejections)} rejected, {len(result)} survived — "
                  f"gate breakdown: {dict(_by_gate)}")
+        _si_structs = _Ctr(
+            r["structure"] for r in _rejections if r["gate"] == "strikes_incomplete"
+        )
+        if _si_structs:
+            log.info(f"[filter] strikes_incomplete by structure: "
+                     f"{dict(_si_structs.most_common())}")
         log.debug(f"[filter] rejection detail: {_rejections}")
     return result, _cap_rejected
+
+
+def _latest_greeks(trade: dict) -> dict:
+    """
+    Return the most recently remarked Greeks for an open position.
+    Prefers the last evening-check snapshot (which contains live-priced Greeks
+    from compute_position_greeks), falls back to entry-time values from the
+    trade dict itself.  Always returns a dict with net_delta/theta/gamma/vega.
+    """
+    snaps = trade.get("snapshots") or []
+    for snap in reversed(snaps):
+        if snap.get("net_delta") is not None:
+            return {
+                "net_delta": snap["net_delta"],
+                "net_theta": snap.get("net_theta", trade.get("net_theta") or 0.0),
+                "net_gamma": snap.get("net_gamma", trade.get("net_gamma") or 0.0),
+                "net_vega":  snap.get("net_vega",  trade.get("net_vega")  or 0.0),
+            }
+    # No remarked snapshot yet — use entry-time values
+    return {
+        "net_delta": trade.get("net_delta") or 0.0,
+        "net_theta": trade.get("net_theta") or 0.0,
+        "net_gamma": trade.get("net_gamma") or 0.0,
+        "net_vega":  trade.get("net_vega")  or 0.0,
+    }
 
 
 def _portfolio_risk_check(best: dict, open_positions: list) -> dict:
@@ -600,7 +676,9 @@ def _portfolio_risk_check(best: dict, open_positions: list) -> dict:
       - No duplicate ticker (already have open exposure in this name)
       - Max 2 open trades per sector ETF
       - Total capital deployed cap: MAX_TOTAL_DEPLOYMENT_PCT of notional
-      - Net portfolio delta cap: reject candidates that push |net_delta| beyond threshold (#7)
+      - Net portfolio delta cap: reject candidates that push |net_delta| beyond threshold
+      - Net portfolio theta cap: reject when portfolio theta would exceed limit
+      - Net portfolio gamma cap: reject when portfolio gamma would exceed limit
     """
     if not open_positions:
         return best
@@ -608,7 +686,9 @@ def _portfolio_risk_check(best: dict, open_positions: list) -> dict:
     _MAX_SECTOR_COUNT    = _g("portfolio_risk", "max_sector_count",    2)
     _MAX_TICKER_TRADES   = _g("portfolio_risk", "max_ticker_trades",   1)
     _MAX_DEPLOYMENT_PCT  = _g("portfolio_risk", "max_deployment_pct", 20.0)
-    _MAX_NET_DELTA       = _g("portfolio_risk", "max_net_delta",       3.0)  # in underlying-equivalent shares
+    _MAX_NET_DELTA       = _g("portfolio_risk", "max_net_delta",       3.0)
+    _MAX_NET_THETA       = _g("portfolio_risk", "max_net_theta",       0.0)   # 0 = gate disabled
+    _MAX_NET_GAMMA       = _g("portfolio_risk", "max_net_gamma",       0.0)   # 0 = gate disabled
 
     from collections import Counter
     open_tickers = Counter(p.get("ticker", "") for p in open_positions)
@@ -618,9 +698,24 @@ def _portfolio_risk_check(best: dict, open_positions: list) -> dict:
         (p.get("capital_required") or 0) for p in open_positions
     )
 
-    # Current portfolio net delta (sum across all open positions)
-    portfolio_delta = sum((p.get("net_delta") or 0.0) for p in open_positions)
-    log.debug(f"[risk] portfolio net_delta={portfolio_delta:+.2f} from {len(open_positions)} open positions")
+    # Use remarked Greeks from last evening-check snapshot (not entry-time).
+    # This is the critical fix: entry-time delta becomes wildly stale after a
+    # significant underlying move, causing the gate to underestimate real exposure.
+    _pos_greeks = [_latest_greeks(p) for p in open_positions]
+    portfolio_delta = sum(g["net_delta"] for g in _pos_greeks)
+    portfolio_theta = sum(g["net_theta"] for g in _pos_greeks)
+    portfolio_gamma = sum(g["net_gamma"] for g in _pos_greeks)
+
+    _remarked = sum(
+        1 for p in open_positions
+        if any(s.get("net_delta") is not None for s in (p.get("snapshots") or []))
+    )
+    log.debug(
+        "[risk] portfolio net_delta=%+.3f net_theta=%.4f net_gamma=%.6f "
+        "from %d open positions (%d remarked, %d entry-time)",
+        portfolio_delta, portfolio_theta, portfolio_gamma,
+        len(open_positions), _remarked, len(open_positions) - _remarked,
+    )
 
     result = {}
     for ticker, item in best.items():
@@ -633,18 +728,91 @@ def _portfolio_risk_check(best: dict, open_positions: list) -> dict:
         if sector and open_sectors.get(sector, 0) >= _MAX_SECTOR_COUNT:
             log.info(f"[risk] Skip {ticker} — sector {sector} already has {open_sectors[sector]} open trades")
             continue
-        # Net delta cap — would adding this candidate push portfolio delta past limit?
-        candidate_delta = item["candidate"].get("net_delta") or 0.0
+
+        c = item["candidate"]
+
+        # Net delta cap — use live-remarked portfolio delta
+        candidate_delta = c.get("net_delta") or 0.0
         projected_delta = portfolio_delta + candidate_delta
         if abs(projected_delta) > _MAX_NET_DELTA:
             log.info(
-                f"[risk] Skip {ticker} — net_delta would reach {projected_delta:+.2f} "
-                f"(cap ±{_MAX_NET_DELTA:.1f})"
+                "[risk] Skip %s — net_delta would reach %+.3f (cap ±%.1f; remarked=%d/total=%d)",
+                ticker, projected_delta, _MAX_NET_DELTA, _remarked, len(open_positions),
             )
             continue
+
+        # Net theta cap (positive = we receive theta decay; gate limits total exposure)
+        if _MAX_NET_THETA > 0:
+            candidate_theta = c.get("net_theta") or 0.0
+            projected_theta = portfolio_theta + candidate_theta
+            if abs(projected_theta) > _MAX_NET_THETA:
+                log.info(
+                    "[risk] Skip %s — net_theta would reach %.4f (cap ±%.4f)",
+                    ticker, projected_theta, _MAX_NET_THETA,
+                )
+                continue
+
+        # Net gamma cap (limits convexity/gap risk)
+        if _MAX_NET_GAMMA > 0:
+            candidate_gamma = c.get("net_gamma") or 0.0
+            projected_gamma = portfolio_gamma + candidate_gamma
+            if abs(projected_gamma) > _MAX_NET_GAMMA:
+                log.info(
+                    "[risk] Skip %s — net_gamma would reach %.6f (cap ±%.6f)",
+                    ticker, projected_gamma, _MAX_NET_GAMMA,
+                )
+                continue
+
+        # Rolling 60-day price correlation check
+        # Warn (not block) when candidate ticker is highly correlated with any open position.
+        _CORR_WARN_THRESHOLD = _g("portfolio_risk", "corr_warn_threshold", 0.75)
+        _corr_warnings = _correlation_warnings(ticker, open_positions, _CORR_WARN_THRESHOLD)
+        if _corr_warnings:
+            item["corr_warnings"] = _corr_warnings
+            log.info("[risk] %s corr warning: %s", ticker, "; ".join(_corr_warnings))
+
         result[ticker] = item
 
     return result
+
+
+def _correlation_warnings(candidate_ticker: str, open_positions: list, threshold: float = 0.75) -> list[str]:
+    """
+    Compute 60-day rolling return correlation between candidate_ticker and every
+    open position's ticker. Return a list of warning strings for pairs that
+    exceed threshold. Returns [] when price data is unavailable or no open positions.
+    """
+    open_tickers = list({p.get("ticker", "") for p in open_positions if p.get("ticker")})
+    if not open_tickers:
+        return []
+    try:
+        import yfinance as yf
+        import pandas as pd
+        all_tickers = list({candidate_ticker} | set(open_tickers))
+        raw = yf.download(all_tickers, period="90d", auto_adjust=True, progress=False)
+        if raw.empty:
+            return []
+        closes = raw["Close"] if isinstance(raw.columns, pd.MultiIndex) else raw
+        if isinstance(closes, pd.Series):
+            closes = closes.to_frame(name=all_tickers[0])
+        returns = closes.pct_change().dropna()
+        if candidate_ticker not in returns.columns:
+            return []
+        warnings = []
+        cand_ret = returns[candidate_ticker]
+        for ot in open_tickers:
+            if ot not in returns.columns or ot == candidate_ticker:
+                continue
+            tail = min(60, len(returns))
+            corr = cand_ret.iloc[-tail:].corr(returns[ot].iloc[-tail:])
+            if corr is not None and abs(corr) >= threshold:
+                warnings.append(
+                    f"{candidate_ticker}↔{ot} corr={corr:+.2f} (>{threshold:.2f})"
+                )
+        return warnings
+    except Exception as _e:
+        log.debug(f"[corr] correlation check failed: {_e}")
+        return []
 
 
 def _position_size_factor(ml: dict) -> float:
@@ -744,11 +912,18 @@ def rank_candidates(rows, n=3, score_fn=None, quality_floor=None, open_positions
     # fall back to composite score when ranker not trained.
     has_ranker = any(v["ranker_score"] is not None for v in best.values())
     if has_ranker:
-        ranked = sorted(best.values(),
-                        key=lambda x: -(x["ranker_score"] if x["ranker_score"] is not None
-                                        else x["composite"] / 1000.0))
+        ranked = sorted(
+            best.values(),
+            key=lambda x: (
+                -(x["ranker_score"] if x["ranker_score"] is not None else x["composite"] / 1000.0),
+                -(x.get("liquidity_score") or 0.0),   # tiebreaker within near-equal ranker scores
+            ),
+        )
     else:
-        ranked = sorted(best.values(), key=lambda x: -x["composite"])
+        ranked = sorted(
+            best.values(),
+            key=lambda x: (-x["composite"], -(x.get("liquidity_score") or 0.0)),
+        )
 
     result = ranked[:n]
     for item in result:

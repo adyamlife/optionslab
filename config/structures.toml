@@ -1,0 +1,344 @@
+# config/structures.toml
+# Structure registry — single source of truth for routing and per-structure config.
+#
+# Two sections:
+#   [[structure]]  per-strategy metadata (iv_envs, trends, dte window, preferred_delta)
+#   [[slot]]       (iv_env, trend) → ordered candidate list for select_structure()
+#
+# Adding a new strategy to an existing slot: add its name to the slot's candidates list.
+# Changing priority: reorder the candidates list.
+# Adding a new slot (e.g. "High"/"Sideways"): add a [[slot]] entry.
+# No Python changes needed for any of the above.
+#
+# Note: is_credit, dte_min/max, and preferred_delta here are the authoritative
+# values. The Python OptionStructure objects in config/structures/*.py own the
+# complex metadata (HedgeDef, StrikeSchema, expiry_pnl_fn) that cannot be expressed
+# in TOML.
+
+# ── Per-structure configuration ───────────────────────────────────────────────
+
+[[structure]]
+name             = "Put Credit Spread"
+is_credit        = true
+iv_envs          = ["High"]
+trends           = ["Uptrend"]
+min_dte          = 21
+max_dte          = 60
+preferred_delta  = 0.20   # target short-leg delta at entry
+
+[[structure]]
+name             = "Call Credit Spread"
+is_credit        = true
+iv_envs          = ["High"]
+trends           = ["Downtrend"]
+min_dte          = 21
+max_dte          = 60
+preferred_delta  = 0.20
+
+[[structure]]
+name             = "Iron Condor"
+is_credit        = true
+iv_envs          = ["High"]
+trends           = ["Range-bound"]
+min_dte          = 25
+max_dte          = 60
+preferred_delta  = 0.15   # short wings; same delta both sides
+
+[[structure]]
+name             = "Jade Lizard"
+is_credit        = true
+iv_envs          = ["High"]
+trends           = ["Uptrend", "Range-bound"]
+min_dte          = 21
+max_dte          = 45
+preferred_delta  = 0.25
+
+[[structure]]
+name             = "Cash Secured Put"
+is_credit        = true
+iv_envs          = ["High"]
+trends           = ["Uptrend"]
+min_dte          = 14
+max_dte          = 45
+preferred_delta  = 0.20
+
+[[structure]]
+name             = "Covered Call"
+is_credit        = true
+iv_envs          = ["High"]
+trends           = ["Uptrend", "Range-bound"]
+min_dte          = 14
+max_dte          = 45
+preferred_delta  = 0.20
+
+[[structure]]
+name             = "Naked Put"
+is_credit        = true
+iv_envs          = ["High"]
+trends           = ["Range-bound"]
+min_dte          = 14
+max_dte          = 45
+preferred_delta  = 0.20
+
+[[structure]]
+name             = "Bear Combo"
+is_credit        = false
+iv_envs          = ["High"]
+trends           = ["Downtrend"]
+min_dte          = 21
+max_dte          = 45
+preferred_delta  = 0.40   # long put leg (directional)
+
+[[structure]]
+name             = "Call Debit Spread"
+is_credit        = false
+iv_envs          = ["Low"]
+trends           = ["Uptrend"]
+min_dte          = 21
+max_dte          = 60
+preferred_delta  = 0.50   # long leg; short leg at ~0.20
+
+[[structure]]
+name             = "Put Debit Spread"
+is_credit        = false
+iv_envs          = ["Low"]
+trends           = ["Downtrend"]
+min_dte          = 21
+max_dte          = 60
+preferred_delta  = 0.50
+
+[[structure]]
+name             = "Calendar Spread"
+is_credit        = false
+iv_envs          = ["Low"]
+trends           = ["Range-bound"]
+min_dte          = 21    # front (short) leg
+max_dte          = 45
+preferred_delta  = 0.50   # front-month ATM
+
+[[structure]]
+name             = "Diagonal Spread"
+is_credit        = false
+iv_envs          = ["Low"]
+trends           = ["Uptrend", "Downtrend"]
+min_dte          = 21
+max_dte          = 45
+preferred_delta  = 0.50   # back-month long leg
+
+[[structure]]
+name             = "LEAPS Long Call"
+is_credit        = false
+iv_envs          = ["Low"]
+trends           = ["Uptrend"]
+min_dte          = 500
+max_dte          = 730
+preferred_delta  = 0.70   # deep ITM for high delta exposure
+
+[[structure]]
+name             = "Risk Reversal"
+is_credit        = true
+iv_envs          = ["Low"]
+trends           = ["Uptrend"]
+min_dte          = 21
+max_dte          = 60
+preferred_delta  = 0.20   # both the short put and long call legs
+
+[[structure]]
+name             = "Financed Long Call"
+is_credit        = false
+iv_envs          = ["Low"]
+trends           = ["Uptrend"]
+min_dte          = 21
+max_dte          = 60
+preferred_delta  = 0.30   # long call leg
+
+[[structure]]
+name             = "Financed Long Put"
+is_credit        = false
+iv_envs          = ["Low"]
+trends           = ["Downtrend"]
+min_dte          = 21
+max_dte          = 60
+preferred_delta  = 0.30
+
+[[structure]]
+name             = "Ratio Call Backspread"
+is_credit        = false
+iv_envs          = ["Low"]
+trends           = ["Uptrend"]
+min_dte          = 21
+max_dte          = 60
+preferred_delta  = 0.25   # OTM long legs (2x)
+
+[[structure]]
+name             = "Ratio Put Backspread"
+is_credit        = false
+iv_envs          = ["Low"]
+trends           = ["Downtrend"]
+min_dte          = 21
+max_dte          = 60
+preferred_delta  = 0.25
+
+[[structure]]
+name             = "Long Strangle"
+is_credit        = false
+iv_envs          = ["Low"]
+trends           = ["Range-bound"]
+min_dte          = 21
+max_dte          = 60
+preferred_delta  = 0.20   # OTM call and put legs
+
+[[structure]]
+name             = "Long Call"
+is_credit        = false
+iv_envs          = ["Low"]
+trends           = ["Uptrend"]
+min_dte          = 21
+max_dte          = 60
+preferred_delta  = 0.50   # near-ATM long call
+
+[[structure]]
+name             = "Long Put"
+is_credit        = false
+iv_envs          = ["Low"]
+trends           = ["Downtrend"]
+min_dte          = 21
+max_dte          = 60
+preferred_delta  = 0.50   # near-ATM long put
+
+[[structure]]
+name             = "Iron Butterfly"
+is_credit        = true
+iv_envs          = ["High"]
+trends           = ["Range-bound"]
+min_dte          = 21
+max_dte          = 45
+preferred_delta  = 0.50   # ATM short strikes
+
+[[structure]]
+name             = "Short Strangle"
+is_credit        = true
+iv_envs          = ["High"]
+trends           = ["Range-bound"]
+min_dte          = 21
+max_dte          = 45
+preferred_delta  = 0.20   # OTM short call and put
+
+[[structure]]
+name             = "Short Straddle"
+is_credit        = true
+iv_envs          = ["High"]
+trends           = ["Range-bound"]
+min_dte          = 21
+max_dte          = 45
+preferred_delta  = 0.50   # ATM short strikes (both legs)
+
+[[structure]]
+name             = "Long Straddle"
+is_credit        = false
+iv_envs          = ["Low"]
+trends           = ["Range-bound"]
+min_dte          = 21
+max_dte          = 60
+preferred_delta  = 0.50   # ATM long call and put
+
+[[structure]]
+name             = "Bull Call Ladder"
+is_credit        = false
+iv_envs          = ["Low"]
+trends           = ["Uptrend"]
+min_dte          = 21
+max_dte          = 60
+preferred_delta  = 0.50   # ATM long call leg; short legs step down from there
+
+[[structure]]
+name             = "Double Calendar"
+is_credit        = false
+iv_envs          = ["Low"]
+trends           = ["Range-bound"]
+min_dte          = 21
+max_dte          = 45
+preferred_delta  = 0.30   # OTM strikes on each side
+
+[[structure]]
+name             = "Poor Man's Covered Call"
+is_credit        = false
+iv_envs          = ["Low"]
+trends           = ["Uptrend"]
+min_dte          = 21
+max_dte          = 180
+preferred_delta  = 0.75   # back-month deep ITM long call
+
+
+# ── Slot routing: (iv_env, trend) → ordered candidate list ───────────────────
+# select_structure() uses this list. Order determines the tiebreak when two
+# candidates have identical trade_quality_pct after DTE adjustment.
+# First entry also becomes the STRUCTURE_MATRIX winner (preliminary structure
+# before signal scoring, used as a fallback early in analyze_ticker).
+
+[[slot]]
+iv_env     = "High"
+trend      = "Uptrend"
+candidates = [
+  "Put Credit Spread",
+  "Jade Lizard",
+  "Cash Secured Put",
+  "Covered Call",
+]
+
+[[slot]]
+iv_env     = "High"
+trend      = "Downtrend"
+candidates = [
+  "Call Credit Spread",
+  "Bear Combo",
+]
+
+[[slot]]
+iv_env     = "High"
+trend      = "Range-bound"
+candidates = [
+  "Iron Condor",
+  "Iron Butterfly",
+  "Short Strangle",
+  "Short Straddle",
+  "Jade Lizard",
+  "Covered Call",
+  "Naked Put",
+]
+
+[[slot]]
+iv_env     = "Low"
+trend      = "Uptrend"
+candidates = [
+  "Call Debit Spread",
+  "Long Call",
+  "Bull Call Ladder",
+  "Diagonal Spread",
+  "Poor Man's Covered Call",
+  "LEAPS Long Call",
+  "Risk Reversal",
+  "Financed Long Call",
+  "Ratio Call Backspread",
+]
+
+[[slot]]
+iv_env     = "Low"
+trend      = "Downtrend"
+candidates = [
+  "Put Debit Spread",
+  "Long Put",
+  "Diagonal Spread",
+  "Financed Long Put",
+  "Ratio Put Backspread",
+]
+
+[[slot]]
+iv_env     = "Low"
+trend      = "Range-bound"
+candidates = [
+  "Calendar Spread",
+  "Double Calendar",
+  "Long Straddle",
+  "Long Strangle",
+]

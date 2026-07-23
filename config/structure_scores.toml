@@ -1,0 +1,1682 @@
+# config/structure_scores.toml
+# Per-structure signal weights and preferences for the generic scoring engine.
+#
+# Schema version — the loader rejects unsupported versions at startup.
+version = 1
+
+[meta]
+# Weights need NOT sum to 100.  The scoring engine normalises automatically:
+#   pct = Σ(weight × regime_mult × signal_score) / Σ(weight × regime_mult)
+# A startup warning is emitted when a structure's weights don't sum to 100,
+# but this is advisory only — the math is identical either way.
+# Example: EMA=3, ADX=2, IV=5 produces the same scores as EMA=25, ADX=17, IV=42.
+weight_sum_expected = 100
+# Evaluators return signed scores in [-1.0, +1.0].
+score_range = "signed"
+
+# ── Preference reference ───────────────────────────────────────────────────────
+# Meta-preferences resolved at score time:
+#   "directional"  → "bullish" or "bearish" from daily trend
+#
+# weekly_trend preferences:
+#   "aligned"       — weekly must match daily (directional trades)
+#   "bullish"       — weekly should be Uptrend
+#   "bearish"       — weekly should be Downtrend
+#   "neutral"       — weekly should be Range-bound
+#   "divergence_ok" — divergence is not penalised (calendar/vol structures)
+#
+# adx preferences:
+#   "strong"    — ADX > 25 (trending)
+#   "weak"      — ADX < 20 (range-bound)
+#   "moderate"  — ADX 18–28 (mild trend, low breakout risk for theta strategies)
+#   "expanding" — ADX rising from low base (coiling setup for vol plays)
+
+# ── High-IV / Credit structures ───────────────────────────────────────────────
+
+[structures."Put Credit Spread".signals.ema200]
+weight = 18
+preference = "bullish"
+[structures."Put Credit Spread".signals.weekly_trend]
+weight = 12
+preference = "aligned"
+[structures."Put Credit Spread".signals.adx]
+weight = 10
+preference = "strong"
+[structures."Put Credit Spread".signals.rsi]
+weight = 10
+preference = "not_overbought"
+[structures."Put Credit Spread".signals.macd]
+weight = 10
+preference = "bullish"
+[structures."Put Credit Spread".signals.iv_premium]
+weight = 22
+preference = "high"
+[structures."Put Credit Spread".signals.vol_skew]
+weight = 5
+preference = "put_heavy"
+[structures."Put Credit Spread".signals.news]
+weight = 8
+preference = "quiet"
+[structures."Put Credit Spread".signals.pcr]
+weight = 5
+preference = "bullish"
+
+# ─────────────────────────────────────────────────────────────────────────────
+
+[structures."Call Credit Spread".signals.ema200]
+weight = 18
+preference = "bearish"
+[structures."Call Credit Spread".signals.weekly_trend]
+weight = 12
+preference = "aligned"
+[structures."Call Credit Spread".signals.adx]
+weight = 10
+preference = "strong"
+[structures."Call Credit Spread".signals.rsi]
+weight = 10
+preference = "not_oversold"
+[structures."Call Credit Spread".signals.macd]
+weight = 10
+preference = "bearish"
+[structures."Call Credit Spread".signals.iv_premium]
+weight = 22
+preference = "high"
+[structures."Call Credit Spread".signals.vol_skew]
+weight = 5
+preference = "put_heavy"
+[structures."Call Credit Spread".signals.news]
+weight = 8
+preference = "quiet"
+[structures."Call Credit Spread".signals.pcr]
+weight = 5
+preference = "bearish"
+
+# ─────────────────────────────────────────────────────────────────────────────
+
+[structures."Iron Condor".signals.adx]
+weight = 18
+preference = "weak"
+[structures."Iron Condor".signals.rsi]
+weight = 15
+preference = "neutral"
+[structures."Iron Condor".signals.iv_premium]
+weight = 25
+preference = "high"
+[structures."Iron Condor".signals.news]
+weight = 15
+preference = "quiet"
+[structures."Iron Condor".signals.ema200]
+weight = 10
+preference = "neutral"
+[structures."Iron Condor".signals.vol_skew]
+weight = 7
+preference = "balanced"
+[structures."Iron Condor".signals.pcr]
+weight = 10
+preference = "neutral"
+
+# ─────────────────────────────────────────────────────────────────────────────
+
+[structures."Jade Lizard".signals.ema200]
+weight = 15
+preference = "bullish"
+[structures."Jade Lizard".signals.weekly_trend]
+weight = 10
+preference = "aligned"
+[structures."Jade Lizard".signals.adx]
+weight = 10
+preference = "strong"
+[structures."Jade Lizard".signals.rsi]
+weight = 10
+preference = "not_overbought"
+[structures."Jade Lizard".signals.macd]
+weight = 8
+preference = "bullish"
+[structures."Jade Lizard".signals.iv_premium]
+weight = 25
+preference = "high"
+[structures."Jade Lizard".signals.vol_skew]
+weight = 10
+preference = "put_heavy"
+[structures."Jade Lizard".signals.news]
+weight = 7
+preference = "quiet"
+[structures."Jade Lizard".signals.pcr]
+weight = 5
+preference = "bullish"
+
+# ─────────────────────────────────────────────────────────────────────────────
+
+[structures."Cash Secured Put".signals.ema200]
+weight = 18
+preference = "bullish"
+[structures."Cash Secured Put".signals.weekly_trend]
+weight = 12
+preference = "aligned"
+[structures."Cash Secured Put".signals.adx]
+weight = 8
+preference = "strong"
+[structures."Cash Secured Put".signals.rsi]
+weight = 12
+preference = "not_overbought"
+[structures."Cash Secured Put".signals.macd]
+weight = 10
+preference = "bullish"
+[structures."Cash Secured Put".signals.iv_premium]
+weight = 20
+preference = "high"
+[structures."Cash Secured Put".signals.vol_skew]
+weight = 8
+preference = "put_heavy"
+[structures."Cash Secured Put".signals.news]
+weight = 7
+preference = "quiet"
+[structures."Cash Secured Put".signals.pcr]
+weight = 5
+preference = "bullish"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Covered Call: ADX "moderate" (18–28) — wants mild uptrend, not flat and not
+# trending so hard the stock blows through the short strike.
+
+[structures."Covered Call".signals.ema200]
+weight = 15
+preference = "bullish"
+[structures."Covered Call".signals.weekly_trend]
+weight = 10
+preference = "aligned"
+[structures."Covered Call".signals.adx]
+weight = 8
+preference = "moderate"
+[structures."Covered Call".signals.rsi]
+weight = 8
+preference = "not_overbought"
+[structures."Covered Call".signals.macd]
+weight = 8
+preference = "neutral"
+[structures."Covered Call".signals.iv_premium]
+weight = 22
+preference = "high"
+[structures."Covered Call".signals.iv_term]
+weight = 4
+preference = "backwardation"
+[structures."Covered Call".signals.vol_skew]
+weight = 8
+preference = "put_heavy"
+[structures."Covered Call".signals.news]
+weight = 12
+preference = "quiet"
+[structures."Covered Call".signals.pcr]
+weight = 5
+preference = "neutral"
+
+# ─────────────────────────────────────────────────────────────────────────────
+
+[structures."Naked Put".signals.ema200]
+weight = 15
+preference = "bullish"
+[structures."Naked Put".signals.weekly_trend]
+weight = 10
+preference = "neutral"
+[structures."Naked Put".signals.adx]
+weight = 12
+preference = "weak"
+[structures."Naked Put".signals.rsi]
+weight = 12
+preference = "neutral"
+[structures."Naked Put".signals.macd]
+weight = 8
+preference = "neutral"
+[structures."Naked Put".signals.iv_premium]
+weight = 22
+preference = "high"
+[structures."Naked Put".signals.vol_skew]
+weight = 10
+preference = "put_heavy"
+[structures."Naked Put".signals.news]
+weight = 11
+preference = "quiet"
+
+# ─────────────────────────────────────────────────────────────────────────────
+
+[structures."Bear Combo".signals.ema200]
+weight = 20
+preference = "bearish"
+[structures."Bear Combo".signals.weekly_trend]
+weight = 12
+preference = "aligned"
+[structures."Bear Combo".signals.adx]
+weight = 12
+preference = "strong"
+[structures."Bear Combo".signals.rsi]
+weight = 10
+preference = "not_oversold"
+[structures."Bear Combo".signals.macd]
+weight = 12
+preference = "bearish"
+[structures."Bear Combo".signals.iv_premium]
+weight = 15
+preference = "high"
+[structures."Bear Combo".signals.vol_skew]
+weight = 8
+preference = "put_heavy"
+[structures."Bear Combo".signals.news]
+weight = 6
+preference = "bearish"
+[structures."Bear Combo".signals.pcr]
+weight = 5
+preference = "bearish"
+
+# ─────────────────────────────────────────────────────────────────────────────
+
+[structures."Iron Butterfly".signals.adx]
+weight = 20
+preference = "weak"
+[structures."Iron Butterfly".signals.rsi]
+weight = 15
+preference = "neutral"
+[structures."Iron Butterfly".signals.iv_premium]
+weight = 28
+preference = "high"
+[structures."Iron Butterfly".signals.news]
+weight = 15
+preference = "quiet"
+[structures."Iron Butterfly".signals.vol_skew]
+weight = 7
+preference = "balanced"
+[structures."Iron Butterfly".signals.pcr]
+weight = 8
+preference = "neutral"
+[structures."Iron Butterfly".signals.iv_term]
+weight = 7
+preference = "backwardation"
+
+# ─────────────────────────────────────────────────────────────────────────────
+
+[structures."Short Strangle".signals.adx]
+weight = 18
+preference = "weak"
+[structures."Short Strangle".signals.rsi]
+weight = 12
+preference = "neutral"
+[structures."Short Strangle".signals.iv_premium]
+weight = 25
+preference = "high"
+[structures."Short Strangle".signals.news]
+weight = 15
+preference = "quiet"
+[structures."Short Strangle".signals.ema200]
+weight = 8
+preference = "neutral"
+[structures."Short Strangle".signals.vol_skew]
+weight = 10
+preference = "balanced"
+[structures."Short Strangle".signals.pcr]
+weight = 7
+preference = "neutral"
+[structures."Short Strangle".signals.iv_term]
+weight = 5
+preference = "backwardation"
+
+# ─────────────────────────────────────────────────────────────────────────────
+
+[structures."Short Straddle".signals.adx]
+weight = 20
+preference = "weak"
+[structures."Short Straddle".signals.rsi]
+weight = 12
+preference = "neutral"
+[structures."Short Straddle".signals.iv_premium]
+weight = 28
+preference = "high"
+[structures."Short Straddle".signals.news]
+weight = 15
+preference = "quiet"
+[structures."Short Straddle".signals.vol_skew]
+weight = 8
+preference = "balanced"
+[structures."Short Straddle".signals.pcr]
+weight = 8
+preference = "neutral"
+[structures."Short Straddle".signals.iv_term]
+weight = 9
+preference = "backwardation"
+
+# ── Low-IV / Debit structures ─────────────────────────────────────────────────
+
+[structures."Call Debit Spread".signals.ema200]
+weight = 20
+preference = "bullish"
+[structures."Call Debit Spread".signals.weekly_trend]
+weight = 15
+preference = "aligned"
+[structures."Call Debit Spread".signals.adx]
+weight = 12
+preference = "strong"
+[structures."Call Debit Spread".signals.rsi]
+weight = 10
+preference = "bullish"
+[structures."Call Debit Spread".signals.macd]
+weight = 13
+preference = "bullish"
+[structures."Call Debit Spread".signals.iv_premium]
+weight = 15
+preference = "low"
+[structures."Call Debit Spread".signals.news]
+weight = 8
+preference = "bullish"
+[structures."Call Debit Spread".signals.pcr]
+weight = 7
+preference = "bullish"
+
+[structures."Call Debit Spread".signals.div_dte]
+weight = 10
+preference = "safe"
+# Short call leg → early assignment if short call is ITM near ex-div.
+# Stock also gaps down by dividend on ex-date, directly hurting the long call.
+
+# ─────────────────────────────────────────────────────────────────────────────
+
+[structures."Put Debit Spread".signals.ema200]
+weight = 20
+preference = "bearish"
+[structures."Put Debit Spread".signals.weekly_trend]
+weight = 15
+preference = "aligned"
+[structures."Put Debit Spread".signals.adx]
+weight = 12
+preference = "strong"
+[structures."Put Debit Spread".signals.rsi]
+weight = 10
+preference = "bearish"
+[structures."Put Debit Spread".signals.macd]
+weight = 13
+preference = "bearish"
+[structures."Put Debit Spread".signals.iv_premium]
+weight = 15
+preference = "low"
+[structures."Put Debit Spread".signals.news]
+weight = 8
+preference = "bearish"
+[structures."Put Debit Spread".signals.pcr]
+weight = 7
+preference = "bearish"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Calendar Spread: weekly_trend="divergence_ok" — a choppy weekly that disagrees
+# with the daily is fine; time-decay structures don't need multi-TF alignment.
+
+[structures."Calendar Spread".signals.adx]
+weight = 15
+preference = "weak"
+[structures."Calendar Spread".signals.weekly_trend]
+weight = 10
+preference = "divergence_ok"
+[structures."Calendar Spread".signals.rsi]
+weight = 10
+preference = "neutral"
+[structures."Calendar Spread".signals.iv_premium]
+weight = 13
+preference = "low"
+[structures."Calendar Spread".signals.iv_term]
+weight = 22
+preference = "backwardation"
+[structures."Calendar Spread".signals.news]
+weight = 13
+preference = "quiet"
+[structures."Calendar Spread".signals.ema200]
+weight = 7
+preference = "neutral"
+[structures."Calendar Spread".signals.vol_skew]
+weight = 5
+preference = "balanced"
+[structures."Calendar Spread".signals.pcr]
+weight = 5
+preference = "neutral"
+
+[structures."Calendar Spread".signals.div_dte]
+weight = 8
+preference = "safe"
+# Short front-month call → early assignment risk near ex-div.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Diagonal Spread: "directional" meta-preference resolved at score time
+# to "bullish"/"bearish" from daily trend.  Appears in both Uptrend + Downtrend
+# slots, so a single TOML entry covers both.
+
+[structures."Diagonal Spread".signals.ema200]
+weight = 18
+preference = "directional"
+[structures."Diagonal Spread".signals.weekly_trend]
+weight = 12
+preference = "aligned"
+[structures."Diagonal Spread".signals.adx]
+weight = 12
+preference = "strong"
+[structures."Diagonal Spread".signals.rsi]
+weight = 8
+preference = "directional"
+[structures."Diagonal Spread".signals.macd]
+weight = 10
+preference = "directional"
+[structures."Diagonal Spread".signals.iv_premium]
+weight = 12
+preference = "low"
+[structures."Diagonal Spread".signals.iv_term]
+weight = 15
+preference = "backwardation"
+[structures."Diagonal Spread".signals.news]
+weight = 8
+preference = "quiet"
+[structures."Diagonal Spread".signals.pcr]
+weight = 5
+preference = "directional"
+
+[structures."Diagonal Spread".signals.div_dte]
+weight = 8
+preference = "safe"
+# Short front-month call → early assignment risk near ex-div.
+
+# ─────────────────────────────────────────────────────────────────────────────
+
+[structures."LEAPS Long Call".signals.ema200]
+weight = 22
+preference = "bullish"
+[structures."LEAPS Long Call".signals.weekly_trend]
+weight = 18
+preference = "aligned"
+[structures."LEAPS Long Call".signals.adx]
+weight = 12
+preference = "strong"
+[structures."LEAPS Long Call".signals.rsi]
+weight = 10
+preference = "not_overbought"
+[structures."LEAPS Long Call".signals.macd]
+weight = 12
+preference = "bullish"
+[structures."LEAPS Long Call".signals.iv_premium]
+weight = 18
+preference = "low"
+[structures."LEAPS Long Call".signals.analyst]
+weight = 8
+preference = "bullish"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Risk Reversal: skew is structural to this trade (selling put, buying call) —
+# it should outweigh short interest.  Short interest retained but at low weight
+# as a secondary squeeze-risk check.
+
+[structures."Risk Reversal".signals.ema200]
+weight = 20
+preference = "bullish"
+[structures."Risk Reversal".signals.weekly_trend]
+weight = 15
+preference = "aligned"
+[structures."Risk Reversal".signals.adx]
+weight = 12
+preference = "strong"
+[structures."Risk Reversal".signals.rsi]
+weight = 8
+preference = "bullish"
+[structures."Risk Reversal".signals.macd]
+weight = 12
+preference = "bullish"
+[structures."Risk Reversal".signals.iv_premium]
+weight = 8
+preference = "low"
+[structures."Risk Reversal".signals.vol_skew]
+weight = 15
+preference = "put_heavy"
+[structures."Risk Reversal".signals.news]
+weight = 7
+preference = "bullish"
+[structures."Risk Reversal".signals.short_interest]
+weight = 3
+preference = "bullish"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Financed Long Call: added rel_volume — confirms the directional move has
+# the volume to sustain itself (important for a levered debit structure).
+
+[structures."Financed Long Call".signals.ema200]
+weight = 18
+preference = "bullish"
+[structures."Financed Long Call".signals.weekly_trend]
+weight = 10
+preference = "aligned"
+[structures."Financed Long Call".signals.adx]
+weight = 10
+preference = "strong"
+[structures."Financed Long Call".signals.rsi]
+weight = 8
+preference = "not_overbought"
+[structures."Financed Long Call".signals.macd]
+weight = 10
+preference = "bullish"
+[structures."Financed Long Call".signals.iv_premium]
+weight = 15
+preference = "high"
+[structures."Financed Long Call".signals.vol_skew]
+weight = 8
+preference = "put_heavy"
+[structures."Financed Long Call".signals.news]
+weight = 8
+preference = "bullish"
+[structures."Financed Long Call".signals.pcr]
+weight = 5
+preference = "bullish"
+[structures."Financed Long Call".signals.rel_volume]
+weight = 8
+preference = "high"
+
+# ─────────────────────────────────────────────────────────────────────────────
+
+[structures."Financed Long Put".signals.ema200]
+weight = 18
+preference = "bearish"
+[structures."Financed Long Put".signals.weekly_trend]
+weight = 10
+preference = "aligned"
+[structures."Financed Long Put".signals.adx]
+weight = 10
+preference = "strong"
+[structures."Financed Long Put".signals.rsi]
+weight = 8
+preference = "not_oversold"
+[structures."Financed Long Put".signals.macd]
+weight = 10
+preference = "bearish"
+[structures."Financed Long Put".signals.iv_premium]
+weight = 15
+preference = "high"
+[structures."Financed Long Put".signals.vol_skew]
+weight = 5
+preference = "put_heavy"
+[structures."Financed Long Put".signals.news]
+weight = 7
+preference = "bearish"
+[structures."Financed Long Put".signals.pcr]
+weight = 5
+preference = "bearish"
+[structures."Financed Long Put".signals.short_interest]
+weight = 5
+preference = "bearish"
+[structures."Financed Long Put".signals.rel_volume]
+weight = 7
+preference = "high"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Ratio Backspread: "expanding" ADX + iv_term "contango" are key differentiators.
+# rel_volume confirms the breakout move has participation behind it.
+
+[structures."Ratio Call Backspread".signals.ema200]
+weight = 18
+preference = "bullish"
+[structures."Ratio Call Backspread".signals.weekly_trend]
+weight = 12
+preference = "aligned"
+[structures."Ratio Call Backspread".signals.adx]
+weight = 15
+preference = "expanding"
+[structures."Ratio Call Backspread".signals.rsi]
+weight = 8
+preference = "not_overbought"
+[structures."Ratio Call Backspread".signals.macd]
+weight = 10
+preference = "bullish"
+[structures."Ratio Call Backspread".signals.iv_premium]
+weight = 10
+preference = "low"
+[structures."Ratio Call Backspread".signals.iv_term]
+weight = 15
+preference = "contango"
+[structures."Ratio Call Backspread".signals.news]
+weight = 7
+preference = "bullish"
+[structures."Ratio Call Backspread".signals.rel_volume]
+weight = 5
+preference = "high"
+
+[structures."Ratio Call Backspread".signals.div_dte]
+weight = 6
+preference = "safe"
+# Short calls exist → early assignment risk near ex-div.
+
+# ─────────────────────────────────────────────────────────────────────────────
+
+[structures."Ratio Put Backspread".signals.ema200]
+weight = 18
+preference = "bearish"
+[structures."Ratio Put Backspread".signals.weekly_trend]
+weight = 12
+preference = "aligned"
+[structures."Ratio Put Backspread".signals.adx]
+weight = 15
+preference = "expanding"
+[structures."Ratio Put Backspread".signals.rsi]
+weight = 8
+preference = "not_oversold"
+[structures."Ratio Put Backspread".signals.macd]
+weight = 10
+preference = "bearish"
+[structures."Ratio Put Backspread".signals.iv_premium]
+weight = 10
+preference = "low"
+[structures."Ratio Put Backspread".signals.iv_term]
+weight = 15
+preference = "contango"
+[structures."Ratio Put Backspread".signals.news]
+weight = 7
+preference = "bearish"
+[structures."Ratio Put Backspread".signals.rel_volume]
+weight = 5
+preference = "high"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Long Strangle / Long Straddle: news (catalyst) is the primary driver.
+# Earnings, FDA, FOMC — these are the conditions that make vol-expansion trades
+# work.  IV must be cheap (low premium), and ADX should be coiling for a breakout.
+
+[structures."Long Strangle".signals.news]
+weight = 25
+preference = "major_event"
+[structures."Long Strangle".signals.iv_premium]
+weight = 20
+preference = "low"
+[structures."Long Strangle".signals.adx]
+weight = 15
+preference = "expanding"
+[structures."Long Strangle".signals.rel_volume]
+weight = 15
+preference = "high"
+[structures."Long Strangle".signals.pcr]
+weight = 8
+preference = "neutral"
+[structures."Long Strangle".signals.iv_term]
+weight = 10
+preference = "flat"
+[structures."Long Strangle".signals.rsi]
+weight = 4
+preference = "neutral"
+[structures."Long Strangle".signals.macd]
+weight = 3
+preference = "neutral"
+
+# ─────────────────────────────────────────────────────────────────────────────
+
+[structures."Long Call".signals.ema200]
+weight = 20
+preference = "bullish"
+[structures."Long Call".signals.weekly_trend]
+weight = 13
+preference = "aligned"
+[structures."Long Call".signals.adx]
+weight = 12
+preference = "strong"
+[structures."Long Call".signals.rsi]
+weight = 10
+preference = "bullish"
+[structures."Long Call".signals.macd]
+weight = 13
+preference = "bullish"
+[structures."Long Call".signals.iv_premium]
+weight = 12
+preference = "low"
+[structures."Long Call".signals.news]
+weight = 8
+preference = "bullish"
+[structures."Long Call".signals.rel_volume]
+weight = 12
+preference = "high"
+
+# ─────────────────────────────────────────────────────────────────────────────
+
+[structures."Long Put".signals.ema200]
+weight = 20
+preference = "bearish"
+[structures."Long Put".signals.weekly_trend]
+weight = 13
+preference = "aligned"
+[structures."Long Put".signals.adx]
+weight = 12
+preference = "strong"
+[structures."Long Put".signals.rsi]
+weight = 10
+preference = "bearish"
+[structures."Long Put".signals.macd]
+weight = 13
+preference = "bearish"
+[structures."Long Put".signals.iv_premium]
+weight = 12
+preference = "low"
+[structures."Long Put".signals.news]
+weight = 8
+preference = "bearish"
+[structures."Long Put".signals.rel_volume]
+weight = 12
+preference = "high"
+
+# ─────────────────────────────────────────────────────────────────────────────
+
+[structures."Long Straddle".signals.news]
+weight = 25
+preference = "major_event"
+[structures."Long Straddle".signals.iv_premium]
+weight = 20
+preference = "low"
+[structures."Long Straddle".signals.adx]
+weight = 15
+preference = "expanding"
+[structures."Long Straddle".signals.rel_volume]
+weight = 15
+preference = "high"
+[structures."Long Straddle".signals.pcr]
+weight = 8
+preference = "neutral"
+[structures."Long Straddle".signals.iv_term]
+weight = 8
+preference = "flat"
+[structures."Long Straddle".signals.vol_skew]
+weight = 5
+preference = "balanced"
+[structures."Long Straddle".signals.rsi]
+weight = 4
+preference = "neutral"
+
+# ─────────────────────────────────────────────────────────────────────────────
+
+[structures."Bull Call Ladder".signals.ema200]
+weight = 20
+preference = "bullish"
+[structures."Bull Call Ladder".signals.weekly_trend]
+weight = 15
+preference = "aligned"
+[structures."Bull Call Ladder".signals.adx]
+weight = 15
+preference = "strong"
+[structures."Bull Call Ladder".signals.rsi]
+weight = 10
+preference = "not_overbought"
+[structures."Bull Call Ladder".signals.macd]
+weight = 15
+preference = "bullish"
+[structures."Bull Call Ladder".signals.iv_premium]
+weight = 15
+preference = "low"
+[structures."Bull Call Ladder".signals.news]
+weight = 10
+preference = "bullish"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Double Calendar: divergence_ok for weekly_trend — two simultaneous time
+# spreads thrive on low weekly momentum, not necessarily matching daily direction.
+
+[structures."Double Calendar".signals.iv_term]
+weight = 25
+preference = "backwardation"
+[structures."Double Calendar".signals.adx]
+weight = 12
+preference = "weak"
+[structures."Double Calendar".signals.weekly_trend]
+weight = 12
+preference = "divergence_ok"
+[structures."Double Calendar".signals.news]
+weight = 13
+preference = "quiet"
+[structures."Double Calendar".signals.iv_premium]
+weight = 13
+preference = "low"
+[structures."Double Calendar".signals.rsi]
+weight = 8
+preference = "neutral"
+[structures."Double Calendar".signals.vol_skew]
+weight = 8
+preference = "balanced"
+[structures."Double Calendar".signals.pcr]
+weight = 6
+preference = "neutral"
+[structures."Double Calendar".signals.ema200]
+weight = 3
+preference = "neutral"
+
+# ─────────────────────────────────────────────────────────────────────────────
+
+[structures."Poor Man's Covered Call".signals.ema200]
+weight = 20
+preference = "bullish"
+[structures."Poor Man's Covered Call".signals.weekly_trend]
+weight = 15
+preference = "aligned"
+[structures."Poor Man's Covered Call".signals.adx]
+weight = 10
+preference = "strong"
+[structures."Poor Man's Covered Call".signals.rsi]
+weight = 8
+preference = "not_overbought"
+[structures."Poor Man's Covered Call".signals.macd]
+weight = 10
+preference = "bullish"
+[structures."Poor Man's Covered Call".signals.iv_premium]
+weight = 20
+preference = "high"
+[structures."Poor Man's Covered Call".signals.iv_term]
+weight = 12
+preference = "backwardation"
+[structures."Poor Man's Covered Call".signals.news]
+weight = 5
+preference = "quiet"
+
+# ══════════════════════════════════════════════════════════════════════════════
+# Phase 1 signal additions — atr, hv30, iv_percentile, earnings_dte, div_dte
+#
+# Weight philosophy:
+#   iv_percentile  10-15  on credit structures — confirms IV is historically rich,
+#                          not just rich vs HV today.  Lower on debit structures
+#                          (want historically cheap options).
+#   atr             8-12  on credit structures (want low ATR for premium collection);
+#                          flipped for directional/vol-expansion (want elevated ATR).
+#   hv30            6-10  confirming signal alongside iv_premium; lower weight because
+#                          it is correlated — double-counting is limited by normalisation.
+#   earnings_dte   10-15  on all premium-collection structures; confirms event-window
+#                          safety.  Flipped to "near" on long-vol structures (they want
+#                          the catalyst).
+#   div_dte         5-12  only where short call legs create early-assignment risk:
+#                          Covered Call (highest), IC/Strangle/Straddle (medium),
+#                          CSP / put-only structures (very low or omitted).
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ── Put Credit Spread ─────────────────────────────────────────────────────────
+# Wants quiet market (low ATR), historically elevated IV, and no near-term earnings.
+# No short call — div_dte matters minimally (put only).
+
+[structures."Put Credit Spread".signals.iv_percentile]
+weight = 12
+preference = "high"
+[structures."Put Credit Spread".signals.atr]
+weight = 8
+preference = "low"
+[structures."Put Credit Spread".signals.hv30]
+weight = 7
+preference = "low"
+[structures."Put Credit Spread".signals.earnings_dte]
+weight = 12
+preference = "safe"
+[structures."Put Credit Spread".signals.div_dte]
+weight = 3
+preference = "safe"
+
+# ── Call Credit Spread ────────────────────────────────────────────────────────
+
+[structures."Call Credit Spread".signals.iv_percentile]
+weight = 12
+preference = "high"
+[structures."Call Credit Spread".signals.atr]
+weight = 8
+preference = "low"
+[structures."Call Credit Spread".signals.hv30]
+weight = 7
+preference = "low"
+[structures."Call Credit Spread".signals.earnings_dte]
+weight = 12
+preference = "safe"
+[structures."Call Credit Spread".signals.div_dte]
+weight = 6
+preference = "safe"
+
+# ── Iron Condor ───────────────────────────────────────────────────────────────
+# Both sides → div_dte matters (short call exists); earnings_dte is critical
+# (pin risk + IV spike on both wings).
+
+[structures."Iron Condor".signals.iv_percentile]
+weight = 14
+preference = "high"
+required = true   # IC thesis = sell historically rich IV; unknown rank → cannot evaluate
+[structures."Iron Condor".signals.atr]
+weight = 10
+preference = "low"
+[structures."Iron Condor".signals.hv30]
+weight = 8
+preference = "low"
+[structures."Iron Condor".signals.earnings_dte]
+weight = 14
+preference = "safe"
+required = true   # unknown earnings date → gate in _hard_filter_pass may not fire
+[structures."Iron Condor".signals.div_dte]
+weight = 8
+preference = "safe"
+
+# ── Iron Butterfly ────────────────────────────────────────────────────────────
+# Tighter strikes → even more sensitive to IV spike and earnings gap.
+
+[structures."Iron Butterfly".signals.iv_percentile]
+weight = 15
+preference = "high"
+required = true   # IBF is an ATM premium-sell; unknown IV rank = blind entry
+[structures."Iron Butterfly".signals.atr]
+weight = 10
+preference = "low"
+[structures."Iron Butterfly".signals.hv30]
+weight = 8
+preference = "low"
+[structures."Iron Butterfly".signals.earnings_dte]
+weight = 15
+preference = "safe"
+required = true   # unknown earnings date → gate may not fire; ATM strikes = max event risk
+[structures."Iron Butterfly".signals.div_dte]
+weight = 8
+preference = "safe"
+
+# ── Short Strangle ────────────────────────────────────────────────────────────
+
+[structures."Short Strangle".signals.iv_percentile]
+weight = 14
+preference = "high"
+[structures."Short Strangle".signals.atr]
+weight = 10
+preference = "low"
+[structures."Short Strangle".signals.hv30]
+weight = 8
+preference = "low"
+[structures."Short Strangle".signals.earnings_dte]
+weight = 14
+preference = "safe"
+[structures."Short Strangle".signals.div_dte]
+weight = 8
+preference = "safe"
+
+# ── Short Straddle ────────────────────────────────────────────────────────────
+# ATM → highest gamma at expiry → most sensitive to any event.
+
+[structures."Short Straddle".signals.iv_percentile]
+weight = 15
+preference = "high"
+[structures."Short Straddle".signals.atr]
+weight = 10
+preference = "low"
+[structures."Short Straddle".signals.hv30]
+weight = 8
+preference = "low"
+[structures."Short Straddle".signals.earnings_dte]
+weight = 15
+preference = "safe"
+[structures."Short Straddle".signals.div_dte]
+weight = 8
+preference = "safe"
+
+# ── Jade Lizard ───────────────────────────────────────────────────────────────
+# Short call credit spread exists → div_dte matters (early assignment on short call).
+
+[structures."Jade Lizard".signals.iv_percentile]
+weight = 12
+preference = "high"
+[structures."Jade Lizard".signals.atr]
+weight = 8
+preference = "low"
+[structures."Jade Lizard".signals.hv30]
+weight = 6
+preference = "low"
+[structures."Jade Lizard".signals.earnings_dte]
+weight = 12
+preference = "safe"
+[structures."Jade Lizard".signals.div_dte]
+weight = 8
+preference = "safe"
+
+# ── Cash Secured Put ──────────────────────────────────────────────────────────
+# Put only — div_dte very low (no short call assignment risk; dividend may actually
+# help the put seller via stock drop and wider margin).
+
+[structures."Cash Secured Put".signals.iv_percentile]
+weight = 12
+preference = "high"
+[structures."Cash Secured Put".signals.atr]
+weight = 8
+preference = "low"
+[structures."Cash Secured Put".signals.hv30]
+weight = 6
+preference = "low"
+[structures."Cash Secured Put".signals.earnings_dte]
+weight = 12
+preference = "safe"
+[structures."Cash Secured Put".signals.div_dte]
+weight = 3
+preference = "safe"
+
+# ── Covered Call ──────────────────────────────────────────────────────────────
+# Short call against owned shares → div_dte is the HIGHEST priority div signal:
+# ex-dividend before expiry creates early-assignment risk on the short call.
+
+[structures."Covered Call".signals.iv_percentile]
+weight = 12
+preference = "high"
+[structures."Covered Call".signals.atr]
+weight = 8
+preference = "low"
+[structures."Covered Call".signals.hv30]
+weight = 6
+preference = "low"
+[structures."Covered Call".signals.earnings_dte]
+weight = 12
+preference = "safe"
+[structures."Covered Call".signals.div_dte]
+weight = 12
+preference = "safe"
+
+# ── Naked Put ─────────────────────────────────────────────────────────────────
+
+[structures."Naked Put".signals.iv_percentile]
+weight = 13
+preference = "high"
+[structures."Naked Put".signals.atr]
+weight = 8
+preference = "low"
+[structures."Naked Put".signals.hv30]
+weight = 7
+preference = "low"
+[structures."Naked Put".signals.earnings_dte]
+weight = 13
+preference = "safe"
+[structures."Naked Put".signals.div_dte]
+weight = 3
+preference = "safe"
+
+# ── Bear Combo ────────────────────────────────────────────────────────────────
+# Bear put spread + bear call spread — directional credit, bearish.
+# Wants elevated IV to collect premium, some ATR for trend momentum,
+# and clear of earnings (binary event risk on a defined-direction trade is bad).
+
+[structures."Bear Combo".signals.iv_percentile]
+weight = 10
+preference = "high"
+[structures."Bear Combo".signals.atr]
+weight = 10
+preference = "moderate"
+[structures."Bear Combo".signals.hv30]
+weight = 6
+preference = "high"
+[structures."Bear Combo".signals.earnings_dte]
+weight = 10
+preference = "safe"
+[structures."Bear Combo".signals.div_dte]
+weight = 6
+preference = "safe"
+
+# ── Call Debit Spread ─────────────────────────────────────────────────────────
+# Debit directional — wants cheap IV (low iv_percentile) and elevated ATR for momentum.
+
+[structures."Call Debit Spread".signals.iv_percentile]
+weight = 10
+preference = "low"
+[structures."Call Debit Spread".signals.atr]
+weight = 10
+preference = "high"
+[structures."Call Debit Spread".signals.hv30]
+weight = 6
+preference = "high"
+[structures."Call Debit Spread".signals.earnings_dte]
+weight = 8
+preference = "safe"
+
+# ── Put Debit Spread ──────────────────────────────────────────────────────────
+
+[structures."Put Debit Spread".signals.iv_percentile]
+weight = 10
+preference = "low"
+[structures."Put Debit Spread".signals.atr]
+weight = 10
+preference = "high"
+[structures."Put Debit Spread".signals.hv30]
+weight = 6
+preference = "high"
+[structures."Put Debit Spread".signals.earnings_dte]
+weight = 8
+preference = "safe"
+
+# ── Long Call ─────────────────────────────────────────────────────────────────
+
+[structures."Long Call".signals.iv_percentile]
+weight = 10
+preference = "low"
+[structures."Long Call".signals.atr]
+weight = 10
+preference = "high"
+[structures."Long Call".signals.hv30]
+weight = 6
+preference = "high"
+[structures."Long Call".signals.earnings_dte]
+weight = 8
+preference = "safe"
+
+# ── Long Put ──────────────────────────────────────────────────────────────────
+
+[structures."Long Put".signals.iv_percentile]
+weight = 10
+preference = "low"
+[structures."Long Put".signals.atr]
+weight = 10
+preference = "high"
+[structures."Long Put".signals.hv30]
+weight = 6
+preference = "high"
+[structures."Long Put".signals.earnings_dte]
+weight = 8
+preference = "safe"
+
+# ── Risk Reversal ─────────────────────────────────────────────────────────────
+# Synthetic-like directional — wants ATR for momentum, low IV percentile to buy
+# the call cheap.  Naked short put → earnings_dte critical.
+
+[structures."Risk Reversal".signals.iv_percentile]
+weight = 8
+preference = "low"
+[structures."Risk Reversal".signals.atr]
+weight = 10
+preference = "high"
+[structures."Risk Reversal".signals.hv30]
+weight = 6
+preference = "high"
+[structures."Risk Reversal".signals.earnings_dte]
+weight = 12
+preference = "safe"
+[structures."Risk Reversal".signals.div_dte]
+weight = 5
+preference = "safe"
+
+# ── LEAPS Long Call ───────────────────────────────────────────────────────────
+# Very long DTE — ATR is less relevant at entry; iv_percentile matters more.
+# earnings_dte at low weight (LEAPS span many earnings cycles; one report is not decisive).
+
+[structures."LEAPS Long Call".signals.iv_percentile]
+weight = 12
+preference = "low"
+[structures."LEAPS Long Call".signals.atr]
+weight = 6
+preference = "moderate"
+[structures."LEAPS Long Call".signals.hv30]
+weight = 5
+preference = "high"
+[structures."LEAPS Long Call".signals.earnings_dte]
+weight = 5
+preference = "safe"
+
+# ── Financed Long Call ────────────────────────────────────────────────────────
+
+[structures."Financed Long Call".signals.iv_percentile]
+weight = 8
+preference = "low"
+[structures."Financed Long Call".signals.atr]
+weight = 10
+preference = "high"
+[structures."Financed Long Call".signals.hv30]
+weight = 6
+preference = "high"
+[structures."Financed Long Call".signals.earnings_dte]
+weight = 10
+preference = "safe"
+[structures."Financed Long Call".signals.div_dte]
+weight = 5
+preference = "safe"
+
+# ── Financed Long Put ─────────────────────────────────────────────────────────
+
+[structures."Financed Long Put".signals.iv_percentile]
+weight = 8
+preference = "low"
+[structures."Financed Long Put".signals.atr]
+weight = 10
+preference = "high"
+[structures."Financed Long Put".signals.hv30]
+weight = 6
+preference = "high"
+[structures."Financed Long Put".signals.earnings_dte]
+weight = 10
+preference = "safe"
+
+# ── Ratio Call Backspread ─────────────────────────────────────────────────────
+# Breakout trade — wants elevated ATR, cheap IV (to buy more calls), and a coiling
+# setup.  earnings_dte=safe (earnings gap is not the structured breakout this needs).
+
+[structures."Ratio Call Backspread".signals.iv_percentile]
+weight = 10
+preference = "low"
+[structures."Ratio Call Backspread".signals.atr]
+weight = 10
+preference = "high"
+[structures."Ratio Call Backspread".signals.hv30]
+weight = 6
+preference = "high"
+[structures."Ratio Call Backspread".signals.earnings_dte]
+weight = 8
+preference = "safe"
+
+# ── Ratio Put Backspread ──────────────────────────────────────────────────────
+
+[structures."Ratio Put Backspread".signals.iv_percentile]
+weight = 10
+preference = "low"
+[structures."Ratio Put Backspread".signals.atr]
+weight = 10
+preference = "high"
+[structures."Ratio Put Backspread".signals.hv30]
+weight = 6
+preference = "high"
+[structures."Ratio Put Backspread".signals.earnings_dte]
+weight = 8
+preference = "safe"
+
+# ── Long Strangle ─────────────────────────────────────────────────────────────
+# Vol expansion trade — wants earnings NEAR (that's the catalyst!), cheap IV historically,
+# high ATR for breakout setup.  earnings_dte="near" is the key differentiator.
+
+[structures."Long Strangle".signals.iv_percentile]
+weight = 12
+preference = "low"
+[structures."Long Strangle".signals.atr]
+weight = 10
+preference = "high"
+[structures."Long Strangle".signals.hv30]
+weight = 6
+preference = "high"
+[structures."Long Strangle".signals.earnings_dte]
+weight = 15
+preference = "near"
+required = true   # unknown earnings date → gate cannot fire + thesis is undefined
+
+# ── Long Straddle ─────────────────────────────────────────────────────────────
+
+[structures."Long Straddle".signals.iv_percentile]
+weight = 12
+preference = "low"
+[structures."Long Straddle".signals.atr]
+weight = 10
+preference = "high"
+[structures."Long Straddle".signals.hv30]
+weight = 6
+preference = "high"
+[structures."Long Straddle".signals.earnings_dte]
+weight = 18
+preference = "near"
+required = true   # unknown earnings date → gate cannot fire + entire thesis is undefined
+
+# ── Bull Call Ladder ──────────────────────────────────────────────────────────
+# Defined-risk directional debit with an extra short strike above — wants directional
+# momentum (high ATR) and cheap IV (low iv_percentile to buy the long calls cheaply).
+
+[structures."Bull Call Ladder".signals.iv_percentile]
+weight = 8
+preference = "low"
+[structures."Bull Call Ladder".signals.atr]
+weight = 10
+preference = "high"
+[structures."Bull Call Ladder".signals.hv30]
+weight = 6
+preference = "high"
+[structures."Bull Call Ladder".signals.earnings_dte]
+weight = 8
+preference = "safe"
+
+# ── Calendar Spread ───────────────────────────────────────────────────────────
+# Time-decay trade — wants quiet environment, iv_percentile moderate (not too high
+# to make back-month purchase expensive, not too low to lose front-month premium edge).
+
+[structures."Calendar Spread".signals.iv_percentile]
+weight = 8
+preference = "moderate"
+[structures."Calendar Spread".signals.atr]
+weight = 8
+preference = "low"
+[structures."Calendar Spread".signals.hv30]
+weight = 6
+preference = "low"
+[structures."Calendar Spread".signals.earnings_dte]
+weight = 12
+preference = "safe"
+
+# ── Diagonal Spread ───────────────────────────────────────────────────────────
+
+[structures."Diagonal Spread".signals.iv_percentile]
+weight = 8
+preference = "moderate"
+[structures."Diagonal Spread".signals.atr]
+weight = 8
+preference = "low"
+[structures."Diagonal Spread".signals.hv30]
+weight = 6
+preference = "low"
+[structures."Diagonal Spread".signals.earnings_dte]
+weight = 12
+preference = "safe"
+
+# ── Double Calendar ───────────────────────────────────────────────────────────
+
+[structures."Double Calendar".signals.iv_percentile]
+weight = 8
+preference = "moderate"
+[structures."Double Calendar".signals.atr]
+weight = 8
+preference = "low"
+[structures."Double Calendar".signals.hv30]
+weight = 6
+preference = "low"
+[structures."Double Calendar".signals.earnings_dte]
+weight = 13
+preference = "safe"
+[structures."Double Calendar".signals.div_dte]
+weight = 5
+preference = "safe"
+
+# ── Poor Man's Covered Call ───────────────────────────────────────────────────
+# LEAPS long call + front-month short call — short call creates div_dte risk
+# (same as Covered Call but slightly lower because long LEAPS provides cushion).
+
+[structures."Poor Man's Covered Call".signals.iv_percentile]
+weight = 10
+preference = "moderate"
+[structures."Poor Man's Covered Call".signals.atr]
+weight = 8
+preference = "low"
+[structures."Poor Man's Covered Call".signals.hv30]
+weight = 6
+preference = "low"
+[structures."Poor Man's Covered Call".signals.earnings_dte]
+weight = 10
+preference = "safe"
+[structures."Poor Man's Covered Call".signals.div_dte]
+weight = 8
+preference = "safe"
+
+# ── Options Analytics Signals (Phase 2) ──────────────────────────────────────
+# max_pain, oi_concentration, iv_change_5d
+# Applied to structures where OI dynamics and IV direction carry real edge.
+# Weights are moderate (6–10) — these signals are live but newer; let them
+# earn their weight before pushing them higher.
+#
+# iv_change_5d thresholds:
+#   "falling" → credit structures (sell into compressing IV)
+#   "rising"  → debit/long-vol structures (buy before the move)
+#   "stable"  → structures needing a quiet vol regime (IC, IBF, calendars)
+#
+# oi_concentration:
+#   "high" → range/credit structures that benefit from pinning
+#   "low"  → debit structures that need room to move
+#
+# max_pain:
+#   "neutral" → short-premium structures (pin is a tailwind)
+#   "above" / "below" → directional structures
+
+# Iron Condor — benefits from pinning + IV compression
+[structures."Iron Condor".signals.oi_concentration]
+weight = 8
+preference = "high"
+[structures."Iron Condor".signals.max_pain]
+weight = 6
+preference = "neutral"
+[structures."Iron Condor".signals.iv_change_5d]
+weight = 8
+preference = "falling"
+
+# Iron Butterfly — tighter pin target; oi_concentration and max_pain matter more
+[structures."Iron Butterfly".signals.oi_concentration]
+weight = 10
+preference = "high"
+[structures."Iron Butterfly".signals.max_pain]
+weight = 8
+preference = "neutral"
+[structures."Iron Butterfly".signals.iv_change_5d]
+weight = 8
+preference = "falling"
+
+# Put Credit Spread — IV compression tailwind; moderate pinning preference
+[structures."Put Credit Spread".signals.oi_concentration]
+weight = 6
+preference = "high"
+[structures."Put Credit Spread".signals.iv_change_5d]
+weight = 7
+preference = "falling"
+
+# Call Credit Spread
+[structures."Call Credit Spread".signals.oi_concentration]
+weight = 6
+preference = "high"
+[structures."Call Credit Spread".signals.iv_change_5d]
+weight = 7
+preference = "falling"
+
+# Cash Secured Put — IV falling means premium was rich at entry
+[structures."Cash Secured Put".signals.iv_change_5d]
+weight = 7
+preference = "falling"
+
+# Covered Call
+[structures."Covered Call".signals.iv_change_5d]
+weight = 7
+preference = "falling"
+
+# Long Straddle — needs IV expansion; pinning is the enemy
+[structures."Long Straddle".signals.oi_concentration]
+weight = 8
+preference = "low"
+[structures."Long Straddle".signals.iv_change_5d]
+weight = 10
+preference = "rising"
+
+# Long Strangle — same logic, wider strikes buy more tolerance
+[structures."Long Strangle".signals.oi_concentration]
+weight = 7
+preference = "low"
+[structures."Long Strangle".signals.iv_change_5d]
+weight = 9
+preference = "rising"
+
+# Calendar Spread — needs stable IV (short front, long back) + some pinning
+[structures."Calendar Spread".signals.oi_concentration]
+weight = 7
+preference = "high"
+[structures."Calendar Spread".signals.iv_change_5d]
+weight = 8
+preference = "stable"
+
+# Diagonal Spread — similar to calendar; stable IV preferred
+[structures."Diagonal Spread".signals.oi_concentration]
+weight = 6
+preference = "high"
+[structures."Diagonal Spread".signals.iv_change_5d]
+weight = 7
+preference = "stable"
+
+# Call Debit Spread — wants IV expansion to juice the move
+[structures."Call Debit Spread".signals.oi_concentration]
+weight = 5
+preference = "low"
+[structures."Call Debit Spread".signals.iv_change_5d]
+weight = 7
+preference = "rising"
+[structures."Call Debit Spread".signals.max_pain]
+weight = 5
+preference = "above"
+
+# Put Debit Spread
+[structures."Put Debit Spread".signals.oi_concentration]
+weight = 5
+preference = "low"
+[structures."Put Debit Spread".signals.iv_change_5d]
+weight = 7
+preference = "rising"
+[structures."Put Debit Spread".signals.max_pain]
+weight = 5
+preference = "below"
+
+# Jade Lizard — credit structure; IV compression + moderate pinning
+[structures."Jade Lizard".signals.oi_concentration]
+weight = 6
+preference = "high"
+[structures."Jade Lizard".signals.iv_change_5d]
+weight = 7
+preference = "falling"
+
+# Risk Reversal — directional; max_pain alignment matters
+[structures."Risk Reversal".signals.max_pain]
+weight = 6
+preference = "above"
+[structures."Risk Reversal".signals.iv_change_5d]
+weight = 6
+preference = "rising"
+
+# Bear Combo — directional downside
+[structures."Bear Combo".signals.max_pain]
+weight = 6
+preference = "below"
+[structures."Bear Combo".signals.iv_change_5d]
+weight = 6
+preference = "rising"
+
+# Ratio Call Backspread — long-vol, wants expansion
+[structures."Ratio Call Backspread".signals.oi_concentration]
+weight = 5
+preference = "low"
+[structures."Ratio Call Backspread".signals.iv_change_5d]
+weight = 7
+preference = "rising"
+
+# Ratio Put Backspread
+[structures."Ratio Put Backspread".signals.oi_concentration]
+weight = 5
+preference = "low"
+[structures."Ratio Put Backspread".signals.iv_change_5d]
+weight = 7
+preference = "rising"
+
+# ── unusual_activity signal blocks ────────────────────────────────────────────
+# Long Straddle/Strangle: unusual OI spikes confirm smart-money vol positioning
+[structures."Long Straddle".signals.unusual_activity]
+weight = 8
+preference = "detected"
+
+[structures."Long Strangle".signals.unusual_activity]
+weight = 7
+preference = "detected"
+
+# Iron Condor/Butterfly: clean pin trades need quiet OI (no directional bets)
+[structures."Iron Condor".signals.unusual_activity]
+weight = 6
+preference = "quiet"
+
+[structures."Iron Butterfly".signals.unusual_activity]
+weight = 7
+preference = "quiet"
+
+# Directional spreads: unusual activity confirms the move
+[structures."Call Debit Spread".signals.unusual_activity]
+weight = 5
+preference = "detected"
+
+[structures."Put Debit Spread".signals.unusual_activity]
+weight = 5
+preference = "detected"
+
+# Credit spreads: quiet OI = clean credit entry (no opposing positioning)
+[structures."Put Credit Spread".signals.unusual_activity]
+weight = 4
+preference = "quiet"
+
+[structures."Call Credit Spread".signals.unusual_activity]
+weight = 4
+preference = "quiet"
+
+[structures."Jade Lizard".signals.unusual_activity]
+weight = 4
+preference = "quiet"
+
+
+# ── iv_hv_ratio signal blocks ──────────────────────────────────────────────────
+# Credit/premium-selling structures want IV rich (ratio high).
+# Debit/long-vol structures want IV cheap (ratio low).
+
+[structures."Long Straddle".signals.iv_hv_ratio]
+weight = 6
+preference = "low"
+
+[structures."Long Strangle".signals.iv_hv_ratio]
+weight = 6
+preference = "low"
+
+[structures."Iron Condor".signals.iv_hv_ratio]
+weight = 7
+preference = "high"
+
+[structures."Iron Butterfly".signals.iv_hv_ratio]
+weight = 7
+preference = "high"
+
+[structures."Call Debit Spread".signals.iv_hv_ratio]
+weight = 5
+preference = "low"
+
+[structures."Put Debit Spread".signals.iv_hv_ratio]
+weight = 5
+preference = "low"
+
+[structures."Put Credit Spread".signals.iv_hv_ratio]
+weight = 6
+preference = "high"
+
+[structures."Call Credit Spread".signals.iv_hv_ratio]
+weight = 6
+preference = "high"
+
+[structures."Jade Lizard".signals.iv_hv_ratio]
+weight = 6
+preference = "high"
+
+[structures."Covered Call".signals.iv_hv_ratio]
+weight = 5
+preference = "high"
+
+[structures."Diagonal Spread".signals.iv_hv_ratio]
+weight = 5
+preference = "high"
+
+[structures."Calendar Spread".signals.iv_hv_ratio]
+weight = 5
+preference = "moderate"
+
+
+# ── vol_pcr signal blocks ──────────────────────────────────────────────────────
+# Directional structures want vol confirming their direction.
+# Neutral structures want balanced volume flow.
+
+[structures."Long Straddle".signals.vol_pcr]
+weight = 4
+preference = "neutral"
+
+[structures."Long Strangle".signals.vol_pcr]
+weight = 4
+preference = "neutral"
+
+[structures."Iron Condor".signals.vol_pcr]
+weight = 4
+preference = "neutral"
+
+[structures."Iron Butterfly".signals.vol_pcr]
+weight = 4
+preference = "neutral"
+
+[structures."Call Debit Spread".signals.vol_pcr]
+weight = 4
+preference = "bullish"
+
+[structures."Put Debit Spread".signals.vol_pcr]
+weight = 4
+preference = "bearish"
+
+[structures."Put Credit Spread".signals.vol_pcr]
+weight = 3
+preference = "bullish"
+
+[structures."Call Credit Spread".signals.vol_pcr]
+weight = 3
+preference = "bearish"
+
+[structures."Jade Lizard".signals.vol_pcr]
+weight = 3
+preference = "neutral"

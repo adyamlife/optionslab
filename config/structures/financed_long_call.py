@@ -1,7 +1,8 @@
-from config.structures._base import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema
+from config.structures._base import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema, SignalProfile
 
 FINANCED_LONG_CALL = OptionStructure(
     name          = "Financed Long Call",
+    abbr          = "FLC",
     is_credit     = False,
     option_type   = "both",
     allowed_iv      = ("Low",),
@@ -24,5 +25,10 @@ FINANCED_LONG_CALL = OptionStructure(
         delta_change = 0.0,
         opt_type     = "put",
         strike_mode  = HedgeStrikeMode.ONE_WIDTH_BELOW_LO,
+    ),
+    signal_profile = SignalProfile(
+        bias="bullish",
+        needs_trend=True, needs_momentum=True,
+        uses_term_structure=False, uses_skew=True, uses_sentiment=True,
     ),
 )

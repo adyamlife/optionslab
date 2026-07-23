@@ -37,6 +37,7 @@ from config.ml_gates import (
     DEBIT_SPREAD_BAD_REGIME_PENALTY, DEBIT_SPREAD_GOOD_REGIME_BONUS,
 )
 from scripts.analyze import compute_signal_alignment
+from scripts.contexts import TechnicalContext, FlowContext
 
 BULLISH_STRUCTURES = ("Put Credit Spread", "Call Debit Spread", "Diagonal Spread", "Jade Lizard", "Long Call", "Short Put")
 BEARISH_STRUCTURES = ("Call Credit Spread", "Put Debit Spread", "Long Put", "Short Call")
@@ -353,17 +354,9 @@ def evaluate_position(row: dict, position: dict) -> dict:
 
     alignment = compute_signal_alignment(
         structure,
-        row.get("trend"), row.get("weekly_trend"), row.get("rsi"),
-        row.get("macd_trend"), row.get("news_sentiment"),
-        adx=row.get("adx"), rel_volume=row.get("rel_volume"),
-        pcr=row.get("pcr"), pcr_sentiment=row.get("pcr_sentiment"),
-        ema200_position=row.get("ema200_position"),
-        iv_term_shape=row.get("iv_term_shape"),
-        short_interest=row.get("short_interest"),
-        vol_skew_pct=row.get("vol_skew_pct"),
-        analyst_label=row.get("analyst_label"),
-        iv_premium=row.get("iv_premium"),
-        regime=regime,
+        TechnicalContext.from_row(row),
+        FlowContext.from_row(row),
+        regime,
     )
     score   = alignment["score"]
     reasons = list(alignment["notes"])

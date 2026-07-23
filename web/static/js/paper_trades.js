@@ -990,14 +990,61 @@ function renderDayWiseLog(allTrades, marksMap) {
         </span>
       </div>`;
 
-    const rows = trades.map(t => {
+    // Group trades within this day by (structure + scan_time) to detect same-scan batches
+    const _scanGroups = {};
+    for (const t of trades) {
+      const key = `${t.structure}|${t.scan_time ?? "morning"}`;
+      (_scanGroups[key] = _scanGroups[key] ?? []).push(t);
+    }
+
+    const _renderedIds = new Set();
+    const rows = trades.flatMap(t => {
+      if (_renderedIds.has(t.id)) return [];
+
+      const scanKey = `${t.structure}|${t.scan_time ?? "morning"}`;
+      const group   = _scanGroups[scanKey];
+
+      // Calendar Spreads from the same scan on the same day → one combined row
+      if (t.structure === "Calendar Spread" && group.length > 1) {
+        group.forEach(g => _renderedIds.add(g.id));
+        const scanLabel  = (t.scan_time === "afternoon") ? "PM" : "AM";
+        const tickers    = group.map(g => g.ticker).join(", ");
+        const allOpen    = group.every(g => g.status === "open");
+        const anyOpen    = group.some(g => g.status === "open");
+        const wins       = group.filter(g => !g.exit?.win === false && g.exit?.win).length;
+        const rowCls     = allOpen ? "" : (wins === group.length ? "pt-row-win" : wins === 0 ? "pt-row-loss" : "");
+        const totalDebit = group.reduce((s, g) => s + (g.max_loss ?? 0), 0);
+        const totalPnl   = group.reduce((s, g) => {
+          const lv = marks[g.id] ?? {};
+          const u  = lv.unrealized ?? g.latest_unrealized;
+          return s + (u != null ? parseFloat(u) * 100 : (g.exit?.pnl_total ?? 0));
+        }, 0);
+        const pnlCls = totalPnl >= 0 ? "pass" : "fail";
+        const statusTxt = allOpen ? statusLabel("open")
+          : anyOpen ? `<span class="pt-status-badge pt-status-na">Mixed</span>`
+          : `<span class="pt-status-badge ${wins === group.length ? "pt-status-pass" : "pt-status-fail"}">${wins}W/${group.length - wins}L</span>`;
+        return [`
+          <tr class="${rowCls}">
+            <td><strong>${esc(tickers)}</strong> <span class="muted" style="font-size:0.72rem">[${scanLabel}]</span></td>
+            <td style="font-size:0.78rem;color:#aaa">Calendar Spread <span class="muted">(Call Debit)</span></td>
+            <td class="muted">${esc(t.expiry ?? "—")}</td>
+            <td class="na">—</td>
+            <td class="muted" style="font-size:0.78rem">Debit paid: $${totalDebit.toFixed(3)} total</td>
+            <td>${statusTxt}</td>
+            <td class="muted" style="font-size:0.75rem">—</td>
+            <td class="${pnlCls}">—</td>
+            <td class="${pnlCls}">${fmt$(totalPnl)}</td>
+            <td class="muted" style="font-size:0.75rem">—</td>
+          </tr>`];
+      }
+
+      _renderedIds.add(t.id);
       const x       = t.exit ?? {};
       const isOpen  = t.status === "open";
-      const isDebit = (t.structure ?? "").includes("Debit");
+      const isDebit = (t.structure ?? "").includes("Debit") || t.structure === "Calendar Spread";
       const win     = x.win;
       const rowCls  = isOpen ? "" : (win ? "pt-row-win" : "pt-row-loss");
 
-      // For open trades: show live mark data if available
       const live    = marks[t.id] ?? {};
       const unr     = live.unrealized ?? t.latest_unrealized;
       const unrTotal= unr != null ? parseFloat(unr) * 100 : null;
@@ -1008,11 +1055,14 @@ function renderDayWiseLog(allTrades, marksMap) {
       const pnlCls  = isOpen ? unrCls           : (win ? "pass" : "fail");
       const exitTxt = isOpen ? "—"              : esc(reasonLabel(x.reason));
       const liveTip = isOpen && live.mark != null ? ` title="mark $${live.mark.toFixed(3)}"` : "";
+      const structLabel = t.structure === "Calendar Spread"
+        ? `Calendar Spread <span class="muted">(Call Debit)</span>`
+        : esc(t.structure);
 
-      return `
+      return [`
         <tr class="${rowCls}">
           <td><strong>${esc(t.ticker)}</strong></td>
-          <td style="font-size:0.78rem;color:#aaa">${esc(t.structure)}</td>
+          <td style="font-size:0.78rem;color:#aaa">${structLabel}</td>
           <td class="muted">${esc(t.expiry ?? "—")}</td>
           <td class="na">$${(t.entry_credit ?? 0).toFixed(3)}</td>
           <td class="muted" style="font-size:0.78rem">${isDebit ? "Debit paid" : "Max loss"}: $${(t.max_loss ?? 0).toFixed(3)}</td>
@@ -1021,7 +1071,7 @@ function renderDayWiseLog(allTrades, marksMap) {
           <td class="${pnlCls}"${liveTip}>${pnlPs != null ? fmt$(pnlPs, 3) : "—"}</td>
           <td class="${pnlCls}">${pnlTot != null ? fmt$(pnlTot) : "—"}</td>
           <td class="muted" style="font-size:0.75rem">${esc(t.signal_rating ?? "—")}</td>
-        </tr>`;
+        </tr>`];
     }).join("");
 
     return `

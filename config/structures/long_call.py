@@ -1,0 +1,35 @@
+from config.structures._base import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema, SignalProfile
+
+LONG_CALL = OptionStructure(
+    name          = "Long Call",
+    abbr          = "LCL",
+    is_credit     = False,
+    option_type   = "call",
+    allowed_iv      = ("Low",),
+    allowed_trends  = ("Uptrend",),
+    strike_schema = StrikeSchema.SINGLE_LEG,
+    expiry_pnl_fn = "long_call",
+    long_delta_lo  = 0.40,
+    long_delta_hi  = 0.55,
+    capital_type    = "debit",
+    requires_margin = False,
+    dte_min = 21,
+    dte_max = 60,
+    profit_target_pct = 0.50,
+    hedge = HedgeDef(
+        structure    = "Buy OTM Protective Put",
+        details      = "Buy an OTM put below the current price to cap the downside if the move fails.",
+        rationale    = "Long Call's max loss is the full premium paid. A protective put limits total exposure if the stock reverses sharply before expiry.",
+        protection_note = "Hedge reduces but does not eliminate loss if the stock drifts sideways — time decay erodes both legs.",
+        cost_pct     = 0.25,
+        cost_base    = "max_loss",
+        delta_change = -0.20,
+        opt_type     = "put",
+        strike_mode  = HedgeStrikeMode.ATM_PUT,
+    ),
+    signal_profile = SignalProfile(
+        bias="bullish",
+        needs_trend=True, needs_momentum=True,
+        uses_term_structure=False, uses_skew=False, uses_sentiment=True,
+    ),
+)

@@ -180,6 +180,10 @@ role_required = "admin"
 enabled       = true
 role_required = "trader"
 
+[features.reports]
+enabled       = true
+role_required = "analyst"
+
 # ── ML Data Admin ──────────────────────────────────────────────────────────────
 
 [features.ml_data_admin]

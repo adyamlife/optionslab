@@ -1,7 +1,8 @@
-from config.structures._base import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema
+from config.structures._base import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema, SignalProfile
 
 RATIO_PUT_BACKSPREAD = OptionStructure(
     name          = "Ratio Put Backspread",
+    abbr          = "RPB",
     is_credit     = False,
     option_type   = "put",
     allowed_iv      = ("Low",),
@@ -24,5 +25,11 @@ RATIO_PUT_BACKSPREAD = OptionStructure(
         delta_change = 0.0,
         opt_type     = "put",
         strike_mode  = HedgeStrikeMode.ONE_WIDTH_BELOW_LO,
+    ),
+    signal_profile = SignalProfile(
+        bias="bearish",
+        needs_trend=True, needs_momentum=True,
+        uses_term_structure=True, uses_skew=True, uses_sentiment=True,
+        prefers_contango=True,
     ),
 )

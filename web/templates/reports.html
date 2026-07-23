@@ -1,0 +1,469 @@
+{% extends "base.html" %}
+{% set page = "reports" %}
+{% block title %}Reports — Options Strategy Lab{% endblock %}
+
+{% block head %}
+  <link rel="stylesheet" href="/static/css/reports.css?v={{ asset_v }}">
+  <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+{% endblock %}
+
+{% block body %}
+<main class="rpt-wrap">
+
+  <div class="rpt-header">
+    <div>
+      <h2>Reports</h2>
+      <p>Analytics derived from labeled training snapshots. More reports will be added here over time.</p>
+    </div>
+  </div>
+
+  <!-- Report nav tabs -->
+  <div class="rpt-tab-nav">
+    <button class="rpt-tab-btn active" data-tab="gates">Gate Rejections</button>
+    <button class="rpt-tab-btn" data-tab="cap-rej">Capital Rejected</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       REPORT 1 — GATE REJECTIONS
+  ═══════════════════════════════════════════════════════════════ -->
+  <div class="rpt-tab-panel active" data-tab="gates">
+
+    <!-- Filters -->
+    <div class="rpt-filters">
+      <div class="rpt-filter-field">
+        <label>Ticker <span class="rpt-optional">(optional)</span></label>
+        <input id="rpt-ticker" type="text" placeholder="e.g. AAPL" maxlength="10"
+               style="text-transform:uppercase" autocomplete="off">
+      </div>
+      <div class="rpt-filter-field">
+        <label>Look-back</label>
+        <select id="rpt-days">
+          <option value="">All history</option>
+          <option value="30">Last 30 days</option>
+          <option value="60">Last 60 days</option>
+          <option value="90">Last 90 days</option>
+        </select>
+      </div>
+      <button id="rpt-fetch-btn" class="rpt-btn">Run Report</button>
+    </div>
+
+    <div id="rpt-status" class="rpt-status"></div>
+
+    <!-- Results — hidden until first fetch -->
+    <div id="rpt-results" style="display:none">
+
+      <!-- Headline KPIs -->
+      <div class="rpt-kpi-row" id="rpt-kpis"></div>
+
+      <!-- Charts row -->
+      <div class="rpt-chart-row">
+
+        <!-- Gate fire counts -->
+        <div class="rpt-card rpt-card-wide">
+          <h3>Risk Gate Fire Counts</h3>
+          <p class="rpt-card-sub">How often each gate reason appears across all rejected candidates</p>
+          <div id="rpt-gate-bar"></div>
+        </div>
+
+        <!-- Liquidity vs risk split -->
+        <div class="rpt-card">
+          <h3>Rejection Breakdown</h3>
+          <p class="rpt-card-sub">Fraction of candidate slots rejected by each type</p>
+          <div id="rpt-rejection-pie"></div>
+        </div>
+
+      </div>
+
+      <!-- Threshold sensitivity -->
+      <div class="rpt-card">
+        <h3>Threshold Sensitivity</h3>
+        <p class="rpt-card-sub">
+          Relaxing a gate would unlock these many snapshots (currently rejected candidates
+          that would become tradeable if the gate were removed).
+        </p>
+        <div id="rpt-sensitivity-bar"></div>
+      </div>
+
+      <!-- Per-structure availability -->
+      <div class="rpt-card">
+        <h3>Availability by Structure</h3>
+        <p class="rpt-card-sub">
+          % of candidate slots that passed both liquidity and risk gates.
+          Low availability may indicate grid/threshold mismatch for that structure.
+        </p>
+        <div id="rpt-struct-bar"></div>
+      </div>
+
+      <!-- Data quality summary -->
+      <div class="rpt-card">
+        <h3>Data &amp; Chain Quality Failures</h3>
+        <div class="rpt-dq-row" id="rpt-dq-row"></div>
+      </div>
+
+    </div><!-- /rpt-results -->
+
+    <div id="rpt-empty" class="rpt-empty-msg" style="display:none">
+      No gate_summary data found. This report is populated from snapshots collected
+      after the gate analytics feature was enabled. Run the morning scan at least once
+      to start accumulating data.
+    </div>
+
+  </div><!-- /gates tab -->
+
+  <!-- ═══════════════════════════════════════════════════════════
+       REPORT 2 — CAPITAL REJECTED TRADES
+  ═══════════════════════════════════════════════════════════════ -->
+  <div class="rpt-tab-panel" data-tab="cap-rej">
+
+    <p class="muted" style="font-size:.88rem;margin-bottom:1rem">
+      Trades that passed all signal gates but were blocked by Gate 10 (buying power limit).
+    </p>
+
+    <!-- Date filter -->
+    <div class="rpt-filters">
+      <div class="rpt-filter-field">
+        <label>From date</label>
+        <input type="date" id="crj-from" class="crj-date-input">
+      </div>
+      <div class="rpt-filter-field">
+        <label>To date</label>
+        <input type="date" id="crj-to" class="crj-date-input">
+      </div>
+      <button id="crj-run-btn" class="rpt-btn">Load</button>
+      <span id="crj-count" class="muted crj-count-label"></span>
+    </div>
+
+    <div id="crj-body" class="crj-table-wrap">
+      <p class="muted" style="font-size:.85rem">Select a date range and click Load.</p>
+    </div>
+
+  </div><!-- /cap-rej tab -->
+
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const $ = id => document.getElementById(id);
+
+// ── Tab switching (generalised so future tabs just work) ─────────────────────
+document.querySelectorAll('.rpt-tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.rpt-tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.rpt-tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelector(`.rpt-tab-panel[data-tab="${btn.dataset.tab}"]`).classList.add('active');
+  });
+});
+
+// ── Shared Plotly layout base ────────────────────────────────────────────────
+const LAYOUT_BASE = {
+  paper_bgcolor: 'transparent',
+  plot_bgcolor:  'transparent',
+  font: { size: 12, color: '#555' },
+  margin: { t: 16, b: 48, l: 48, r: 16 },
+};
+
+// ── Fetch + render gate report ───────────────────────────────────────────────
+$('rpt-fetch-btn').addEventListener('click', fetchGateReport);
+
+async function fetchGateReport() {
+  const ticker = $('rpt-ticker').value.trim().toUpperCase() || '';
+  const days   = $('rpt-days').value;
+
+  $('rpt-status').textContent = 'Loading…';
+  $('rpt-fetch-btn').disabled = true;
+  $('rpt-results').style.display = 'none';
+  $('rpt-empty').style.display   = 'none';
+
+  const params = new URLSearchParams();
+  if (ticker) params.set('ticker', ticker);
+  if (days)   params.set('days', days);
+
+  try {
+    const r = await fetch(`/api/gate-analytics?${params}`);
+    const d = await r.json();
+
+    if (!d.ok) {
+      $('rpt-status').textContent = '';
+      $('rpt-empty').style.display = '';
+      return;
+    }
+    $('rpt-status').textContent = '';
+    $('rpt-results').style.display = '';
+    renderGateReport(d);
+  } catch(e) {
+    $('rpt-status').textContent = `Error: ${e.message}`;
+  } finally {
+    $('rpt-fetch-btn').disabled = false;
+  }
+}
+
+function pct(v) {
+  return v == null ? '—' : (v * 100).toFixed(1) + '%';
+}
+function num(v) {
+  return v == null ? '—' : v.toLocaleString();
+}
+
+function renderGateReport(d) {
+  // ── KPI tiles ──────────────────────────────────────────────────────────────
+  const noTradeColor = d.no_trade_rate > 0.3 ? '#c0392b' : d.no_trade_rate > 0.1 ? '#b7791f' : '#1a7f37';
+  $('rpt-kpis').innerHTML = [
+    ['Snapshots', num(d.n_snapshots), ''],
+    ['No-trade Rate', pct(d.no_trade_rate), noTradeColor],
+    ['Candidates Evaluated', num(d.total_candidates), ''],
+    ['Liquidity Reject Rate', pct(d.liquidity_rejection_rate), '#555'],
+    ['Risk Gate Reject Rate', pct(d.risk_rejection_rate), '#555'],
+  ].map(([label, val, color]) => `
+    <div class="rpt-kpi">
+      <div class="rpt-kpi-val" style="${color ? 'color:' + color : ''}">${val}</div>
+      <div class="rpt-kpi-label">${label}</div>
+    </div>`).join('');
+
+  // ── Risk gate bar chart ────────────────────────────────────────────────────
+  const gateCounts = d.gate_fire_counts || {};
+  const gateEntries = Object.entries(gateCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+  if (gateEntries.length) {
+    const gLabels = gateEntries.map(([k]) => k.length > 45 ? k.slice(0, 42) + '…' : k);
+    const gVals   = gateEntries.map(([, v]) => v);
+    Plotly.newPlot('rpt-gate-bar', [{
+      type: 'bar', orientation: 'h',
+      x: gVals.slice().reverse(),
+      y: gLabels.slice().reverse(),
+      marker: { color: '#1a56c4' },
+      text: gVals.slice().reverse().map(String),
+      textposition: 'outside',
+    }], {
+      ...LAYOUT_BASE,
+      margin: { t: 16, b: 32, l: Math.min(Math.max(...gLabels.map(s => s.length)) * 6.5, 320), r: 40 },
+      xaxis: { gridcolor: '#eee', title: 'Occurrences' },
+      yaxis: { automargin: true },
+    }, { responsive: true, displayModeBar: false });
+  } else {
+    $('rpt-gate-bar').innerHTML = '<div class="rpt-no-data">No risk gate rejections recorded yet.</div>';
+  }
+
+  // ── Rejection pie ─────────────────────────────────────────────────────────
+  const liqRej  = Math.round((d.liquidity_rejection_rate  || 0) * (d.total_candidates || 0));
+  const riskRej = Math.round((d.risk_rejection_rate       || 0) * (d.total_candidates || 0));
+  const passed  = (d.total_candidates || 0) - liqRej - riskRej;
+  if (d.total_candidates > 0) {
+    Plotly.newPlot('rpt-rejection-pie', [{
+      type: 'pie',
+      labels: ['Passed', 'Liquidity rejected', 'Risk gate rejected'],
+      values: [Math.max(passed, 0), liqRej, riskRej],
+      marker: { colors: ['#4caf50', '#e97c00', '#ef5350'] },
+      textinfo: 'label+percent',
+      hole: 0.4,
+    }], {
+      ...LAYOUT_BASE,
+      margin: { t: 16, b: 16, l: 16, r: 16 },
+      showlegend: false,
+    }, { responsive: true, displayModeBar: false });
+  } else {
+    $('rpt-rejection-pie').innerHTML = '<div class="rpt-no-data">No candidate data.</div>';
+  }
+
+  // ── Threshold sensitivity bar ─────────────────────────────────────────────
+  const sensDetail = d.threshold_sensitivity_detail || {};
+  const sensEntries = Object.entries(sensDetail).sort((a, b) => b[1].snapshots_affected - a[1].snapshots_affected).slice(0, 8);
+  if (sensEntries.length) {
+    const sLabels = sensEntries.map(([k]) => k.length > 50 ? k.slice(0, 47) + '…' : k);
+    const sVals   = sensEntries.map(([, v]) => v.snapshots_affected);
+    const sPcts   = sensEntries.map(([, v]) => v.pct_of_total);
+    Plotly.newPlot('rpt-sensitivity-bar', [{
+      type: 'bar', orientation: 'h',
+      x: sVals.slice().reverse(),
+      y: sLabels.slice().reverse(),
+      marker: { color: '#e97c00' },
+      customdata: sPcts.slice().reverse(),
+      hovertemplate: '%{y}<br>%{x} snapshots (%{customdata:.1f}%)<extra></extra>',
+      text: sVals.slice().reverse().map((v, i) => `${v} (${sPcts.slice().reverse()[i].toFixed(1)}%)`),
+      textposition: 'outside',
+    }], {
+      ...LAYOUT_BASE,
+      margin: { t: 16, b: 32, l: Math.min(Math.max(...sLabels.map(s => s.length)) * 6.5, 340), r: 50 },
+      xaxis: { gridcolor: '#eee', title: 'Snapshots unlocked by removing gate' },
+      yaxis: { automargin: true },
+    }, { responsive: true, displayModeBar: false });
+  } else {
+    $('rpt-sensitivity-bar').innerHTML = '<div class="rpt-no-data">No risk gate rejections to analyse.</div>';
+  }
+
+  // ── Availability by structure ─────────────────────────────────────────────
+  const structs = Object.entries(d.by_structure || {})
+    .sort((a, b) => b[1].n_evaluated - a[1].n_evaluated)
+    .slice(0, 15);
+
+  if (structs.length) {
+    const stLabels = structs.map(([k]) => k);
+    const stAvail  = structs.map(([, v]) => v.availability_pct);
+    const stLiq    = structs.map(([, v]) => Math.round((1 - v.n_liquidity_ok / (v.n_evaluated || 1)) * 100));
+    const stRisk   = structs.map(([, v]) => Math.round(v.n_risk_rejected / (v.n_evaluated || 1) * 100));
+
+    Plotly.newPlot('rpt-struct-bar', [
+      {
+        type: 'bar', name: 'Available %',
+        x: stLabels, y: stAvail,
+        marker: { color: '#4caf50' },
+      },
+      {
+        type: 'bar', name: 'Liquidity rejected %',
+        x: stLabels, y: stLiq,
+        marker: { color: '#e97c00' },
+      },
+      {
+        type: 'bar', name: 'Risk gate rejected %',
+        x: stLabels, y: stRisk,
+        marker: { color: '#ef5350' },
+      },
+    ], {
+      ...LAYOUT_BASE,
+      barmode: 'stack',
+      xaxis: { tickangle: -35, automargin: true },
+      yaxis: { title: '%', gridcolor: '#eee', range: [0, 100] },
+      legend: { orientation: 'h', x: 0.5, xanchor: 'center', y: 1.06 },
+    }, { responsive: true, displayModeBar: false });
+  } else {
+    $('rpt-struct-bar').innerHTML = '<div class="rpt-no-data">No per-structure data.</div>';
+  }
+
+  // ── Data / chain quality tiles ────────────────────────────────────────────
+  $('rpt-dq-row').innerHTML = [
+    ['Price data failures', d.data_quality_failures, 'snapshots where OHLCV was rejected before any indicator ran'],
+    ['Chain quality failures', d.chain_quality_failures, 'snapshots where the option chain was stale or empty'],
+  ].map(([label, val, note]) => `
+    <div class="rpt-dq-tile ${val > 0 ? 'rpt-dq-warn' : 'rpt-dq-ok'}">
+      <div class="rpt-dq-val">${num(val)}</div>
+      <div class="rpt-dq-label">${label}</div>
+      <div class="rpt-dq-note">${note}</div>
+    </div>`).join('');
+}
+
+// Auto-load on page open
+fetchGateReport();
+
+// ── Capital-Rejected Trades — sortable table ──────────────────────────────────
+
+const CRJ_COLS = [
+  { key: "date",             label: "Date",       fmt: v => v ?? "—",                                        num: false },
+  { key: "ticker",           label: "Ticker",     fmt: v => v ?? "—",                                        num: false },
+  { key: "structure",        label: "Structure",  fmt: v => v ?? "—",                                        num: false },
+  { key: "scan_time",        label: "Scan",       fmt: v => v ?? "—",                                        num: false },
+  { key: "required_capital", label: "Required $", fmt: v => v != null ? "$" + Number(v).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}) : "—", num: true  },
+  { key: "bp_limit",         label: "BP Limit",   fmt: (v,r) => { const x = v ?? r.buying_power; return x != null ? "$" + Number(x).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}) : "—"; }, num: true  },
+  { key: "shortfall",        label: "Shortfall",  fmt: v => v != null ? "$" + Number(v).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}) : "—", num: true  },
+  { key: "_strikes",         label: "Strikes",    fmt: (v,r) => (r.long_strike != null && r.short_strike != null) ? `${r.long_strike} / ${r.short_strike}` : "—", num: false },
+  { key: "expiry",           label: "Expiry",     fmt: v => v ?? "—",                                        num: false },
+  { key: "dte",              label: "DTE",        fmt: v => v != null ? v + "d" : "—",                       num: true  },
+  { key: "pop",              label: "POP %",      fmt: v => v != null ? Number(v).toFixed(1) + "%" : "—",   num: true  },
+  { key: "ev",               label: "EV",         fmt: v => v != null ? "$" + Number(v).toFixed(3) : "—",   num: true  },
+  { key: "signal_score",     label: "Signal",     fmt: v => v != null ? Number(v).toFixed(2) : "—",         num: true  },
+  { key: "net_delta",        label: "Δ Delta",    fmt: v => v != null ? Number(v).toFixed(3) : "—",         num: true  },
+  { key: "iv_edge_vp",       label: "IV Edge",    fmt: v => v != null ? Number(v).toFixed(2) + " vp" : "—", num: true  },
+  { key: "short_leg_oi",    label: "Short OI",   fmt: v => v != null ? Number(v).toLocaleString() : "—",  num: true  },
+  { key: "short_leg_volume",label: "Leg Vol",    fmt: v => v != null ? Number(v).toLocaleString() : "—",  num: true  },
+  { key: "short_leg_ba_pct",label: "BA Spread",  fmt: v => v != null ? (Number(v)*100).toFixed(1) + "%" : "—", num: true  },
+];
+
+let _crjRows  = [];
+let _crjSort  = { col: "date", dir: 1 };  // dir: 1=asc, -1=desc
+
+function _crjSortVal(row, col) {
+  if (col.key === "_strikes") return row.long_strike ?? -Infinity;
+  const v = row[col.key];
+  if (v == null) return col.num ? -Infinity : "";
+  return col.num ? Number(v) : String(v);
+}
+
+function _crjRenderTable() {
+  const body  = $('crj-body');
+  if (!_crjRows.length) {
+    body.innerHTML = '<p class="muted" style="font-size:.85rem">No capital-rejected trades in this range.</p>';
+    return;
+  }
+
+  const colIdx = CRJ_COLS.findIndex(c => c.key === _crjSort.col);
+  const sorted = [..._crjRows].sort((a, b) => {
+    const col = CRJ_COLS[colIdx] ?? CRJ_COLS[0];
+    const av = _crjSortVal(a, col), bv = _crjSortVal(b, col);
+    if (av < bv) return -1 * _crjSort.dir;
+    if (av > bv) return  1 * _crjSort.dir;
+    return 0;
+  });
+
+  const thead = CRJ_COLS.map((c, i) => {
+    const active = _crjSort.col === c.key;
+    const arrow  = active ? (_crjSort.dir === 1 ? " ▲" : " ▼") : "";
+    return `<th class="crj-th${active ? " crj-th-active" : ""}" data-colidx="${i}">${c.label}${arrow}</th>`;
+  }).join("");
+
+  const tbody = sorted.map(row => {
+    const cells = CRJ_COLS.map(c => {
+      const val = c.fmt(row[c.key], row);
+      const cls = (c.key === "required_capital") ? ' class="crj-td-bad"'
+                : (c.key === "shortfall")        ? ' class="crj-td-warn"'
+                : (c.key === "ticker")           ? ' class="crj-td-ticker"'
+                : "";
+      return `<td${cls}>${val}</td>`;
+    }).join("");
+    return `<tr>${cells}</tr>`;
+  }).join("");
+
+  body.innerHTML = `
+    <div class="table-scroll">
+      <table class="crj-table">
+        <thead><tr>${thead}</tr></thead>
+        <tbody>${tbody}</tbody>
+      </table>
+    </div>`;
+
+  body.querySelectorAll('.crj-th').forEach(th => {
+    th.addEventListener('click', () => {
+      const idx = parseInt(th.dataset.colidx, 10);
+      const key = CRJ_COLS[idx].key;
+      if (_crjSort.col === key) {
+        _crjSort.dir *= -1;
+      } else {
+        _crjSort.col = key;
+        _crjSort.dir = CRJ_COLS[idx].num ? -1 : 1;
+      }
+      _crjRenderTable();
+    });
+  });
+}
+
+async function crjLoad() {
+  const body  = $('crj-body');
+  const count = $('crj-count');
+  const from  = $('crj-from').value;
+  const to    = $('crj-to').value;
+
+  body.innerHTML = '<p class="muted" style="font-size:.85rem">Loading…</p>';
+  count.textContent = '';
+  _crjRows = [];
+
+  const params = new URLSearchParams();
+  if (from) params.set('from', from);
+  if (to)   params.set('to',   to);
+  if (!from && !to) params.set('days', '90');
+
+  try {
+    const r = await fetch(`/api/paper-trades/capital-rejected?${params}`);
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error);
+    const days = d.days || [];
+    // Flatten day groups → one row array; inject date onto each trade
+    _crjRows = days.flatMap(g => (g.trades || []).map(t => ({ ...t, date: g.date })));
+    const total = _crjRows.length;
+    count.textContent = total ? `${total} trade${total !== 1 ? 's' : ''} across ${days.length} day${days.length !== 1 ? 's' : ''}` : '';
+    _crjRenderTable();
+  } catch(e) {
+    body.innerHTML = `<p class="muted" style="font-size:.85rem;color:var(--danger)">Error: ${e.message}</p>`;
+  }
+}
+
+$('crj-run-btn').addEventListener('click', crjLoad);
+</script>
+{% endblock %}

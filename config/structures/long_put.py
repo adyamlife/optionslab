@@ -1,0 +1,35 @@
+from config.structures._base import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema, SignalProfile
+
+LONG_PUT = OptionStructure(
+    name          = "Long Put",
+    abbr          = "LPT",
+    is_credit     = False,
+    option_type   = "put",
+    allowed_iv      = ("Low",),
+    allowed_trends  = ("Downtrend",),
+    strike_schema = StrikeSchema.SINGLE_LEG,
+    expiry_pnl_fn = "long_put",
+    long_delta_lo  = 0.40,
+    long_delta_hi  = 0.55,
+    capital_type    = "debit",
+    requires_margin = False,
+    dte_min = 21,
+    dte_max = 60,
+    profit_target_pct = 0.50,
+    hedge = HedgeDef(
+        structure    = "Buy OTM Call (Short-Squeeze Protection)",
+        details      = "Buy an OTM call above the current price to cap upside loss if the stock reverses sharply.",
+        rationale    = "Long Put's max loss is the full premium paid. A call hedge limits exposure on a sudden short squeeze or gap up.",
+        protection_note = "Hedge does not cover slow drift against the position — time decay erodes both legs if there is no sustained move.",
+        cost_pct     = 0.25,
+        cost_base    = "max_loss",
+        delta_change = +0.20,
+        opt_type     = "call",
+        strike_mode  = HedgeStrikeMode.ATM_CALL,
+    ),
+    signal_profile = SignalProfile(
+        bias="bearish",
+        needs_trend=True, needs_momentum=True,
+        uses_term_structure=False, uses_skew=True, uses_sentiment=True,
+    ),
+)
