@@ -5,6 +5,13 @@
 {% block body %}
   <div id="etrade-bar"></div>
 
+  {% if features.live_positions.enabled and ff.role_gte(current_role, features.live_positions.role_required) %}
+  <div class="live-tab-bar">
+    <a href="/"              class="live-tab active">Scan</a>
+    <a href="/live-positions" class="live-tab">Positions</a>
+  </div>
+  {% endif %}
+
   <main class="container wide">
 
     {% if features.market_context.enabled %}

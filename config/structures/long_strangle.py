@@ -1,7 +1,8 @@
-from config.structures._base import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema
+from config.structures._base import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema, SignalProfile, StructureConstraints
 
 LONG_STRANGLE = OptionStructure(
     name          = "Long Strangle",
+    abbr          = "LSG",
     is_credit     = False,
     option_type   = "both",
     allowed_iv      = ("Low",),
@@ -14,6 +15,9 @@ LONG_STRANGLE = OptionStructure(
     short_delta_hi = 0.35,
     capital_type    = "debit",
     requires_margin = False,
+    # Gate: earnings must be within 25 days — wider strikes buy more time but
+    # the catalyst must still be imminent. Absent earnings data → rejection.
+    constraints = StructureConstraints(earnings_dte_max=25),
     hedge = HedgeDef(
         structure    = "No hedge — max loss is the total premium paid",
         details      = "The total debit is your maximum loss. Both legs expire worthless if stock stays between the strikes.",
@@ -24,5 +28,10 @@ LONG_STRANGLE = OptionStructure(
         delta_change = 0.0,
         opt_type     = "put",
         strike_mode  = HedgeStrikeMode.ONE_WIDTH_BELOW_LO,
+    ),
+    signal_profile = SignalProfile(
+        bias="volatility",
+        needs_trend=False, needs_momentum=True,
+        uses_term_structure=False, uses_skew=True, uses_sentiment=True,
     ),
 )

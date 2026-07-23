@@ -1,7 +1,8 @@
-from config.structures._base import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema
+from config.structures._base import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema, SignalProfile
 
 CASH_SECURED_PUT = OptionStructure(
     name          = "Cash Secured Put",
+    abbr          = "CSP",
     is_credit     = True,
     option_type   = "put",
     allowed_iv      = ("High",),
@@ -23,5 +24,10 @@ CASH_SECURED_PUT = OptionStructure(
         opt_type     = "put",
         strike_mode  = HedgeStrikeMode.OTM_PUT_NEAR_SHORT,
         urgency      = "critical",   # naked position — hedge urgency is high
+    ),
+    signal_profile = SignalProfile(
+        bias="bullish",
+        needs_trend=True, needs_momentum=True,
+        uses_term_structure=False, uses_skew=True, uses_sentiment=True,
     ),
 )

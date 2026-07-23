@@ -727,7 +727,14 @@ def get_next_earnings_date(ticker_obj):
 
 
 def get_adx(hist, period=14):
-    """Average Directional Index. >25 = strong trend, <20 = choppy/range-bound."""
+    """Average Directional Index.  Returns (adx_value, adx_slope).
+
+    adx_value — 14-period ADX float or None
+    adx_slope — day-over-day change in ADX (today minus yesterday), or None when
+                fewer than two ADX values are available.  Used by the "expanding"
+                evaluator to require minimum_slope >= 1.0 so slow creep
+                (ADX 19.1 → 19.2 → 19.3) doesn't trigger the coil signal.
+    """
     high = hist["High"]
     low = hist["Low"]
     close = hist["Close"]
@@ -753,8 +760,14 @@ def get_adx(hist, period=14):
     )
     adx = dx.ewm(alpha=1 / period, adjust=False).mean()
     if adx.empty or pd.isna(adx.iloc[-1]):
-        return None
-    return round(float(adx.iloc[-1]), 1)
+        return None, None
+    adx_val   = round(float(adx.iloc[-1]), 1)
+    adx_slope = (
+        round(float(adx.iloc[-1]) - float(adx.iloc[-2]), 2)
+        if len(adx) >= 2 and not pd.isna(adx.iloc[-2])
+        else None
+    )
+    return adx_val, adx_slope
 
 
 def get_relative_volume(hist, period=20):
@@ -841,6 +854,9 @@ def get_options_flow(ticker, expiry, calls, puts):
         }
         _save_oi_cache(cache)
 
+    vol_pcr     = round(put_vol / call_vol, 3) if call_vol > 0 else None
+    pcr_diverge = round(pcr - vol_pcr, 3) if (pcr is not None and vol_pcr is not None) else None
+
     return {
         "pcr": pcr,
         "pcr_sentiment": pcr_sentiment,
@@ -852,19 +868,31 @@ def get_options_flow(ticker, expiry, calls, puts):
         "put_vol":  int(put_vol),
         "oi_delta_calls": oi_delta_calls,
         "oi_delta_puts":  oi_delta_puts,
+        "vol_pcr":    vol_pcr,
+        "pcr_diverge": pcr_diverge,
     }
 
 
 def get_ema200(hist):
     """EMA(200) institutional trend filter.
-    Returns (ema200_value, position) where position is 'above' | 'below' | None."""
+
+    Returns (ema200_value, position, distance_pct):
+      ema200_value  — EMA(200) price level, or None
+      position      — "above" | "below" | None
+      distance_pct  — (price - EMA200) / EMA200 × 100, signed float or None.
+                      Positive = above, negative = below.  Used for continuous
+                      scoring (e.g. +8.3% above is a much stronger signal than
+                      +0.2% above, which the old categorical "above" couldn't express).
+    """
     close = hist["Close"]
     if len(close) < 200:
-        return None, None
+        return None, None, None
     ema = close.ewm(span=200, adjust=False).mean()
-    val = float(ema.iloc[-1])
+    val   = float(ema.iloc[-1])
     price = float(close.iloc[-1])
-    return round(val, 2), ("above" if price > val else "below")
+    dist  = round((price - val) / val * 100, 2)
+    pos   = "above" if price > val else "below"
+    return round(val, 2), pos, dist
 
 
 def get_iv_term_structure(ticker_obj, front_expiry, back_expiry, spot, front_dte, back_dte):
@@ -922,6 +950,56 @@ def get_atm_iv(calls, puts, spot):
     atm_call_iv = calls.sort_values("dist").iloc[0]["impliedVolatility"]
     atm_put_iv = puts.sort_values("dist").iloc[0]["impliedVolatility"]
     return (atm_call_iv + atm_put_iv) / 2
+
+
+def get_expected_move_pct(calls, puts, spot):
+    """Market-implied ±1σ move: (ATM call mid + ATM put mid) / spot.
+
+    Infrastructure metric — not scored as a signal. Available in market dict for
+    strike selection and future evaluators (e.g. atr_vs_expected).
+    Returns None on any failure.
+    """
+    try:
+        if spot is None or spot <= 0:
+            return None
+        c = calls.copy()
+        p = puts.copy()
+        c["dist"] = (c["strike"] - spot).abs()
+        p["dist"] = (p["strike"] - spot).abs()
+        cr = c.sort_values("dist").iloc[0]
+        pr = p.sort_values("dist").iloc[0]
+        call_mid = (float(cr.get("bid", 0) or 0) + float(cr.get("ask", 0) or 0)) / 2
+        put_mid  = (float(pr.get("bid", 0) or 0) + float(pr.get("ask", 0) or 0)) / 2
+        if call_mid <= 0 or put_mid <= 0:
+            return None
+        return round((call_mid + put_mid) / spot, 4)
+    except Exception:
+        return None
+
+
+def get_hy_oas() -> float | None:
+    """Fetch latest HY OAS from FRED (BAMLH0A0HYM2 — ICE BofA US HY spread, basis points).
+
+    Returns the most recent non-missing value, or None if unavailable (no API key, network error).
+    Collection only — no scoring until 90 days of history accumulated.
+    """
+    key = _fred_api_key()
+    if not key:
+        return None
+    try:
+        import urllib.request
+        url = (f"https://api.stlouisfed.org/fred/series/observations"
+               f"?series_id=BAMLH0A0HYM2&api_key={key}"
+               f"&file_type=json&sort_order=desc&limit=5")
+        with urllib.request.urlopen(url, timeout=10) as r:
+            data = json.loads(r.read())
+        for obs in data.get("observations", []):
+            val = obs.get("value", ".")
+            if val != ".":
+                return round(float(val), 3)
+    except Exception:
+        pass
+    return None
 
 
 def _ticker_info(ticker_obj, timeout=6):
@@ -1519,6 +1597,196 @@ def get_oi_concentration(calls, puts, spot, window_pct=0.10) -> float | None:
             return None
         near_oi   = all_oi[all_oi["strike"].between(lo, hi)]["openInterest"].sum()
         return round(float(near_oi / total_oi), 4)
+    except Exception:
+        return None
+
+
+def get_iv_change_5d(ticker: str, atm_iv: float | None) -> float | None:
+    """5-day change in ATM IV vs the value recorded ~5 trading days ago.
+
+    Queries training_snapshots in DuckDB for the most recent snapshot that is
+    at least 5 calendar days (≈7–8 calendar days to clear weekends) before today.
+    Returns (current_atm_iv - past_atm_iv) as an annualised fraction, or None
+    when insufficient history exists.
+
+    Positive → IV expanding (vol regime tightening for sellers).
+    Negative → IV compressing (tailwind for credit structures).
+    """
+    if atm_iv is None:
+        return None
+    try:
+        from scripts.db import get_historical_atm_iv
+        past_iv = get_historical_atm_iv(ticker)
+        if past_iv is None:
+            return None
+        return round(float(atm_iv) - past_iv, 4)
+    except Exception:
+        return None
+
+
+def save_strike_oi_snapshot(
+    ticker: str,
+    expiry: str,
+    calls,
+    puts,
+    spot: float | None,
+) -> None:
+    """Persist per-strike OI for near-ATM strikes into the oi_changes table.
+
+    Called once per scan after the chain is fetched.  Idempotent: deletes
+    today's rows for (ticker, expiry) before inserting so re-runs are safe.
+    Only saves strikes within ±20 % of spot to limit table growth.
+    Silently swallows all exceptions — signal degrades to None gracefully.
+    """
+    if spot is None or calls is None or puts is None:
+        return
+    try:
+        import duckdb as _ddb
+        from datetime import datetime as _dt
+        from pathlib import Path as _Path
+
+        _db_path = _Path(__file__).resolve().parent.parent / "data" / "ml_training.duckdb"
+        _db_path.parent.mkdir(parents=True, exist_ok=True)
+
+        lo, hi      = spot * 0.80, spot * 1.20
+        today_str   = _dt.utcnow().date().isoformat()
+        collected   = _dt.utcnow().isoformat()
+
+        rows: list[tuple] = []
+        for df, opt_type in [(calls, "C"), (puts, "P")]:
+            if df is None or df.empty:
+                continue
+            near = df[(df["strike"] >= lo) & (df["strike"] <= hi)]
+            for _, r in near.iterrows():
+                oi = int(r.get("openInterest") or 0)
+                if oi <= 0:
+                    continue
+                rows.append((
+                    ticker, today_str, "scan", collected,
+                    expiry, float(r["strike"]), opt_type, oi,
+                    float(r.get("impliedVolatility") or 0) or None,
+                    None,
+                    int(r.get("volume") or 0),
+                ))
+
+        if not rows:
+            return
+
+        con = _ddb.connect(str(_db_path))
+        con.execute("""
+            CREATE TABLE IF NOT EXISTS oi_changes (
+                ticker       VARCHAR NOT NULL,
+                date         VARCHAR NOT NULL,
+                time_of_day  VARCHAR NOT NULL,
+                collected_at VARCHAR,
+                expiry       VARCHAR,
+                strike       DOUBLE,
+                option_type  VARCHAR,
+                oi           BIGINT,
+                iv           DOUBLE,
+                gamma        DOUBLE,
+                volume       BIGINT
+            )
+        """)
+        con.execute(
+            "DELETE FROM oi_changes WHERE ticker = ? AND date = ? AND expiry = ?",
+            [ticker, today_str, expiry],
+        )
+        con.executemany(
+            "INSERT INTO oi_changes "
+            "(ticker, date, time_of_day, collected_at, expiry, strike, option_type, "
+            " oi, iv, gamma, volume) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            rows,
+        )
+        con.commit()
+        con.close()
+    except Exception:
+        pass
+
+
+def get_unusual_oi_activity(
+    ticker: str,
+    expiry: str,
+    calls,
+    puts,
+    spot: float | None,
+    window: int = 10,
+    min_history: int = 3,
+) -> float | None:
+    """OI spike ratio: how much today's per-strike OI exceeds the rolling average.
+
+    For each near-ATM strike (±10 % of spot) computes:
+        spike_ratio = (today_oi − rolling_avg_oi) / rolling_avg_oi
+
+    Returns the maximum spike ratio across all qualifying near-ATM strikes,
+    capped at 5.0 (5× above average).
+
+    Returns None when fewer than min_history days of history exist in oi_changes —
+    the signal bootstraps automatically once enough scans have accumulated.
+
+    Positive values indicate unusual positioning:
+      0.00 — OI at or below historical average (quiet)
+      0.50 — OI 50 % above average
+      1.00 — OI doubled (strong signal)
+      2.00+ — rare; very heavy unusual activity
+    """
+    if spot is None or calls is None or puts is None:
+        return None
+    try:
+        import duckdb as _ddb
+        from datetime import datetime as _dt
+        from pathlib import Path as _Path
+
+        _db_path = _Path(__file__).resolve().parent.parent / "data" / "ml_training.duckdb"
+        if not _db_path.exists():
+            return None
+
+        today_str = _dt.utcnow().date().isoformat()
+        lo, hi    = spot * 0.90, spot * 1.10
+
+        con = _ddb.connect(str(_db_path), read_only=True)
+        df = con.execute(
+            """
+            SELECT strike, option_type, date, oi
+            FROM oi_changes
+            WHERE ticker      = ?
+              AND expiry       = ?
+              AND date         < ?
+              AND strike BETWEEN ? AND ?
+              AND oi           > 0
+            ORDER BY date DESC
+            LIMIT ?
+            """,
+            [ticker, expiry, today_str, lo, hi, window * 60],
+        ).df()
+        con.close()
+
+        if df.empty:
+            return None
+        if df["date"].nunique() < min_history:
+            return None
+
+        avg_oi = df.groupby(["strike", "option_type"])["oi"].mean()
+
+        max_spike = 0.0
+        for df_chain, opt_type in [(calls, "C"), (puts, "P")]:
+            if df_chain is None or df_chain.empty:
+                continue
+            near = df_chain[(df_chain["strike"] >= lo) & (df_chain["strike"] <= hi)]
+            for _, r in near.iterrows():
+                oi_today = int(r.get("openInterest") or 0)
+                key = (float(r["strike"]), opt_type)
+                if key not in avg_oi.index:
+                    continue
+                avg = float(avg_oi[key])
+                if avg < 10:
+                    continue
+                spike = (oi_today - avg) / avg
+                if spike > max_spike:
+                    max_spike = spike
+
+        return round(min(max_spike, 5.0), 4)
     except Exception:
         return None
 

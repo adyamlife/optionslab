@@ -19,22 +19,37 @@
 
   <nav class="site-nav">
     {% if session.get('user') %}
-      <a href="/" data-nav="live" {% if page == 'live' %}class="active"{% endif %}>Live Suggestions</a>
-      {% if features.live_positions.enabled and ff.role_gte(current_role, features.live_positions.role_required) %}
-        <a href="/live-positions" data-nav="positions" {% if page == 'positions' %}class="active"{% endif %}>Live Positions</a>
-      {% endif %}
+
+      <!-- Live — scan + positions combined under one nav item -->
+      <a href="/" data-nav="live" {% if page in ('live', 'positions') %}class="active"{% endif %}>Live</a>
+
       {% if features.paper_trades.enabled and ff.role_gte(current_role, features.paper_trades.role_required) %}
         <a href="/paper-trades" data-nav="paper" {% if page == 'paper' %}class="active"{% endif %}>Paper Trades</a>
       {% endif %}
       {% if features.backtest.enabled and ff.role_gte(current_role, features.backtest.role_required) %}
         <a href="/backtest" data-nav="backtest" {% if page == 'backtest' %}class="active"{% endif %}>Backtest</a>
       {% endif %}
-      {% if features.ml_data_admin.enabled and ff.role_gte(current_role, features.ml_data_admin.role_required) %}
-        <a href="/ml-admin" data-nav="ml-admin" {% if page == 'ml-admin' %}class="active"{% endif %}>ML Data</a>
-        <a href="/scheduler" data-nav="scheduler" {% if page == 'scheduler' %}class="active"{% endif %}>Scheduler</a>
-        <a href="/mispricing" data-nav="mispricing" {% if page == 'mispricing' %}class="active"{% endif %}>Mispricing</a>
-        <a href="/compare" data-nav="compare" {% if page == 'compare' %}class="active"{% endif %}>Compare</a>
+
+      <!-- Reports dropdown — Gate Analytics, Mispricing, Compare -->
+      {% set _reports_active = page in ('reports', 'mispricing', 'compare') %}
+      {% if features.reports.enabled and ff.role_gte(current_role, features.reports.role_required) %}
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn {% if _reports_active %}active{% endif %}">
+          Reports <span class="nav-caret">&#9662;</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <a href="/reports"    {% if page == 'reports'    %}class="active"{% endif %}>Gate Analytics</a>
+          <a href="/mispricing" {% if page == 'mispricing' %}class="active"{% endif %}>Mispricing</a>
+          <a href="/compare"    {% if page == 'compare'    %}class="active"{% endif %}>Compare</a>
+        </div>
+      </div>
       {% endif %}
+
+      {% if features.ml_data_admin.enabled and ff.role_gte(current_role, features.ml_data_admin.role_required) %}
+        <a href="/ml-admin"   data-nav="ml-admin"   {% if page == 'ml-admin'   %}class="active"{% endif %}>ML Data</a>
+        <a href="/scheduler"  data-nav="scheduler"  {% if page == 'scheduler'  %}class="active"{% endif %}>Scheduler</a>
+      {% endif %}
+
       <a href="/logout" class="nav-logout" title="Sign out">&#x2192; Sign out</a>
     {% endif %}
   </nav>

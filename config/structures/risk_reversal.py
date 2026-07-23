@@ -1,7 +1,8 @@
-from config.structures._base import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema
+from config.structures._base import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema, SignalProfile
 
 RISK_REVERSAL = OptionStructure(
     name          = "Risk Reversal",
+    abbr          = "RVR",
     is_credit     = True,        # typically net credit (put skew > call in Low IV)
     option_type   = "both",
     allowed_iv      = ("Low",),
@@ -25,5 +26,10 @@ RISK_REVERSAL = OptionStructure(
         opt_type     = "put",
         strike_mode  = HedgeStrikeMode.OTM_PUT_NEAR_SHORT,
         urgency      = "critical",
+    ),
+    signal_profile = SignalProfile(
+        bias="bullish",
+        needs_trend=True, needs_momentum=True,
+        uses_term_structure=False, uses_skew=True, uses_sentiment=True,
     ),
 )

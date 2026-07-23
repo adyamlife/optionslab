@@ -139,3 +139,712 @@ C:\Python312\python\python.exe (PID 9668)
 2026-07-20 14:54:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
 2026-07-20 14:54:11 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
 2026-07-20 14:54:11 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.32s
+2026-07-20 15:24:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-20 15:24:12 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 15:24:12 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.44s
+2026-07-20 15:37:33 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 15:37:34 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 15:37:34 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.15s
+2026-07-20 15:37:40 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 15:37:41 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 15:37:41 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 0.91s
+2026-07-20 15:37:45 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 15:37:46 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 15:37:46 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 0.89s
+2026-07-20 15:37:51 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 15:37:53 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 15:37:53 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.02s
+2026-07-20 15:38:04 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 15:38:06 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 15:38:06 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 2.20s
+2026-07-20 15:38:14 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 15:38:15 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 15:38:15 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.00s
+2026-07-20 15:38:23 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 15:38:24 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 15:38:24 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 0.99s
+2026-07-20 15:42:56 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 15:42:57 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 15:42:57 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.11s
+2026-07-20 15:43:01 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 15:43:06 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 15:43:07 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 15:43:07 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 0.93s
+2026-07-20 15:43:14 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 15:43:15 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 15:43:15 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.12s
+2026-07-20 15:43:21 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 15:43:22 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 15:43:22 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.04s
+2026-07-20 15:43:30 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 15:43:32 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 15:43:32 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.08s
+2026-07-20 15:48:58 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 15:48:59 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 15:48:59 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.10s
+2026-07-20 15:54:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-20 15:54:11 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 15:54:11 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 0.80s
+2026-07-20 15:54:56 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 15:54:57 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 15:54:57 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.65s
+2026-07-20 15:55:04 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 15:55:06 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 15:55:06 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.52s
+2026-07-20 15:55:14 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 15:55:15 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 15:55:15 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.38s
+2026-07-20 15:55:46 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 15:55:47 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 15:55:47 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.20s
+2026-07-20 16:00:44 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 16:01:00 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 16:01:00 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 15.85s
+2026-07-20 16:01:45 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 16:01:47 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 16:01:47 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 2.35s
+2026-07-20 16:03:41 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 16:03:42 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 16:03:42 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.35s
+2026-07-20 16:14:33 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 16:14:34 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 16:14:34 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.29s
+2026-07-20 16:16:48 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 16:16:49 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 16:16:49 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.18s
+2026-07-20 16:17:05 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 16:17:06 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 16:17:06 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.17s
+2026-07-20 16:17:18 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 16:17:19 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 16:17:19 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.12s
+2026-07-20 16:18:14 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 16:18:16 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 16:18:16 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.55s
+2026-07-20 16:22:00 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-20 16:22:02 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 16:22:02 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 2.16s
+2026-07-20 16:24:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-20 16:24:12 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 16:24:12 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.81s
+2026-07-20 16:54:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-20 16:54:11 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-20 16:54:11 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.02s
+2026-07-20 17:00:00 WARNING  scripts.paper_trade_engine: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-20 17:00:01 INFO     scripts.paper_trade_engine: IV surface flag on 20260706_QUBT_PUT_2: short strike 7.5 now +54.0vp expensive — consider closing
+2026-07-20 17:00:02 INFO     scripts.paper_trade_engine: IV surface flag on 20260706_SMR_PUT_2: short strike 7.5 now -2.7vp cheap — vol moved against position
+2026-07-20 17:00:10 INFO     scripts.paper_trade_engine: IV surface flag on 20260707_QUBT_PUT_3: short strike 7.5 now +54.0vp expensive — consider closing
+2026-07-20 17:00:25 WARNING  scripts.paper_trade_engine: _current_mark failed for WMT: name 's' is not defined
+2026-07-20 17:00:25 WARNING  scripts.paper_trade_engine: _current_mark failed for SHOP: name 's' is not defined
+2026-07-20 17:00:25 WARNING  scripts.paper_trade_engine: _current_mark failed for V: name 's' is not defined
+2026-07-20 17:00:25 WARNING  scripts.paper_trade_engine: _current_mark failed for RTX: name 's' is not defined
+2026-07-20 17:00:31 INFO     scripts.training_data_collector: [forward_returns] 0 snapshots labeled across 105 tickers
+2026-07-21 09:37:27 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 09:37:28 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 09:37:28 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.27s
+2026-07-21 09:37:31 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 09:37:32 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 09:37:32 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.14s
+2026-07-21 09:52:34 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 09:52:36 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 09:52:36 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.10s
+2026-07-21 09:54:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-21 09:54:12 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 09:54:12 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.38s
+2026-07-21 09:56:25 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 09:56:26 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 09:56:26 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.60s
+2026-07-21 10:00:00 WARNING  scripts.paper_trade_engine: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-21 10:00:00 INFO     scripts.paper_trade_engine: [prefetch] step 1 — batch daily history for 102 tickers
+2026-07-21 10:00:00 INFO     scripts.paper_trade_engine: [prefetch] daily history done: 0 ok, 102 fail  (0.5s)
+2026-07-21 10:00:00 INFO     scripts.paper_trade_engine: [prefetch] step 2 — batch weekly history for 101 tickers
+2026-07-21 10:00:01 INFO     scripts.paper_trade_engine: [prefetch] weekly history done: 0 ok, 101 fail  (1.0s)
+2026-07-21 10:00:01 INFO     scripts.paper_trade_engine: [prefetch] step 3+4 — expirations + chains for 101 tickers (serial)
+2026-07-21 10:01:56 INFO     scripts.paper_trade_engine: [prefetch] done in 116s — hist 0/102, weekly 0/101, exps 101/101, chains 394 (fail 0)
+2026-07-21 10:01:56 INFO     scripts.paper_trade_engine: [scan] cache ready — 495 total keys, 394 chain keys
+2026-07-21 10:01:59 WARNING  scripts.paper_trade_engine: analyze_ticker(SPY) failed: database disk image is malformed
+2026-07-21 10:02:02 WARNING  scripts.paper_trade_engine: analyze_ticker(QQQ) failed: database disk image is malformed
+2026-07-21 10:02:05 WARNING  scripts.paper_trade_engine: analyze_ticker(TQQQ) failed: database disk image is malformed
+2026-07-21 10:02:08 WARNING  scripts.paper_trade_engine: analyze_ticker(NVDA) failed: database disk image is malformed
+2026-07-21 10:02:11 WARNING  scripts.paper_trade_engine: analyze_ticker(MSFT) failed: database disk image is malformed
+2026-07-21 10:02:13 WARNING  scripts.paper_trade_engine: analyze_ticker(AAPL) failed: database disk image is malformed
+2026-07-21 10:02:16 WARNING  scripts.paper_trade_engine: analyze_ticker(AVGO) failed: database disk image is malformed
+2026-07-21 10:02:19 WARNING  scripts.paper_trade_engine: analyze_ticker(AMD) failed: database disk image is malformed
+2026-07-21 10:02:22 WARNING  scripts.paper_trade_engine: analyze_ticker(SPY, short_dte) failed: database disk image is malformed
+2026-07-21 10:02:25 WARNING  scripts.paper_trade_engine: analyze_ticker(QQQ, short_dte) failed: database disk image is malformed
+2026-07-21 10:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(TQQQ, short_dte) failed: database disk image is malformed
+2026-07-21 10:02:31 WARNING  scripts.paper_trade_engine: analyze_ticker(NVDA, short_dte) failed: database disk image is malformed
+2026-07-21 10:02:34 WARNING  scripts.paper_trade_engine: analyze_ticker(MSFT, short_dte) failed: database disk image is malformed
+2026-07-21 10:02:37 WARNING  scripts.paper_trade_engine: analyze_ticker(AAPL, short_dte) failed: database disk image is malformed
+2026-07-21 10:02:40 WARNING  scripts.paper_trade_engine: analyze_ticker(AVGO, short_dte) failed: database disk image is malformed
+2026-07-21 10:02:43 WARNING  scripts.paper_trade_engine: analyze_ticker(AMD, short_dte) failed: database disk image is malformed
+2026-07-21 10:02:45 WARNING  scripts.paper_trade_engine: analyze_ticker(TSM) failed: database disk image is malformed
+2026-07-21 10:02:48 WARNING  scripts.paper_trade_engine: analyze_ticker(MU) failed: database disk image is malformed
+2026-07-21 10:02:51 WARNING  scripts.paper_trade_engine: analyze_ticker(ARM) failed: database disk image is malformed
+2026-07-21 10:02:54 WARNING  scripts.paper_trade_engine: analyze_ticker(INTC) failed: database disk image is malformed
+2026-07-21 10:02:57 WARNING  scripts.paper_trade_engine: analyze_ticker(QCOM) failed: database disk image is malformed
+2026-07-21 10:03:00 WARNING  scripts.paper_trade_engine: analyze_ticker(TXN) failed: database disk image is malformed
+2026-07-21 10:03:03 WARNING  scripts.paper_trade_engine: analyze_ticker(KLAC) failed: database disk image is malformed
+2026-07-21 10:03:06 WARNING  scripts.paper_trade_engine: analyze_ticker(ASML) failed: database disk image is malformed
+2026-07-21 10:03:09 WARNING  scripts.paper_trade_engine: analyze_ticker(TSM, short_dte) failed: database disk image is malformed
+2026-07-21 10:03:12 WARNING  scripts.paper_trade_engine: analyze_ticker(MU, short_dte) failed: database disk image is malformed
+2026-07-21 10:03:14 WARNING  scripts.paper_trade_engine: analyze_ticker(ARM, short_dte) failed: database disk image is malformed
+2026-07-21 10:03:17 WARNING  scripts.paper_trade_engine: analyze_ticker(INTC, short_dte) failed: database disk image is malformed
+2026-07-21 10:03:20 WARNING  scripts.paper_trade_engine: analyze_ticker(QCOM, short_dte) failed: database disk image is malformed
+2026-07-21 10:03:23 WARNING  scripts.paper_trade_engine: analyze_ticker(TXN, short_dte) failed: database disk image is malformed
+2026-07-21 10:03:26 WARNING  scripts.paper_trade_engine: analyze_ticker(KLAC, short_dte) failed: database disk image is malformed
+2026-07-21 10:03:29 WARNING  scripts.paper_trade_engine: analyze_ticker(ASML, short_dte) failed: database disk image is malformed
+2026-07-21 10:03:32 WARNING  scripts.paper_trade_engine: analyze_ticker(LRCX) failed: database disk image is malformed
+2026-07-21 10:03:35 WARNING  scripts.paper_trade_engine: analyze_ticker(CDNS) failed: database disk image is malformed
+2026-07-21 10:03:38 WARNING  scripts.paper_trade_engine: analyze_ticker(SNPS) failed: database disk image is malformed
+2026-07-21 10:03:41 WARNING  scripts.paper_trade_engine: analyze_ticker(PLTR) failed: database disk image is malformed
+2026-07-21 10:03:44 WARNING  scripts.paper_trade_engine: analyze_ticker(SNOW) failed: database disk image is malformed
+2026-07-21 10:03:47 WARNING  scripts.paper_trade_engine: analyze_ticker(MDB) failed: database disk image is malformed
+2026-07-21 10:03:50 WARNING  scripts.paper_trade_engine: analyze_ticker(ORCL) failed: database disk image is malformed
+2026-07-21 10:03:52 WARNING  scripts.paper_trade_engine: analyze_ticker(CRM) failed: database disk image is malformed
+2026-07-21 10:03:55 WARNING  scripts.paper_trade_engine: analyze_ticker(LRCX, short_dte) failed: database disk image is malformed
+2026-07-21 10:03:58 WARNING  scripts.paper_trade_engine: analyze_ticker(CDNS, short_dte) failed: database disk image is malformed
+2026-07-21 10:04:01 WARNING  scripts.paper_trade_engine: analyze_ticker(SNPS, short_dte) failed: database disk image is malformed
+2026-07-21 10:04:04 WARNING  scripts.paper_trade_engine: analyze_ticker(PLTR, short_dte) failed: database disk image is malformed
+2026-07-21 10:04:07 WARNING  scripts.paper_trade_engine: analyze_ticker(SNOW, short_dte) failed: database disk image is malformed
+2026-07-21 10:04:10 WARNING  scripts.paper_trade_engine: analyze_ticker(MDB, short_dte) failed: database disk image is malformed
+2026-07-21 10:04:13 WARNING  scripts.paper_trade_engine: analyze_ticker(ORCL, short_dte) failed: database disk image is malformed
+2026-07-21 10:04:16 WARNING  scripts.paper_trade_engine: analyze_ticker(CRM, short_dte) failed: database disk image is malformed
+2026-07-21 10:04:19 WARNING  scripts.paper_trade_engine: analyze_ticker(NOW) failed: database disk image is malformed
+2026-07-21 10:04:22 WARNING  scripts.paper_trade_engine: analyze_ticker(NET) failed: database disk image is malformed
+2026-07-21 10:04:25 WARNING  scripts.paper_trade_engine: analyze_ticker(TEAM) failed: database disk image is malformed
+2026-07-21 10:04:27 WARNING  scripts.paper_trade_engine: analyze_ticker(SAP) failed: database disk image is malformed
+2026-07-21 10:04:30 WARNING  scripts.paper_trade_engine: analyze_ticker(ADBE) failed: database disk image is malformed
+2026-07-21 10:04:33 WARNING  scripts.paper_trade_engine: analyze_ticker(INTU) failed: database disk image is malformed
+2026-07-21 10:04:36 WARNING  scripts.paper_trade_engine: analyze_ticker(RGTI) failed: database disk image is malformed
+2026-07-21 10:04:39 WARNING  scripts.paper_trade_engine: analyze_ticker(GOOGL) failed: database disk image is malformed
+2026-07-21 10:04:42 WARNING  scripts.paper_trade_engine: analyze_ticker(NOW, short_dte) failed: database disk image is malformed
+2026-07-21 10:04:45 WARNING  scripts.paper_trade_engine: analyze_ticker(NET, short_dte) failed: database disk image is malformed
+2026-07-21 10:04:48 WARNING  scripts.paper_trade_engine: analyze_ticker(TEAM, short_dte) failed: database disk image is malformed
+2026-07-21 10:04:51 WARNING  scripts.paper_trade_engine: analyze_ticker(SAP, short_dte) failed: database disk image is malformed
+2026-07-21 10:04:54 WARNING  scripts.paper_trade_engine: analyze_ticker(ADBE, short_dte) failed: database disk image is malformed
+2026-07-21 10:04:57 WARNING  scripts.paper_trade_engine: analyze_ticker(INTU, short_dte) failed: database disk image is malformed
+2026-07-21 10:04:59 WARNING  scripts.paper_trade_engine: analyze_ticker(RGTI, short_dte) failed: database disk image is malformed
+2026-07-21 10:05:02 WARNING  scripts.paper_trade_engine: analyze_ticker(GOOGL, short_dte) failed: database disk image is malformed
+2026-07-21 10:05:05 WARNING  scripts.paper_trade_engine: analyze_ticker(META) failed: database disk image is malformed
+2026-07-21 10:05:08 WARNING  scripts.paper_trade_engine: analyze_ticker(NFLX) failed: database disk image is malformed
+2026-07-21 10:05:11 WARNING  scripts.paper_trade_engine: analyze_ticker(SPOT) failed: database disk image is malformed
+2026-07-21 10:05:14 WARNING  scripts.paper_trade_engine: analyze_ticker(DIS) failed: database disk image is malformed
+2026-07-21 10:05:17 WARNING  scripts.paper_trade_engine: analyze_ticker(TMUS) failed: database disk image is malformed
+2026-07-21 10:05:20 WARNING  scripts.paper_trade_engine: analyze_ticker(TSLA) failed: database disk image is malformed
+2026-07-21 10:05:23 WARNING  scripts.paper_trade_engine: analyze_ticker(AMZN) failed: database disk image is malformed
+2026-07-21 10:05:26 WARNING  scripts.paper_trade_engine: analyze_ticker(UBER) failed: database disk image is malformed
+2026-07-21 10:05:29 WARNING  scripts.paper_trade_engine: analyze_ticker(META, short_dte) failed: database disk image is malformed
+2026-07-21 10:05:32 WARNING  scripts.paper_trade_engine: analyze_ticker(NFLX, short_dte) failed: database disk image is malformed
+2026-07-21 10:05:35 WARNING  scripts.paper_trade_engine: analyze_ticker(SPOT, short_dte) failed: database disk image is malformed
+2026-07-21 10:05:37 WARNING  scripts.paper_trade_engine: analyze_ticker(DIS, short_dte) failed: database disk image is malformed
+2026-07-21 10:05:40 WARNING  scripts.paper_trade_engine: analyze_ticker(TMUS, short_dte) failed: database disk image is malformed
+2026-07-21 10:05:43 WARNING  scripts.paper_trade_engine: analyze_ticker(TSLA, short_dte) failed: database disk image is malformed
+2026-07-21 10:05:46 WARNING  scripts.paper_trade_engine: analyze_ticker(AMZN, short_dte) failed: database disk image is malformed
+2026-07-21 10:05:49 WARNING  scripts.paper_trade_engine: analyze_ticker(UBER, short_dte) failed: database disk image is malformed
+2026-07-21 10:05:52 WARNING  scripts.paper_trade_engine: analyze_ticker(SHOP) failed: database disk image is malformed
+2026-07-21 10:05:55 WARNING  scripts.paper_trade_engine: analyze_ticker(MELI) failed: database disk image is malformed
+2026-07-21 10:05:58 WARNING  scripts.paper_trade_engine: analyze_ticker(APP) failed: database disk image is malformed
+2026-07-21 10:06:01 WARNING  scripts.paper_trade_engine: analyze_ticker(CVNA) failed: database disk image is malformed
+2026-07-21 10:06:04 WARNING  scripts.paper_trade_engine: analyze_ticker(HD) failed: database disk image is malformed
+2026-07-21 10:06:07 WARNING  scripts.paper_trade_engine: analyze_ticker(NKE) failed: database disk image is malformed
+2026-07-21 10:06:09 WARNING  scripts.paper_trade_engine: analyze_ticker(ULTA) failed: database disk image is malformed
+2026-07-21 10:06:12 WARNING  scripts.paper_trade_engine: analyze_ticker(COST) failed: database disk image is malformed
+2026-07-21 10:06:15 WARNING  scripts.paper_trade_engine: analyze_ticker(SHOP, short_dte) failed: database disk image is malformed
+2026-07-21 10:06:18 WARNING  scripts.paper_trade_engine: analyze_ticker(MELI, short_dte) failed: database disk image is malformed
+2026-07-21 10:06:21 WARNING  scripts.paper_trade_engine: analyze_ticker(APP, short_dte) failed: database disk image is malformed
+2026-07-21 10:06:24 WARNING  scripts.paper_trade_engine: analyze_ticker(CVNA, short_dte) failed: database disk image is malformed
+2026-07-21 10:06:27 WARNING  scripts.paper_trade_engine: analyze_ticker(HD, short_dte) failed: database disk image is malformed
+2026-07-21 10:06:30 WARNING  scripts.paper_trade_engine: analyze_ticker(NKE, short_dte) failed: database disk image is malformed
+2026-07-21 10:06:33 WARNING  scripts.paper_trade_engine: analyze_ticker(ULTA, short_dte) failed: database disk image is malformed
+2026-07-21 10:06:36 WARNING  scripts.paper_trade_engine: analyze_ticker(COST, short_dte) failed: database disk image is malformed
+2026-07-21 10:06:39 WARNING  scripts.paper_trade_engine: analyze_ticker(WMT) failed: database disk image is malformed
+2026-07-21 10:06:42 WARNING  scripts.paper_trade_engine: analyze_ticker(PG) failed: database disk image is malformed
+2026-07-21 10:06:45 WARNING  scripts.paper_trade_engine: analyze_ticker(LLY) failed: database disk image is malformed
+2026-07-21 10:06:48 WARNING  scripts.paper_trade_engine: analyze_ticker(NVO) failed: database disk image is malformed
+2026-07-21 10:06:51 WARNING  scripts.paper_trade_engine: analyze_ticker(ISRG) failed: database disk image is malformed
+2026-07-21 10:06:54 WARNING  scripts.paper_trade_engine: analyze_ticker(ABBV) failed: database disk image is malformed
+2026-07-21 10:06:57 WARNING  scripts.paper_trade_engine: analyze_ticker(BSX) failed: database disk image is malformed
+2026-07-21 10:07:00 WARNING  scripts.paper_trade_engine: analyze_ticker(UNH) failed: database disk image is malformed
+2026-07-21 10:07:03 WARNING  scripts.paper_trade_engine: analyze_ticker(WMT, short_dte) failed: database disk image is malformed
+2026-07-21 10:07:06 WARNING  scripts.paper_trade_engine: analyze_ticker(PG, short_dte) failed: database disk image is malformed
+2026-07-21 10:07:09 WARNING  scripts.paper_trade_engine: analyze_ticker(LLY, short_dte) failed: database disk image is malformed
+2026-07-21 10:07:11 WARNING  scripts.paper_trade_engine: analyze_ticker(NVO, short_dte) failed: database disk image is malformed
+2026-07-21 10:07:14 WARNING  scripts.paper_trade_engine: analyze_ticker(ISRG, short_dte) failed: database disk image is malformed
+2026-07-21 10:07:17 WARNING  scripts.paper_trade_engine: analyze_ticker(ABBV, short_dte) failed: database disk image is malformed
+2026-07-21 10:07:20 WARNING  scripts.paper_trade_engine: analyze_ticker(BSX, short_dte) failed: database disk image is malformed
+2026-07-21 10:07:23 WARNING  scripts.paper_trade_engine: analyze_ticker(UNH, short_dte) failed: database disk image is malformed
+2026-07-21 10:07:26 WARNING  scripts.paper_trade_engine: analyze_ticker(AMGN) failed: database disk image is malformed
+2026-07-21 10:07:29 WARNING  scripts.paper_trade_engine: analyze_ticker(V) failed: database disk image is malformed
+2026-07-21 10:07:32 WARNING  scripts.paper_trade_engine: analyze_ticker(MA) failed: database disk image is malformed
+2026-07-21 10:07:35 WARNING  scripts.paper_trade_engine: analyze_ticker(BRK-B) failed: database disk image is malformed
+2026-07-21 10:07:38 WARNING  scripts.paper_trade_engine: analyze_ticker(JPM) failed: database disk image is malformed
+2026-07-21 10:07:41 WARNING  scripts.paper_trade_engine: analyze_ticker(GS) failed: database disk image is malformed
+2026-07-21 10:07:44 WARNING  scripts.paper_trade_engine: analyze_ticker(MS) failed: database disk image is malformed
+2026-07-21 10:07:47 WARNING  scripts.paper_trade_engine: analyze_ticker(BAC) failed: database disk image is malformed
+2026-07-21 10:07:50 WARNING  scripts.paper_trade_engine: analyze_ticker(AMGN, short_dte) failed: database disk image is malformed
+2026-07-21 10:07:52 WARNING  scripts.paper_trade_engine: analyze_ticker(V, short_dte) failed: database disk image is malformed
+2026-07-21 10:07:55 WARNING  scripts.paper_trade_engine: analyze_ticker(MA, short_dte) failed: database disk image is malformed
+2026-07-21 10:07:58 WARNING  scripts.paper_trade_engine: analyze_ticker(BRK-B, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:01 WARNING  scripts.paper_trade_engine: analyze_ticker(JPM, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:04 WARNING  scripts.paper_trade_engine: analyze_ticker(GS, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:07 WARNING  scripts.paper_trade_engine: analyze_ticker(MS, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:10 WARNING  scripts.paper_trade_engine: analyze_ticker(BAC, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:13 WARNING  scripts.paper_trade_engine: analyze_ticker(GE) failed: database disk image is malformed
+2026-07-21 10:08:16 WARNING  scripts.paper_trade_engine: analyze_ticker(ETN) failed: database disk image is malformed
+2026-07-21 10:08:19 WARNING  scripts.paper_trade_engine: analyze_ticker(CAT) failed: database disk image is malformed
+2026-07-21 10:08:22 WARNING  scripts.paper_trade_engine: analyze_ticker(DE) failed: database disk image is malformed
+2026-07-21 10:08:24 WARNING  scripts.paper_trade_engine: analyze_ticker(VRT) failed: database disk image is malformed
+2026-07-21 10:08:27 WARNING  scripts.paper_trade_engine: analyze_ticker(HON) failed: database disk image is malformed
+2026-07-21 10:08:30 WARNING  scripts.paper_trade_engine: analyze_ticker(RTX) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(XOM) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(GE, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(ETN, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(CAT, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(DE, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(VRT, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(HON, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(RTX, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(XOM, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(COP) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(CVX) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(OXY) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(NEE) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(CEG) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(VST) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(FCX) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(NEM) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(COP, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(CVX, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(OXY, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(NEE, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(CEG, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(VST, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(FCX, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(NEM, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(AMT) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(EQIX) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(SOFI) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(IWM) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(GLD) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(XLE) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(C) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(WFC) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(AMT, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(EQIX, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(SOFI, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(IWM, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(GLD, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(XLE, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(C, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(WFC, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(SCHW) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(AXP) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(PFE) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(MRK) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(MRNA) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(JNJ) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(TGT) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(LOW) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(SCHW, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:31 WARNING  scripts.paper_trade_engine: analyze_ticker(AXP, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:32 WARNING  scripts.paper_trade_engine: analyze_ticker(PFE, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:32 WARNING  scripts.paper_trade_engine: analyze_ticker(MRK, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:32 WARNING  scripts.paper_trade_engine: analyze_ticker(MRNA, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:32 WARNING  scripts.paper_trade_engine: analyze_ticker(JNJ, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:32 WARNING  scripts.paper_trade_engine: analyze_ticker(TGT, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:32 WARNING  scripts.paper_trade_engine: analyze_ticker(LOW, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:32 WARNING  scripts.paper_trade_engine: analyze_ticker(UPS) failed: database disk image is malformed
+2026-07-21 10:08:32 WARNING  scripts.paper_trade_engine: analyze_ticker(FDX) failed: database disk image is malformed
+2026-07-21 10:08:32 WARNING  scripts.paper_trade_engine: analyze_ticker(SLB) failed: database disk image is malformed
+2026-07-21 10:08:32 WARNING  scripts.paper_trade_engine: analyze_ticker(T) failed: database disk image is malformed
+2026-07-21 10:08:32 WARNING  scripts.paper_trade_engine: analyze_ticker(VZ) failed: database disk image is malformed
+2026-07-21 10:08:32 WARNING  scripts.paper_trade_engine: analyze_ticker(UPS, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:32 WARNING  scripts.paper_trade_engine: analyze_ticker(FDX, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:32 WARNING  scripts.paper_trade_engine: analyze_ticker(SLB, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:32 WARNING  scripts.paper_trade_engine: analyze_ticker(T, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:32 WARNING  scripts.paper_trade_engine: analyze_ticker(VZ, short_dte) failed: database disk image is malformed
+2026-07-21 10:08:33 INFO     scripts.training_data_collector: [scan_morning] scan snapshots: 0 saved, 0 skipped (opened), 0 errors
+2026-07-21 10:08:33 INFO     scripts.paper_trade_engine: Scan snapshots: 0 saved, 0 skipped
+2026-07-21 10:11:00 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 10:11:02 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 10:11:02 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 2.17s
+2026-07-21 10:24:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-21 10:24:12 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 10:24:12 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.51s
+2026-07-21 10:29:27 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 10:29:28 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 10:29:28 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.08s
+2026-07-21 10:29:49 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 10:29:50 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 10:29:50 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.15s
+2026-07-21 10:31:45 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 10:31:46 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 10:31:46 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.09s
+2026-07-21 10:31:51 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 10:31:51 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 10:31:51 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 0.93s
+2026-07-21 10:31:58 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 10:32:00 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 10:32:00 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.30s
+2026-07-21 10:32:08 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 10:32:09 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 10:32:09 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.32s
+2026-07-21 10:32:30 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 10:32:31 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 10:32:31 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.11s
+2026-07-21 10:33:17 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 10:33:18 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 10:33:18 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.43s
+2026-07-21 10:33:23 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 10:33:25 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 10:33:25 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.34s
+2026-07-21 10:34:10 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 10:34:11 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 10:34:11 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.30s
+2026-07-21 10:34:16 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 10:34:17 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 10:34:17 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.50s
+2026-07-21 10:35:09 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 10:35:10 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 10:35:10 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.59s
+2026-07-21 10:35:17 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 10:35:19 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 10:35:19 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.50s
+2026-07-21 10:37:52 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 10:37:55 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 10:37:55 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 2.24s
+2026-07-21 10:54:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-21 10:54:12 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 10:54:12 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 2.14s
+2026-07-21 11:00:35 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 11:00:39 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 11:00:54 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 11:01:03 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 11:01:03 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 9.33s
+2026-07-21 11:16:21 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 11:16:23 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 11:16:23 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.23s
+2026-07-21 11:24:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-21 11:24:12 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 11:24:12 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.37s
+2026-07-21 11:54:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-21 11:54:12 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 11:54:12 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.67s
+2026-07-21 11:56:21 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 11:56:22 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 11:56:22 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.27s
+2026-07-21 11:58:50 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 11:58:52 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 11:58:52 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.10s
+2026-07-21 11:59:12 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 11:59:14 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 11:59:14 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.58s
+2026-07-21 12:05:22 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 12:05:23 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 12:05:23 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.18s
+2026-07-21 12:05:38 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 12:05:39 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 12:05:39 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.31s
+2026-07-21 12:06:04 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 12:06:05 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 12:06:05 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.12s
+2026-07-21 12:16:31 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 12:16:32 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 12:16:32 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.10s
+2026-07-21 12:24:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-21 12:24:12 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 12:24:12 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.59s
+2026-07-21 12:54:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-21 12:54:11 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 12:54:11 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.21s
+2026-07-21 13:08:50 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 13:08:52 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 13:08:52 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.34s
+2026-07-21 13:09:02 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 13:09:04 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 13:09:04 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.56s
+2026-07-21 13:22:32 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 13:22:33 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 13:22:33 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.11s
+2026-07-21 13:22:41 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 13:22:42 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 13:22:42 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.04s
+2026-07-21 13:22:57 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 13:22:58 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 13:22:58 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.15s
+2026-07-21 13:23:06 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 13:23:07 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 13:23:07 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.10s
+2026-07-21 13:23:17 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 13:23:18 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 13:23:18 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.39s
+2026-07-21 13:23:25 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 13:23:26 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 13:23:26 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.07s
+2026-07-21 13:24:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-21 13:24:13 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 13:24:13 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 2.30s
+2026-07-21 13:24:22 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 13:24:23 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 13:24:23 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.50s
+2026-07-21 13:47:08 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 13:47:09 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 13:47:09 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.21s
+2026-07-21 13:47:23 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 13:47:24 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 13:47:24 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.13s
+2026-07-21 13:47:30 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 13:47:31 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 13:47:31 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.29s
+2026-07-21 13:54:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-21 13:54:12 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 13:54:12 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.35s
+2026-07-21 14:00:00 WARNING  scripts.paper_trade_engine: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-21 14:00:00 INFO     scripts.paper_trade_engine: [prefetch] step 1 — batch daily history for 102 tickers
+2026-07-21 14:00:00 INFO     scripts.paper_trade_engine: [prefetch] daily history done: 0 ok, 102 fail  (0.5s)
+2026-07-21 14:00:00 INFO     scripts.paper_trade_engine: [prefetch] step 2 — batch weekly history for 101 tickers
+2026-07-21 14:00:00 INFO     scripts.paper_trade_engine: [prefetch] weekly history done: 0 ok, 101 fail  (0.9s)
+2026-07-21 14:00:00 INFO     scripts.paper_trade_engine: [prefetch] step 3+4 — expirations + chains for 101 tickers (serial)
+2026-07-21 14:02:27 INFO     scripts.paper_trade_engine: [prefetch] done in 148s — hist 0/102, weekly 0/101, exps 101/101, chains 394 (fail 0)
+2026-07-21 14:02:27 INFO     scripts.paper_trade_engine: [scan] cache ready — 495 total keys, 394 chain keys
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(SPY) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(QQQ) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(TQQQ) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(NVDA) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(MSFT) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(AAPL) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(SPY, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(AVGO) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(AMD) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(QQQ, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(TQQQ, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(NVDA, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(MSFT, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(AAPL, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(TSM) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(AVGO, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(AMD, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(MU) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(ARM) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(INTC) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(QCOM) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(TXN) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(TSM, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(KLAC) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(ASML) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(MU, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(ARM, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(INTC, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(QCOM, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(TXN, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(LRCX) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(KLAC, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(ASML, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(CDNS) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(SNPS) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(PLTR) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(SNOW) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(MDB) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(LRCX, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(ORCL) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(CRM) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(CDNS, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(SNPS, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(PLTR, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(SNOW, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(MDB, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(NOW) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(ORCL, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(CRM, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(NET) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(TEAM) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(SAP) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(ADBE) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(INTU) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(NOW, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(RGTI) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(GOOGL) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(NET, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(TEAM, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(SAP, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(ADBE, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(INTU, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(META) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(RGTI, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(GOOGL, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(NFLX) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(SPOT) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(DIS) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(TMUS) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(TSLA) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(META, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(AMZN) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(UBER) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(NFLX, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(SPOT, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(DIS, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(TMUS, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(TSLA, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(SHOP) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(AMZN, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(UBER, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(MELI) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(APP) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(CVNA) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(HD) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(NKE) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(SHOP, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(ULTA) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(COST) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(MELI, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(APP, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(CVNA, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(HD, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(NKE, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(WMT) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(ULTA, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:27 WARNING  scripts.paper_trade_engine: analyze_ticker(COST, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(PG) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(LLY) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(NVO) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(ISRG) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(ABBV) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(WMT, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(BSX) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(UNH) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(PG, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(LLY, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(NVO, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(ISRG, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(ABBV, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(AMGN) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(BSX, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(UNH, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(V) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(MA) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(BRK-B) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(JPM) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(GS) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(AMGN, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(MS) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(BAC) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(V, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(MA, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(BRK-B, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(JPM, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(GS, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(GE) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(MS, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(BAC, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(ETN) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(CAT) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(DE) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(VRT) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(HON) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(GE, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(RTX) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(XOM) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(ETN, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(CAT, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(DE, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(VRT, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(HON, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(COP) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(RTX, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(XOM, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(CVX) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(OXY) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(NEE) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(CEG) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(VST) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(COP, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(FCX) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(NEM) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(CVX, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(OXY, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(NEE, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(CEG, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(VST, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(AMT) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(FCX, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(NEM, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(EQIX) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(SOFI) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(IWM) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(GLD) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(XLE) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(AMT, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(C) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(WFC) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(EQIX, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(SOFI, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(IWM, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(GLD, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(XLE, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(SCHW) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(C, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(WFC, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(AXP) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(PFE) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(MRK) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(MRNA) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(JNJ) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(SCHW, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(TGT) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(LOW) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(AXP, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(PFE, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(MRK, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(MRNA, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(JNJ, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(UPS) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(TGT, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(LOW, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(FDX) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(SLB) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(T) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(VZ) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(UPS, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(FDX, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(SLB, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(T, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:28 WARNING  scripts.paper_trade_engine: analyze_ticker(VZ, short_dte) failed: database disk image is malformed
+2026-07-21 14:02:29 INFO     scripts.training_data_collector: [scan_afternoon] scan snapshots: 0 saved, 0 skipped (opened), 0 errors
+2026-07-21 14:02:29 INFO     scripts.paper_trade_engine: Scan snapshots: 0 saved, 0 skipped
+2026-07-21 14:24:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-21 14:24:12 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 14:24:12 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.85s
+2026-07-21 14:54:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-21 14:54:12 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 14:54:12 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.54s
+2026-07-21 15:24:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-21 15:24:13 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 15:24:13 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 2.33s
+2026-07-21 15:31:32 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 15:31:34 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 15:31:34 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.43s
+2026-07-21 15:34:56 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 15:34:58 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 15:34:58 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.16s
+2026-07-21 15:35:08 INFO     scripts.ml_cache: ml_cache loaded from DuckDB fallback: 83 tickers
+2026-07-21 15:35:09 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 15:35:09 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.19s
+2026-07-21 15:54:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-21 15:54:12 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 15:54:12 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.39s
+2026-07-21 16:24:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-21 16:24:12 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 16:24:12 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 2.11s
+2026-07-21 16:54:10 WARNING  scripts.training_data_collector: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-21 16:54:12 WARNING  scripts.ml_cache: ml_cache refresh warning: Market context fetch failed: database disk image is malformed
+2026-07-21 16:54:12 INFO     scripts.ml_cache: ml_cache refreshed: 0 tickers in 1.42s
+2026-07-21 17:00:00 WARNING  scripts.paper_trade_engine: [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-21 17:00:01 INFO     scripts.paper_trade_engine: IV surface flag on 20260706_QUBT_PUT_2: short strike 7.5 now +54.0vp expensive — consider closing
+2026-07-21 17:00:03 INFO     scripts.paper_trade_engine: IV surface flag on 20260706_SMR_PUT_2: short strike 7.5 now -2.7vp cheap — vol moved against position
+2026-07-21 17:00:18 INFO     scripts.paper_trade_engine: IV surface flag on 20260707_QUBT_PUT_3: short strike 7.5 now +54.0vp expensive — consider closing
+2026-07-21 17:00:36 WARNING  scripts.paper_trade_engine: _current_mark failed for WMT: name 's' is not defined
+2026-07-21 17:00:36 WARNING  scripts.paper_trade_engine: _current_mark failed for SHOP: name 's' is not defined
+2026-07-21 17:00:36 WARNING  scripts.paper_trade_engine: _current_mark failed for V: name 's' is not defined
+2026-07-21 17:00:36 WARNING  scripts.paper_trade_engine: _current_mark failed for RTX: name 's' is not defined
+2026-07-21 17:00:45 INFO     scripts.training_data_collector: [forward_returns] 0 snapshots labeled across 123 tickers

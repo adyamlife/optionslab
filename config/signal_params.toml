@@ -1,0 +1,352 @@
+# config/signal_params.toml
+# Threshold values and score magnitudes for every signal evaluator.
+# Edit here to retune signal sensitivity — no Python changes needed.
+#
+# Auto-reloaded every 60 seconds (same TTL as scoring.toml).
+#
+# ── Score-level aliases ──────────────────────────────────────────────────────
+# Reference these in signal sections with "@name" (e.g. score_confirm = "@strong").
+# The loader resolves them before returning _p(signal).  Tune once here and
+# all evaluators that reference the alias move in lockstep.
+#
+# These are confidence levels, not signal-strength bins — a score of 0.85
+# means "this factor strongly supports the trade."
+
+[score_levels]
+perfect  =  1.00   # unambiguous confirmation; every dimension aligns
+strong   =  0.85   # clear edge; one or two secondary caveats at most
+moderate =  0.60   # useful signal; worth including, not decisive
+weak     =  0.30   # mild indication; low noise floor contribution
+neutral  =  0.00   # no information either way
+penalty  = -0.30   # mild friction; not disqualifying on its own
+conflict = -0.85   # clear contradiction; significant drag
+opposite = -1.00   # direct opposition; reserved for binary flip cases
+
+# ── Global evaluator defaults ────────────────────────────────────────────────
+# Controls evaluator behavior when data is absent or unrecognised.
+# unknown_preference / unknown_signal are validated at startup by
+# validate_structure_scores() — these defaults govern runtime behavior only.
+
+[defaults]
+missing_market_data  = 0.0     # score when a required field is missing
+missing_signal       = 0.0     # score when signal name is unknown at runtime
+unknown_preference   = "error" # "error" → raise ValueError; "zero" → return 0
+unknown_signal       = "error" # "error" → raise ValueError; "zero" → return 0
+
+# ── EMA200 ─────────────────────────────────────────────────────────────────
+# Continuous scoring via ema_distance_pct = (price - EMA200) / EMA200 × 100.
+# Signed: positive = above EMA200, negative = below.
+#
+# Piecewise linear interpolation between the anchor points below produces
+# intermediate scores (e.g. +3.2% above → ~0.63) instead of a flat 0.85
+# for any "above" reading.
+
+[signals.ema200]
+# Distance thresholds (%)
+near     = 0.5    # |dist| < 0.5%  — at EMA200; neutral zone
+moderate = 2.0    # |dist| ~ 2%    — mild displacement
+strong   = 5.0    # |dist| ~ 5%    — clear trend separation
+far      = 12.0   # |dist| >= 12%  — strongly extended; score is capped here
+
+# Directional (bullish/bearish) score anchors
+score_at_near_start   = 0.10        # just outside ±near zone
+score_at_strong       = "@strong"   # 0.85 at ±5%
+score_at_far          = "@perfect"  # 1.0  at ±12%
+score_conflict_near   = -0.15       # just on the wrong side of EMA200
+score_conflict_strong = "@conflict" # -0.85 at ±5% against preference
+score_conflict_far    = "@opposite" # -1.0  at ±12% against preference
+
+# Neutral/range preference score anchors
+score_neutral_near    = "@strong"   # 0.85 — right at EMA200, ideal for range trades
+score_neutral_mid     = "@moderate" # 0.60 — close, acceptable
+score_neutral_far     = "@conflict" # -0.85 — very extended, mean-revert risk
+
+# ── Weekly Trend ────────────────────────────────────────────────────────────
+# Categorical: weekly_trend ∈ {"Uptrend", "Downtrend", "Range-bound"}
+
+[signals.weekly_trend]
+score_aligned              = "@perfect"   # "aligned" — weekly matches daily
+score_aligned_conflict     = "@conflict"  # "aligned" — weekly contradicts daily
+score_neutral_range        = "@moderate"  # "neutral" — weekly is Range-bound (good)
+score_neutral_directional  = "@penalty"   # "neutral" — weekly has direction (breakout risk)
+score_divergence_ok_range  = "@moderate"  # "divergence_ok" — weekly Range-bound
+score_divergence_ok_match  = "@weak"      # "divergence_ok" — weekly matches daily
+score_directional_confirm  = "@strong"    # "bullish"/"bearish" — weekly confirms
+score_directional_conflict = "@conflict"  # "bullish"/"bearish" — weekly opposes
+
+# ── ADX ────────────────────────────────────────────────────────────────────
+# Numeric piecewise thresholds.
+
+[signals.adx]
+# Breakpoints for "strong" and "weak" preferences
+very_strong = 30.0   # adx > this → very strong trend
+strong      = 25.0   # adx > this → trending
+neutral_lo  = 20.0   # adx > this → transitional (neutral)
+very_weak   = 15.0   # adx < this → very weak / coiling
+
+# "moderate" window — for theta strategies (covered calls) wanting mild trend
+moderate_lo         = 18.0   # ideal lower bound
+moderate_hi         = 28.0   # ideal upper bound
+moderate_too_strong = 35.0   # above this → slight penalty (breakout risk)
+moderate_too_quiet  = 15.0   # below this → slight penalty (no conviction)
+
+# "expanding" preference (breakout coil detection)
+# minimum_slope guards against ADX 19.1→19.2→19.3 counting as "expanding" —
+# a real coil shows +1 to +3 per bar, not a crawl.
+expanding_coil_hi    = 25.0   # slope must be positive AND adx < this for full score
+expanding_fallback_lo = 15.0  # if adx_slope missing: adx < this → partial score
+minimum_slope        = 1.0    # adx_slope must exceed this to count as "expanding"
+
+# Scores
+score_very_strong       = "@perfect"
+score_strong            = "@moderate"
+score_opposing          = "@conflict"
+score_mild_penalty      = "@penalty"
+score_moderate_ideal    = "@strong"
+score_expanding_full    = "@perfect"
+score_expanding_partial = "@moderate"
+score_fallback_coil     = "@moderate"
+
+# ── RSI ────────────────────────────────────────────────────────────────────
+# Numeric range thresholds.
+# Future: rsi_slope may become a separate evaluator input to distinguish
+# RSI 55 falling rapidly from RSI 55 rising.
+
+[signals.rsi]
+overbought   = 70.0   # above = overbought risk for bullish trades
+upper_bull   = 70.0   # bullish healthy range top
+lower_bull   = 50.0   # bullish healthy range bottom
+upper_weak   = 40.0   # below = poor bullish momentum
+oversold     = 30.0   # below = oversold risk for bearish trades
+upper_bear   = 50.0   # bearish healthy range top
+lower_bear   = 30.0   # bearish healthy range bottom
+strong_bear  = 60.0   # above = elevated RSI, poor bearish momentum
+neutral_hi   = 60.0   # neutral band top
+neutral_lo   = 40.0   # neutral band bottom
+extended_hi  = 70.0   # extended threshold for neutral bias (breakout risk)
+extended_lo  = 30.0   # extended threshold for neutral bias (breakdown risk)
+
+score_healthy  = "@strong"
+score_extended = "@conflict"
+score_weak     = "@moderate"   # magnitude only; caller negates for conflict cases
+
+# ── MACD ───────────────────────────────────────────────────────────────────
+# Categorical: macd_trend ∈ {"Bullish", "Bearish", "N/A"}
+
+[signals.macd]
+score_confirm  = "@strong"
+score_conflict = "@conflict"
+
+# ── IV Premium ─────────────────────────────────────────────────────────────
+# Numeric: iv_premium = IV - HV20 (positive = IV rich, negative = IV cheap)
+
+[signals.iv_premium]
+strong_premium  =  0.03   # IV > HV20 by ≥ 3% = strongly rich
+strong_discount = -0.03   # IV < HV20 by ≥ 3% = strongly cheap
+
+score_strong_edge  = "@strong"
+score_slight_edge  = "@weak"
+score_slight_drag  = "@penalty"
+score_strong_drag  = "@conflict"
+
+# ── IV Term Structure ───────────────────────────────────────────────────────
+# Canonical input: term_slope = front_iv - back_iv (continuous float, stored in feature_snapshots)
+# Shape is derived inside _eval_iv_term using flat_threshold; iv_term_shape is display-only.
+# positive slope → Backwardation, negative → Contango, |slope| < flat_threshold → Flat
+
+[signals.iv_term]
+score_prefer_confirm  = "@strong"    # slope confirms preference direction
+score_prefer_conflict = "@moderate"  # magnitude; caller negates for conflict
+score_flat_slight     = "@penalty"   # magnitude; caller negates for deviation
+flat_threshold        = 0.02         # |term_slope| < this → Flat (matches get_iv_term_structure)
+
+# ── Vol Skew ───────────────────────────────────────────────────────────────
+# Numeric: vol_skew_pct = put_iv - call_iv at ±5% OTM (positive = put-heavy)
+
+[signals.vol_skew]
+strong_put  =  5.0   # skew > this = strongly put-heavy
+slight_put  =  2.0   # skew > this = mildly put-heavy
+slight_call = -2.0   # skew < this = mildly call-heavy
+strong_call = -5.0   # skew < this = strongly call-heavy
+
+score_strong   = "@strong"
+score_slight   = "@weak"
+score_balanced = "@moderate"   # balanced skew for "balanced" preference
+score_opposing = "@moderate"   # magnitude; caller negates for opposing direction
+
+# ── News ───────────────────────────────────────────────────────────────────
+# Categorical: news_sentiment ∈ {"Bullish", "Bearish", "Neutral", "Mixed", "N/A"}
+
+[signals.news]
+score_direction_match    = "@strong"
+score_direction_conflict = "@conflict"
+score_mixed_directional  = "@penalty"
+score_quiet_neutral      = "@strong"
+score_mixed_neutral      = "@weak"
+score_directional_risk   = "@moderate"   # magnitude; caller negates for neutral trade
+score_catalyst_major     = "@strong"
+score_catalyst_moderate  = "@moderate"
+score_catalyst_quiet     = "@moderate"   # magnitude; caller negates for quiet-vol trade
+
+# ── PCR ────────────────────────────────────────────────────────────────────
+# Categorical: pcr_sentiment ∈ {"Bullish", "Bearish", "Neutral", "N/A"}
+
+[signals.pcr]
+score_confirm      = "@strong"
+score_conflict     = "@conflict"
+score_neutral_good = "@moderate"
+score_skew_risk    = "@penalty"    # magnitude; caller negates for range trades
+
+# ── Relative Volume ─────────────────────────────────────────────────────────
+# Numeric: rel_volume = today_vol / 20d_avg_vol
+# Low volume = absence of confirmation, not active contradiction.
+# Negative scores are reserved for evidence that argues against the trade.
+
+[signals.rel_volume]
+high = 1.5   # above = elevated volume, confirms the move
+low  = 0.5   # below = thin volume, no confirmation
+
+score_high = "@strong"
+score_low  = "@neutral"   # 0.0 — no info, not a drag
+
+# ── Analyst Consensus ───────────────────────────────────────────────────────
+# Categorical: analyst_label ∈ {"Bullish", "Bearish", "Neutral", "N/A"}
+
+[signals.analyst]
+score_confirm          = "@strong"
+score_conflict         = "@conflict"
+score_neutral_good     = "@weak"
+score_directional_risk = "@penalty"   # magnitude; caller negates for neutral trades
+
+# ── Short Interest ──────────────────────────────────────────────────────────
+# Numeric: short_interest = short float %
+# Note: "high short interest" means squeeze potential for bullish trades but
+# bearish conviction for bearish trades — handled by preference branching.
+# Future two-evaluator split (short_float + days_to_cover) when data supports it.
+
+[signals.short_interest]
+high_squeeze  = 20.0   # above = significant squeeze risk / strong conviction
+moderate      = 10.0   # above = moderate short float
+low_risk      =  5.0   # above = low squeeze potential
+minimal       =  3.0   # below = minimal short float
+
+score_strong   = "@strong"
+score_moderate = "@weak"
+score_slight   = "@penalty"   # magnitude; caller negates (low squeeze for squeeze play)
+score_opposing = "@moderate"  # magnitude; caller negates (squeeze risk vs. bearish trade)
+
+# ── ATR % of Spot ────────────────────────────────────────────────────────────
+# Numeric: atr_pct = ATR(14) / spot × 100
+# Measures intraday volatility regime: quiet (<1%) vs. elevated (2.5%+).
+
+[signals.atr]
+low_hi   = 1.0   # below → quiet market (good for premium collection)
+mod_lo   = 1.0
+mod_hi   = 2.5   # moderate zone
+high_lo  = 2.5   # above → elevated volatility
+extreme  = 5.0   # above → extreme; assignment / gap risk
+
+score_strong   = "@strong"
+score_moderate = "@moderate"
+score_extreme  = "@conflict"   # magnitude; caller negates for premium trades in extreme vol
+
+# ── HV30 — 30-Day Realised Volatility ────────────────────────────────────────
+# Numeric: hv30 = annualised fraction (e.g. 0.25 = 25%)
+# Longer window than HV20 — filters out short-term noise spikes.
+
+[signals.hv30]
+low_hi  = 0.15   # below → quiet (premium collection)
+high_lo = 0.30   # above → elevated (debit / long-vol favoured)
+
+score_strong   = "@strong"
+score_moderate = "@moderate"
+
+# ── IV Percentile / IV Rank 52-Week ──────────────────────────────────────────
+# Numeric: iv_rank_52w ∈ [0.0, 1.0] (fraction of 52-week IV range)
+# Unlike iv_premium (IV vs HV), this measures where IV sits relative to its own history.
+
+[signals.iv_percentile]
+low_hi   = 0.30   # below → historically cheap IV (good for debit)
+mod_lo   = 0.30
+mod_hi   = 0.60   # moderate zone
+high_lo  = 0.60   # above → historically rich (good for credit)
+high_top = 0.80   # above → extremely elevated; mean-reversion risk
+
+score_strong   = "@strong"
+score_moderate = "@moderate"
+score_extreme  = "@penalty"   # mild caution at very high rank (mean-revert risk)
+
+# ── Earnings DTE ─────────────────────────────────────────────────────────────
+# Integer: earnings_dte = calendar days to next earnings report (None = unknown)
+# Safe trades want to be well clear of the event window.
+
+[signals.earnings_dte]
+danger_lo = 3    # at or below → inside earnings window (pin / gap risk)
+danger_hi = 10   # at or below → approaching; elevated risk
+near_hi   = 21   # at or below → near horizon; some event uncertainty
+safe_lo   = 14   # above → well clear of event window
+
+score_safe    = "@moderate"
+score_warning = "@weak"
+score_danger  = "@conflict"
+
+# ── Dividend DTE ─────────────────────────────────────────────────────────────
+# Integer: div_days_to_ex = calendar days to next ex-dividend (None = no dividend)
+# Short call legs face early assignment risk in the days before ex-date.
+
+[signals.div_dte]
+danger_hi = 7    # at or below → early assignment risk on short calls
+warn_hi   = 21   # at or below → approaching; monitor short legs
+
+score_safe    = "@moderate"
+score_warning = "@weak"
+score_danger  = "@conflict"
+
+
+# ── Unusual OI Activity ───────────────────────────────────────────────────────
+# Float: unusual_activity = max per-strike OI spike ratio vs rolling window avg
+# 0.0 = OI at or below average; 1.0 = OI doubled; 5.0 = maximum (capped)
+# Bootstraps to None until min_history (3) days of oi_changes accumulate.
+
+[signals.unusual_activity]
+spike_hi       = 1.00  # ratio ≥ spike_hi → strong spike ("doubled")
+spike_lo       = 0.25  # ratio < spike_lo  → quiet (below +25 % of avg)
+score_strong   = 0.70  # used for both "detected" and "quiet" strong states
+score_moderate = 0.40  # used for moderate states
+
+
+# ── IV / HV Ratio ─────────────────────────────────────────────────────────────
+# Float: iv_hv_ratio = ATM IV / 20-day HV (e.g. 1.30 = IV 30% above HV)
+# Orthogonal to iv_premium (absolute spread): ratio adjusts for base vol level.
+
+[signals.iv_hv_ratio]
+high_threshold  = 1.20  # ratio ≥ 1.20 → IV rich (selling edge)
+low_threshold   = 0.85  # ratio ≤ 0.85 → IV cheap (buying edge)
+score_strong    = 0.75
+score_moderate  = 0.40
+score_conflict  = 0.55  # penalty magnitude when preference conflicts with ratio
+
+
+# ── Volume PCR ────────────────────────────────────────────────────────────────
+# Float: vol_pcr = put_vol / call_vol for today's option activity (fast/tactical)
+# Orthogonal to OI PCR (slow/structural). Divergence between them is itself a signal.
+
+[signals.vol_pcr]
+bearish_threshold  = 1.30  # vol_pcr ≥ 1.30 → strong put-volume dominance
+slight_bearish     = 1.05  # vol_pcr ≥ 1.05 → slight put bias
+bullish_threshold  = 0.75  # vol_pcr ≤ 0.75 → strong call-volume dominance
+slight_bullish     = 0.95  # vol_pcr ≤ 0.95 → slight call bias
+score_strong       = 0.65
+score_moderate     = 0.35
+
+
+# ── PCR Diverge ───────────────────────────────────────────────────────────────
+# Float: pcr_diverge = oi_pcr - vol_pcr (signed)
+# Positive = OI bearish but today's vol bullish (bears unwinding / bulls entering)
+# Negative = OI bullish but today's vol bearish (bulls unwinding / bears entering)
+
+[signals.pcr_diverge]
+significant_threshold = 0.30  # |diverge| ≥ 0.30 → meaningful structural shift
+moderate_threshold    = 0.10  # |diverge| ≥ 0.10 → moderate divergence
+score_strong          = 0.60
+score_moderate        = 0.30

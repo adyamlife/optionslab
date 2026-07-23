@@ -1,7 +1,8 @@
-from config.structures._base import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema
+from config.structures._base import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema, SignalProfile
 
 NAKED_PUT = OptionStructure(
     name          = "Naked Put",
+    abbr          = "NKP",
     is_credit     = True,
     option_type   = "put",
     allowed_iv      = ("High",),
@@ -24,5 +25,10 @@ NAKED_PUT = OptionStructure(
         opt_type     = "put",
         strike_mode  = HedgeStrikeMode.OTM_PUT_NEAR_SHORT,
         urgency      = "critical",
+    ),
+    signal_profile = SignalProfile(
+        bias="neutral",
+        needs_trend=True, needs_momentum=True,
+        uses_term_structure=False, uses_skew=True, uses_sentiment=True,
     ),
 )

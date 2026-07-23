@@ -1,7 +1,8 @@
-from config.structures._base import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema
+from config.structures._base import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema, SignalProfile
 
 PUT_CREDIT_SPREAD = OptionStructure(
     name          = "Put Credit Spread",
+    abbr          = "PCS",
     is_credit     = True,
     option_type   = "put",
     allowed_iv      = ("High",),
@@ -22,5 +23,10 @@ PUT_CREDIT_SPREAD = OptionStructure(
         delta_change = -0.10,
         opt_type     = "put",
         strike_mode  = HedgeStrikeMode.ONE_WIDTH_BELOW_LO,
+    ),
+    signal_profile = SignalProfile(
+        bias="bullish",
+        needs_trend=True, needs_momentum=True,
+        uses_term_structure=False, uses_skew=True, uses_sentiment=True,
     ),
 )

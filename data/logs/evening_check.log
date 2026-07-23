@@ -30,3 +30,36 @@
 2026-07-17 17:00:21,481 WARNING _current_mark failed for RTX: name 's' is not defined
 2026-07-17 17:00:26,605 INFO CLOSED (stop loss) 20260717AM_NEM_COV_3: mark=1.16  P&L=$-96.00 (-480.0% of max)
 2026-07-17 17:00:26,607 INFO [eval] trade 20260717AM_NEM_COV_3 outcome recorded: loss -480.0%
+2026-07-20 17:00:03,423 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-20 17:00:05,250 INFO IV surface flag on 20260706_QUBT_PUT_2: short strike 7.5 now +54.0vp expensive — consider closing
+2026-07-20 17:00:06,440 INFO IV surface flag on 20260706_SMR_PUT_2: short strike 7.5 now -2.7vp cheap — vol moved against position
+2026-07-20 17:00:09,455 INFO IV surface flag on 20260707_QUBT_PUT_3: short strike 7.5 now +54.0vp expensive — consider closing
+2026-07-20 17:00:14,532 WARNING _current_mark failed for WMT: name 's' is not defined
+2026-07-20 17:00:14,654 WARNING _current_mark failed for SHOP: name 's' is not defined
+2026-07-20 17:00:14,749 WARNING _current_mark failed for V: name 's' is not defined
+2026-07-20 17:00:14,847 WARNING _current_mark failed for RTX: name 's' is not defined
+2026-07-20 17:00:17,897 INFO [POP] No new labels tonight — skipping retrain and failure analysis.
+2026-07-20 17:00:17,900 INFO [MONITOR] Monday — running weekly model health check.
+2026-07-20 17:00:19,637 INFO [feature_drift] report written: 3961 recent / 11 baseline snapshots; 1 flagged
+2026-07-20 17:00:21,032 WARNING [monitor] feature build failed for regime: y contains previously unseen labels: 'unknown'
+2026-07-20 17:00:21,036 INFO [monitor] report written — drift=major_shift  degraded=none  flagged=37
+2026-07-20 17:00:21,044 INFO [MONITOR] drift=major_shift  degraded=none  flagged_features=37
+2026-07-20 17:00:21,044 WARNING [MONITOR] 37 features show distribution shift: ['atm_iv', 'iv_rank_proxy', 'hv20', 'iv_rank_52w', 'iv_term_slope']
+2026-07-21 17:00:03,705 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-21 17:00:06,637 INFO IV surface flag on 20260706_QUBT_PUT_2: short strike 7.5 now +54.0vp expensive — consider closing
+2026-07-21 17:00:11,845 INFO IV surface flag on 20260706_SMR_PUT_2: short strike 7.5 now -2.7vp cheap — vol moved against position
+2026-07-21 17:00:15,400 INFO IV surface flag on 20260707_QUBT_PUT_3: short strike 7.5 now +54.0vp expensive — consider closing
+2026-07-21 17:00:23,932 WARNING _current_mark failed for WMT: name 's' is not defined
+2026-07-21 17:00:24,049 WARNING _current_mark failed for SHOP: name 's' is not defined
+2026-07-21 17:00:24,145 WARNING _current_mark failed for V: name 's' is not defined
+2026-07-21 17:00:24,245 WARNING _current_mark failed for RTX: name 's' is not defined
+2026-07-21 17:00:31,147 INFO [POP] No new labels tonight — skipping retrain and failure analysis.
+2026-07-22 17:02:16,757 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-22 17:02:32,665 INFO IV surface flag on 20260706_QUBT_PUT_2: short strike 7.5 now +54.0vp expensive — consider closing
+2026-07-22 17:02:48,325 INFO IV surface flag on 20260706_SMR_PUT_2: short strike 7.5 now -2.7vp cheap — vol moved against position
+2026-07-22 17:03:21,820 INFO IV surface flag on 20260707_QUBT_PUT_3: short strike 7.5 now +54.0vp expensive — consider closing
+2026-07-22 17:05:04,959 WARNING _current_mark failed for WMT: name 's' is not defined
+2026-07-22 17:05:06,919 WARNING _current_mark failed for SHOP: name 's' is not defined
+2026-07-22 17:05:08,122 WARNING _current_mark failed for V: name 's' is not defined
+2026-07-22 17:05:09,207 WARNING _current_mark failed for RTX: name 's' is not defined
+2026-07-22 17:06:16,250 INFO [POP] No new labels tonight — skipping retrain and failure analysis.

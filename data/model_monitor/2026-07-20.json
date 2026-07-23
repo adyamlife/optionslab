@@ -1,0 +1,76 @@
+{
+  "generated_at": "2026-07-20",
+  "ok": true,
+  "drift_status": "major_shift",
+  "flagged_features": [
+    "atm_iv",
+    "iv_rank_proxy",
+    "hv20",
+    "iv_rank_52w",
+    "iv_term_slope",
+    "pcr",
+    "otm_pcr",
+    "vol_oi_ratio",
+    "beta_60d",
+    "atr_pct",
+    "rsi",
+    "adx",
+    "gex_proxy",
+    "oi_concentration",
+    "wings_iv_ratio",
+    "iv_skew_20d",
+    "vix",
+    "vvix",
+    "vix_3m",
+    "vix_term_slope",
+    "spy_rsi",
+    "qqq_rsi",
+    "iwm_rsi",
+    "yield_curve",
+    "dollar_index",
+    "fed_within_dte",
+    "cpi_within_dte",
+    "ppi_within_dte",
+    "jobs_within_dte",
+    "opex_within_dte",
+    "is_opex_week",
+    "signal_score",
+    "iv_pct_rank",
+    "gamma_pct_rank",
+    "volume_pct_rank",
+    "momentum_pct_rank",
+    "oi_pct_rank"
+  ],
+  "major_shift_feats": [
+    "signal_score"
+  ],
+  "n_flagged": 37,
+  "models": {
+    "regime": {
+      "status": "insufficient_data",
+      "degraded": false,
+      "reason": null,
+      "recommended_action": null,
+      "threshold_absolute": 0.05,
+      "threshold_relative": 1.2,
+      "brier_baseline": null,
+      "brier_recent": null,
+      "brier_delta": null,
+      "n_eval_recent": 0,
+      "n_eval_baseline": 0,
+      "positive_rate_recent": null,
+      "positive_rate_baseline": null,
+      "calibration": null
+    },
+    "return_classifier": {
+      "status": "missing_artifact"
+    },
+    "direction": {
+      "status": "missing_artifact"
+    },
+    "iv_direction": {
+      "status": "missing_artifact"
+    }
+  },
+  "degraded_models": []
+}

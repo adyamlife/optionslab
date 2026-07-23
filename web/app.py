@@ -240,6 +240,11 @@ def backtest_page():
     return render_template("backtest.html", watchlist=WATCHLIST, defaults=DEFAULTS)
 
 
+@app.route("/reports")
+def reports_page():
+    return render_template("reports.html")
+
+
 @app.route("/ml-admin")
 def ml_admin_page():
     return render_template("ml_admin.html")
@@ -317,6 +322,35 @@ def api_backtest():
         "top_trades": top_trades,
         "flags_summary": flags_summary,
     })
+
+
+@app.route("/api/backtest/strategy")
+def api_backtest_strategy():
+    """
+    Mode B strategy backtest — ranks labeled training_snapshots by score_col
+    and reports actual options P&L metrics from labeled outcomes.
+
+    Query params:
+      score_col  — column to rank by: signal_score (default), ml_composite_score, proxy_score
+      top_n      — how many candidates to take per date (default 10)
+    """
+    from scripts.backtest import run_strategy_backtest
+    score_col = request.args.get("score_col", "signal_score")
+    top_n     = int(request.args.get("top_n", 10))
+    result    = run_strategy_backtest(top_n=top_n, score_col=score_col)
+    return jsonify(result)
+
+
+@app.route("/api/backtest/compare")
+def api_backtest_compare():
+    """
+    Compare signal_score vs ml_composite_score vs proxy_score using labeled trade outcomes.
+    Returns side-by-side win_rate, avg_pnl, lift, and Sharpe for each scorer.
+    """
+    from scripts.backtest import compare_scores
+    top_n  = int(request.args.get("top_n", 10))
+    result = compare_scores(top_n=top_n)
+    return jsonify(result)
 
 
 def compute_hedge(candidate):
@@ -1159,8 +1193,10 @@ def api_paper_trades_summary():
 @app.route("/api/paper-trades/capital-rejected")
 def api_capital_rejected():
     try:
-        days = int(request.args.get("days", 30))
-        data = pte.load_capital_rejected(days=days)
+        from_date = request.args.get("from") or None
+        to_date   = request.args.get("to")   or None
+        days      = int(request.args.get("days", 30))
+        data = pte.load_capital_rejected(days=days, from_date=from_date, to_date=to_date)
         return jsonify({"ok": True, "days": data, "total_days": len(data)})
     except Exception as e:
         return jsonify({"ok": False, "error": str(e)}), 500
@@ -1709,6 +1745,27 @@ def api_training_data_summary():
     from scripts import training_data_collector as tdc
     try:
         return jsonify({"ok": True, **tdc.get_dataset_summary()})
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+
+@app.route("/api/gate-analytics")
+def api_gate_analytics():
+    """
+    Gate rejection analytics — which liquidity and risk gates fire most,
+    how often the optimizer finds no tradeable candidate, and which threshold
+    relaxation would unlock the most snapshots.
+
+    Query params:
+      ticker  — filter to a single ticker (optional)
+      days    — look back N days only (optional, default: all history)
+    """
+    from scripts.gate_analytics import run_gate_report
+    ticker = request.args.get("ticker") or None
+    days   = request.args.get("days")
+    days   = int(days) if days else None
+    try:
+        return jsonify(run_gate_report(ticker=ticker, days=days))
     except Exception as e:
         return jsonify({"ok": False, "error": str(e)}), 500
 

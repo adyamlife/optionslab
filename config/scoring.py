@@ -190,3 +190,127 @@ def gate(key: str) -> Any:
 
 def penalty(key: str) -> float:
     return float(_cfg()["penalties"].get(key, 0))
+
+
+# ── Generic signal scoring engine ────────────────────────────────────────────
+
+_SS_PATH = Path(__file__).parent / "structure_scores.toml"
+_ss_cache: dict | None = None
+_ss_cached_at: float   = 0.0
+
+
+def _ss_cfg() -> dict:
+    global _ss_cache, _ss_cached_at
+    if _ss_cache is None or time.time() - _ss_cached_at > _TTL:
+        try:
+            import tomllib
+        except ImportError:
+            import tomli as tomllib
+        _ss_cache     = tomllib.loads(_SS_PATH.read_text(encoding="utf-8"))
+        _ss_cached_at = time.time()
+    return _ss_cache
+
+
+def get_structure_profile(name: str) -> dict[str, dict] | None:
+    """
+    Return the signal profile for a structure from structure_scores.toml.
+
+    Returns a dict keyed by signal name, each value a sub-dict with
+    ``weight`` (int) and ``preference`` (str).  Returns None if the
+    structure has no entry in the TOML (fall back to legacy scoring).
+    """
+    raw = _ss_cfg().get("structures", {}).get(name)
+    if raw is None:
+        return None
+    return raw.get("signals")  # unwrap the TOML "signals" sub-table
+
+
+def get_regime_signal_mult(signal: str, regime: str) -> float:
+    """Return the per-signal regime multiplier (default 1.0 if not specified)."""
+    return float(
+        _cfg()
+        .get("regime", {})
+        .get(regime, {})
+        .get("signal_mult", {})
+        .get(signal, 1.0)
+    )
+
+
+def validate_structure_scores() -> list[str]:
+    """
+    Validate structure_scores.toml against SIGNAL_DEFINITIONS at startup.
+
+    Returns a list of diagnostic strings.  Errors are prefixed "ERROR:" and
+    block operation; warnings are prefixed "WARN:" and are advisory only.
+
+    Checks (errors):
+      - Schema version present and supported
+      - Unknown signal name
+      - Invalid preference for signal
+      - Negative weight on any signal
+      - Total weight <= 0 (structure is effectively empty)
+
+    Checks (warnings):
+      - Total weight != 100  (advisory; engine normalises automatically)
+
+    Note: TOML itself rejects duplicate structure/signal keys, so those checks
+    are redundant here and are omitted.
+    """
+    from config.signal_evaluators import SIGNAL_DEFINITIONS
+
+    _META_PREFERENCES = frozenset({"directional"})  # resolved at score time; always valid
+    _SUPPORTED_VERSIONS = {1}
+
+    cfg        = _ss_cfg()
+    diagnostics: list[str] = []
+
+    # ── Schema version ────────────────────────────────────────────────────────
+    version = cfg.get("version")
+    if version is None:
+        diagnostics.append("WARN: structure_scores.toml has no 'version' field — add 'version = 1'")
+    elif version not in _SUPPORTED_VERSIONS:
+        diagnostics.append(
+            f"ERROR: structure_scores.toml version {version} is not supported "
+            f"(supported: {sorted(_SUPPORTED_VERSIONS)})"
+        )
+
+    structures = cfg.get("structures", {})
+    for struct_name, struct_data in structures.items():
+        signals      = struct_data.get("signals", {})
+        total_weight = 0
+
+        for sig_name, sig_cfg in signals.items():
+            weight     = sig_cfg.get("weight", 0)
+            preference = sig_cfg.get("preference", "")
+
+            if weight < 0:
+                diagnostics.append(
+                    f"ERROR: [{struct_name}] Signal '{sig_name}' has negative weight {weight}"
+                )
+            total_weight += weight
+
+            defn = SIGNAL_DEFINITIONS.get(sig_name)
+            if defn is None:
+                diagnostics.append(
+                    f"ERROR: [{struct_name}] Unknown signal '{sig_name}'"
+                )
+                continue
+
+            if preference not in _META_PREFERENCES and preference not in defn.valid_preferences:
+                diagnostics.append(
+                    f"ERROR: [{struct_name}] Signal '{sig_name}': invalid preference "
+                    f"'{preference}'. Valid: {sorted(defn.valid_preferences | _META_PREFERENCES)}"
+                )
+
+        if total_weight <= 0:
+            diagnostics.append(
+                f"ERROR: [{struct_name}] Total weight is {total_weight} — "
+                "structure has no effective signals"
+            )
+        elif total_weight != 100:
+            diagnostics.append(
+                f"WARN: [{struct_name}] Weights sum to {total_weight} (not 100) — "
+                "engine will normalise automatically"
+            )
+
+    return diagnostics

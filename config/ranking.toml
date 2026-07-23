@@ -80,11 +80,20 @@ high_bonus =  8
 # or subtracted (short-vega structures) from the composite score.
 weight = 8.0
 
+[calibration]
+# Minimum number of closed trades in a score bucket before the calibration
+# multiplier is applied. Below this count the multiplier is 1.0 (neutral).
+# Raise to 10-20 once enough trade history exists.
+min_bucket_n = 5
+
 [portfolio_risk]
 max_ticker_trades   = 5    # max open positions per ticker before blocking new entries
 max_sector_count    = 2    # max open trades in the same sector ETF
 max_deployment_pct  = 20.0 # max % of total notional capital deployed
 max_net_delta       = 3.0  # max net portfolio delta in underlying-equivalent shares
+max_net_theta       = 0.0  # max |portfolio theta| per day (0 = gate disabled until calibrated)
+max_net_gamma       = 0.0  # max |portfolio gamma| (0 = gate disabled until calibrated)
+corr_warn_threshold = 0.75 # 60d return correlation above this → warning (not block)
 
 [penalties]
 # Subtracted from or added to the composite score. These do not eliminate candidates.

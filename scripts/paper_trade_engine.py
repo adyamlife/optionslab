@@ -21,6 +21,12 @@ import json
 import logging
 from datetime import date, datetime, timedelta
 from pathlib import Path
+
+def _struct_abbr(name: str) -> str:
+    """Return the unique 3-char trade-ID abbreviation defined on the structure object."""
+    from config.structures import get_or_none as _gst
+    st = _gst(name)
+    return st.abbr if st and st.abbr else name[:3].upper()
 from config.rules import (
     MARKET_CLOSE_HOUR, EARLY_CLOSE_PCT,
     IV_EDGE_FLAG_VP,
@@ -303,6 +309,7 @@ def _entry_price(candidate):
             return {
                 "credit_bid": round(bid, 4), "credit_mid": round(mid, 4),
                 "legs": {"put_short": ps, "put_long": pl, "call_short": cs, "call_long": cl},
+                "fill_source": "live_quote",
             }
 
         if st is not None and st.strike_schema == StrikeSchema.SINGLE_LEG:
@@ -313,6 +320,7 @@ def _entry_price(candidate):
                 "credit_bid": round(sh["bid"], 4),
                 "credit_mid": round(sh["mid"], 4),
                 "legs": {"short": sh},
+                "fill_source": "live_quote",
             }
 
         if st is not None and st.strike_schema == StrikeSchema.TWO_LEG:
@@ -325,14 +333,28 @@ def _entry_price(candidate):
                     "credit_bid": round(sh["bid"] - lo["ask"], 4),
                     "credit_mid": round(sh["mid"] - lo["mid"], 4),
                     "legs": {"short": sh, "long": lo},
+                    "fill_source": "live_quote",
                 }
             else:
-                # Debit spread: store max_profit as the accounting credit_bid
+                # Debit spread: use live ask-side fill (conservative debit paid).
+                # lo["ask"] is what we pay for the long leg; sh["bid"] is what we
+                # receive for the short leg. Fall back to scan-time max_profit only
+                # when the leg fetch fails (market closed, chain unavailable).
+                if lo and sh and lo.get("ask") and sh.get("bid"):
+                    live_debit = round(lo["ask"] - sh["bid"], 4)
+                    live_mid   = round(lo["mid"] - sh["mid"], 4) if lo.get("mid") and sh.get("mid") else live_debit
+                    return {
+                        "credit_bid": live_debit,
+                        "credit_mid": live_mid,
+                        "legs": {"long": lo, "short": sh},
+                        "fill_source": "live_quote",
+                    }
                 val = candidate.get("max_profit")
                 if val is None: return None
                 return {
                     "credit_bid": val, "credit_mid": val,
                     "legs": ({"long": lo, "short": sh} if lo and sh else {}),
+                    "fill_source": "fallback_scan",
                 }
 
         # Long Strangle — buy put at short_strike + buy call at long_strike
@@ -346,12 +368,13 @@ def _entry_price(candidate):
                 "credit_bid": round(debit_bid, 4),
                 "credit_mid": round(debit_mid, 4),
                 "legs": {"put": put_leg, "call": call_leg},
+                "fill_source": "live_quote",
             }
 
         # Fallback for structures with no fixed strike schema (Calendar, Diagonal, Jade Lizard)
         val = candidate.get("max_profit")
         if val is None: return None
-        return {"credit_bid": val, "credit_mid": val, "legs": {}}
+        return {"credit_bid": val, "credit_mid": val, "legs": {}, "fill_source": "fallback_scan"}
 
     except Exception as e:
         log.warning(f"_entry_price failed for {ticker} {s}: {e}")
@@ -395,7 +418,7 @@ def _current_mark(trade):
             else:
                 return max(0.0, round(lo["bid"] - sh["ask"], 4))
 
-        if s == "Long Strangle":
+        if trade["structure"] == "Long Strangle":
             put_leg  = _fetch_leg(ticker, expiry, strikes.get("short"), "put")
             call_leg = _fetch_leg(ticker, expiry, strikes.get("long"),  "call")
             if not put_leg or not call_leg: return None
@@ -482,14 +505,22 @@ def _persist_capital_rejected(entries: list) -> None:
     log.info("[capital_rejected] %d entries persisted to capital_rejected.jsonl", len(entries))
 
 
-def load_capital_rejected(days: int = 30) -> list[dict]:
-    """Read capital_rejected.jsonl and return entries grouped by date, newest first."""
+def load_capital_rejected(days: int = 30, from_date: str | None = None, to_date: str | None = None) -> list[dict]:
+    """Read capital_rejected.jsonl and return entries grouped by date, newest first.
+
+    If from_date/to_date (YYYY-MM-DD) are given they take precedence over days.
+    """
     import json as _json
     from datetime import datetime as _dt, timedelta as _td
     _path = Path(__file__).resolve().parent.parent / "data" / "capital_rejected.jsonl"
     if not _path.exists():
         return []
-    cutoff = (_dt.now() - _td(days=days)).strftime("%Y-%m-%d")
+    if from_date or to_date:
+        lo = from_date or "0000-00-00"
+        hi = to_date   or "9999-99-99"
+    else:
+        lo = (_dt.now() - _td(days=days)).strftime("%Y-%m-%d")
+        hi = "9999-99-99"
     by_date: dict[str, list] = {}
     try:
         with open(_path, encoding="utf-8") as _f:
@@ -502,7 +533,7 @@ def load_capital_rejected(days: int = 30) -> list[dict]:
                 except Exception:
                     continue
                 d = rec.get("date", "")
-                if d < cutoff:
+                if d < lo or d > hi:
                     continue
                 by_date.setdefault(d, []).append(rec)
     except Exception as e:
@@ -782,7 +813,7 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
         if len(new) >= 3:
             break
         rank += 1
-        tid = f"{today_str}{scan_tag}_{c['ticker']}_{c['structure'][:3].upper()}_{rank}"
+        tid = f"{today_str}{scan_tag}_{c['ticker']}_{_struct_abbr(c['structure'])}_{rank}"
         if tid in seen:
             rank -= 1  # slot not consumed
             continue
@@ -851,6 +882,12 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
         # in the same loop don't double-count available funds.
         cb["buying_power"] = max(0.0, cb["buying_power"] - _cap_needed)
 
+        _entry_mid    = ep.get("credit_mid", ec)
+        _slippage_pct = (
+            round((_entry_mid - ec) / _entry_mid, 4)
+            if _entry_mid and _entry_mid > 0 and ec != _entry_mid
+            else 0.0
+        )
         trade = {
             "id":           tid,
             "rank":         rank,
@@ -861,8 +898,11 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
             "strikes":      strike_dict,
             "width":        round(width, 4),
             "entry_credit": ec,
-            "entry_mid":    ep["credit_mid"],
+            "entry_mid":    _entry_mid,
             "entry_legs":   ep["legs"],
+            "scan_credit":  round(float(c.get("max_profit") or 0), 4),
+            "slippage_pct": _slippage_pct,
+            "fill_source":  ep.get("fill_source", "fallback_scan"),
             "max_profit":   ec,
             "max_loss":     ec if c["structure"] == "Long Strangle" else (round(width - ec, 4) if width > ec else c.get("max_loss")),
             "dte_at_entry": c["dte"],
@@ -1103,6 +1143,24 @@ def run_evening_check(force=False):
                 if iv_flag:
                     snap["iv_flag"] = iv_flag
                     log.info(f"IV surface flag on {trade['id']}: {iv_flag}")
+
+                # Remark live Greeks at each evening snapshot so the morning
+                # scan can use current (not entry-time) portfolio delta/theta/gamma.
+                try:
+                    from scripts.position_snapshots import (
+                        paper_trade_to_position_shape,
+                        compute_position_greeks,
+                    )
+                    _pos_shape = paper_trade_to_position_shape(trade, ul_price)
+                    _live_g    = compute_position_greeks(_pos_shape)
+                    if _live_g:
+                        snap["net_delta"] = _live_g["net_delta"]
+                        snap["net_theta"] = _live_g["net_theta"]
+                        snap["net_gamma"] = _live_g["net_gamma"]
+                        snap["net_vega"]  = _live_g["net_vega"]
+                except Exception as _ge:
+                    log.debug(f"Greeks remark skipped for {trade['id']}: {_ge}")
+
                 trade["snapshots"].append(snap)
 
         updated.append(trade["id"])

@@ -4298,6 +4298,24 @@
         "mark": 0.01,
         "ul_price": 68.85990142822266,
         "unrealized": 0.1
+      },
+      {
+        "ts": "2026-07-20T17:00:00.018183-04:00",
+        "mark": 0.01,
+        "ul_price": null,
+        "unrealized": 0.1
+      },
+      {
+        "ts": "2026-07-21T17:00:00.051056-04:00",
+        "mark": 0.02,
+        "ul_price": null,
+        "unrealized": 0.09
+      },
+      {
+        "ts": "2026-07-22T17:02:17.510957-04:00",
+        "mark": 0.01,
+        "ul_price": 68.52999877929688,
+        "unrealized": 0.1
       }
     ],
     "exit": null
@@ -4394,6 +4412,27 @@
         "ul_price": 7.800000190734863,
         "unrealized": 0.53,
         "iv_flag": "short strike 7.5 now +54.0vp expensive \u2014 consider closing"
+      },
+      {
+        "ts": "2026-07-20T17:00:00.018183-04:00",
+        "mark": 1.2,
+        "ul_price": null,
+        "unrealized": 0.3,
+        "iv_flag": "short strike 7.5 now +54.0vp expensive \u2014 consider closing"
+      },
+      {
+        "ts": "2026-07-21T17:00:00.051056-04:00",
+        "mark": 1.18,
+        "ul_price": null,
+        "unrealized": 0.28,
+        "iv_flag": "short strike 7.5 now +54.0vp expensive \u2014 consider closing"
+      },
+      {
+        "ts": "2026-07-22T17:02:17.510957-04:00",
+        "mark": 1.13,
+        "ul_price": 7.914999961853027,
+        "unrealized": 0.23,
+        "iv_flag": "short strike 7.5 now +54.0vp expensive \u2014 consider closing"
       }
     ],
     "exit": null
@@ -4485,6 +4524,24 @@
         "mark": 0.95,
         "ul_price": 126.38999938964844,
         "unrealized": -0.15
+      },
+      {
+        "ts": "2026-07-20T17:00:00.018183-04:00",
+        "mark": 0.6,
+        "ul_price": null,
+        "unrealized": -0.5
+      },
+      {
+        "ts": "2026-07-21T17:00:00.051056-04:00",
+        "mark": 1.25,
+        "ul_price": null,
+        "unrealized": 0.15
+      },
+      {
+        "ts": "2026-07-22T17:02:17.510957-04:00",
+        "mark": 1.35,
+        "ul_price": 125.83999633789062,
+        "unrealized": 0.25
       }
     ],
     "exit": null
@@ -4581,6 +4638,27 @@
         "ul_price": 7.715000152587891,
         "unrealized": 0.97,
         "iv_flag": "short strike 7.5 now -2.7vp cheap \u2014 vol moved against position"
+      },
+      {
+        "ts": "2026-07-20T17:00:00.018183-04:00",
+        "mark": 1.82,
+        "ul_price": null,
+        "unrealized": 0.88,
+        "iv_flag": "short strike 7.5 now -2.7vp cheap \u2014 vol moved against position"
+      },
+      {
+        "ts": "2026-07-21T17:00:00.051056-04:00",
+        "mark": 1.26,
+        "ul_price": null,
+        "unrealized": 0.32,
+        "iv_flag": "short strike 7.5 now -2.7vp cheap \u2014 vol moved against position"
+      },
+      {
+        "ts": "2026-07-22T17:02:17.510957-04:00",
+        "mark": 1.27,
+        "ul_price": 8.680000305175781,
+        "unrealized": 0.33,
+        "iv_flag": "short strike 7.5 now -2.7vp cheap \u2014 vol moved against position"
       }
     ],
     "exit": null
@@ -4672,6 +4750,24 @@
         "mark": 0.96,
         "ul_price": 50.310001373291016,
         "unrealized": -0.17
+      },
+      {
+        "ts": "2026-07-20T17:00:00.018183-04:00",
+        "mark": 0.6,
+        "ul_price": null,
+        "unrealized": -0.53
+      },
+      {
+        "ts": "2026-07-21T17:00:00.051056-04:00",
+        "mark": 0.41,
+        "ul_price": null,
+        "unrealized": -0.72
+      },
+      {
+        "ts": "2026-07-22T17:02:17.510957-04:00",
+        "mark": 0.04,
+        "ul_price": 48.185001373291016,
+        "unrealized": -1.09
       }
     ],
     "exit": null
@@ -4757,6 +4853,24 @@
         "mark": 0.33,
         "ul_price": 743.155029296875,
         "unrealized": -0.86
+      },
+      {
+        "ts": "2026-07-20T17:00:00.018183-04:00",
+        "mark": 0.13,
+        "ul_price": null,
+        "unrealized": -1.06
+      },
+      {
+        "ts": "2026-07-21T17:00:00.051056-04:00",
+        "mark": 0.27,
+        "ul_price": null,
+        "unrealized": -0.92
+      },
+      {
+        "ts": "2026-07-22T17:02:17.510957-04:00",
+        "mark": 0.13,
+        "ul_price": 747.3300170898438,
+        "unrealized": -1.06
       }
     ],
     "exit": null
@@ -4841,6 +4955,24 @@
         "ts": "2026-07-17T17:00:02.826288-04:00",
         "mark": 0.0,
         "ul_price": 114.70999908447266,
+        "unrealized": -1.13
+      },
+      {
+        "ts": "2026-07-20T17:00:00.018183-04:00",
+        "mark": 0.0,
+        "ul_price": null,
+        "unrealized": -1.13
+      },
+      {
+        "ts": "2026-07-21T17:00:00.051056-04:00",
+        "mark": 0.0,
+        "ul_price": null,
+        "unrealized": -1.13
+      },
+      {
+        "ts": "2026-07-22T17:02:17.510957-04:00",
+        "mark": 0.0,
+        "ul_price": 118.79000091552734,
         "unrealized": -1.13
       }
     ],
@@ -4932,6 +5064,27 @@
         "ul_price": 7.800000190734863,
         "unrealized": 0.3,
         "iv_flag": "short strike 7.5 now +54.0vp expensive \u2014 consider closing"
+      },
+      {
+        "ts": "2026-07-20T17:00:00.018183-04:00",
+        "mark": 1.2,
+        "ul_price": null,
+        "unrealized": 0.07,
+        "iv_flag": "short strike 7.5 now +54.0vp expensive \u2014 consider closing"
+      },
+      {
+        "ts": "2026-07-21T17:00:00.051056-04:00",
+        "mark": 1.18,
+        "ul_price": null,
+        "unrealized": 0.05,
+        "iv_flag": "short strike 7.5 now +54.0vp expensive \u2014 consider closing"
+      },
+      {
+        "ts": "2026-07-22T17:02:17.510957-04:00",
+        "mark": 1.13,
+        "ul_price": 7.914999961853027,
+        "unrealized": 0.0,
+        "iv_flag": "short strike 7.5 now +54.0vp expensive \u2014 consider closing"
       }
     ],
     "exit": null
@@ -5017,6 +5170,24 @@
         "mark": 0.52,
         "ul_price": 4.460000038146973,
         "unrealized": 0.01
+      },
+      {
+        "ts": "2026-07-20T17:00:00.018183-04:00",
+        "mark": 0.1,
+        "ul_price": null,
+        "unrealized": -0.41
+      },
+      {
+        "ts": "2026-07-21T17:00:00.051056-04:00",
+        "mark": 0.07,
+        "ul_price": null,
+        "unrealized": -0.44
+      },
+      {
+        "ts": "2026-07-22T17:02:17.510957-04:00",
+        "mark": 0.05,
+        "ul_price": 5.179999828338623,
+        "unrealized": -0.46
       }
     ],
     "exit": null,
@@ -5104,6 +5275,24 @@
         "mark": 0.02,
         "ul_price": 68.85990142822266,
         "unrealized": 0.08
+      },
+      {
+        "ts": "2026-07-20T17:00:00.018183-04:00",
+        "mark": 0.01,
+        "ul_price": null,
+        "unrealized": 0.09
+      },
+      {
+        "ts": "2026-07-21T17:00:00.051056-04:00",
+        "mark": 0.02,
+        "ul_price": null,
+        "unrealized": 0.08
+      },
+      {
+        "ts": "2026-07-22T17:02:17.510957-04:00",
+        "mark": 0.04,
+        "ul_price": 68.52999877929688,
+        "unrealized": 0.06
       }
     ],
     "exit": null,
@@ -5191,6 +5380,24 @@
         "mark": 0.29,
         "ul_price": 743.155029296875,
         "unrealized": -0.49
+      },
+      {
+        "ts": "2026-07-20T17:00:00.018183-04:00",
+        "mark": 0.14,
+        "ul_price": null,
+        "unrealized": -0.64
+      },
+      {
+        "ts": "2026-07-21T17:00:00.051056-04:00",
+        "mark": 0.29,
+        "ul_price": null,
+        "unrealized": -0.49
+      },
+      {
+        "ts": "2026-07-22T17:02:17.510957-04:00",
+        "mark": 0.18,
+        "ul_price": 747.3300170898438,
+        "unrealized": -0.6
       }
     ],
     "exit": null,
@@ -5257,6 +5464,24 @@
         "mark": 0.11,
         "ul_price": 743.155029296875,
         "unrealized": -0.65
+      },
+      {
+        "ts": "2026-07-20T17:00:00.018183-04:00",
+        "mark": 0.03,
+        "ul_price": null,
+        "unrealized": -0.73
+      },
+      {
+        "ts": "2026-07-21T17:00:00.051056-04:00",
+        "mark": 0.05,
+        "ul_price": null,
+        "unrealized": -0.71
+      },
+      {
+        "ts": "2026-07-22T17:02:17.510957-04:00",
+        "mark": 0.01,
+        "ul_price": 747.3300170898438,
+        "unrealized": -0.75
       }
     ],
     "exit": null,
@@ -5323,6 +5548,24 @@
         "mark": 1.2,
         "ul_price": 333.739990234375,
         "unrealized": 0.02
+      },
+      {
+        "ts": "2026-07-20T17:00:00.018183-04:00",
+        "mark": 0.7,
+        "ul_price": null,
+        "unrealized": -0.48
+      },
+      {
+        "ts": "2026-07-21T17:00:00.051056-04:00",
+        "mark": 1.55,
+        "ul_price": null,
+        "unrealized": 0.37
+      },
+      {
+        "ts": "2026-07-22T17:02:17.510957-04:00",
+        "mark": 0.85,
+        "ul_price": 325.8699951171875,
+        "unrealized": -0.33
       }
     ],
     "exit": null,
@@ -5389,6 +5632,24 @@
         "mark": 0.05,
         "ul_price": 17.28499984741211,
         "unrealized": -1.03
+      },
+      {
+        "ts": "2026-07-20T17:00:00.018183-04:00",
+        "mark": 0.01,
+        "ul_price": null,
+        "unrealized": -1.07
+      },
+      {
+        "ts": "2026-07-21T17:00:00.051056-04:00",
+        "mark": 0.02,
+        "ul_price": null,
+        "unrealized": -1.06
+      },
+      {
+        "ts": "2026-07-22T17:02:17.510957-04:00",
+        "mark": 0.0,
+        "ul_price": 17.09000015258789,
+        "unrealized": -1.08
       }
     ],
     "exit": null,
@@ -5459,6 +5720,24 @@
         "mark": 1.95,
         "ul_price": 424.3399963378906,
         "unrealized": 4.75
+      },
+      {
+        "ts": "2026-07-20T17:00:00.018183-04:00",
+        "mark": 1.95,
+        "ul_price": null,
+        "unrealized": 4.75
+      },
+      {
+        "ts": "2026-07-21T17:00:00.051056-04:00",
+        "mark": 1.45,
+        "ul_price": null,
+        "unrealized": 5.25
+      },
+      {
+        "ts": "2026-07-22T17:02:17.510957-04:00",
+        "mark": 0.75,
+        "ul_price": 412.6400146484375,
+        "unrealized": 5.95
       }
     ],
     "exit": null,
@@ -5535,6 +5814,24 @@
         "mark": 2.52,
         "ul_price": 289.42999267578125,
         "unrealized": 1.98
+      },
+      {
+        "ts": "2026-07-20T17:00:00.018183-04:00",
+        "mark": 2.25,
+        "ul_price": null,
+        "unrealized": 2.25
+      },
+      {
+        "ts": "2026-07-21T17:00:00.051056-04:00",
+        "mark": 3.25,
+        "ul_price": null,
+        "unrealized": 1.25
+      },
+      {
+        "ts": "2026-07-22T17:02:17.510957-04:00",
+        "mark": 2.43,
+        "ul_price": 301.17999267578125,
+        "unrealized": 2.07
       }
     ],
     "exit": null,
@@ -5610,6 +5907,24 @@
         "ts": "2026-07-17T17:00:02.826288-04:00",
         "mark": 0.65,
         "ul_price": 126.38999938964844,
+        "unrealized": 1.4
+      },
+      {
+        "ts": "2026-07-20T17:00:00.018183-04:00",
+        "mark": 0.54,
+        "ul_price": null,
+        "unrealized": 1.51
+      },
+      {
+        "ts": "2026-07-21T17:00:00.051056-04:00",
+        "mark": 0.46,
+        "ul_price": null,
+        "unrealized": 1.59
+      },
+      {
+        "ts": "2026-07-22T17:02:17.510957-04:00",
+        "mark": 0.65,
+        "ul_price": 125.83999633789062,
         "unrealized": 1.4
       }
     ],
@@ -5908,6 +6223,24 @@
         "mark": 27.8,
         "ul_price": 212.83999633789062,
         "unrealized": 0.5
+      },
+      {
+        "ts": "2026-07-20T17:00:00.018183-04:00",
+        "mark": 24.8,
+        "ul_price": null,
+        "unrealized": 3.5
+      },
+      {
+        "ts": "2026-07-21T17:00:00.051056-04:00",
+        "mark": 28.8,
+        "ul_price": null,
+        "unrealized": -0.5
+      },
+      {
+        "ts": "2026-07-22T17:02:17.510957-04:00",
+        "mark": 27.7,
+        "ul_price": 214.60000610351562,
+        "unrealized": 0.6
       }
     ],
     "exit": null,
@@ -5973,6 +6306,24 @@
         "mark": 1.8,
         "ul_price": 424.3399963378906,
         "unrealized": 2.2
+      },
+      {
+        "ts": "2026-07-20T17:00:00.018183-04:00",
+        "mark": 1.25,
+        "ul_price": null,
+        "unrealized": 2.75
+      },
+      {
+        "ts": "2026-07-21T17:00:00.051056-04:00",
+        "mark": 0.7,
+        "ul_price": null,
+        "unrealized": 3.3
+      },
+      {
+        "ts": "2026-07-22T17:02:17.510957-04:00",
+        "mark": 0.5,
+        "ul_price": 412.6400146484375,
+        "unrealized": 3.5
       }
     ],
     "exit": null,
@@ -6038,6 +6389,24 @@
         "mark": 4.45,
         "ul_price": 284.0199890136719,
         "unrealized": -0.85
+      },
+      {
+        "ts": "2026-07-20T17:00:00.018183-04:00",
+        "mark": 3.6,
+        "ul_price": null,
+        "unrealized": 0.0
+      },
+      {
+        "ts": "2026-07-21T17:00:00.051056-04:00",
+        "mark": 3.5,
+        "ul_price": null,
+        "unrealized": 0.1
+      },
+      {
+        "ts": "2026-07-22T17:02:17.510957-04:00",
+        "mark": 4.05,
+        "ul_price": 293.7799987792969,
+        "unrealized": -0.45
       }
     ],
     "exit": null,
@@ -6103,6 +6472,24 @@
         "mark": 6.25,
         "ul_price": 313.29998779296875,
         "unrealized": -1.0
+      },
+      {
+        "ts": "2026-07-20T17:00:00.018183-04:00",
+        "mark": 2.2,
+        "ul_price": null,
+        "unrealized": 3.05
+      },
+      {
+        "ts": "2026-07-21T17:00:00.051056-04:00",
+        "mark": 3.75,
+        "ul_price": null,
+        "unrealized": 1.5
+      },
+      {
+        "ts": "2026-07-22T17:02:17.510957-04:00",
+        "mark": 1.56,
+        "ul_price": 319.19000244140625,
+        "unrealized": 3.69
       }
     ],
     "exit": null,
@@ -6162,6 +6549,24 @@
         "mark": 9.1,
         "ul_price": 313.29998779296875,
         "unrealized": -3.7
+      },
+      {
+        "ts": "2026-07-20T17:00:00.018183-04:00",
+        "mark": 5.5,
+        "ul_price": null,
+        "unrealized": -0.1
+      },
+      {
+        "ts": "2026-07-21T17:00:00.051056-04:00",
+        "mark": 9.2,
+        "ul_price": null,
+        "unrealized": -3.8
+      },
+      {
+        "ts": "2026-07-22T17:02:17.510957-04:00",
+        "mark": 5.2,
+        "ul_price": 319.19000244140625,
+        "unrealized": 0.2
       }
     ],
     "exit": null,
@@ -6221,6 +6626,24 @@
         "mark": 9.2,
         "ul_price": 424.3399963378906,
         "unrealized": -5.0
+      },
+      {
+        "ts": "2026-07-20T17:00:00.018183-04:00",
+        "mark": 6.1,
+        "ul_price": null,
+        "unrealized": -1.9
+      },
+      {
+        "ts": "2026-07-21T17:00:00.051056-04:00",
+        "mark": 5.3,
+        "ul_price": null,
+        "unrealized": -1.1
+      },
+      {
+        "ts": "2026-07-22T17:02:17.510957-04:00",
+        "mark": 2.25,
+        "ul_price": 412.6400146484375,
+        "unrealized": 1.95
       }
     ],
     "exit": null,
@@ -6305,5 +6728,727 @@
     "ranker_score": null,
     "position_size_factor": null,
     "suggested_allocation_pct": null
+  },
+  {
+    "id": "20260721AM_SPY_PUT_1",
+    "rank": 1,
+    "entered_at": "2026-07-21T10:06:10.235488-04:00",
+    "ticker": "SPY",
+    "structure": "Put Debit Spread",
+    "expiry": "2026-08-07",
+    "strikes": {
+      "short": 720.0,
+      "long": 750.0
+    },
+    "width": 30.0,
+    "entry_credit": 21.94,
+    "entry_mid": 21.94,
+    "entry_legs": {
+      "long": {
+        "strike": 750.0,
+        "bid": 11.01,
+        "ask": 11.11,
+        "mid": 11.06,
+        "iv": 12.9,
+        "iv_raw": 0.12885392639160154,
+        "volume": 45,
+        "oi": 13111
+      },
+      "short": {
+        "strike": 720.0,
+        "bid": 3.12,
+        "ask": 3.14,
+        "mid": 3.13,
+        "iv": 18.0,
+        "iv_raw": 0.17984828948974607,
+        "volume": 72,
+        "oi": 12318
+      }
+    },
+    "max_profit": 21.94,
+    "max_loss": 8.06,
+    "dte_at_entry": 17,
+    "spot_at_entry": 745.39,
+    "signal_rating": null,
+    "signal_score": 0,
+    "profit_target": 19.746,
+    "stop_loss": 65.82,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-07-21T17:00:00.051056-04:00",
+        "mark": 6.53,
+        "ul_price": null,
+        "unrealized": -1.53
+      },
+      {
+        "ts": "2026-07-22T17:02:17.510957-04:00",
+        "mark": 5.97,
+        "ul_price": 747.3300170898438,
+        "unrealized": -2.09
+      }
+    ],
+    "exit": null,
+    "iv_edge_vp": 5.18,
+    "iv_edge_label": "fair",
+    "kelly_fraction": 0.1416,
+    "kelly_pct": 0.05,
+    "kelly_contracts": 1,
+    "kelly_capital": 50.0,
+    "ml_p_win": 0.554,
+    "ml_confidence": 0.726,
+    "capital_required": 806.0,
+    "capital_type": "debit",
+    "requires_margin": false,
+    "scan_time": "morning",
+    "ranker_score": null,
+    "position_size_factor": null,
+    "suggested_allocation_pct": null,
+    "ml_scores_at_entry": {
+      "regime": "Range-bound",
+      "regime_prob": null,
+      "expected_return": null,
+      "expected_vol": 0.1761,
+      "expected_move_pct": 0.0351,
+      "iv_direction": "Expanding",
+      "iv_expanding_prob": 0.6496,
+      "pop_score": 0.6351,
+      "pop_threshold": null,
+      "meta_score": null,
+      "is_anomaly": false,
+      "anomaly_score": 83.7,
+      "model_versions": {
+        "pop": {
+          "trained_at": "2026-07-19T16:10:52.141807+00:00",
+          "git_sha": "2844bee"
+        },
+        "regime": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "return": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "vol": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "meta": {
+          "trained_at": null,
+          "git_sha": null
+        }
+      }
+    }
+  },
+  {
+    "id": "20260721AM_VRT_COV_2",
+    "rank": 2,
+    "entered_at": "2026-07-21T10:06:21.687950-04:00",
+    "ticker": "VRT",
+    "structure": "Covered Call",
+    "expiry": "2026-07-31",
+    "strikes": {
+      "short": 352.5
+    },
+    "width": 57.34,
+    "entry_credit": 4.1,
+    "entry_mid": 4.575,
+    "entry_legs": {
+      "short": {
+        "strike": 352.5,
+        "bid": 4.1,
+        "ask": 5.05,
+        "mid": 4.575,
+        "iv": 96.1,
+        "iv_raw": 0.9614261669921874,
+        "volume": 100,
+        "oi": 106
+      }
+    },
+    "max_profit": 4.1,
+    "max_loss": 53.24,
+    "dte_at_entry": 10,
+    "spot_at_entry": 299.61,
+    "signal_rating": null,
+    "signal_score": 0,
+    "profit_target": 3.69,
+    "stop_loss": 12.3,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-07-21T17:00:00.051056-04:00",
+        "mark": 6.5,
+        "ul_price": null,
+        "unrealized": -2.4
+      },
+      {
+        "ts": "2026-07-22T17:02:17.510957-04:00",
+        "mark": 5.25,
+        "ul_price": 301.17999267578125,
+        "unrealized": -1.15
+      }
+    ],
+    "exit": null,
+    "iv_edge_vp": 3.65,
+    "iv_edge_label": "expensive",
+    "kelly_fraction": null,
+    "kelly_pct": null,
+    "kelly_contracts": null,
+    "kelly_capital": null,
+    "ml_p_win": null,
+    "ml_confidence": null,
+    "capital_required": null,
+    "capital_type": "shares",
+    "requires_margin": false,
+    "scan_time": "morning",
+    "ranker_score": null,
+    "position_size_factor": null,
+    "suggested_allocation_pct": null,
+    "ml_scores_at_entry": {
+      "regime": "Downtrend",
+      "regime_prob": null,
+      "expected_return": null,
+      "expected_vol": 0.62,
+      "expected_move_pct": 0.1235,
+      "iv_direction": "Expanding",
+      "iv_expanding_prob": 0.4414,
+      "pop_score": 0.6755,
+      "pop_threshold": null,
+      "meta_score": null,
+      "is_anomaly": false,
+      "anomaly_score": 76.0,
+      "model_versions": {
+        "pop": {
+          "trained_at": "2026-07-19T16:10:52.141807+00:00",
+          "git_sha": "2844bee"
+        },
+        "regime": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "return": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "vol": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "meta": {
+          "trained_at": null,
+          "git_sha": null
+        }
+      }
+    }
+  },
+  {
+    "id": "20260722AM_NET_CDS_1",
+    "rank": 1,
+    "entered_at": "2026-07-22T10:07:12.984416-04:00",
+    "ticker": "NET",
+    "structure": "Call Debit Spread",
+    "expiry": "2026-07-31",
+    "strikes": {
+      "short": 295.0,
+      "long": 265.0
+    },
+    "width": 30.0,
+    "entry_credit": 18.72,
+    "entry_mid": 18.72,
+    "entry_legs": {
+      "long": {
+        "strike": 265.0,
+        "bid": 10.95,
+        "ask": 13.6,
+        "mid": 12.275,
+        "iv": 53.0,
+        "iv_raw": 0.5301560656738282,
+        "volume": 67,
+        "oi": 1068
+      },
+      "short": {
+        "strike": 295.0,
+        "bid": 1.75,
+        "ask": 4.3,
+        "mid": 3.025,
+        "iv": 60.8,
+        "iv_raw": 0.6079140771484376,
+        "volume": 65,
+        "oi": 89
+      }
+    },
+    "max_profit": 18.72,
+    "max_loss": 11.28,
+    "dte_at_entry": 9,
+    "spot_at_entry": 267.6,
+    "signal_rating": "Moderate",
+    "signal_score": 40.686,
+    "profit_target": 16.848,
+    "stop_loss": 56.16,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-07-22T17:02:17.510957-04:00",
+        "mark": 8.65,
+        "ul_price": 268.75,
+        "unrealized": -2.63
+      }
+    ],
+    "exit": null,
+    "iv_edge_vp": 2.91,
+    "iv_edge_label": "fair",
+    "kelly_fraction": 0.0937,
+    "kelly_pct": 0.05,
+    "kelly_contracts": 1,
+    "kelly_capital": 75.0,
+    "ml_p_win": 0.567,
+    "ml_confidence": 0.612,
+    "capital_required": 1128.0,
+    "capital_type": "debit",
+    "requires_margin": false,
+    "scan_time": "morning",
+    "ranker_score": null,
+    "position_size_factor": null,
+    "suggested_allocation_pct": null,
+    "ml_scores_at_entry": {
+      "regime": "Downtrend",
+      "regime_prob": null,
+      "expected_return": null,
+      "expected_vol": 0.595,
+      "expected_move_pct": 0.1185,
+      "iv_direction": "Expanding",
+      "iv_expanding_prob": 0.9115,
+      "pop_score": 0.7137,
+      "pop_threshold": null,
+      "meta_score": null,
+      "is_anomaly": false,
+      "anomaly_score": 76.6,
+      "model_versions": {
+        "pop": {
+          "trained_at": "2026-07-19T16:10:52.141807+00:00",
+          "git_sha": "2844bee"
+        },
+        "regime": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "return": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "vol": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "meta": {
+          "trained_at": null,
+          "git_sha": null
+        }
+      }
+    }
+  },
+  {
+    "id": "20260722AM_NFLX_CDS_2",
+    "rank": 2,
+    "entered_at": "2026-07-22T10:07:31.945852-04:00",
+    "ticker": "NFLX",
+    "structure": "Call Debit Spread",
+    "expiry": "2026-07-31",
+    "strikes": {
+      "short": 75.0,
+      "long": 70.0
+    },
+    "width": 5.0,
+    "entry_credit": 3.59,
+    "entry_mid": 3.59,
+    "entry_legs": {
+      "long": {
+        "strike": 70.0,
+        "bid": 1.76,
+        "ask": 1.76,
+        "mid": 1.76,
+        "iv": 35.3,
+        "iv_raw": 0.352545537109375,
+        "volume": 2303,
+        "oi": 10442
+      },
+      "short": {
+        "strike": 75.0,
+        "bid": 0.37,
+        "ask": 0.39,
+        "mid": 0.38,
+        "iv": 39.4,
+        "iv_raw": 0.393560751953125,
+        "volume": 1215,
+        "oi": 7449
+      }
+    },
+    "max_profit": 3.59,
+    "max_loss": 1.41,
+    "dte_at_entry": 9,
+    "spot_at_entry": 70.14,
+    "signal_rating": "Strong",
+    "signal_score": 59.99,
+    "profit_target": 3.231,
+    "stop_loss": 10.77,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-07-22T17:02:17.510957-04:00",
+        "mark": 0.78,
+        "ul_price": 68.52999877929688,
+        "unrealized": -0.63
+      }
+    ],
+    "exit": null,
+    "iv_edge_vp": 1.36,
+    "iv_edge_label": "cheap",
+    "kelly_fraction": 0.107,
+    "kelly_pct": 0.05,
+    "kelly_contracts": 1,
+    "kelly_capital": 75.0,
+    "ml_p_win": 0.531,
+    "ml_confidence": 0.617,
+    "capital_required": 141.0,
+    "capital_type": "debit",
+    "requires_margin": false,
+    "scan_time": "morning",
+    "ranker_score": null,
+    "position_size_factor": null,
+    "suggested_allocation_pct": null,
+    "ml_scores_at_entry": {
+      "regime": "Downtrend",
+      "regime_prob": null,
+      "expected_return": null,
+      "expected_vol": 0.3733,
+      "expected_move_pct": 0.0744,
+      "iv_direction": "Expanding",
+      "iv_expanding_prob": 0.5055,
+      "pop_score": 0.819,
+      "pop_threshold": null,
+      "meta_score": null,
+      "is_anomaly": false,
+      "anomaly_score": 80.8,
+      "model_versions": {
+        "pop": {
+          "trained_at": "2026-07-19T16:10:52.141807+00:00",
+          "git_sha": "2844bee"
+        },
+        "regime": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "return": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "vol": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "meta": {
+          "trained_at": null,
+          "git_sha": null
+        }
+      }
+    }
+  },
+  {
+    "id": "20260723AM_PLTR_CDS_1",
+    "rank": 1,
+    "entered_at": "2026-07-23T10:07:30.871957-04:00",
+    "ticker": "PLTR",
+    "structure": "Call Debit Spread",
+    "expiry": "2026-08-07",
+    "strikes": {
+      "short": 145.0,
+      "long": 123.0
+    },
+    "width": 22.0,
+    "entry_credit": 15.28,
+    "entry_mid": 15.28,
+    "entry_legs": {
+      "long": {
+        "strike": 123.0,
+        "bid": 8.75,
+        "ask": 9.05,
+        "mid": 8.9,
+        "iv": 80.7,
+        "iv_raw": 0.8073749731445312,
+        "volume": 31,
+        "oi": 96
+      },
+      "short": {
+        "strike": 145.0,
+        "bid": 1.97,
+        "ask": 2.18,
+        "mid": 2.075,
+        "iv": 79.1,
+        "iv_raw": 0.79101771484375,
+        "volume": 28,
+        "oi": 2141
+      }
+    },
+    "max_profit": 15.28,
+    "max_loss": 6.72,
+    "dte_at_entry": 15,
+    "spot_at_entry": 123.94,
+    "signal_rating": "Moderate",
+    "signal_score": 39.566,
+    "profit_target": 13.752,
+    "stop_loss": 45.84,
+    "status": "open",
+    "snapshots": [],
+    "exit": null,
+    "iv_edge_vp": -2.25,
+    "iv_edge_label": "fair",
+    "kelly_fraction": 0.1149,
+    "kelly_pct": 0.05,
+    "kelly_contracts": 1,
+    "kelly_capital": 75.0,
+    "ml_p_win": 0.554,
+    "ml_confidence": 0.642,
+    "capital_required": 672.0,
+    "capital_type": "debit",
+    "requires_margin": false,
+    "scan_time": "morning",
+    "ranker_score": null,
+    "position_size_factor": null,
+    "suggested_allocation_pct": null,
+    "ml_scores_at_entry": {
+      "regime": "Downtrend",
+      "regime_prob": null,
+      "expected_return": null,
+      "expected_vol": 0.5487,
+      "expected_move_pct": 0.1093,
+      "iv_direction": "Expanding",
+      "iv_expanding_prob": 0.5772,
+      "pop_score": 0.6974,
+      "pop_threshold": null,
+      "meta_score": null,
+      "is_anomaly": false,
+      "anomaly_score": 82.1,
+      "model_versions": {
+        "pop": {
+          "trained_at": "2026-07-19T16:10:52.141807+00:00",
+          "git_sha": "2844bee"
+        },
+        "regime": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "return": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "vol": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "meta": {
+          "trained_at": null,
+          "git_sha": null
+        }
+      }
+    }
+  },
+  {
+    "id": "20260723AM_NFLX_CDS_2",
+    "rank": 2,
+    "entered_at": "2026-07-23T10:07:37.905666-04:00",
+    "ticker": "NFLX",
+    "structure": "Call Debit Spread",
+    "expiry": "2026-08-07",
+    "strikes": {
+      "short": 74.0,
+      "long": 68.0
+    },
+    "width": 6.0,
+    "entry_credit": 4.0,
+    "entry_mid": 4.0,
+    "entry_legs": {
+      "long": {
+        "strike": 68.0,
+        "bid": 2.52,
+        "ask": 2.63,
+        "mid": 2.575,
+        "iv": 43.1,
+        "iv_raw": 0.43066975585937506,
+        "volume": 71,
+        "oi": 1081
+      },
+      "short": {
+        "strike": 74.0,
+        "bid": 0.52,
+        "ask": 0.54,
+        "mid": 0.53,
+        "iv": 39.8,
+        "iv_raw": 0.398443515625,
+        "volume": 63,
+        "oi": 962
+      }
+    },
+    "max_profit": 4.0,
+    "max_loss": 2.0,
+    "dte_at_entry": 15,
+    "spot_at_entry": 68.67,
+    "signal_rating": "Moderate",
+    "signal_score": 36.19,
+    "profit_target": 3.6,
+    "stop_loss": 12.0,
+    "status": "open",
+    "snapshots": [],
+    "exit": null,
+    "iv_edge_vp": -0.15,
+    "iv_edge_label": "cheap",
+    "kelly_fraction": 0.1114,
+    "kelly_pct": 0.05,
+    "kelly_contracts": 1,
+    "kelly_capital": 75.0,
+    "ml_p_win": 0.574,
+    "ml_confidence": 0.617,
+    "capital_required": 200.0,
+    "capital_type": "debit",
+    "requires_margin": false,
+    "scan_time": "morning",
+    "ranker_score": null,
+    "position_size_factor": null,
+    "suggested_allocation_pct": null,
+    "ml_scores_at_entry": {
+      "regime": "Downtrend",
+      "regime_prob": null,
+      "expected_return": null,
+      "expected_vol": 0.3733,
+      "expected_move_pct": 0.0744,
+      "iv_direction": "Expanding",
+      "iv_expanding_prob": 0.5055,
+      "pop_score": 0.819,
+      "pop_threshold": null,
+      "meta_score": null,
+      "is_anomaly": false,
+      "anomaly_score": 80.8,
+      "model_versions": {
+        "pop": {
+          "trained_at": "2026-07-19T16:10:52.141807+00:00",
+          "git_sha": "2844bee"
+        },
+        "regime": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "return": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "vol": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "meta": {
+          "trained_at": null,
+          "git_sha": null
+        }
+      }
+    }
+  },
+  {
+    "id": "20260723AM_UNH_PDS_3",
+    "rank": 3,
+    "entered_at": "2026-07-23T10:07:40.915138-04:00",
+    "ticker": "UNH",
+    "structure": "Put Debit Spread",
+    "expiry": "2026-07-31",
+    "strikes": {
+      "short": 410.0,
+      "long": 427.5
+    },
+    "width": 17.5,
+    "entry_credit": 11.38,
+    "entry_mid": 11.38,
+    "entry_legs": {
+      "long": {
+        "strike": 427.5,
+        "bid": 7.25,
+        "ask": 8.35,
+        "mid": 7.8,
+        "iv": 26.1,
+        "iv_raw": 0.26081061462402344,
+        "volume": 47,
+        "oi": 64
+      },
+      "short": {
+        "strike": 410.0,
+        "bid": 2.1,
+        "ask": 2.35,
+        "mid": 2.225,
+        "iv": 29.0,
+        "iv_raw": 0.2898020239257812,
+        "volume": 13,
+        "oi": 423
+      }
+    },
+    "max_profit": 11.38,
+    "max_loss": 6.12,
+    "dte_at_entry": 8,
+    "spot_at_entry": 426.08,
+    "signal_rating": null,
+    "signal_score": 0,
+    "profit_target": 10.242,
+    "stop_loss": 34.14,
+    "status": "open",
+    "snapshots": [],
+    "exit": null,
+    "iv_edge_vp": 7.18,
+    "iv_edge_label": "fair",
+    "kelly_fraction": 0.0643,
+    "kelly_pct": 0.05,
+    "kelly_contracts": 1,
+    "kelly_capital": 75.0,
+    "ml_p_win": 0.517,
+    "ml_confidence": 0.5,
+    "capital_required": 612.0,
+    "capital_type": "debit",
+    "requires_margin": false,
+    "scan_time": "morning",
+    "ranker_score": null,
+    "position_size_factor": null,
+    "suggested_allocation_pct": null,
+    "ml_scores_at_entry": {
+      "regime": "Downtrend",
+      "regime_prob": null,
+      "expected_return": null,
+      "expected_vol": 0.3279,
+      "expected_move_pct": 0.0653,
+      "iv_direction": "Expanding",
+      "iv_expanding_prob": 0.8554,
+      "pop_score": 1.0,
+      "pop_threshold": null,
+      "meta_score": null,
+      "is_anomaly": false,
+      "anomaly_score": 80.3,
+      "model_versions": {
+        "pop": {
+          "trained_at": "2026-07-19T16:10:52.141807+00:00",
+          "git_sha": "2844bee"
+        },
+        "regime": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "return": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "vol": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "meta": {
+          "trained_at": null,
+          "git_sha": null
+        }
+      }
+    }
   }
 ]

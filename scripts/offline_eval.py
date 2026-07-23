@@ -240,6 +240,54 @@ def save_metrics() -> dict:
     return m
 
 
+_CALIB_CACHE: dict | None = None   # process-level cache; refreshed each scoring run via invalidate
+
+
+def get_calibration_multiplier(composite_score: float, min_bucket_n: int = 5) -> float:
+    """
+    Return a score multiplier derived from empirical calibration data.
+
+    Looks up the decile bucket that contains composite_score in the last saved
+    eval_metrics.json calibration table, then returns a multiplier that nudges
+    the score up when that bucket has historically outperformed and down when it
+    has underperformed.  Returns 1.0 (neutral) when:
+      - no calibration data exists (fewer than min_bucket_n trades in that bucket)
+      - the bucket has not been populated yet
+      - eval_metrics.json is missing or unreadable
+
+    The multiplier is bounded to [0.80, 1.20] to avoid catastrophic reordering
+    while calibration data is still sparse.  Wire this into _composite_score()
+    after the main weighted sum so it acts as a final observed-outcome adjustment.
+    """
+    global _CALIB_CACHE
+    if _CALIB_CACHE is None:
+        try:
+            _CALIB_CACHE = load_metrics().get("calibration") or []
+        except Exception:
+            _CALIB_CACHE = []
+
+    if not _CALIB_CACHE:
+        return 1.0
+
+    bucket_key = int(composite_score // 10) * 10
+    entry = next((b for b in _CALIB_CACHE if b["score_bucket"] == bucket_key), None)
+    if entry is None or entry.get("n", 0) < min_bucket_n:
+        return 1.0
+
+    # Normalise avg_return to a ±20% multiplier.
+    # avg_return is in percentage points (e.g. 8.5 = +8.5%).
+    # We treat ±20% return as the extremes → multiplier in [0.80, 1.20].
+    avg_ret = float(entry["avg_return"])
+    mult = 1.0 + avg_ret / 100.0      # +8.5% return → ×1.085
+    return round(min(max(mult, 0.80), 1.20), 4)
+
+
+def invalidate_calibration_cache():
+    """Force reload of calibration data on next get_calibration_multiplier call."""
+    global _CALIB_CACHE
+    _CALIB_CACHE = None
+
+
 # ─── Helpers ──────────────────────────────────────────────────────────────────
 
 def _rel(c: dict, r_min: float, r_range: float) -> float:

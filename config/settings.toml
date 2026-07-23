@@ -116,7 +116,7 @@ paper_trade_extra = [
 # scripts/data_fetch.get_next_earnings_date) - no manual config needed.
 
 [capital]
-amount = 1000
+amount = 1500
 max_risk_pct = 0.12          # max loss per trade as % of capital
 max_concurrent_positions = 2
 

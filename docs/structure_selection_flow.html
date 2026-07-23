@@ -1,139 +1,199 @@
 <title>Structure Selection — Process Flow</title>
+<link rel="stylesheet" href="../web/static/css/theme.css">
 <style>
   :root {
-    --bg:        #0C1628;
-    --bg2:       #111f3a;
-    --bg3:       #172440;
-    --border:    #1e3358;
-    --text:      #e2e8f0;
-    --muted:     #7a95b8;
-    --teal:      #00C9A7;
-    --teal-dim:  rgba(0,201,167,0.12);
-    --amber:     #F5A623;
-    --amber-dim: rgba(245,166,35,0.12);
-    --indigo:    #818CF8;
-    --indigo-dim:rgba(129,140,248,0.12);
-    --emerald:   #34D399;
-    --emerald-dim:rgba(52,211,153,0.12);
-    --rose:      #F87171;
-    --rose-dim:  rgba(248,113,113,0.12);
-    --mono:      'Courier New','Consolas',monospace;
+    --bg:          var(--clr-bg);
+    --bg2:         var(--clr-surface);
+    --bg3:         var(--clr-surface-alt);
+    --border:      var(--clr-border);
+    --text:        var(--clr-text);
+    --muted:       var(--clr-text-muted);
+    --mono:        var(--font-mono);
+    --teal:        var(--clr-primary-mid);
+    --teal-dim:    var(--clr-info-bg-alt);
+    --amber:       var(--clr-warn-urgent);
+    --amber-dim:   var(--clr-warn-bg);
+    --indigo:      var(--clr-link);
+    --indigo-dim:  var(--clr-info-bg-2);
+    --emerald:     var(--clr-pass-dark);
+    --emerald-dim: var(--clr-pass-bg);
+    --rose:        var(--clr-danger);
+    --rose-dim:    var(--clr-fail-bg);
+    --text-xs:   0.78rem;
+    --text-sm:   0.864rem;
+    --text-base: 0.984rem;
+    --text-md:   1.02rem;
+    --text-body: 1.14rem;
+    --text-lg:   1.44rem;
+    --text-xl:   1.68rem;
+    --text-2xl:  1.8rem;
   }
-  @media (prefers-color-scheme: light) {
-    :root {
-      --bg:#f0f4fb;--bg2:#e3eaf6;--bg3:#d6e0f0;--border:#b8c8e0;
-      --text:#1a2a44;--muted:#5a7090;
-      --teal-dim:rgba(0,150,120,.10);--amber-dim:rgba(180,100,0,.10);
-      --indigo-dim:rgba(80,80,200,.10);--emerald-dim:rgba(20,150,100,.10);
-      --rose-dim:rgba(200,60,60,.10);
-    }
-  }
-  :root[data-theme="light"]{--bg:#f0f4fb;--bg2:#e3eaf6;--bg3:#d6e0f0;--border:#b8c8e0;--text:#1a2a44;--muted:#5a7090;--teal-dim:rgba(0,150,120,.10);--amber-dim:rgba(180,100,0,.10);--indigo-dim:rgba(80,80,200,.10);--emerald-dim:rgba(20,150,100,.10);--rose-dim:rgba(200,60,60,.10);}
-  :root[data-theme="dark"]{--bg:#0C1628;--bg2:#111f3a;--bg3:#172440;--border:#1e3358;--text:#e2e8f0;--muted:#7a95b8;--teal-dim:rgba(0,201,167,.12);--amber-dim:rgba(245,166,35,.12);--indigo-dim:rgba(129,140,248,.12);--emerald-dim:rgba(52,211,153,.12);--rose-dim:rgba(248,113,113,.12);}
 
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{background:var(--bg);color:var(--text);font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-size:13px;line-height:1.5;padding:20px 16px 48px;}
+  body{background:var(--clr-bg);color:var(--clr-text);font-family:var(--font-sans);font-size:var(--text-body);line-height:1.6;padding:28px 20px 64px;}
+  h1{font-size:var(--text-2xl);font-weight:700;letter-spacing:-.3px;margin-bottom:4px;color:var(--clr-primary-dark);}
+  .subtitle{font-size:var(--text-md);color:var(--clr-text-muted);margin-bottom:10px;}
+  .changelog{font-size:var(--text-md);color:var(--clr-warn-deep-text);background:var(--clr-warn-bg);border:1px solid var(--clr-warn-border);border-radius:var(--r-md);padding:10px 14px;margin-bottom:28px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 
-  h1{font-size:18px;font-weight:700;letter-spacing:-.3px;margin-bottom:3px;}
-  .subtitle{font-size:12px;color:var(--muted);margin-bottom:6px;}
-  .changelog{font-size:11px;color:var(--amber);background:var(--amber-dim);border:1px solid var(--amber);border-radius:6px;padding:6px 10px;margin-bottom:22px;display:flex;align-items:center;gap:6px;}
+  .stage-label{display:inline-flex;align-items:center;gap:8px;font-size:var(--text-sm);font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 14px;border-radius:var(--r-pill);margin-bottom:12px;}
+  .stage-label.teal{background:var(--clr-info-bg-alt);color:var(--clr-primary-mid);border:1px solid var(--clr-primary-border);}
+  .stage-label.amber{background:var(--clr-warn-bg);color:var(--clr-warn-deep-text);border:1px solid var(--clr-warn-border);}
+  .stage-label.indigo{background:var(--clr-info-bg-2);color:var(--clr-info-text);border:1px solid var(--clr-info-border);}
+  .stage-label.emerald{background:var(--clr-pass-bg);color:var(--clr-pass-dark);border:1px solid var(--clr-pass-light);}
+  .stage-label.rose{background:var(--clr-fail-bg);color:var(--clr-fail-dark);border:1px solid rgba(192,57,43,.4);}
+  .stage-num{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);font-weight:800;flex-shrink:0;}
+  .teal .stage-num{background:var(--clr-primary-mid);color:#fff;}
+  .amber .stage-num{background:var(--clr-warn-urgent);color:#fff;}
+  .indigo .stage-num{background:var(--clr-link);color:#fff;}
+  .emerald .stage-num{background:var(--clr-pass-dark);color:#fff;}
+  .rose .stage-num{background:var(--clr-fail-dark);color:#fff;}
 
-  .stage-label{display:inline-flex;align-items:center;gap:7px;font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:3px 10px;border-radius:20px;margin-bottom:8px;}
-  .stage-label.teal{background:var(--teal-dim);color:var(--teal);border:1px solid var(--teal);}
-  .stage-label.amber{background:var(--amber-dim);color:var(--amber);border:1px solid var(--amber);}
-  .stage-label.indigo{background:var(--indigo-dim);color:var(--indigo);border:1px solid var(--indigo);}
-  .stage-label.emerald{background:var(--emerald-dim);color:var(--emerald);border:1px solid var(--emerald);}
-  .stage-num{width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex-shrink:0;}
-  .teal .stage-num{background:var(--teal);color:#0C1628;}
-  .amber .stage-num{background:var(--amber);color:#0C1628;}
-  .indigo .stage-num{background:var(--indigo);color:#0C1628;}
-  .emerald .stage-num{background:var(--emerald);color:#0C1628;}
+  .card{background:var(--clr-surface);border:1px solid var(--clr-border);border-radius:var(--r-xl);padding:16px 18px;}
+  .card.teal-card{border-color:var(--clr-primary-border);}
+  .card.amber-card{border-color:var(--clr-warn-border);}
+  .card.indigo-card{border-color:var(--clr-info-border);}
+  .card.emerald-card{border-color:var(--clr-pass-lighter);}
 
-  .card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;}
-  .card.teal-card{border-color:rgba(0,201,167,.35);}
-  .card.amber-card{border-color:rgba(245,166,35,.35);}
-  .card.indigo-card{border-color:rgba(129,140,248,.35);}
-  .card.emerald-card{border-color:rgba(52,211,153,.35);}
+  .signal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:10px;}
+  .sig-group{background:var(--clr-surface-alt);border:1px solid var(--clr-border);border-radius:var(--r-lg);padding:12px 14px;}
+  .sig-group-title{font-size:var(--text-sm);font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:var(--clr-text-mid);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--clr-border);}
+  .sig-field{font-family:var(--font-mono);font-size:var(--text-base);padding:2px 0;display:flex;align-items:baseline;gap:5px;flex-wrap:wrap;}
+  .fname{color:var(--clr-text-mid);font-weight:600;}
+  .fval{color:var(--clr-primary-mid);font-weight:700;}
+  .fval.amber{color:var(--clr-warn-urgent);}
+  .fval.indigo{color:var(--clr-link);}
 
-  .signal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;}
-  .sig-group{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:9px 10px;}
-  .sig-group-title{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid var(--border);}
-  .sig-field{font-family:var(--mono);font-size:10.5px;padding:2px 0;display:flex;align-items:baseline;gap:4px;}
-  .fname{color:var(--muted);}
-  .fval{color:var(--teal);font-weight:600;}
-  .fval.amber{color:var(--amber);}
-  .fval.indigo{color:var(--indigo);}
+  .arrow-down{display:flex;flex-direction:column;align-items:center;margin:14px 0;}
+  .arrow-line{width:2px;height:22px;background:var(--clr-border-mid);}
+  .arrow-head{width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:10px solid var(--clr-border-mid);}
+  .arrow-label{font-size:var(--text-sm);color:var(--clr-text-muted);font-weight:600;background:var(--clr-surface);padding:3px 12px;border-radius:var(--r-pill);border:1px solid var(--clr-border-mid);white-space:nowrap;margin-bottom:-4px;}
 
-  .arrow-down{display:flex;flex-direction:column;align-items:center;margin:10px 0;}
-  .arrow-line{width:2px;height:18px;background:var(--border);}
-  .arrow-head{width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--border);}
-  .arrow-label{font-size:10px;color:var(--muted);background:var(--bg);padding:1px 8px;border-radius:10px;border:1px solid var(--border);white-space:nowrap;margin-bottom:-4px;}
+  .key-token{font-family:var(--font-mono);font-size:var(--text-md);background:var(--clr-warn-bg);border:1px solid var(--clr-warn-border);color:var(--clr-warn-deep-text);padding:6px 14px;border-radius:var(--r-md);font-weight:700;}
+  .candidate-chip{font-family:var(--font-mono);font-size:var(--text-base);background:var(--clr-surface-alt);border:1px solid var(--clr-border);color:var(--clr-text-dark);padding:5px 12px;border-radius:var(--r-md);display:inline-flex;align-items:center;gap:7px;font-weight:600;}
+  .chip-rank{font-size:var(--text-xs);background:var(--clr-link);color:#fff;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;}
 
-  .key-token{font-family:var(--mono);font-size:12px;background:var(--amber-dim);border:1px solid var(--amber);color:var(--amber);padding:4px 10px;border-radius:6px;font-weight:700;}
-  .candidate-chip{font-family:var(--mono);font-size:10.5px;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:4px 10px;border-radius:6px;display:inline-flex;align-items:center;gap:5px;}
-  .chip-rank{font-size:9px;background:var(--indigo);color:#0C1628;width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;}
+  .scoring-engine{background:var(--clr-info-bg-2);border:1px solid var(--clr-info-border);border-radius:var(--r-xl);padding:18px 20px;}
+  .engine-title{font-size:var(--text-lg);font-weight:700;color:var(--clr-info-text);margin-bottom:16px;}
 
-  .scoring-engine{background:var(--indigo-dim);border:1px solid var(--indigo);border-radius:10px;padding:14px 16px;}
-  .engine-title{font-size:13px;font-weight:700;color:var(--indigo);margin-bottom:12px;}
+  .checks-table{width:100%;border-collapse:collapse;font-size:var(--text-md);font-family:var(--font-mono);}
+  .checks-table th{text-align:left;padding:7px 11px;color:var(--clr-text-muted);font-size:var(--text-sm);font-weight:700;letter-spacing:.7px;text-transform:uppercase;border-bottom:2px solid var(--clr-border);}
+  .checks-table td{padding:7px 11px;border-bottom:1px solid var(--clr-border-light);vertical-align:middle;}
+  .checks-table tr:hover td{background:var(--clr-surface-hover);}
+  .c-pos{color:var(--clr-pass-dark);font-weight:700;text-align:right;}
+  .c-neg{color:var(--clr-danger);font-weight:700;text-align:right;}
+  .c-neu{color:var(--clr-text-muted);text-align:right;font-weight:600;}
+  .c-name{color:var(--clr-text-dark);font-weight:700;}
+  .c-sig{color:var(--clr-text-mid);font-size:var(--text-sm);font-weight:600;}
 
-  .checks-table{width:100%;border-collapse:collapse;font-size:11px;font-family:var(--mono);}
-  .checks-table th{text-align:left;padding:4px 8px;color:var(--muted);font-size:9.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;border-bottom:1px solid var(--border);}
-  .checks-table td{padding:4px 8px;border-bottom:1px solid rgba(30,51,88,.5);vertical-align:middle;}
-  .c-pos{color:var(--emerald);font-weight:700;text-align:right;}
-  .c-neg{color:var(--rose);font-weight:700;text-align:right;}
-  .c-neu{color:var(--muted);text-align:right;}
-  .c-name{color:var(--text);}
-  .c-sig{color:var(--muted);font-size:10px;}
+  .emax-legend{margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;}
+  .emax-item{display:flex;align-items:center;gap:7px;font-size:var(--text-sm);color:var(--clr-text-mid);font-weight:600;}
+  .emax-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
 
-  /* NEW: effective_max legend */
-  .emax-legend{margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;}
-  .emax-item{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted);}
-  .emax-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .formula-box{margin-top:16px;background:var(--clr-surface-alt);border:1px solid var(--clr-border);border-radius:var(--r-lg);padding:14px 18px;font-family:var(--font-mono);font-size:var(--text-md);display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .fml-label{color:var(--clr-text-muted);font-size:var(--text-sm);font-weight:700;}
+  .fml-sep{color:var(--clr-border-mid);font-size:29px;}
 
-  .formula-box{margin-top:12px;background:var(--bg3);border-radius:8px;padding:10px 14px;font-family:var(--mono);font-size:11.5px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
-  .fml-label{color:var(--muted);font-size:10px;}
-  .fml-sep{color:var(--border);font-size:16px;}
+  .gates-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .gate-box{background:var(--clr-surface-alt);border:1px solid var(--clr-border);border-radius:var(--r-lg);padding:14px 16px;}
+  .gate-title{font-size:var(--text-sm);font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--clr-warn-deep-text);margin-bottom:8px;}
+  .gate-rule{font-family:var(--font-mono);font-size:var(--text-md);color:var(--clr-text-dark);margin-bottom:5px;font-weight:600;}
+  .gate-outcome{font-size:var(--text-sm);color:var(--clr-text-mid);font-weight:600;}
+  .yes{color:var(--clr-pass-dark);font-weight:700;}
+  .no{color:var(--clr-danger);font-weight:700;}
+  .toml-tag{font-size:var(--text-xs);font-family:var(--font-mono);font-weight:700;background:var(--clr-warn-bg);color:var(--clr-warn-deep-text);border:1px solid var(--clr-warn-border);border-radius:var(--r-sm);padding:1px 6px;vertical-align:middle;}
 
-  .gates-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-  .gate-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 12px;}
-  .gate-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--amber);margin-bottom:6px;}
-  .gate-rule{font-family:var(--mono);font-size:10.5px;color:var(--text);margin-bottom:3px;}
-  .gate-outcome{font-size:10px;color:var(--muted);}
-  .yes{color:var(--emerald);font-weight:700;}
-  .no{color:var(--rose);font-weight:700;}
-  .toml-tag{font-size:9px;background:var(--amber-dim);color:var(--amber);border:1px solid var(--amber);border-radius:3px;padding:1px 4px;font-family:var(--mono);vertical-align:middle;}
+  .output-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .out-box{background:var(--clr-pass-bg);border:1px solid var(--clr-pass-lighter);border-radius:var(--r-lg);padding:14px 16px;}
+  .out-box.secondary{background:var(--clr-surface-alt);border-color:var(--clr-border);}
+  .out-box.regime-box{background:var(--clr-info-bg-2);border-color:var(--clr-info-border);}
+  .out-field{font-family:var(--font-mono);font-size:var(--text-base);margin-bottom:5px;display:flex;gap:6px;align-items:baseline;flex-wrap:wrap;font-weight:600;}
+  .ok{color:var(--clr-text-muted);}
+  .ov{color:var(--clr-pass-dark);font-weight:700;}
+  .ov.indigo{color:var(--clr-info-text);}
+  .ov.amber{color:var(--clr-warn-deep-text);}
 
-  .output-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-  .out-box{background:var(--emerald-dim);border:1px solid rgba(52,211,153,.3);border-radius:8px;padding:10px 12px;}
-  .out-box.secondary{background:var(--bg3);border-color:var(--border);}
-  .out-box.regime-box{background:var(--indigo-dim);border-color:rgba(129,140,248,.3);}
-  .out-field{font-family:var(--mono);font-size:10.5px;margin-bottom:3px;display:flex;gap:4px;align-items:baseline;flex-wrap:wrap;}
-  .ok{color:var(--muted);}
-  .ov{color:var(--emerald);font-weight:700;}
-  .ov.indigo{color:var(--indigo);}
-  .ov.amber{color:var(--amber);}
+  .conf-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px;}
+  .conf-box{background:var(--clr-surface-alt);border:1px solid var(--clr-border);border-radius:var(--r-lg);padding:12px 14px;}
+  .conf-title{font-size:var(--text-sm);font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:7px;}
+  .conf-rule{font-family:var(--font-mono);font-size:var(--text-sm);color:var(--clr-text-muted);margin-bottom:5px;font-weight:600;}
+  .conf-out{font-size:var(--text-sm);color:var(--clr-text-mid);font-weight:600;}
 
-  /* confidence taxonomy */
-  .conf-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;}
-  .conf-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:9px 11px;}
-  .conf-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px;}
-  .conf-rule{font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:3px;}
-  .conf-out{font-size:10px;color:var(--muted);}
+  .legend{display:flex;gap:20px;flex-wrap:wrap;margin-top:32px;padding-top:20px;border-top:1px solid var(--clr-border);}
+  .legend-item{display:flex;align-items:center;gap:8px;font-size:var(--text-md);color:var(--clr-text-muted);font-weight:600;}
+  .legend-dot{width:10px;height:10px;border-radius:50%;}
 
-  .legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:24px;padding-top:16px;border-top:1px solid var(--border);}
-  .legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);}
-  .legend-dot{width:8px;height:8px;border-radius:50%;}
+  .new-badge{font-size:var(--text-xs);font-weight:800;background:var(--clr-warn-urgent);color:#fff;border-radius:var(--r-sm);padding:1px 6px;vertical-align:middle;margin-left:3px;}
+  .changed-badge{font-size:var(--text-xs);font-weight:800;background:var(--clr-link);color:#fff;border-radius:var(--r-sm);padding:1px 6px;vertical-align:middle;margin-left:3px;}
+  .live-badge{font-size:var(--text-xs);font-weight:800;background:var(--clr-pass-dark);color:#fff;border-radius:var(--r-sm);padding:1px 6px;vertical-align:middle;margin-left:3px;}
+  .req-badge{font-size:var(--text-xs);font-weight:800;background:#7c3aed;color:#fff;border-radius:var(--r-sm);padding:1px 6px;vertical-align:middle;margin-left:3px;}
 
-  .new-badge{font-size:8px;font-weight:700;background:var(--amber);color:#0C1628;border-radius:3px;padding:1px 4px;vertical-align:middle;margin-left:3px;}
-  .changed-badge{font-size:8px;font-weight:700;background:var(--indigo);color:#0C1628;border-radius:3px;padding:1px 4px;vertical-align:middle;margin-left:3px;}
+  .levels-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:7px;margin-top:10px;}
+  .level-chip{background:var(--clr-surface);border:1px solid var(--clr-border);border-radius:var(--r-md);padding:6px 10px;font-family:var(--font-mono);font-size:var(--text-base);display:flex;justify-content:space-between;align-items:center;gap:8px;}
+  .lv-name{color:var(--clr-text-muted);font-weight:700;}
+  .lv-pos{color:var(--clr-pass-dark);font-weight:700;}
+  .lv-neg{color:var(--clr-danger);font-weight:700;}
+  .lv-zero{color:var(--clr-text-subtle);font-weight:700;}
 
-  @media(max-width:520px){.gates-row,.output-grid,.conf-grid{grid-template-columns:1fr;}.signal-grid{grid-template-columns:1fr 1fr;}}
+  .cfg-block{background:var(--clr-surface);border:1px dashed var(--clr-border-mid);border-radius:var(--r-lg);padding:12px 16px;font-family:var(--font-mono);font-size:var(--text-base);margin-top:10px;}
+  .cfg-file{font-size:var(--text-xs);font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--clr-warn-deep-text);margin-bottom:7px;}
+  .cfg-k{color:var(--clr-primary-mid);}
+  .cfg-v{color:var(--clr-pass-dark);}
+
+  .abbr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:7px;margin-top:10px;}
+  .abbr-chip{background:var(--clr-surface);border:1px solid var(--clr-border);border-radius:var(--r-md);padding:6px 11px;font-family:var(--font-mono);font-size:var(--text-base);display:flex;gap:9px;align-items:center;font-weight:600;}
+  .ab-tag{color:var(--clr-warn-deep-text);font-weight:700;min-width:34px;}
+  .ab-name{color:var(--clr-text-mid);font-weight:600;}
+
+  @media(max-width:600px){
+    .gates-row,.output-grid,.conf-grid{grid-template-columns:1fr;}
+    .signal-grid{grid-template-columns:1fr 1fr;}
+  }
+
+  .planned-badge{font-size:var(--text-xs);font-weight:800;background:var(--clr-text-subtle);color:#fff;border-radius:var(--r-sm);padding:1px 6px;vertical-align:middle;margin-left:3px;}
+  .gap-badge{font-size:var(--text-xs);font-weight:800;background:var(--clr-fail-dark);color:#fff;border-radius:var(--r-sm);padding:1px 6px;vertical-align:middle;margin-left:3px;}
+  .planned-group{border-style:dashed!important;border-color:var(--clr-border-mid)!important;background:var(--clr-surface)!important;}
+  .planned-group .sig-group-title{color:var(--clr-text-subtle)!important;}
+  .live-group{border-color:rgba(22,163,74,.35)!important;background:var(--clr-pass-bg)!important;}
+  .live-group .sig-group-title{color:var(--clr-pass-dark)!important;}
+
+  .filter-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;}
+  .filter-box{background:var(--clr-fail-bg);border:1px solid rgba(192,57,43,.3);border-radius:var(--r-lg);padding:12px 14px;}
+  .filter-box.live-filter{background:var(--clr-pass-bg);border-color:rgba(22,163,74,.3);}
+  .filter-title{font-size:var(--text-sm);font-weight:700;color:var(--clr-fail-dark);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px;}
+  .filter-box.live-filter .filter-title{color:var(--clr-pass-dark);}
+  .filter-rule{font-family:var(--font-mono);font-size:var(--text-base);color:var(--clr-text-dark);padding:2px 0;font-weight:600;display:flex;gap:6px;align-items:baseline;flex-wrap:wrap;}
+  .fr-cond{color:var(--clr-danger);font-weight:700;}
+  .fr-cond.pass{color:var(--clr-pass-dark);}
+  .fr-label{color:var(--clr-text-muted);font-size:var(--text-sm);}
+
+  .risk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;}
+  .risk-box{background:var(--clr-surface-alt);border:1px solid var(--clr-border);border-radius:var(--r-lg);padding:12px 14px;}
+  .risk-title{font-size:var(--text-sm);font-weight:700;color:var(--clr-text-dark);margin-bottom:7px;text-transform:uppercase;letter-spacing:.6px;}
+  .risk-field{font-family:var(--font-mono);font-size:var(--text-base);color:var(--clr-text-mid);padding:2px 0;font-weight:600;}
+
+  .ref-section{margin-top:32px;padding-top:20px;border-top:2px dashed var(--clr-border);}
+  .ref-title{font-size:var(--text-sm);font-weight:700;color:var(--clr-text-muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:.8px;}
+  .ref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;}
+  .ref-box{background:var(--clr-surface-alt);border:1px dashed var(--clr-border-mid);border-radius:var(--r-lg);padding:10px 13px;}
+  .ref-box-title{font-size:var(--text-sm);font-weight:700;color:var(--clr-text-dark);margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--clr-border-light);}
+  .ref-item{font-family:var(--font-mono);font-size:var(--text-sm);color:var(--clr-text-mid);padding:1px 0;font-weight:600;}
 </style>
 
 <h1>Structure Selection — Process Flow</h1>
 <p class="subtitle">How a ticker's signals flow through the engine to select an options strategy</p>
 <div class="changelog">
-  ⚡ Updated — effective_max = applicable (not fired) &nbsp;·&nbsp; gates in scoring.toml &nbsp;·&nbsp; regime explanation in output &nbsp;·&nbsp; near-tie both-must-clear fix
+  ⚡ Updated 2026-07-23 &nbsp;·&nbsp;
+  Phase 1 signals live: <code>atr</code>, <code>hv30</code>, <code>iv_percentile</code>, <code>earnings_dte</code>, <code>div_dte</code> &nbsp;·&nbsp;
+  <strong>Options Analytics live</strong>: <code>oi_concentration</code>, <code>max_pain_distance_pct</code>, <code>iv_change_5d</code> &nbsp;·&nbsp;
+  <strong>Unusual OI Activity live</strong>: per-strike OI snapshots → <code>oi_changes</code>; spike vs 10-day rolling avg &nbsp;·&nbsp;
+  <strong>Feature Expansion live</strong>: <code>iv_hv_ratio</code> (scored), <code>vol_pcr</code> + <code>pcr_diverge</code> (scored), <code>term_slope</code> continuous, <code>expected_move_pct</code> infra — <strong>25 evaluators total</strong> &nbsp;·&nbsp;
+  <strong>HY OAS collecting</strong>: FRED <code>BAMLH0A0HYM2</code> saved to <code>hy_oas_history</code> each scan (no scoring until 90d history) &nbsp;·&nbsp;
+  <strong>Feature Store live</strong>: <code>feature_metadata</code> (28 features seeded, DAG edges), <code>feature_snapshots</code> (per-scan historical record) &nbsp;·&nbsp;
+  <strong>Liquidity gate live</strong> (Gate 11): <code>short_leg_oi</code>, <code>short_leg_volume</code>, <code>short_leg_ba_pct</code> &nbsp;·&nbsp;
+  <strong>Bug fixes</strong>: <code>iv_change_5d</code> all-null fixed (VARCHAR cast + DuckDB connection leak); 10,087 rows backfilled; <code>div_dte</code> added to CDS/Calendar/Diagonal/RCB &nbsp;·&nbsp;
+  Capital-rejected report: expiry fix + 3 new columns &nbsp;·&nbsp;
+  <code>required = true</code> → <code>confidence_multiplier</code> penalty &nbsp;·&nbsp;
+  <code>DataQualityReport</code> + <code>TradeCandidate</code> live
 </div>
 
 <!-- ══ STAGE 1 ══ -->
@@ -162,6 +222,64 @@
       <div class="sig-field"><span class="fname">analyst ratings</span><span class="fval">consensus</span></div>
       <div class="sig-field"><span class="fname">short float</span><span class="fval">squeeze risk</span></div>
     </div>
+    <!-- Event Risk — live since Phase 1 -->
+    <div class="sig-group live-group">
+      <div class="sig-group-title">📅 Event Risk <span class="live-badge">LIVE</span></div>
+      <div class="sig-field"><span class="fname">earnings_dte</span><span class="fval">days to next earnings</span></div>
+      <div class="sig-field"><span class="fname">div_days_to_ex</span><span class="fval">days to ex-div</span></div>
+    </div>
+    <!-- Extended Vol — live since Phase 1 -->
+    <div class="sig-group live-group">
+      <div class="sig-group-title">📊 Extended Vol <span class="live-badge">LIVE</span></div>
+      <div class="sig-field"><span class="fname">hv30</span><span class="fval">30-day realized vol</span></div>
+      <div class="sig-field"><span class="fname">atr_pct</span><span class="fval">ATR / price %</span></div>
+      <div class="sig-field"><span class="fname">iv_rank_52w</span><span class="fval">52-week IV rank [0–1]</span></div>
+    </div>
+    <div class="sig-group live-group">
+      <div class="sig-group-title">💧 Liquidity <span class="live-badge">LIVE</span></div>
+      <div class="sig-field"><span class="fname">open_interest</span><span class="fval">short-leg OI</span></div>
+      <div class="sig-field"><span class="fname">bid_ask_spread_pct</span><span class="fval">% of mid</span></div>
+      <div class="sig-field"><span class="fname">option_volume</span><span class="fval">short-leg daily vol</span></div>
+    </div>
+    <div class="sig-group live-group">
+      <div class="sig-group-title">🌐 Macro Breadth — Partial <span class="live-badge">LIVE</span></div>
+      <div class="sig-field"><span class="fname">yield_curve</span><span class="fval">2s10s spread (FRED)</span></div>
+      <div class="sig-field"><span class="fname">hy_oas</span><span class="fval">HY OAS bp — collecting <span class="new-badge">NEW</span></span></div>
+      <div class="sig-field"><span class="fname" style="font-size:9.5px;color:var(--muted)">BAMLH0A0HYM2 → hy_oas_history; no scoring until 90d</span></div>
+      <div class="sig-field"><span class="fname">vvix</span><span class="fval">vol-of-vol</span></div>
+      <div class="sig-field"><span class="fname">sector_rel_strength</span><span class="fval amber">planned</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="arrow-down"><div class="arrow-line"></div><div class="arrow-label">signal extraction + data quality check</div><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+<!-- ══ DATA QUALITY ══ -->
+<div class="stage-label teal"><span class="stage-num">Q</span>Data Quality Pre-Check — DataQualityReport <span class="live-badge">LIVE</span></div>
+<div class="card teal-card">
+  <div style="font-size:var(--text-sm);color:var(--clr-text-muted);margin-bottom:12px;">
+    Runs <strong>before</strong> evaluators. Stamps <code>stale_fields[]</code> on any market dict key whose underlying data is absent or near-zero.
+    <code>apply_quality_mask()</code> nulls those fields — evaluators return <code>score=None</code> automatically, excluding them from <code>effective_max</code>.
+    Evaluators never need to know about freshness.
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+    <div style="background:var(--clr-surface-alt);border:1px solid var(--clr-border);border-radius:var(--r-lg);padding:12px 14px;">
+      <div style="font-size:var(--text-sm);font-weight:700;color:var(--clr-text-dark);margin-bottom:8px;">DataQualityReport fields</div>
+      <div class="risk-field"><code>integrity_ok</code> — False when any stale field found</div>
+      <div class="risk-field"><code>stale_fields[]</code> — market keys nulled before scoring</div>
+      <div class="risk-field"><code>warnings[]</code> — soft issues surfaced to UI</div>
+      <div class="risk-field"><code>iv_stale</code> — IV near-zero → nulls iv_premium, iv_rank_52w, vol_skew_pct, iv_term_shape</div>
+      <div class="risk-field"><code>hv_stale</code> — HV absent → nulls iv_premium</div>
+      <div class="risk-field"><code>chain_thin</code> — &lt;5 OI strikes or all bids zero</div>
+    </div>
+    <div style="background:var(--clr-surface-alt);border:1px solid var(--clr-border);border-radius:var(--r-lg);padding:12px 14px;">
+      <div style="font-size:var(--text-sm);font-weight:700;color:var(--clr-text-dark);margin-bottom:8px;">Stale field → scoring outcome</div>
+      <div class="risk-field" style="color:var(--clr-text-muted);">market[key] = None</div>
+      <div class="risk-field" style="color:var(--clr-text-muted);">→ evaluator returns score=None</div>
+      <div class="risk-field" style="color:var(--clr-text-muted);">→ excluded from effective_max</div>
+      <div class="risk-field" style="color:var(--clr-text-muted);">→ added to missing_signals[]</div>
+      <div class="risk-field" style="color:#7c3aed;font-weight:700;">→ if required=true: also added to required_missing[] + confidence_multiplier penalty</div>
+    </div>
   </div>
 </div>
 
@@ -175,26 +293,46 @@
       <div class="sig-group-title">📈 Trend / Momentum</div>
       <div class="sig-field"><span class="fname">trend</span><span class="fval">Uptrend | Down | Range</span></div>
       <div class="sig-field"><span class="fname">weekly_trend</span><span class="fval">confirms / conflicts</span></div>
-      <div class="sig-field"><span class="fname">ema200_position</span><span class="fval">above | below</span></div>
+      <div class="sig-field"><span class="fname">ema_distance_pct <span class="changed-badge">CHANGED</span></span><span class="fval">(price−EMA200)/EMA200×100</span></div>
+      <div class="sig-field"><span class="fname" style="font-size:9.5px;color:var(--indigo)">continuous signed; replaces binary above/below</span></div>
       <div class="sig-field"><span class="fname">macd_trend</span><span class="fval">Bullish | Bearish</span></div>
       <div class="sig-field"><span class="fname">rsi</span><span class="fval amber">0 – 100</span></div>
       <div class="sig-field"><span class="fname">adx</span><span class="fval amber">0 – 50+</span></div>
+      <div class="sig-field"><span class="fname">adx_slope <span class="changed-badge">CHANGED</span></span><span class="fval amber">adx[-1] − adx[-2]</span></div>
     </div>
-    <div class="sig-group">
-      <div class="sig-group-title">📊 Vol / IV</div>
+    <div class="sig-group live-group">
+      <div class="sig-group-title">📊 Vol / IV <span class="live-badge">LIVE</span></div>
       <div class="sig-field"><span class="fname">iv_env</span><span class="fval">High | Low</span></div>
       <div class="sig-field"><span class="fname">iv_rank_proxy</span><span class="fval amber">0 – 1</span></div>
       <div class="sig-field"><span class="fname">iv_premium</span><span class="fval">atm_iv − hv20</span></div>
+      <div class="sig-field"><span class="fname">iv_hv_ratio <span class="new-badge">NEW</span></span><span class="fval">atm_iv / hv20</span></div>
+      <div class="sig-field"><span class="fname" style="font-size:9.5px;color:var(--muted)">orthogonal to iv_premium; adjusts for base vol level</span></div>
       <div class="sig-field"><span class="fname">vol_skew_pct</span><span class="fval">put IV − call IV</span></div>
       <div class="sig-field"><span class="fname">iv_term_shape</span><span class="fval">Contango | Back | Flat</span></div>
+      <div class="sig-field"><span class="fname">term_slope <span class="new-badge">NEW</span></span><span class="fval">(front_iv − back_iv) continuous</span></div>
+      <div class="sig-field"><span class="fname" style="font-size:9.5px;color:var(--muted)">stored in TechnicalContext + snapshots; not yet scored</span></div>
+      <div class="sig-field"><span class="fname">expected_move_pct <span class="new-badge">NEW</span></span><span class="fval">(call_mid + put_mid) / spot</span></div>
+      <div class="sig-field"><span class="fname" style="font-size:9.5px;color:var(--muted)">infrastructure — strike selection + future atr_vs_expected</span></div>
     </div>
-    <div class="sig-group">
-      <div class="sig-group-title">🌊 Flow / Sentiment</div>
+    <div class="sig-group live-group">
+      <div class="sig-group-title">🌊 Flow / Sentiment <span class="live-badge">LIVE</span></div>
       <div class="sig-field"><span class="fname">pcr_sentiment</span><span class="fval">Bullish | Bearish | Neutral</span></div>
+      <div class="sig-field"><span class="fname">vol_pcr <span class="new-badge">NEW</span></span><span class="fval">put_vol / call_vol (tactical)</span></div>
+      <div class="sig-field"><span class="fname">pcr_diverge <span class="new-badge">NEW</span></span><span class="fval">oi_pcr − vol_pcr (signed)</span></div>
+      <div class="sig-field"><span class="fname" style="font-size:9.5px;color:var(--muted)">OI = structural/slow · vol = tactical/fast · divergence is its own signal</span></div>
       <div class="sig-field"><span class="fname">news_sentiment</span><span class="fval">Bullish | Bearish | Mixed</span></div>
       <div class="sig-field"><span class="fname">analyst_label</span><span class="fval">Bullish | Bearish | Neutral</span></div>
       <div class="sig-field"><span class="fname">short_interest</span><span class="fval amber">% float</span></div>
       <div class="sig-field"><span class="fname">rel_volume</span><span class="fval amber">× avg vol</span></div>
+    </div>
+    <!-- Phase 1 signals — live -->
+    <div class="sig-group live-group">
+      <div class="sig-group-title">⚡ Phase 1 Signals <span class="live-badge">LIVE</span></div>
+      <div class="sig-field"><span class="fname">atr_pct</span><span class="fval">ATR(14) / price %</span></div>
+      <div class="sig-field"><span class="fname">hv30</span><span class="fval">30d realized vol (ann.)</span></div>
+      <div class="sig-field"><span class="fname">iv_rank_52w</span><span class="fval">52w HV percentile [0–1]</span></div>
+      <div class="sig-field"><span class="fname">earnings_dte</span><span class="fval">days to next earnings</span></div>
+      <div class="sig-field"><span class="fname">div_days_to_ex</span><span class="fval">days to ex-dividend</span></div>
     </div>
     <div class="sig-group" style="border-color:rgba(129,140,248,.4);">
       <div class="sig-group-title" style="color:var(--indigo)">⚡ Regime — weight multiplier</div>
@@ -206,7 +344,26 @@
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;"><span style="color:var(--text)">market_ctx</span><span style="color:var(--emerald);text-align:center">×2.0</span><span style="color:var(--muted);text-align:right">×0.8</span></div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;"><span style="color:var(--text)">flow</span><span style="color:var(--rose);text-align:center">×0.3</span><span style="color:var(--muted);text-align:right">×0.5</span></div>
       </div>
-      <div style="margin-top:6px;font-size:9px;color:var(--indigo)">→ Surfaces in output as regime_explanation + weight_profile <span class="new-badge">NEW</span></div>
+    </div>
+    <div class="sig-group live-group">
+      <div class="sig-group-title">⟨⟩ Options Analytics <span class="live-badge">LIVE</span></div>
+      <div class="sig-field"><span class="fname">oi_concentration</span><span class="fval">OI within ±10% spot</span></div>
+      <div class="sig-field"><span class="fname">max_pain_distance_pct</span><span class="fval">(max_pain−spot)/spot×100</span></div>
+      <div class="sig-field"><span class="fname">iv_change_5d</span><span class="fval">ATM IV Δ vs 7d ago</span></div>
+    </div>
+    <div class="sig-group planned-group">
+      <div class="sig-group-title">⟨⟩ Options Analytics — Advanced <span class="planned-badge">PLANNED</span></div>
+      <div class="sig-field"><span class="fname">gex</span><span class="fval amber">gamma exposure $</span></div>
+      <div class="sig-field"><span class="fname">dealer_positioning</span><span class="fval amber">long / short gamma</span></div>
+    </div>
+    <div class="sig-group live-group">
+      <div class="sig-group-title">🚩 Smart Flow — Partial <span class="live-badge">LIVE</span></div>
+      <div class="sig-field"><span class="fname">unusual_activity</span><span class="fval">max per-strike OI spike ratio</span></div>
+    </div>
+    <div class="sig-group planned-group">
+      <div class="sig-group-title">🚩 Smart Flow — Advanced <span class="planned-badge">PLANNED</span></div>
+      <div class="sig-field"><span class="fname">dark_pool_flow</span><span class="fval amber">buy / sell bias</span></div>
+      <div class="sig-field"><span class="fname">whale_trades</span><span class="fval amber">&gt;$1M premium</span></div>
     </div>
   </div>
 </div>
@@ -219,11 +376,11 @@
   <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
     <div class="key-token">(iv_env, trend)</div>
     <span style="color:var(--border);font-size:18px">→</span>
-    <span style="font-size:11px;color:var(--muted)">registry dict → list of eligible structures (from allowed_iv + allowed_trends tuples)</span>
+    <span style="font-size:11px;color:var(--muted)">registry dict → list of eligible structures (from <code>allowed_iv</code> + <code>allowed_trends</code> on each <code>OptionStructure</code>). All 6 keys covering all 28 structures:</span>
   </div>
   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;">
     <div class="sig-group">
-      <div class="sig-group-title" style="color:var(--amber)">("High","Uptrend")</div>
+      <div class="sig-group-title" style="color:var(--amber)">("High", "Uptrend")</div>
       <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">
         <span class="candidate-chip"><span class="chip-rank">1</span>Put Credit Spread</span>
         <span class="candidate-chip"><span class="chip-rank">2</span>Jade Lizard</span>
@@ -232,189 +389,424 @@
       </div>
     </div>
     <div class="sig-group">
-      <div class="sig-group-title" style="color:var(--amber)">("Low","Uptrend")</div>
+      <div class="sig-group-title" style="color:var(--amber)">("High", "Downtrend")</div>
       <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">
-        <span class="candidate-chip"><span class="chip-rank">1</span>Call Debit Spread</span>
-        <span class="candidate-chip"><span class="chip-rank">2</span>Diagonal</span>
-        <span class="candidate-chip"><span class="chip-rank">3</span>LEAPS Long Call</span>
-        <span class="candidate-chip"><span class="chip-rank">4</span>Risk Reversal</span>
-        <span class="candidate-chip"><span class="chip-rank">5</span>Fin. Long Call</span>
+        <span class="candidate-chip"><span class="chip-rank">1</span>Call Credit Spread</span>
+        <span class="candidate-chip"><span class="chip-rank">2</span>Bear Combo</span>
       </div>
     </div>
     <div class="sig-group">
-      <div class="sig-group-title" style="color:var(--amber)">("High","Range-bound")</div>
+      <div class="sig-group-title" style="color:var(--amber)">("High", "Range-bound")</div>
       <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">
         <span class="candidate-chip"><span class="chip-rank">1</span>Iron Condor</span>
-        <span class="candidate-chip"><span class="chip-rank">2</span>Jade Lizard</span>
-        <span class="candidate-chip"><span class="chip-rank">3</span>Covered Call</span>
-        <span class="candidate-chip"><span class="chip-rank">4</span>Naked Put</span>
+        <span class="candidate-chip"><span class="chip-rank">2</span>Iron Butterfly</span>
+        <span class="candidate-chip"><span class="chip-rank">3</span>Short Strangle</span>
+        <span class="candidate-chip"><span class="chip-rank">4</span>Short Straddle</span>
+        <span class="candidate-chip"><span class="chip-rank">5</span>Jade Lizard</span>
+        <span class="candidate-chip"><span class="chip-rank">6</span>Covered Call</span>
+        <span class="candidate-chip"><span class="chip-rank">7</span>Naked Put</span>
+      </div>
+    </div>
+    <div class="sig-group">
+      <div class="sig-group-title" style="color:var(--amber)">("Low", "Uptrend")</div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">
+        <span class="candidate-chip"><span class="chip-rank">1</span>Call Debit Spread</span>
+        <span class="candidate-chip"><span class="chip-rank">2</span>Long Call</span>
+        <span class="candidate-chip"><span class="chip-rank">3</span>Bull Call Ladder</span>
+        <span class="candidate-chip"><span class="chip-rank">4</span>Diagonal Spread</span>
+        <span class="candidate-chip"><span class="chip-rank">5</span>Poor Man's Cov. Call</span>
+        <span class="candidate-chip"><span class="chip-rank">6</span>LEAPS Long Call</span>
+        <span class="candidate-chip"><span class="chip-rank">7</span>Risk Reversal</span>
+        <span class="candidate-chip"><span class="chip-rank">8</span>Financed Long Call</span>
+        <span class="candidate-chip"><span class="chip-rank">9</span>Ratio Call Backspread</span>
+      </div>
+    </div>
+    <div class="sig-group">
+      <div class="sig-group-title" style="color:var(--amber)">("Low", "Downtrend")</div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">
+        <span class="candidate-chip"><span class="chip-rank">1</span>Put Debit Spread</span>
+        <span class="candidate-chip"><span class="chip-rank">2</span>Long Put</span>
+        <span class="candidate-chip"><span class="chip-rank">3</span>Diagonal Spread</span>
+        <span class="candidate-chip"><span class="chip-rank">4</span>Financed Long Put</span>
+        <span class="candidate-chip"><span class="chip-rank">5</span>Ratio Put Backspread</span>
+      </div>
+    </div>
+    <div class="sig-group">
+      <div class="sig-group-title" style="color:var(--amber)">("Low", "Range-bound")</div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">
+        <span class="candidate-chip"><span class="chip-rank">1</span>Calendar Spread</span>
+        <span class="candidate-chip"><span class="chip-rank">2</span>Double Calendar</span>
+        <span class="candidate-chip"><span class="chip-rank">3</span>Long Straddle</span>
+        <span class="candidate-chip"><span class="chip-rank">4</span>Long Strangle</span>
       </div>
     </div>
   </div>
 </div>
 
-<div class="arrow-down"><div class="arrow-line"></div><div class="arrow-label">score each candidate independently</div><div class="arrow-line"></div><div class="arrow-head"></div></div>
+<div class="arrow-down"><div class="arrow-line"></div><div class="arrow-label">hard filter pass — StructureConstraints</div><div class="arrow-line"></div><div class="arrow-head"></div></div>
 
-<!-- ══ STAGE 4 ══ -->
-<div class="stage-label indigo"><span class="stage-num">4</span>Signal Alignment Scoring — compute_signal_alignment()</div>
-<div class="scoring-engine">
-  <div class="engine-title">Called once per candidate &nbsp;·&nbsp; weights = get_sub_weight(factor, sub, regime)</div>
+<!-- ══ HARD FILTERS — LIVE ══ -->
+<div class="stage-label amber"><span class="stage-num">✓</span>Pre-Scoring Hard Filters — _hard_filter_pass() <span class="live-badge">LIVE</span></div>
+<div class="card amber-card">
+  <div style="font-size:var(--text-sm);color:var(--clr-text-muted);margin-bottom:12px;">
+    Binary pass/fail gates checked <strong>before signal scoring</strong>. A structure that fails any gate is eliminated entirely and never enters the scoring engine.
+    Rules live in each structure's <code>OptionStructure.constraints: StructureConstraints</code> field (<code>config/structures/_base.py</code>).
+    Failures surface in output as <code>hard_filter_hits[]</code> and <code>rejection_reason</code>.
+  </div>
 
-  <!-- effective_max explanation callout -->
-  <div style="background:var(--bg3);border:1px solid var(--indigo);border-radius:8px;padding:10px 13px;margin-bottom:12px;font-size:11px;">
-    <strong style="color:var(--indigo)">effective_max = applicable weight sum <span class="changed-badge">CHANGED</span></strong>
-    <div style="color:var(--muted);margin-top:5px;line-height:1.6">
-      A check enters <code style="color:var(--indigo)">effective_max</code> when the structure has a scoring rule for it —
-      regardless of whether the signal value was positive, negative, or in a neutral zone.
-      Only checks where <em>no rule exists</em> for this structure are excluded entirely.
+  <!-- StructureConstraints fields -->
+  <div style="background:var(--clr-surface-alt);border:1px solid var(--clr-border);border-radius:var(--r-lg);padding:12px 14px;margin-bottom:14px;font-size:var(--text-sm);">
+    <div style="font-weight:700;color:var(--clr-text-dark);margin-bottom:8px;font-size:var(--text-sm);text-transform:uppercase;letter-spacing:.7px;">StructureConstraints dataclass fields</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:6px;font-family:var(--font-mono);font-size:var(--text-sm);">
+      <div><span style="color:var(--clr-primary-mid)">min_dte / max_dte</span> <span style="color:var(--clr-text-muted)">— DTE range gate</span></div>
+      <div><span style="color:var(--clr-pass-dark)">earnings_dte_min</span> <span style="color:var(--clr-text-muted)">— reject if earnings &lt; N days (credit: too close)</span></div>
+      <div><span style="color:var(--clr-pass-dark)">earnings_dte_max</span> <span style="color:var(--clr-text-muted)">— reject if earnings &gt; N days (vol: too far / absent)</span></div>
+      <div><span style="color:var(--clr-primary-mid)">min_iv_rank / max_iv_rank</span> <span style="color:var(--clr-text-muted)">— IV rank bounds</span></div>
+      <div><span style="color:var(--clr-primary-mid)">allowed_trends</span> <span style="color:var(--clr-text-muted)">— empty = all pass</span></div>
     </div>
-    <div class="emax-legend" style="margin-top:8px;">
-      <div class="emax-item"><div class="emax-dot" style="background:var(--emerald)"></div>Fires positive — score +wt, effective_max +wt, appears in contributions[]</div>
-      <div class="emax-item"><div class="emax-dot" style="background:var(--rose)"></div>Fires negative — score −wt, effective_max +wt, appears in contributions[]</div>
-      <div class="emax-item"><div class="emax-dot" style="background:var(--muted)"></div>Neutral zone — score +0, effective_max +wt, silent (no UI noise)</div>
-      <div class="emax-item"><div class="emax-dot" style="background:var(--border)"></div>Not applicable — score +0, effective_max unchanged</div>
+    <div style="margin-top:6px;font-size:var(--text-xs);color:var(--clr-text-muted);">
+      Replaces the old <code>earnings_buffer</code> field with an explicit symmetric pair:
+      credit structures use <code>earnings_dte_min</code> (earnings too close = event risk);
+      vol-expansion structures use <code>earnings_dte_max</code> (earnings too far = no catalyst).
+      Unknown earnings date with <code>earnings_dte_max</code> set also triggers rejection.
     </div>
   </div>
 
+  <div class="filter-grid">
+    <div class="filter-box live-filter">
+      <div class="filter-title">Long Straddle <span class="live-badge">LIVE</span></div>
+      <div class="filter-rule"><span class="fr-label">reject if</span><span class="fr-cond pass">earnings_dte &gt; 21d</span></div>
+      <div class="filter-rule"><span class="fr-label">reject if</span><span class="fr-cond pass">earnings_dte unknown</span></div>
+      <div style="font-size:var(--text-xs);color:var(--clr-text-muted);margin-top:4px;">earnings_dte_max=21 — thesis is the event itself; no confirmed catalyst = no trade</div>
+    </div>
+    <div class="filter-box live-filter">
+      <div class="filter-title">Long Strangle <span class="live-badge">LIVE</span></div>
+      <div class="filter-rule"><span class="fr-label">reject if</span><span class="fr-cond pass">earnings_dte &gt; 25d</span></div>
+      <div class="filter-rule"><span class="fr-label">reject if</span><span class="fr-cond pass">earnings_dte unknown</span></div>
+      <div style="font-size:var(--text-xs);color:var(--clr-text-muted);margin-top:4px;">earnings_dte_max=25 — wider strikes buy more time but catalyst must be imminent</div>
+    </div>
+    <div class="filter-box live-filter">
+      <div class="filter-title">Iron Condor <span class="live-badge">LIVE</span></div>
+      <div class="filter-rule"><span class="fr-label">reject if</span><span class="fr-cond">earnings_dte &lt; 12d</span></div>
+      <div style="font-size:var(--text-xs);color:var(--clr-text-muted);margin-top:4px;">earnings_dte_min=12 — IV spike on either wing converts a range trade into a gap trade</div>
+    </div>
+    <div class="filter-box live-filter">
+      <div class="filter-title">Iron Butterfly <span class="live-badge">LIVE</span></div>
+      <div class="filter-rule"><span class="fr-label">reject if</span><span class="fr-cond">earnings_dte &lt; 10d</span></div>
+      <div style="font-size:var(--text-xs);color:var(--clr-text-muted);margin-top:4px;">earnings_dte_min=10 — tighter than IC (ATM shorts); any gap breaches both short strikes</div>
+    </div>
+    <div class="filter-box">
+      <div class="filter-title">DTE / IV Rank gates <span class="planned-badge">PER-STRUCTURE</span></div>
+      <div class="filter-rule"><span class="fr-label">reject if</span><span class="fr-cond">dte &lt; min_dte</span></div>
+      <div class="filter-rule"><span class="fr-label">reject if</span><span class="fr-cond">dte &gt; max_dte</span></div>
+      <div class="filter-rule"><span class="fr-label">reject if</span><span class="fr-cond">iv_rank &lt; min_iv_rank</span></div>
+      <div class="filter-rule"><span class="fr-label">reject if</span><span class="fr-cond">trend ∉ allowed_trends</span></div>
+      <div style="font-size:var(--text-xs);color:var(--clr-text-muted);margin-top:4px;">Mechanism live; activates when structure file sets constraints=StructureConstraints(...)</div>
+    </div>
+  </div>
+</div>
+
+<div class="arrow-down"><div class="arrow-line"></div><div class="arrow-label">score each survivor independently</div><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+<!-- ══ STAGE 4 ══ -->
+<div class="stage-label indigo"><span class="stage-num">4</span>Generic Signal Scoring Engine — compute_signal_alignment()</div>
+<div class="scoring-engine">
+  <div class="engine-title">Called once per candidate &nbsp;·&nbsp; weights + preferences from structure_scores.toml &nbsp;·&nbsp; thresholds from signal_params.toml &nbsp;·&nbsp; <strong>25 registered evaluators</strong></div>
+
+  <!-- evaluate() dispatch -->
+  <div style="background:var(--bg3);border:1px solid var(--indigo);border-radius:8px;padding:10px 13px;margin-bottom:12px;font-size:11px;">
+    <strong style="color:var(--indigo)">Generic evaluate() dispatch</strong>
+    <div style="color:var(--muted);margin-top:5px;line-height:1.6">
+      Each signal has a registered evaluator function. The engine dispatches by signal name:<br>
+      <code style="color:var(--teal)">evaluate(signal, preference, market) → EvaluationResult</code>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;font-family:var(--mono);font-size:10px;">
+      <div style="background:var(--bg2);border-radius:6px;padding:7px 10px;">
+        <div style="color:var(--indigo);font-weight:700;margin-bottom:4px;">EvaluationResult</div>
+        <div style="color:var(--muted)">score &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;float ∈ [-1, +1] <em>or</em> None</div>
+        <div style="color:var(--muted)">confidence float ∈ [0, 1]</div>
+        <div style="color:var(--muted)">explanation str → UI / audit trail</div>
+      </div>
+      <div style="background:var(--bg2);border-radius:6px;padding:7px 10px;">
+        <div style="color:var(--indigo);font-weight:700;margin-bottom:4px;">score = None when…</div>
+        <div style="color:var(--muted)">required market field absent (stale / None)</div>
+        <div style="color:var(--muted)">→ signal skipped entirely</div>
+        <div style="color:var(--muted)">→ excluded from effective_max</div>
+        <div style="color:#7c3aed;font-weight:700;">→ if required=true: required_missing[] + ×0.70 penalty per signal</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- required = true concept -->
+  <div style="background:var(--bg3);border:1px solid #7c3aed;border-radius:8px;padding:10px 13px;margin-bottom:12px;">
+    <div style="font-size:10px;font-weight:700;color:#7c3aed;margin-bottom:6px;">required = true — distinguishes missing data from unfavorable data <span class="live-badge">LIVE</span></div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">
+      A signal marked <code>required = true</code> in <code>structure_scores.toml</code> has a different failure mode than an optional signal:
+      <br>— <strong>Optional signal absent</strong>: silently excluded from effective_max. Score proceeds with remaining signals.
+      <br>— <strong>Required signal absent</strong>: added to <code>required_missing[]</code>; <code>confidence_multiplier ×= 0.70</code> per missing required signal.
+      <br>Two missing required signals → ×0.49 multiplier applied to the final <code>pct</code> before rating and output.
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;font-family:var(--mono);font-size:10px;">
+      <div style="background:var(--bg2);border-radius:6px;padding:7px 10px;">
+        <div style="color:#7c3aed;font-weight:700;margin-bottom:4px;">Long Straddle / Strangle</div>
+        <div style="color:var(--muted)">earnings_dte required=true</div>
+        <div style="color:var(--muted)">→ "cannot evaluate catalyst risk"</div>
+        <div style="color:var(--muted);">Note: gate (earnings_dte_max) also fires when</div>
+        <div style="color:var(--muted);">data is unknown → double protection</div>
+      </div>
+      <div style="background:var(--bg2);border-radius:6px;padding:7px 10px;">
+        <div style="color:#7c3aed;font-weight:700;margin-bottom:4px;">Iron Condor / Butterfly</div>
+        <div style="color:var(--muted)">iv_percentile required=true</div>
+        <div style="color:var(--muted)">→ "cannot evaluate if IV is rich"</div>
+        <div style="color:var(--muted)">earnings_dte required=true</div>
+        <div style="color:var(--muted)">→ "event risk unknown"</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- signal_params.toml -->
+  <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 13px;margin-bottom:12px;">
+    <div style="font-size:10px;font-weight:700;color:var(--amber);margin-bottom:6px;">config/signal_params.toml — threshold values (no hardcoded numbers in Python)</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">@alias system: define once in <code>[score_levels]</code>, reference as <code>"@strong"</code> throughout.</div>
+    <div class="levels-grid">
+      <div class="level-chip"><span class="lv-name">@perfect</span><span class="lv-pos">+1.00</span></div>
+      <div class="level-chip"><span class="lv-name">@strong</span><span class="lv-pos">+0.85</span></div>
+      <div class="level-chip"><span class="lv-name">@moderate</span><span class="lv-pos">+0.60</span></div>
+      <div class="level-chip"><span class="lv-name">@weak</span><span class="lv-pos">+0.30</span></div>
+      <div class="level-chip"><span class="lv-name">@neutral</span><span class="lv-zero">0.00</span></div>
+      <div class="level-chip"><span class="lv-name">@penalty</span><span class="lv-neg">−0.30</span></div>
+      <div class="level-chip"><span class="lv-name">@conflict</span><span class="lv-neg">−0.85</span></div>
+      <div class="level-chip"><span class="lv-name">@opposite</span><span class="lv-neg">−1.00</span></div>
+    </div>
+  </div>
+
+  <!-- structure_scores.toml example -->
+  <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 13px;margin-bottom:12px;">
+    <div style="font-size:10px;font-weight:700;color:var(--amber);margin-bottom:6px;">config/structure_scores.toml — per-structure signal weights, preferences &amp; required flags (28 structures × 25 signals)</div>
+    <div class="cfg-block">
+      <div class="cfg-file">example — credit structures (iv_hv_ratio + vol_pcr new signals)</div>
+      <div style="color:var(--muted);line-height:1.7;">
+        <span class="cfg-k">[structures."Iron Condor".signals.iv_percentile]</span><br>
+        &nbsp;&nbsp;<span class="cfg-k">weight</span> = <span class="cfg-v">14</span> &nbsp; <span class="cfg-k">preference</span> = <span class="cfg-v">"high"</span> &nbsp; <span class="cfg-k" style="color:#7c3aed">required</span> = <span class="cfg-v">true</span><br>
+        <span class="cfg-k">[structures."Iron Condor".signals.iv_hv_ratio]</span><br>
+        &nbsp;&nbsp;<span class="cfg-k">weight</span> = <span class="cfg-v">7</span> &nbsp; <span class="cfg-k">preference</span> = <span class="cfg-v">"high"</span> &nbsp;<span style="color:var(--clr-text-subtle);font-size:9.5px">↑ IV rich vs HV → selling edge confirmed</span><br>
+        <span class="cfg-k">[structures."Iron Condor".signals.vol_pcr]</span><br>
+        &nbsp;&nbsp;<span class="cfg-k">weight</span> = <span class="cfg-v">4</span> &nbsp; <span class="cfg-k">preference</span> = <span class="cfg-v">"neutral"</span> &nbsp;<span style="color:var(--clr-text-subtle);font-size:9.5px">↑ balanced vol flow for range trade</span><br>
+        <span class="cfg-k">[structures."Long Straddle".signals.iv_hv_ratio]</span><br>
+        &nbsp;&nbsp;<span class="cfg-k">weight</span> = <span class="cfg-v">6</span> &nbsp; <span class="cfg-k">preference</span> = <span class="cfg-v">"low"</span> &nbsp;<span style="color:var(--clr-text-subtle);font-size:9.5px">↑ IV cheap vs HV → buying edge</span><br>
+        <span class="cfg-k">[structures."Call Debit Spread".signals.vol_pcr]</span><br>
+        &nbsp;&nbsp;<span class="cfg-k">weight</span> = <span class="cfg-v">4</span> &nbsp; <span class="cfg-k">preference</span> = <span class="cfg-v">"bullish"</span> &nbsp;<span style="color:var(--clr-text-subtle);font-size:9.5px">↑ call volume dominant confirms directional bet</span><br>
+        <span class="cfg-k">[gates]</span><br>
+        &nbsp;&nbsp;<span class="cfg-k">ranker_min_oi</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="cfg-v">50</span> &nbsp;<span style="color:var(--clr-text-subtle);font-size:9.5px">short-leg open interest floor</span><br>
+        &nbsp;&nbsp;<span class="cfg-k">ranker_max_ba_pct</span> = <span class="cfg-v">0.30</span> &nbsp;<span style="color:var(--clr-text-subtle);font-size:9.5px">bid-ask spread max (30% of mid)</span><br>
+        &nbsp;&nbsp;<span class="cfg-k">ranker_min_volume</span> = <span class="cfg-v">10</span> &nbsp;<span style="color:var(--clr-text-subtle);font-size:9.5px">short-leg daily volume floor</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- signals table -->
   <div style="overflow-x:auto">
   <table class="checks-table">
     <thead>
       <tr>
-        <th>Sub-Factor</th>
         <th>Signal</th>
-        <th>Applicable To</th>
-        <th>Neutral Zone</th>
-        <th style="text-align:right">Weight</th>
-        <th style="text-align:right">Contribution</th>
+        <th>Market Field</th>
+        <th>Preferences</th>
+        <th>Notes</th>
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td class="c-name">EMA200</td>
-        <td class="c-sig">ema200_position</td>
-        <td class="c-sig">bullish / bearish structs</td>
-        <td class="c-sig">—</td>
-        <td class="c-neu">technical.ema200</td>
-        <td class="c-pos">+wt / −wt</td>
+      <tr style="background:rgba(129,140,248,.05)">
+        <td class="c-name">EMA200 <span class="changed-badge">CHANGED</span></td>
+        <td class="c-sig">ema_distance_pct</td>
+        <td class="c-sig">bullish | bearish | neutral</td>
+        <td class="c-sig" style="color:var(--indigo)">Continuous piecewise linear. +5% → @strong, +12% → @perfect; wrong-side mirrors to negative.</td>
       </tr>
       <tr>
         <td class="c-name">Weekly Trend</td>
-        <td class="c-sig">weekly_trend vs trend</td>
-        <td class="c-sig">all (when not N/A)</td>
-        <td class="c-sig">—</td>
-        <td class="c-neu">technical.weekly_trend</td>
-        <td class="c-pos">+wt / −wt</td>
+        <td class="c-sig">weekly_trend, trend</td>
+        <td class="c-sig">aligned | bullish | bearish | neutral | divergence_ok</td>
+        <td class="c-sig">Weekly confirms or conflicts with daily trend direction.</td>
       </tr>
       <tr style="background:rgba(129,140,248,.05)">
         <td class="c-name">ADX <span class="changed-badge">CHANGED</span></td>
-        <td class="c-sig">adx value</td>
-        <td class="c-sig">directional + neutral structs</td>
-        <td class="c-sig" style="color:var(--indigo)">20–25 → 0, +wt to eff_max</td>
-        <td class="c-neu">technical.adx</td>
-        <td class="c-pos">+wt / 0 / −wt</td>
+        <td class="c-sig">adx, adx_slope</td>
+        <td class="c-sig">strong | weak | moderate | expanding</td>
+        <td class="c-sig" style="color:var(--indigo)">"expanding": adx_slope must exceed minimum_slope=1.0. If slope absent → proxy at confidence=0.35.</td>
       </tr>
-      <tr style="background:rgba(129,140,248,.05)">
+      <tr>
         <td class="c-name">RSI <span class="changed-badge">CHANGED</span></td>
-        <td class="c-sig">rsi value</td>
-        <td class="c-sig">PCS, CCS, IC, Cal, CDS, PDS</td>
-        <td class="c-sig" style="color:var(--indigo)">per-structure mid-ranges → 0</td>
-        <td class="c-neu">technical.rsi</td>
-        <td class="c-pos">+wt / 0 / −wt</td>
+        <td class="c-sig">rsi</td>
+        <td class="c-sig">not_overbought | not_oversold | overbought | oversold | mean_reverting | neutral</td>
+        <td class="c-sig">Per-structure thresholds from signal_params.toml. Mid-ranges score 0 but count in effective_max.</td>
       </tr>
       <tr>
         <td class="c-name">MACD</td>
         <td class="c-sig">macd_trend</td>
-        <td class="c-sig">bullish / bearish structs</td>
-        <td class="c-sig">—</td>
-        <td class="c-neu">technical.macd</td>
-        <td class="c-pos">+wt / −wt</td>
+        <td class="c-sig">bullish | bearish | neutral</td>
+        <td class="c-sig">Bullish/Bearish → ±@strong. Neutral or missing → 0.</td>
       </tr>
       <tr style="background:rgba(129,140,248,.05)">
         <td class="c-name">IV Term Shape <span class="changed-badge">CHANGED</span></td>
         <td class="c-sig">iv_term_shape</td>
-        <td class="c-sig">Calendar, Diagonal only</td>
-        <td class="c-sig" style="color:var(--indigo)">Flat → 0 + monitor note</td>
-        <td class="c-neu">technical.vol_skew</td>
-        <td class="c-pos">+wt / 0 / −wt</td>
+        <td class="c-sig">backwardation | contango | flat_ok</td>
+        <td class="c-sig">Ratio backspreads set prefers_contango=True on SignalProfile — flips scoring direction.</td>
       </tr>
-      <tr style="background:rgba(129,140,248,.05)">
-        <td class="c-name">IV Premium <span class="changed-badge">CHANGED</span></td>
-        <td class="c-sig">atm_iv − hv20</td>
-        <td class="c-sig">credit vs debit structs</td>
-        <td class="c-sig" style="color:var(--indigo)">|iv_premium| ≤ 3% → 0</td>
-        <td class="c-neu">technical.iv_premium</td>
-        <td class="c-pos">+wt / 0 / −wt</td>
+      <tr>
+        <td class="c-name">IV Premium</td>
+        <td class="c-sig">iv_premium (atm_iv − hv20)</td>
+        <td class="c-sig">high | low | neutral</td>
+        <td class="c-sig">|iv_premium| ≤ 3% → neutral zone (score 0, still in effective_max).</td>
       </tr>
       <tr>
         <td class="c-name">Vol Skew</td>
         <td class="c-sig">vol_skew_pct</td>
-        <td class="c-sig">put/call heavy structs</td>
-        <td class="c-sig">—</td>
-        <td class="c-neu">technical.vol_skew</td>
-        <td class="c-pos">+wt / −wt</td>
+        <td class="c-sig">put_heavy | call_heavy | neutral</td>
+        <td class="c-sig">Put/call skew differential pricing signal.</td>
       </tr>
       <tr>
-        <td class="c-name">News Sentiment</td>
+        <td class="c-name">News</td>
         <td class="c-sig">news_sentiment</td>
-        <td class="c-sig">bullish / bearish / neutral structs</td>
-        <td class="c-sig">—</td>
-        <td class="c-neu">flow.news</td>
-        <td class="c-pos">+wt / −wt</td>
+        <td class="c-sig">bullish | bearish | quiet | any</td>
+        <td class="c-sig">NLP-scored news feed sentiment.</td>
       </tr>
       <tr>
         <td class="c-name">PCR</td>
         <td class="c-sig">pcr_sentiment</td>
-        <td class="c-sig">bullish / bearish structs</td>
-        <td class="c-sig">—</td>
-        <td class="c-neu">flow.pcr</td>
-        <td class="c-pos">+wt / −wt</td>
+        <td class="c-sig">bullish | bearish | neutral</td>
+        <td class="c-sig">Put/call ratio sentiment.</td>
       </tr>
-      <tr style="background:rgba(129,140,248,.05)">
-        <td class="c-name">Rel Volume <span class="changed-badge">CHANGED</span></td>
+      <tr>
+        <td class="c-name">Rel Volume</td>
         <td class="c-sig">rel_volume</td>
-        <td class="c-sig">directional structs (trend ≠ Range)</td>
-        <td class="c-sig" style="color:var(--indigo)">≤ 1.5× → 0 (confirm-only)</td>
-        <td class="c-neu">flow.rel_volume</td>
-        <td class="c-pos">+wt / 0 only</td>
+        <td class="c-sig">high | any</td>
+        <td class="c-sig">Confirm-only: ≤1.5× → 0 (no negative drag).</td>
       </tr>
       <tr>
         <td class="c-name">Analyst</td>
         <td class="c-sig">analyst_label</td>
-        <td class="c-sig">bullish / bearish structs</td>
-        <td class="c-sig">—</td>
-        <td class="c-neu">flow.analyst</td>
-        <td class="c-pos">+wt / −wt</td>
+        <td class="c-sig">bullish | bearish | neutral</td>
+        <td class="c-sig">Analyst consensus revision label.</td>
       </tr>
       <tr>
         <td class="c-name">Short Interest</td>
-        <td class="c-sig">short_interest %</td>
-        <td class="c-sig">bullish (squeeze) / bearish</td>
-        <td class="c-sig">—</td>
-        <td class="c-neu">flow.short_interest</td>
-        <td class="c-pos">+wt / −wt</td>
+        <td class="c-sig">short_interest</td>
+        <td class="c-sig">high | low | any</td>
+        <td class="c-sig">Squeeze risk (bullish) / downside catalyst (bearish).</td>
+      </tr>
+      <!-- Phase 1 signals -->
+      <tr style="background:rgba(22,163,74,.06)">
+        <td class="c-name">ATR <span class="new-badge">NEW</span></td>
+        <td class="c-sig">atr_pct</td>
+        <td class="c-sig">low | moderate | high</td>
+        <td class="c-sig" style="color:var(--clr-pass-dark)">low (&lt;1%): @strong for premium sellers. high (&gt;2.5%): @strong for directional. extreme (&gt;5%): @conflict for credit.</td>
+      </tr>
+      <tr style="background:rgba(22,163,74,.06)">
+        <td class="c-name">HV30 <span class="new-badge">NEW</span></td>
+        <td class="c-sig">hv30</td>
+        <td class="c-sig">low | high</td>
+        <td class="c-sig" style="color:var(--clr-pass-dark)">Confirming signal alongside iv_premium. low (&lt;15%): @strong for credit. high (&gt;30%): @strong for directional.</td>
+      </tr>
+      <tr style="background:rgba(22,163,74,.06)">
+        <td class="c-name">IV Percentile <span class="new-badge">NEW</span> <span class="req-badge">REQUIRED on IC/IBF</span></td>
+        <td class="c-sig">iv_rank_52w</td>
+        <td class="c-sig">high | low | moderate</td>
+        <td class="c-sig" style="color:var(--clr-pass-dark)">52-week HV rank [0–1]. high (&gt;0.60): @strong for credit. low (&lt;0.30): @strong for debit/vol. extreme (&gt;0.80): @penalty.</td>
+      </tr>
+      <tr style="background:rgba(22,163,74,.06)">
+        <td class="c-name">Earnings DTE <span class="new-badge">NEW</span> <span class="req-badge">REQUIRED on IC/IBF/LSD/LSG</span></td>
+        <td class="c-sig">earnings_dte</td>
+        <td class="c-sig">safe | near</td>
+        <td class="c-sig" style="color:var(--clr-pass-dark)">"safe" (&gt;21d): @moderate for credit. "near" (&lt;21d): @moderate for Long Straddle/Strangle. danger zone (&lt;10d): @conflict for credit.</td>
+      </tr>
+      <tr style="background:rgba(22,163,74,.06)">
+        <td class="c-name">Div DTE <span class="new-badge">NEW</span></td>
+        <td class="c-sig">div_days_to_ex</td>
+        <td class="c-sig">safe</td>
+        <td class="c-sig" style="color:var(--clr-pass-dark)">Early-assignment signal for short-call structures. danger (&lt;7d): @conflict. warn (&lt;21d): @weak. safe: @moderate. Highest weight on Covered Call (w=12).</td>
+      </tr>
+      <!-- Options Analytics signals — live -->
+      <tr style="background:rgba(99,102,241,.06)">
+        <td class="c-name">OI Concentration <span class="new-badge">NEW</span></td>
+        <td class="c-sig">oi_concentration</td>
+        <td class="c-sig">high | low | neutral</td>
+        <td class="c-sig" style="color:var(--indigo)">Fraction of total chain OI within ±10% of spot [0–1]. high (&gt;0.50): pinning likely → @strong for IC/IBF. low (&lt;0.30): diffuse OI → @strong for directional. Max score 0.70.</td>
+      </tr>
+      <tr style="background:rgba(99,102,241,.06)">
+        <td class="c-name">Max Pain Distance <span class="new-badge">NEW</span></td>
+        <td class="c-sig">max_pain_distance_pct</td>
+        <td class="c-sig">above | below | neutral</td>
+        <td class="c-sig" style="color:var(--indigo)">(max_pain_strike − spot) / spot × 100. Spot within ±3% of max pain → neutral. above/below preference maps to bullish/bearish signal alignment. Max score 0.70.</td>
+      </tr>
+      <tr style="background:rgba(99,102,241,.06)">
+        <td class="c-name">IV Change 5d <span class="new-badge">NEW</span></td>
+        <td class="c-sig">iv_change_5d</td>
+        <td class="c-sig">rising | falling | stable</td>
+        <td class="c-sig" style="color:var(--indigo)">ATM IV − past ATM IV (≥7 days ago from DuckDB). rising (&gt;+2pp): @strong for vol-expansion. falling (&lt;−2pp): @strong for credit. Returns None until 7d of history accumulates. Max score 0.75.</td>
+      </tr>
+      <!-- Smart Flow — unusual_activity -->
+      <tr style="background:rgba(239,68,68,.06)">
+        <td class="c-name">Unusual OI Activity <span class="new-badge">NEW</span></td>
+        <td class="c-sig">unusual_activity</td>
+        <td class="c-sig">detected | quiet</td>
+        <td class="c-sig" style="color:var(--rose)">Max per-strike OI spike ratio vs 10-day rolling avg (±10% of spot). 0 = quiet; 1.0 = OI doubled; capped at 5×. detected ≥1.0: @strong for Long Straddle/Strangle + directional. quiet &lt;0.25: @strong for IC/IBF/credit. Returns None until 3 days of <code>oi_changes</code> history accumulate. Max score 0.70.</td>
+      </tr>
+      <!-- Feature expansion A1-A3 -->
+      <tr style="background:rgba(99,102,241,.08)">
+        <td class="c-name">IV/HV Ratio <span class="new-badge">NEW</span></td>
+        <td class="c-sig">iv_hv_ratio</td>
+        <td class="c-sig">high | low | moderate</td>
+        <td class="c-sig" style="color:var(--indigo)">ATM IV ÷ 20d HV. Orthogonal to iv_premium (absolute spread): ratio adjusts for base vol level. high (≥1.20): @strong for credit/premium-selling. low (≤0.85): @strong for debit/long-vol. moderate (near 1.0 ±0.10): @strong for balanced structures. Max score 0.75.</td>
+      </tr>
+      <tr style="background:rgba(99,102,241,.08)">
+        <td class="c-name">Volume PCR <span class="new-badge">NEW</span></td>
+        <td class="c-sig">vol_pcr</td>
+        <td class="c-sig">bullish | bearish | neutral</td>
+        <td class="c-sig" style="color:var(--indigo)">Put volume ÷ call volume (today's activity — fast/tactical). Orthogonal to OI PCR (slow/structural). bullish (≤0.75): call volume dominant. bearish (≥1.30): put volume dominant. neutral (0.95–1.05): balanced flow. Max score 0.65.</td>
+      </tr>
+      <tr style="background:rgba(99,102,241,.08)">
+        <td class="c-name">PCR Divergence <span class="new-badge">NEW</span></td>
+        <td class="c-sig">pcr_diverge</td>
+        <td class="c-sig">unwinding_bears | building_bears | neutral</td>
+        <td class="c-sig" style="color:var(--indigo)">oi_pcr − vol_pcr (signed). Positive = OI bearish but vol bullish (bears unwinding / bulls entering). Negative = OI bullish but vol bearish (new put buying). |diverge| ≥ 0.30: significant structural shift. unwinding_bears: @strong for bullish structures. Max score 0.60.</td>
       </tr>
     </tbody>
   </table>
   </div>
 
   <div class="formula-box">
-    <div><span class="fml-label">score</span> <strong style="color:var(--indigo)">= Σ contributions</strong></div>
+    <div><span class="fml-label">eff_wt</span> <strong style="color:var(--amber)">= base_weight × regime_mult</strong></div>
     <span class="fml-sep">|</span>
-    <div><span class="fml-label">effective_max</span> <strong style="color:var(--amber)">= Σ wt for applicable checks (incl. neutral zones)</strong></div>
+    <div><span class="fml-label">contribution</span> <strong style="color:var(--indigo)">= eff_wt × result.score × result.confidence</strong></div>
     <span class="fml-sep">|</span>
-    <div><span class="fml-label">pct</span> <strong style="color:var(--teal)">= score ÷ effective_max</strong> <span style="color:var(--muted);font-size:10px;margin-left:4px">→ comparable across structures</span></div>
+    <div><span class="fml-label">effective_max</span> <strong style="color:var(--amber)">= Σ eff_wt for non-None signals</strong></div>
+    <span class="fml-sep">|</span>
+    <div><span class="fml-label">raw_pct</span> <strong style="color:var(--teal)">= score ÷ effective_max</strong></div>
+    <span class="fml-sep">|</span>
+    <div><span class="fml-label">pct</span> <strong style="color:#7c3aed">= raw_pct × confidence_multiplier</strong> <span style="color:var(--muted);font-size:10px">(0.70ⁿ per required_missing)</span></div>
+  </div>
+
+  <div style="margin-top:10px;background:var(--bg3);border-radius:8px;padding:9px 12px;">
+    <div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:6px;">Confidence — data quality / decisiveness, independent of score direction</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:4px;font-family:var(--mono);font-size:10px;">
+      <div><span style="color:var(--emerald);font-weight:700">1.00</span> <span style="color:var(--muted)">— unambiguous; all data present, decisive</span></div>
+      <div><span style="color:var(--teal);font-weight:700">0.70</span> <span style="color:var(--muted)">— good signal; minor uncertainty</span></div>
+      <div><span style="color:var(--amber);font-weight:700">0.50</span> <span style="color:var(--muted)">— transitional zone; real but weak</span></div>
+      <div><span style="color:var(--rose);font-weight:700">0.35</span> <span style="color:var(--muted)">— fallback path (e.g. adx_slope missing, proxy used)</span></div>
+      <div><span style="color:var(--border);font-weight:700">None</span> <span style="color:var(--muted)">— required data absent → score=None → skipped</span></div>
+      <div><span style="color:#7c3aed;font-weight:700">0.70ⁿ</span> <span style="color:var(--muted)">— confidence_multiplier penalty per required_missing signal</span></div>
+    </div>
   </div>
 </div>
 
-<div class="arrow-down"><div class="arrow-line"></div><div class="arrow-label">rank + gates</div><div class="arrow-line"></div><div class="arrow-head"></div></div>
+<div class="arrow-down"><div class="arrow-line"></div><div class="arrow-label">rank + decision gates</div><div class="arrow-line"></div><div class="arrow-head"></div></div>
 
 <!-- ══ STAGE 5 ══ -->
 <div class="stage-label amber"><span class="stage-num">5</span>Ranking &amp; Decision Gates — select_structure()</div>
 <div class="card amber-card">
   <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">
-    Candidates sorted by <strong style="color:var(--teal)">pct</strong> descending. Thresholds now read from
-    <code style="color:var(--amber);font-size:10.5px">scoring.toml [gates]</code> <span class="new-badge">NEW</span>
-    rather than hardcoded.
+    Candidates sorted by <strong style="color:var(--teal)">pct</strong> descending. Thresholds read from
+    <code style="color:var(--amber);font-size:10.5px">scoring.toml [gates]</code>.
   </div>
   <div class="gates-row">
     <div class="gate-box">
@@ -423,11 +815,74 @@
       <div class="gate-outcome">→ <span class="no">No Trade</span> — no candidate has enough signal alignment</div>
     </div>
     <div class="gate-box">
-      <div class="gate-title">Gate 2 — Near Tie <span class="toml-tag">near_tie_margin = 0.05</span> <span class="changed-badge">CHANGED</span></div>
+      <div class="gate-title">Gate 2 — Near Tie <span class="toml-tag">near_tie_margin = 0.05</span></div>
       <div class="gate-rule">winner.pct − runner_up.pct &lt; 0.05</div>
       <div class="gate-rule" style="color:var(--indigo)">AND runner_up.pct ≥ 0.15</div>
-      <div class="gate-outcome">→ <span class="yes">near_tie = True</span> — both are viable; gap is below margin of victory</div>
-      <div class="gate-outcome" style="margin-top:4px;color:var(--rose)">If runner_up &lt; 0.15: weak market overall, not a near-tie</div>
+      <div class="gate-outcome">→ <span class="yes">near_tie = True</span> — both viable; show winner + alternative</div>
+    </div>
+  </div>
+  <div class="gates-row" style="margin-top:14px;">
+    <div class="gate-box" style="grid-column:1/-1;border-color:rgba(22,163,74,.35);background:var(--clr-pass-bg);">
+      <div class="gate-title" style="color:var(--clr-pass-dark)">Gate 11 — Ranker Liquidity Gate <span class="live-badge">LIVE</span> <span class="toml-tag">scoring.toml [gates]</span></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;margin-top:6px;">
+        <div>
+          <div class="gate-rule">short_leg_oi &lt; 50</div>
+          <div class="gate-outcome">→ <span class="no">rejected</span> — insufficient open interest on short leg</div>
+        </div>
+        <div>
+          <div class="gate-rule">short_leg_ba_pct &gt; 0.30</div>
+          <div class="gate-outcome">→ <span class="no">rejected</span> — bid-ask spread &gt;30% of mid (illiquid)</div>
+        </div>
+        <div>
+          <div class="gate-rule">short_leg_volume &lt; 10</div>
+          <div class="gate-outcome">→ <span class="no">rejected</span> — fewer than 10 contracts traded today</div>
+        </div>
+      </div>
+      <div style="font-size:var(--text-xs);color:var(--clr-text-muted);margin-top:8px;">
+        Runs in <code>candidate_ranker.py</code> after Gate 10 (capital check). Metrics (<code>short_leg_oi</code>, <code>short_leg_volume</code>, <code>short_leg_ba_pct</code>) annotated per candidate in <code>analyze.py</code> from the chain DataFrames already fetched. Capital-rejected report now also shows these three columns + expiry.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="arrow-down"><div class="arrow-line"></div><div class="arrow-label">strike selection + validation + risk sizing</div><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+<!-- ══ TRADE CANDIDATE ══ -->
+<div class="stage-label emerald"><span class="stage-num">T</span>TradeCandidate — Canonical Output Object <span class="live-badge">LIVE</span></div>
+<div class="card emerald-card">
+  <div style="font-size:var(--text-sm);color:var(--clr-text-muted);margin-bottom:12px;">
+    After strike selection, the best candidate dict is wrapped in a typed <code>TradeCandidate</code> dataclass (frozen).
+    Every downstream consumer — paper_trade_engine, decision_provider, API responses, position_file_parser — reads from this object
+    rather than loose dicts. Built by <code>TradeCandidate.from_candidate_dict()</code> without rewriting any structure block.
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;">
+    <div class="risk-box">
+      <div class="risk-title">Identity</div>
+      <div class="risk-field">ticker, structure, expiry, dte</div>
+      <div class="risk-field">spot_at_entry, recommended</div>
+      <div class="risk-field">strikes: dict (schema-aware)</div>
+    </div>
+    <div class="risk-box">
+      <div class="risk-title">Contract Economics</div>
+      <div class="risk-field">is_credit, net_premium (per share)</div>
+      <div class="risk-field">max_profit, max_loss, pop, ev</div>
+      <div class="risk-field">net_delta/theta/gamma/vega</div>
+    </div>
+    <div class="risk-box">
+      <div class="risk-title">ValidationResult</div>
+      <div class="risk-field">passes (hard gates)</div>
+      <div class="risk-field">failures[] (hard: credit≤0, illiquid)</div>
+      <div class="risk-field">warnings[] (soft: credit/width%, min profit)</div>
+      <div class="risk-field">credit_ok, credit_pct_ok</div>
+      <div class="risk-field">meets_min_profit, meets_max_loss</div>
+    </div>
+    <div class="risk-box">
+      <div class="risk-title">RiskResult</div>
+      <div class="risk-field">contracts (sized to total_capital)</div>
+      <div class="risk-field">capital_per_contract ($)</div>
+      <div class="risk-field">capital_type: debit | spread_width | margin | cash_secured</div>
+      <div class="risk-field">max_dollar_risk, max_dollar_profit</div>
+      <div class="risk-field">risk_pct_of_capital</div>
     </div>
   </div>
 </div>
@@ -435,7 +890,7 @@
 <div class="arrow-down"><div class="arrow-line"></div><div class="arrow-label">result</div><div class="arrow-line"></div><div class="arrow-head"></div></div>
 
 <!-- ══ STAGE 6 ══ -->
-<div class="stage-label emerald"><span class="stage-num">6</span>Output — selection dict</div>
+<div class="stage-label emerald"><span class="stage-num">6</span>Output — selection dict + TradeCandidate</div>
 <div class="card emerald-card">
   <div class="output-grid">
     <div class="out-box">
@@ -444,16 +899,17 @@
       <div class="out-field"><span class="ok">alignment.score</span> <span class="ov">0.87</span></div>
       <div class="out-field"><span class="ok">alignment.effective_max</span> <span class="ov amber">1.42 ← applicable weight sum</span></div>
       <div class="out-field"><span class="ok">alignment.pct</span> <span class="ov">0.61</span></div>
+      <div class="out-field"><span class="ok" style="color:#7c3aed">alignment.confidence_multiplier</span> <span class="ov" style="color:#7c3aed">0.70 (1 required signal missing)</span></div>
       <div class="out-field"><span class="ok">alignment.rating</span> <span class="ov">"Strong"</span></div>
       <div class="out-field"><span class="ok">near_tie</span> <span class="ov amber">True / False</span></div>
       <div class="out-field"><span class="ok">near_tie_with</span> <span class="ov amber">"Jade Lizard"</span></div>
-      <div class="out-field"><span class="ok">candidates[]</span> <span class="ov indigo">all scored, pct desc</span></div>
+      <div class="out-field"><span class="ok">trade_candidate</span> <span class="ov indigo">TradeCandidate | None</span></div>
     </div>
     <div class="out-box regime-box">
-      <div style="font-size:11px;font-weight:700;color:var(--indigo);margin-bottom:8px;">Regime Explainability <span class="new-badge">NEW</span></div>
+      <div style="font-size:11px;font-weight:700;color:var(--indigo);margin-bottom:8px;">Regime Explainability</div>
       <div class="out-field"><span class="ok">alignment.regime</span> <span class="ov indigo">"fear"</span></div>
       <div class="out-field"><span class="ok">alignment.regime_explanation</span></div>
-      <div style="font-size:10px;color:var(--muted);padding:5px 8px;background:var(--bg);border-radius:5px;margin:3px 0 6px;font-style:italic">"High VIX + weak futures — macro context dominates; technical signals are less discriminating in correlated sell-offs"</div>
+      <div style="font-size:10px;color:var(--muted);padding:5px 8px;background:var(--bg);border-radius:5px;margin:3px 0 6px;font-style:italic">"High VIX + weak futures — macro context dominates; technical signals less discriminating"</div>
       <div class="out-field"><span class="ok">alignment.weight_profile</span></div>
       <div style="font-family:var(--mono);font-size:9.5px;padding:5px 8px;background:var(--bg);border-radius:5px;color:var(--muted)">
         { "technical":  2.0,<br>
@@ -463,53 +919,90 @@
     </div>
   </div>
 
-  <!-- Contributions sample -->
-  <div style="margin-top:10px;">
-    <div style="font-size:11px;font-weight:700;color:var(--indigo);margin-bottom:6px;">alignment.contributions[] — per-check detail for UI / audit</div>
-    <div style="overflow-x:auto">
-    <table class="checks-table">
-      <thead>
-        <tr>
-          <th>factor</th><th>subfactor</th><th style="text-align:right">weight</th><th style="text-align:right">contribution</th><th>direction</th><th>explanation</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td class="c-sig">Technical</td><td class="c-name">EMA200</td><td class="c-pos">0.25</td><td class="c-pos">+0.25</td><td class="c-sig" style="color:var(--emerald)">positive</td><td class="c-sig">"Price above EMA200 — uptrend confirms bullish bias"</td></tr>
-        <tr><td class="c-sig">Technical</td><td class="c-name">ADX</td><td class="c-pos">0.14</td><td class="c-pos">+0.14</td><td class="c-sig" style="color:var(--emerald)">positive</td><td class="c-sig">"ADX 32 strong trend — confirms directional trade"</td></tr>
-        <tr><td class="c-sig">Technical</td><td class="c-name">RSI</td><td class="c-pos">0.14</td><td class="c-neg">−0.14</td><td class="c-sig" style="color:var(--rose)">negative</td><td class="c-sig">"RSI 74 overbought — pullback risk"</td></tr>
-        <tr style="color:var(--muted)"><td class="c-sig">Technical</td><td class="c-sig">IV Premium</td><td class="c-neu">0.12</td><td class="c-neu">0.00</td><td class="c-sig">neutral</td><td class="c-sig"><em>IV near parity — silent, still in effective_max</em></td></tr>
-        <tr style="color:var(--muted)"><td class="c-sig">Flow</td><td class="c-sig">Rel Volume</td><td class="c-neu">0.05</td><td class="c-neu">0.00</td><td class="c-sig">neutral</td><td class="c-sig"><em>Volume normal — confirm-only, no negative</em></td></tr>
-        <tr><td class="c-sig">Flow</td><td class="c-name">News</td><td class="c-pos">0.04</td><td class="c-pos">+0.04</td><td class="c-sig" style="color:var(--emerald)">positive</td><td class="c-sig">"News sentiment Bullish — supports upside trade"</td></tr>
-      </tbody>
-    </table>
+  <!-- Explainability fields -->
+  <div style="margin-top:12px;">
+    <div style="font-size:var(--text-sm);font-weight:700;color:var(--clr-text-dark);margin-bottom:8px;">Explainability Output <span class="live-badge">LIVE</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div style="background:var(--clr-pass-bg);border:1px solid var(--clr-pass-lighter);border-radius:var(--r-lg);padding:12px 14px;">
+        <div style="font-size:var(--text-sm);font-weight:700;color:var(--clr-pass-dark);margin-bottom:6px;">Why selected</div>
+        <div class="out-field"><span class="ok">selection_reason</span><span class="ov" style="font-size:var(--text-sm)">top 3 positive contributors joined as plain English</span></div>
+        <div class="out-field"><span class="ok">alignment.contributions[]</span><span class="ov" style="font-size:var(--text-sm)">per-signal detail for UI / audit</span></div>
+      </div>
+      <div style="background:var(--clr-fail-bg);border:1px solid rgba(192,57,43,.25);border-radius:var(--r-lg);padding:12px 14px;">
+        <div style="font-size:var(--text-sm);font-weight:700;color:var(--clr-fail-dark);margin-bottom:6px;">Why not / why "No Trade"</div>
+        <div class="out-field"><span class="ok">rejection_reason</span><span class="ov amber" style="font-size:var(--text-sm)">best score vs minimum, or hard filter hits</span></div>
+        <div class="out-field"><span class="ok">missing_signals[]</span><span class="ov amber" style="font-size:var(--text-sm)">data absent at eval time (optional signals)</span></div>
+        <div class="out-field"><span class="ok" style="color:#7c3aed">required_missing[]</span><span style="color:#7c3aed;font-weight:700;font-size:var(--text-sm)">required signals absent → confidence penalty</span></div>
+        <div class="out-field"><span class="ok">hard_filter_hits[]</span><span class="ov amber" style="font-size:var(--text-sm)">structures eliminated pre-score + reason strings</span></div>
+      </div>
     </div>
-    <div style="font-size:10px;color:var(--muted);margin-top:5px;font-style:italic">Neutral-zone rows shown here for illustration — they are silent in production output (no UI noise).</div>
   </div>
 
   <!-- Three confidence types -->
   <div style="margin-top:14px;">
-    <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">Three Distinct Confidence Types — not collapsed into a single "Weak"</div>
+    <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">Three Distinct Confidence Types</div>
     <div class="conf-grid">
       <div class="conf-box">
         <div class="conf-title" style="color:var(--rose)">Poor Market Fit</div>
         <div class="conf-rule">winner.pct &lt; 0.15</div>
-        <div class="conf-out">No structure is well-supported.<br>→ No Trade</div>
+        <div class="conf-out">No structure well-supported → No Trade</div>
       </div>
       <div class="conf-box">
         <div class="conf-title" style="color:var(--amber)">Structural Ambiguity</div>
         <div class="conf-rule">near_tie = True</div>
-        <div class="conf-out">Two structures fit similarly.<br>→ Show winner + alternative</div>
+        <div class="conf-out">Two structures fit similarly → show winner + alternative</div>
       </div>
       <div class="conf-box">
-        <div class="conf-title" style="color:var(--indigo)">Execution Risk</div>
-        <div class="conf-rule">liquidity, DTE, earnings</div>
-        <div class="conf-out">Signal is strong; conditions are poor.<br>→ signal_rating + time_warning</div>
+        <div class="conf-title" style="color:#7c3aed">Data Gap</div>
+        <div class="conf-rule">required_missing[] non-empty</div>
+        <div class="conf-out">Required signal data absent → confidence_multiplier &lt; 1.0; surface to UI</div>
       </div>
     </div>
   </div>
 
-  <div style="margin-top:10px;font-size:11px;color:var(--muted);padding:8px 10px;background:var(--bg3);border-radius:8px;">
-    <strong style="color:var(--text)">rating thresholds (scoring.toml [rating]):</strong>&nbsp;
+  <!-- Trade ID -->
+  <div style="margin-top:12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 12px;">
+    <div style="font-size:10px;font-weight:700;color:var(--amber);margin-bottom:8px;text-transform:uppercase;letter-spacing:.8px;">Paper Trade ID Format</div>
+    <div style="font-family:var(--mono);font-size:13px;margin-bottom:8px;">
+      <span style="color:var(--teal)">20260722</span><span style="color:var(--amber)">AM</span>_<span style="color:var(--emerald)">AAPL</span>_<span style="color:var(--indigo)">CDS</span>_<span style="color:var(--muted)">1</span>
+    </div>
+    <div style="font-size:10px;color:var(--muted);margin-bottom:8px;">
+      <span style="color:var(--teal)">YYYYMMDD</span> &nbsp;·&nbsp; <span style="color:var(--amber)">AM|PM</span> &nbsp;·&nbsp; <span style="color:var(--emerald)">ticker</span> &nbsp;·&nbsp; <span style="color:var(--indigo)">OptionStructure.abbr</span> (3-char, unique) &nbsp;·&nbsp; <span style="color:var(--muted)">rank</span>
+    </div>
+    <div class="abbr-grid">
+      <div class="abbr-chip"><span class="ab-tag">CDS</span><span class="ab-name">Call Debit Spread</span></div>
+      <div class="abbr-chip"><span class="ab-tag">PCS</span><span class="ab-name">Put Credit Spread</span></div>
+      <div class="abbr-chip"><span class="ab-tag">CCS</span><span class="ab-name">Call Credit Spread</span></div>
+      <div class="abbr-chip"><span class="ab-tag">PDS</span><span class="ab-name">Put Debit Spread</span></div>
+      <div class="abbr-chip"><span class="ab-tag">ICO</span><span class="ab-name">Iron Condor</span></div>
+      <div class="abbr-chip"><span class="ab-tag">IBF</span><span class="ab-name">Iron Butterfly</span></div>
+      <div class="abbr-chip"><span class="ab-tag">CAL</span><span class="ab-name">Calendar Spread</span></div>
+      <div class="abbr-chip"><span class="ab-tag">DGS</span><span class="ab-name">Diagonal Spread</span></div>
+      <div class="abbr-chip"><span class="ab-tag">COV</span><span class="ab-name">Covered Call</span></div>
+      <div class="abbr-chip"><span class="ab-tag">CSP</span><span class="ab-name">Cash Secured Put</span></div>
+      <div class="abbr-chip"><span class="ab-tag">NKP</span><span class="ab-name">Naked Put</span></div>
+      <div class="abbr-chip"><span class="ab-tag">LLC</span><span class="ab-name">LEAPS Long Call</span></div>
+      <div class="abbr-chip"><span class="ab-tag">RVR</span><span class="ab-name">Risk Reversal</span></div>
+      <div class="abbr-chip"><span class="ab-tag">JAD</span><span class="ab-name">Jade Lizard</span></div>
+      <div class="abbr-chip"><span class="ab-tag">BRC</span><span class="ab-name">Bear Combo</span></div>
+      <div class="abbr-chip"><span class="ab-tag">FLC</span><span class="ab-name">Financed Long Call</span></div>
+      <div class="abbr-chip"><span class="ab-tag">FLP</span><span class="ab-name">Financed Long Put</span></div>
+      <div class="abbr-chip"><span class="ab-tag">RCB</span><span class="ab-name">Ratio Call Backspread</span></div>
+      <div class="abbr-chip"><span class="ab-tag">RPB</span><span class="ab-name">Ratio Put Backspread</span></div>
+      <div class="abbr-chip"><span class="ab-tag">LSG</span><span class="ab-name">Long Strangle</span></div>
+      <div class="abbr-chip"><span class="ab-tag">LCL</span><span class="ab-name">Long Call</span></div>
+      <div class="abbr-chip"><span class="ab-tag">LPT</span><span class="ab-name">Long Put</span></div>
+      <div class="abbr-chip"><span class="ab-tag">SSD</span><span class="ab-name">Short Straddle</span></div>
+      <div class="abbr-chip"><span class="ab-tag">SSG</span><span class="ab-name">Short Strangle</span></div>
+      <div class="abbr-chip"><span class="ab-tag">LSD</span><span class="ab-name">Long Straddle</span></div>
+      <div class="abbr-chip"><span class="ab-tag">BCL</span><span class="ab-name">Bull Call Ladder</span></div>
+      <div class="abbr-chip"><span class="ab-tag">DCL</span><span class="ab-name">Double Calendar</span></div>
+      <div class="abbr-chip"><span class="ab-tag">PMC</span><span class="ab-name">Poor Man's Covered Call</span></div>
+    </div>
+  </div>
+
+  <div style="margin-top:10px;font-size:var(--text-sm);color:var(--clr-text-muted);padding:8px 10px;background:var(--clr-surface-alt);border-radius:var(--r-md);">
+    <strong style="color:var(--clr-text-dark)">rating thresholds (scoring.toml [rating]):</strong>&nbsp;
     <span style="color:var(--emerald)">Strong ≥ 50%</span> &nbsp;·&nbsp;
     <span style="color:var(--teal)">Moderate ≥ 10%</span> &nbsp;·&nbsp;
     <span style="color:var(--muted)">Neutral ±10%</span> &nbsp;·&nbsp;
@@ -518,10 +1011,188 @@
   </div>
 </div>
 
+<!-- ══ FEATURE STORE ══ -->
+<div class="stage-label teal"><span class="stage-num">F</span>Feature Store — Persistence + Versioning <span class="live-badge">LIVE</span></div>
+<div class="card teal-card">
+  <div style="font-size:var(--text-sm);color:var(--clr-text-muted);margin-bottom:14px;">
+    Two new DuckDB tables written every scan. <code>feature_metadata</code> is the feature registry (seeded with 28 features); <code>feature_snapshots</code> is the per-scan historical record. Together they enable version-safe training data filtering and future DAG-based staleness propagation.
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+    <div style="background:var(--clr-surface-alt);border:1px solid var(--clr-border);border-radius:var(--r-lg);padding:12px 14px;">
+      <div style="font-size:var(--text-sm);font-weight:700;color:var(--clr-text-dark);margin-bottom:8px;">feature_metadata — registry</div>
+      <div class="risk-field"><code>feature, version</code> — composite PK</div>
+      <div class="risk-field"><code>source_type</code> — options | yfinance | fred | derived</div>
+      <div class="risk-field"><code>calculation</code> — human-readable formula description</div>
+      <div class="risk-field"><code>depends_on</code> — JSON array of upstream feature names (DAG edges)</div>
+      <div class="risk-field"><code>introduced_at</code> — date first seeded</div>
+      <div class="risk-field"><code>deprecated_at</code> — NULL = current version; set when calculation changes</div>
+      <div style="margin-top:8px;font-size:var(--text-xs);color:var(--clr-text-muted);">28 features seeded at first scan. Version boundary: training pipelines filter by version so rows produced before a calculation change stay labeled v1; rows after as v2.</div>
+    </div>
+    <div style="background:var(--clr-surface-alt);border:1px solid var(--clr-border);border-radius:var(--r-lg);padding:12px 14px;">
+      <div style="font-size:var(--text-sm);font-weight:700;color:var(--clr-text-dark);margin-bottom:8px;">feature_snapshots — historical record</div>
+      <div class="risk-field"><code>ticker, date, feature</code> — indexed</div>
+      <div class="risk-field"><code>feature_version</code> — links to feature_metadata version</div>
+      <div class="risk-field"><code>value</code> — computed value (DOUBLE)</div>
+      <div class="risk-field"><code>confidence</code> — 1.0 = live; lower = interpolated / stale</div>
+      <div class="risk-field"><code>source_quality</code> — live | cached | interpolated | stale</div>
+      <div style="margin-top:8px;font-size:var(--text-xs);color:var(--clr-text-muted);">Written by <code>persist_feature_snapshot()</code> after every scan. Records ALL computed features including infra-only ones (expected_move_pct, term_slope, hy_oas) not yet scored as signals.</div>
+    </div>
+  </div>
+  <div style="background:var(--clr-surface-alt);border:1px solid var(--clr-border);border-radius:var(--r-lg);padding:12px 14px;">
+    <div style="font-size:var(--text-sm);font-weight:700;color:var(--clr-text-dark);margin-bottom:8px;">HY OAS collection — hy_oas_history</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div>
+        <div class="risk-field"><code>date</code> PRIMARY KEY · <code>value</code> DOUBLE · <code>collected_at</code></div>
+        <div class="risk-field">FRED series: <code>BAMLH0A0HYM2</code> — ICE BofA US HY OAS (bp)</div>
+        <div class="risk-field">Fetched via <code>get_hy_oas()</code> → persisted via <code>save_hy_oas()</code> each scan</div>
+      </div>
+      <div style="font-size:var(--text-xs);color:var(--clr-text-muted);padding:8px;background:var(--clr-warn-bg);border:1px solid var(--clr-warn-border);border-radius:var(--r-md);">
+        <strong style="color:var(--clr-warn-deep-text);">No scoring yet.</strong> Deferred until 90 days of history accumulates. Future plan: combine with VIX + yield curve → Risk Appetite Index 0–100. Widening OAS = fear regime signal.
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:12px;background:var(--clr-surface-alt);border:1px dashed var(--clr-border-mid);border-radius:var(--r-lg);padding:10px 14px;">
+    <div style="font-size:var(--text-xs);font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--clr-text-muted);margin-bottom:6px;">DAG dependency examples (depends_on JSON)</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:6px;font-family:var(--font-mono);font-size:var(--text-sm);">
+      <div><span style="color:var(--clr-primary-mid)">pcr_diverge</span> <span style="color:var(--clr-text-muted)">→ [pcr, vol_pcr]</span></div>
+      <div><span style="color:var(--clr-primary-mid)">iv_hv_ratio</span> <span style="color:var(--clr-text-muted)">→ [iv_premium]</span></div>
+      <div><span style="color:var(--clr-primary-mid)">expected_move_pct</span> <span style="color:var(--clr-text-muted)">→ [iv_hv_ratio]</span></div>
+      <div><span style="color:var(--clr-primary-mid)">term_slope</span> <span style="color:var(--clr-text-muted)">→ [iv_term_shape]</span></div>
+      <div><span style="color:var(--clr-primary-mid)">unusual_activity</span> <span style="color:var(--clr-text-muted)">→ [oi_concentration]</span></div>
+      <div style="color:var(--clr-text-subtle);font-size:var(--text-xs);align-self:center;">Phase 2 (~35 signals): propagate_staleness() traverses edges automatically</div>
+    </div>
+  </div>
+</div>
+
+<div class="arrow-down" style="opacity:0.4"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+<!-- Reference Sections -->
+<div class="ref-section">
+  <div class="ref-title">🚀 Exit Rules &nbsp;<span class="planned-badge">PLANNED subsystem</span></div>
+  <div class="ref-grid">
+    <div class="ref-box"><div class="ref-box-title">Profit / Loss</div>
+      <div class="ref-item">profit_target (% of max credit)</div>
+      <div class="ref-item">stop_loss (% of max loss)</div>
+      <div class="ref-item">time_stop (DTE floor)</div>
+    </div>
+    <div class="ref-box"><div class="ref-box-title">Adaptive Exits</div>
+      <div class="ref-item">iv_contraction_exit</div>
+      <div class="ref-item">trend_reversal_exit</div>
+      <div class="ref-item">max_dte_exit</div>
+      <div class="ref-item">assignment_avoidance_dte</div>
+    </div>
+    <div class="ref-box"><div class="ref-box-title">Config</div>
+      <div class="ref-item"><code class="toml-tag">execution.toml</code></div>
+      <div class="ref-item">per-structure profit targets</div>
+      <div class="ref-item">universal stop multipliers</div>
+    </div>
+  </div>
+</div>
+
+<div class="ref-section">
+  <div class="ref-title">📁 Config Files — Current State</div>
+  <div style="font-size:var(--text-sm);color:var(--clr-text-muted);margin-bottom:10px;">Live: <code>signal_params.toml</code>, <code>structure_scores.toml</code>, <code>scoring.toml</code> &nbsp;·&nbsp; Proposed additions:</div>
+  <div class="ref-grid">
+    <div class="ref-box"><div class="ref-box-title">signal_params.toml <span class="live-badge">LIVE</span></div>
+      <div class="ref-item">@alias score levels</div>
+      <div class="ref-item">per-signal thresholds (18 sections)</div>
+    </div>
+    <div class="ref-box"><div class="ref-box-title">structure_scores.toml <span class="live-badge">LIVE</span></div>
+      <div class="ref-item">28 structures × 18 signals</div>
+      <div class="ref-item">weight, preference, required flags</div>
+    </div>
+    <div class="ref-box"><div class="ref-box-title">regime.toml <span class="planned-badge">PLANNED</span></div>
+      <div class="ref-item">VIX thresholds</div>
+      <div class="ref-item">budget_mult per factor/regime</div>
+    </div>
+    <div class="ref-box"><div class="ref-box-title">liquidity.toml <span class="planned-badge">PLANNED</span></div>
+      <div class="ref-item">min_oi per structure class</div>
+      <div class="ref-item">max_bid_ask_spread_pct</div>
+    </div>
+    <div class="ref-box"><div class="ref-box-title">risk.toml <span class="planned-badge">PLANNED</span></div>
+      <div class="ref-item">max_risk_per_trade</div>
+      <div class="ref-item">kelly_fraction_cap</div>
+      <div class="ref-item">sector_cap %</div>
+    </div>
+    <div class="ref-box"><div class="ref-box-title">execution.toml <span class="planned-badge">PLANNED</span></div>
+      <div class="ref-item">profit_target defaults</div>
+      <div class="ref-item">stop_loss multipliers</div>
+    </div>
+  </div>
+</div>
+
+<div class="ref-section">
+  <div class="ref-title">📋 Structure Constraint Metadata <span class="live-badge">LIVE</span></div>
+  <div style="font-size:var(--text-sm);color:var(--clr-text-muted);margin-bottom:10px;">
+    Hard structural requirements in each <code>OptionStructure.constraints: StructureConstraints</code> field.
+    Complement signal weights — weights tune <em>how well</em> a structure fits; constraints define whether it is <em>valid at all</em>.
+    Mechanism live for all 28 structures; gates activate when a structure file sets <code>constraints=StructureConstraints(...)</code>.
+  </div>
+  <div class="ref-grid">
+    <div class="ref-box"><div class="ref-box-title">Iron Condor <span class="live-badge">LIVE</span></div>
+      <div class="ref-item">earnings_dte_min: 12 days</div>
+      <div class="ref-item">→ reject if earnings within 12d</div>
+      <div class="ref-item">iv_percentile required=true</div>
+      <div class="ref-item">earnings_dte required=true</div>
+    </div>
+    <div class="ref-box"><div class="ref-box-title">Iron Butterfly <span class="live-badge">LIVE</span></div>
+      <div class="ref-item">earnings_dte_min: 10 days</div>
+      <div class="ref-item">→ ATM shorts = max event exposure</div>
+      <div class="ref-item">iv_percentile required=true</div>
+      <div class="ref-item">earnings_dte required=true</div>
+    </div>
+    <div class="ref-box"><div class="ref-box-title">Long Straddle <span class="live-badge">LIVE</span></div>
+      <div class="ref-item">earnings_dte_max: 21 days</div>
+      <div class="ref-item">→ reject if earnings &gt; 21d away</div>
+      <div class="ref-item">→ reject if earnings date unknown</div>
+      <div class="ref-item">earnings_dte required=true</div>
+    </div>
+    <div class="ref-box"><div class="ref-box-title">Long Strangle <span class="live-badge">LIVE</span></div>
+      <div class="ref-item">earnings_dte_max: 25 days</div>
+      <div class="ref-item">→ wider strikes, more time buffer</div>
+      <div class="ref-item">→ reject if earnings date unknown</div>
+      <div class="ref-item">earnings_dte required=true</div>
+    </div>
+    <div class="ref-box"><div class="ref-box-title">Other 24 structures</div>
+      <div class="ref-item">constraints=None (no hard gates)</div>
+      <div class="ref-item">Mechanism live; gates activate</div>
+      <div class="ref-item">when constraints= is set per file</div>
+    </div>
+    <div class="ref-box"><div class="ref-box-title">Design principle</div>
+      <div class="ref-item" style="color:var(--clr-text-muted);font-style:italic">Gates = validity (binary). Weights = fit (continuous). Never mix them — a structure can score high on signals while violating a hard structural requirement.</div>
+    </div>
+  </div>
+</div>
+
+<div class="ref-section">
+  <div class="ref-title">💾 Backtesting Support Fields &nbsp;<span class="planned-badge">PLANNED</span></div>
+  <div style="font-size:var(--text-sm);color:var(--clr-text-muted);margin-bottom:10px;">Every decision must be reproducible. Attach to each trade snapshot:</div>
+  <div class="ref-grid">
+    <div class="ref-box"><div class="ref-box-title">Snapshot Fields</div>
+      <div class="ref-item">signal_snapshot (market at eval time)</div>
+      <div class="ref-item">trade_snapshot (legs, strikes, credit)</div>
+      <div class="ref-item">market_snapshot (IV, VIX, SPY at entry)</div>
+      <div class="ref-item">reason_codes[] (scored signals)</div>
+    </div>
+    <div class="ref-box"><div class="ref-box-title">Versioning</div>
+      <div class="ref-item">engine_version (semver)</div>
+      <div class="ref-item">parameter_hash (toml fingerprint)</div>
+      <div class="ref-item">Lets you replay decisions after config changes</div>
+    </div>
+  </div>
+</div>
+
 <div class="legend">
   <div class="legend-item"><span class="legend-dot" style="background:var(--teal)"></span>Data / Signals</div>
   <div class="legend-item"><span class="legend-dot" style="background:var(--amber)"></span>Decision / Gate Logic</div>
   <div class="legend-item"><span class="legend-dot" style="background:var(--indigo)"></span>Scoring Engine / Regime</div>
   <div class="legend-item"><span class="legend-dot" style="background:var(--emerald)"></span>Output</div>
-  <div class="legend-item" style="margin-left:auto"><span class="changed-badge">CHANGED</span> updated this revision &nbsp; <span class="new-badge">NEW</span> added this revision</div>
+  <div class="legend-item"><span class="legend-dot" style="background:var(--clr-pass-dark)"></span>Live (this session)</div>
+  <div class="legend-item"><span class="legend-dot" style="background:var(--clr-fail-dark)"></span>Planned / Gap</div>
+  <div class="legend-item" style="margin-left:auto">
+    <span class="live-badge">LIVE</span> deployed &nbsp;
+    <span class="new-badge">NEW</span> added 2026-07-22 &nbsp;
+    <span class="planned-badge">PLANNED</span> not yet built &nbsp;
+    <span class="req-badge">REQUIRED</span> confidence penalty if absent
+  </div>
 </div>

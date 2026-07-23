@@ -1,7 +1,8 @@
-from config.structures._base import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema
+from config.structures._base import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema, SignalProfile
 
 BEAR_COMBO = OptionStructure(
     name          = "Bear Combo",
+    abbr          = "BRC",
     is_credit     = False,        # usually net debit (put debit > call credit); can flip
     option_type   = "both",
     allowed_iv      = ("High",),
@@ -26,5 +27,10 @@ BEAR_COMBO = OptionStructure(
         delta_change = 0.0,
         opt_type     = "call",
         strike_mode  = HedgeStrikeMode.ONE_WIDTH_ABOVE_HI,
+    ),
+    signal_profile = SignalProfile(
+        bias="bearish",
+        needs_trend=True, needs_momentum=True,
+        uses_term_structure=False, uses_skew=True, uses_sentiment=True,
     ),
 )

@@ -1,7 +1,8 @@
-from config.structures._base import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema
+from config.structures._base import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema, SignalProfile
 
 CALENDAR_SPREAD = OptionStructure(
     name          = "Calendar Spread",
+    abbr          = "CAL",
     is_credit     = False,
     option_type   = "calendar",
     allowed_iv      = ("Low",),
@@ -18,5 +19,10 @@ CALENDAR_SPREAD = OptionStructure(
         delta_change = 0.0,
         opt_type     = "both",
         strike_mode  = HedgeStrikeMode.OTM_STRANGLE,
+    ),
+    signal_profile = SignalProfile(
+        bias="neutral",
+        needs_trend=True, needs_momentum=True,
+        uses_term_structure=True, uses_skew=False, uses_sentiment=True,
     ),
 )

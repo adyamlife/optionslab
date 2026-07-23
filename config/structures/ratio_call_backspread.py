@@ -1,7 +1,8 @@
-from config.structures._base import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema
+from config.structures._base import OptionStructure, HedgeDef, HedgeStrikeMode, StrikeSchema, SignalProfile
 
 RATIO_CALL_BACKSPREAD = OptionStructure(
     name          = "Ratio Call Backspread",
+    abbr          = "RCB",
     is_credit     = False,
     option_type   = "call",
     allowed_iv      = ("Low",),
@@ -24,5 +25,11 @@ RATIO_CALL_BACKSPREAD = OptionStructure(
         delta_change = 0.0,
         opt_type     = "call",
         strike_mode  = HedgeStrikeMode.ONE_WIDTH_ABOVE_HI,
+    ),
+    signal_profile = SignalProfile(
+        bias="bullish",
+        needs_trend=True, needs_momentum=True,
+        uses_term_structure=True, uses_skew=True, uses_sentiment=True,
+        prefers_contango=True,
     ),
 )
