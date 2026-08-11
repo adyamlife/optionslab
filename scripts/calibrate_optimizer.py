@@ -55,6 +55,8 @@ log = logging.getLogger(__name__)
 MIN_SAMPLE = 10      # buckets with fewer trades are reported but flagged as low-confidence
 DELTA_STEP = 0.05    # bin width for short_delta
 WIDTH_TIERS = [1, 2, 3, 5, 7, 10, 15, 20, 30]  # upper edge of each width bucket
+DTE_BINS   = [0, 14, 30, 60, float("inf")]       # DTE bucket edges
+DTE_LABELS = ["0-14", "15-30", "31-60", "61+"]   # labels for each bin
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
@@ -233,9 +235,20 @@ def load_calibration_data() -> pd.DataFrame:
     df["delta_bucket"] = df["short_delta"].apply(_bucket_delta)
     df["width_bucket"] = df["width"].apply(_bucket_width)
 
-    return df[["ticker", "date", "structure", "is_credit",
-               "short_delta", "width", "delta_bucket", "width_bucket",
-               "pnl_per_share", "win"]].copy()
+    # DTE bucket — sourced from the snapshot's top-level dte column when available.
+    if "dte" in df.columns:
+        df["dte_num"] = pd.to_numeric(df["dte"], errors="coerce")
+        df["dte_bucket"] = pd.cut(
+            df["dte_num"], bins=DTE_BINS, labels=DTE_LABELS, right=True,
+        ).astype(str)
+        df["dte_bucket"] = df["dte_bucket"].where(df["dte_num"].notna(), other="unknown")
+    else:
+        df["dte_bucket"] = "unknown"
+
+    cols = ["ticker", "date", "structure", "is_credit",
+            "short_delta", "width", "delta_bucket", "width_bucket",
+            "dte_bucket", "pnl_per_share", "win"]
+    return df[[c for c in cols if c in df.columns]].copy()
 
 
 # ── Analysis ───────────────────────────────────────────────────────────────────
@@ -267,6 +280,46 @@ def analyze_buckets(df: pd.DataFrame) -> pd.DataFrame:
             "low_confidence": n < MIN_SAMPLE,
         })
     return pd.DataFrame(rows).sort_values("risk_adj", ascending=False)
+
+
+def analyze_buckets_dte(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Compute per-(structure, dte_bucket, delta_bucket, width_bucket) metrics.
+    Shows how optimal delta/width varies by DTE — useful for tuning per-tenor grids.
+    Only structures and DTE buckets with at least MIN_SAMPLE trades are included.
+    """
+    if "dte_bucket" not in df.columns or (df["dte_bucket"] == "unknown").all():
+        return pd.DataFrame()
+
+    rows = []
+    for (struct, dteb, db, wb), grp in df.groupby(
+        ["structure", "dte_bucket", "delta_bucket", "width_bucket"], observed=True
+    ):
+        pnl = grp["pnl_per_share"].values.astype(float)
+        win = grp["win"].values.astype(float)
+        n   = len(pnl)
+        if n < MIN_SAMPLE:
+            continue
+        avg_pnl  = float(np.mean(pnl))
+        win_rate = float(np.mean(win))
+        std      = float(np.std(pnl, ddof=1)) if n > 1 else 0.0
+        sharpe   = (avg_pnl / std * np.sqrt(52)) if std > 0 else 0.0
+        risk_adj = win_rate * avg_pnl if avg_pnl > 0 else win_rate * avg_pnl * 2
+        rows.append({
+            "structure":    struct,
+            "dte_bucket":   dteb,
+            "delta_bucket": db,
+            "width_bucket": wb,
+            "n_trades":     n,
+            "win_rate":     round(win_rate, 3),
+            "avg_pnl":      round(avg_pnl, 4),
+            "sharpe":       round(sharpe, 3),
+            "risk_adj":     round(risk_adj, 5),
+        })
+    if not rows:
+        return pd.DataFrame()
+    return pd.DataFrame(rows).sort_values(["structure", "dte_bucket", "risk_adj"],
+                                          ascending=[True, True, False])
 
 
 def recommend_grids(
@@ -380,8 +433,9 @@ def run_calibration(write: bool = False) -> dict:
     if df.empty:
         return {"ok": False, "error": "No labeled snapshots with parseable candidate data"}
 
-    bucket_df = analyze_buckets(df)
-    grids     = recommend_grids(bucket_df)
+    bucket_df     = analyze_buckets(df)
+    bucket_dte_df = analyze_buckets_dte(df)
+    grids         = recommend_grids(bucket_df)
 
     run_id     = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     date_range = _extract_date_range(df)
@@ -399,6 +453,7 @@ def run_calibration(write: bool = False) -> dict:
         "recommended_grids": grids,
         "calibration_metrics": cal_metrics,
         "top_buckets":       bucket_df.head(20).to_dict("records"),
+        "dte_buckets":       bucket_dte_df.to_dict("records") if not bucket_dte_df.empty else [],
         "written":           False,
     }
 
@@ -449,6 +504,18 @@ def _print_calibration_result(result: dict) -> None:
     print(f"  credit_delta_grid      = {g['credit_delta_grid']}")
     print(f"  width_grid             = {g['width_grid']}")
     print(f"  debit_long_delta_grid  = {g['debit_long_delta_grid']}")
+
+    dte_rows = result.get("dte_buckets") or []
+    if dte_rows:
+        print(f"\nDTE-stratified best buckets (≥{MIN_SAMPLE} trades, by structure × DTE):")
+        print(f"  {'Structure':<28}  {'DTE':>6}  {'Δ':>5}  {'W':>4}  {'win%':>6}  {'avg$':>7}  {'sharpe':>7}  {'n':>4}")
+        print("  " + "─" * 80)
+        for r in dte_rows:
+            print(f"  {r['structure']:<28}  {str(r['dte_bucket']):>6}  {r['delta_bucket']:>5.2f}  "
+                  f"{r['width_bucket']:>4}  {r['win_rate']:>5.0%}  ${r['avg_pnl']:>6.3f}  "
+                  f"{r['sharpe']:>7.3f}  {r['n_trades']:>4}")
+    else:
+        print(f"\nDTE-stratified analysis: not enough trades (need ≥{MIN_SAMPLE} per DTE bucket).")
 
     if result["written"]:
         print(f"\nWritten to config/settings.toml  (backup: settings.toml.bak)")

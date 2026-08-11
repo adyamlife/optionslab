@@ -1,24 +1,32 @@
 // job_key → { label, api for "Run Now", apscheduler_id (null = manual-only), group }
 const JOB_META = {
-  morning_scan:     { label: "Morning Scan",                   api: "/api/paper-trades/morning-scan",     sched_id: "morning_scan",  group: "Trading" },
-  evening_check:    { label: "Evening Check",                  api: "/api/paper-trades/evening-check",    sched_id: "evening_check", group: "Trading" },
-  training_collect: { label: "Data Collect (Snapshots)",       api: "/api/training-data/collect",         sched_id: "collect",       group: "Trading" },
+  morning_scan:     { label: "Morning Scan",                   api: "/api/paper-trades/morning-scan",     sched_id: "morning_scan",   group: "Trading" },
+  afternoon_scan:   { label: "Afternoon Scan",                 api: "/api/paper-trades/afternoon-scan",   sched_id: "afternoon_scan", group: "Trading" },
+  evening_check:    { label: "Evening Check",                  api: "/api/paper-trades/evening-check",    sched_id: "evening_check",  group: "Trading" },
+  training_collect: { label: "Data Collect (Snapshots)",       api: "/api/training-data/collect",         sched_id: "collect",        group: "Trading" },
   oi_open:          { label: "OI Snapshot — Open",             api: "/api/archive/run",                   sched_id: "oi_open",       group: "Flywheel", api_body: {job:"oi", time_of_day:"open"} },
   oi_close:         { label: "OI Snapshot — Close",            api: "/api/archive/run",                   sched_id: "oi_close",      group: "Flywheel", api_body: {job:"oi", time_of_day:"close"} },
   daily_archive:    { label: "Daily Archive (Bars/VIX/Earnings)", api: "/api/archive/run",                sched_id: "daily_archive", group: "Flywheel", api_body: {job:"all"} },
-  regime_backfill:  { label: "Regime Backfill",                api: "/api/training-data/backfill-regime", sched_id: null,            group: "ML" },
-  train_models:     { label: "Train ML Models",                api: "/api/training-data/train-models",    sched_id: null,            group: "ML" },
+  regime_backfill:      { label: "Regime Backfill",                api: "/api/training-data/backfill-regime", sched_id: null, group: "ML" },
+  train_models:         { label: "Train ML Models",                api: "/api/training-data/train-models",    sched_id: null, group: "ML" },
+  daily_iv_collect:     { label: "Daily IV Collect",               api: null, sched_id: null, group: "Layer B", schedule: "Mon–Fri 4:15 PM ET (cron)" },
+  weekly_profile_build: { label: "Weekly Profile Build",           api: null, sched_id: null, group: "Layer B", schedule: "Sun 8:00 PM ET (cron)" },
+  weekly_calibration:   { label: "Weekly Calibration Check",       api: null, sched_id: null, group: "Layer B", schedule: "Sun 9:00 PM ET (cron)" },
 };
 
 const JOB_LABELS = {
-  morning_scan:     "Morning Scan",
-  evening_check:    "Evening Check",
-  training_collect: "Data Collect",
-  oi_open:          "OI Snapshot — Open",
-  oi_close:         "OI Snapshot — Close",
-  daily_archive:    "Daily Archive",
-  regime_backfill:  "Regime Backfill",
-  train_models:     "Train ML Models",
+  morning_scan:         "Morning Scan",
+  afternoon_scan:       "Afternoon Scan",
+  evening_check:        "Evening Check",
+  training_collect:     "Data Collect",
+  oi_open:              "OI Snapshot — Open",
+  oi_close:             "OI Snapshot — Close",
+  daily_archive:        "Daily Archive",
+  regime_backfill:      "Regime Backfill",
+  train_models:         "Train ML Models",
+  daily_iv_collect:     "Daily IV Collect",
+  weekly_profile_build: "Weekly Profile Build",
+  weekly_calibration:   "Weekly Calibration Check",
 };
 
 const AUDIT_MODEL_LABELS = {
@@ -83,6 +91,25 @@ async function loadStatus() {
   document.getElementById("db-labeled").textContent = fmt(db.labeled);
   document.getElementById("db-chain").textContent   = fmt(db.chain_snaps);
 
+  const cq = data.collect_quality || {};
+  if (cq.total != null) {
+    const pct = cq.total > 0 ? Math.round(cq.collected / cq.total * 100) : 0;
+    const color = pct >= 90 ? "var(--success,#4c4)" : pct >= 60 ? "var(--warn,#fa0)" : "var(--danger,#e55)";
+    const el = document.getElementById("cq-summary");
+    el.textContent = `${cq.collected} / ${cq.total} tickers (${pct}%)`;
+    el.style.color = color;
+    const errRow = document.getElementById("cq-error-row");
+    if (cq.errors > 0 && cq.first_error) {
+      errRow.style.display = "";
+      document.getElementById("cq-first-error").textContent =
+        `${cq.first_error.ticker}: ${cq.first_error.error}`;
+    } else {
+      errRow.style.display = "none";
+    }
+  } else {
+    document.getElementById("cq-summary").textContent = "—";
+  }
+
   const ml = data.ml_cache || {};
   const warmEl = document.getElementById("ml-warm");
   warmEl.textContent = ml.warm ? "Warm" : "Cold";
@@ -113,26 +140,28 @@ async function loadStatus() {
     const s         = statuses[key] || { state: "idle" };
     const schedJob  = meta.sched_id ? jobs[meta.sched_id] : null;
     const paused    = schedJob && schedJob.next_run_human === "paused";
-    const nextHuman = schedJob ? (schedJob.next_run_human || "—") : "—";
+    const nextHuman = schedJob ? (schedJob.next_run_human || "—") : (meta.schedule || "—");
     const dur       = s.age_min != null ? `${s.age_min}m ago` : "—";
     const errTip    = s.error ? ` title="${s.error.replace(/"/g,"'").slice(0,200)}"` : "";
+    const isCron    = !meta.sched_id && !meta.api;
 
     const pauseBtn = meta.sched_id
       ? `<button class="btn-sm pause-btn" data-job-id="${meta.sched_id}" data-paused="${paused}"
            style="margin-left:.4rem">${paused ? "Resume" : "Pause"}</button>`
       : "";
 
+    const actionCell = isCron
+      ? `<span class="muted" style="font-size:.78rem">Ubuntu cron</span>`
+      : `<button class="btn-sm run-btn" data-api="${meta.api}" data-label="${meta.label}">Run Now</button>${pauseBtn}`;
+
     const tr = document.createElement("tr");
     tr.dataset.apiBody = meta.api_body ? JSON.stringify(meta.api_body) : "";
     tr.innerHTML = `
       <td><strong>${meta.label}</strong>${paused ? ' <span class="muted" style="font-size:.8rem">(paused)</span>' : ""}</td>
       <td class="muted">${nextHuman}</td>
-      <td class="${stateCls(s.state)}"${errTip}>${stateLabel(s.state)}</td>
-      <td class="muted">${dur}</td>
-      <td>
-        <button class="btn-sm run-btn" data-api="${meta.api}" data-label="${meta.label}">Run Now</button>
-        ${pauseBtn}
-      </td>
+      <td class="${isCron ? "state-idle" : stateCls(s.state)}"${errTip}>${isCron ? "—" : stateLabel(s.state)}</td>
+      <td class="muted">${isCron ? "—" : dur}</td>
+      <td>${actionCell}</td>
     `;
     tbody.appendChild(tr);
   }
@@ -169,6 +198,24 @@ async function loadStatus() {
       document.getElementById("arc-earn").textContent = fmt(c.earnings_iv_tracker);
     }
   } catch(e) { /* non-fatal */ }
+
+  const lb = data.layer_b || {};
+  if (!lb.error) {
+    document.getElementById("lb-iv-rows").textContent    = fmt(lb.iv_rows);
+    document.getElementById("lb-iv-tickers").textContent = fmt(lb.iv_tickers);
+    document.getElementById("lb-iv-date").textContent    = lb.iv_last || "—";
+    document.getElementById("lb-profiles").textContent   = fmt(lb.profile_tickers);
+    document.getElementById("lb-profile-date").textContent = lb.profile_last || "—";
+    const wk = lb.calib_weeks ?? 0;
+    const rem = lb.phase3_weeks_remaining ?? (20 - wk);
+    document.getElementById("lb-calib-weeks").textContent = `${wk} / 20`;
+    document.getElementById("lb-phase3-inline").textContent = rem > 0 ? rem : "✓ Ready";
+  } else {
+    ["lb-iv-rows","lb-iv-tickers","lb-iv-date","lb-profiles","lb-profile-date","lb-calib-weeks"].forEach(id => {
+      document.getElementById(id).textContent = "—";
+    });
+    document.getElementById("lb-phase3-inline").textContent = "—";
+  }
 }
 
 document.getElementById("ml-refresh-btn").addEventListener("click", async function() {
@@ -202,9 +249,12 @@ scheduleAuto();
 
 // ── Run History Log ───────────────────────────────────────────────────────────
 
+const _TRADING_JOBS = new Set(["morning_scan", "afternoon_scan", "evening_check"]);
+
 async function loadLogs() {
-  const filter = document.getElementById("log-filter").value;
-  const url    = "/api/scheduler/logs" + (filter ? "?job=" + encodeURIComponent(filter) : "");
+  const filter  = document.getElementById("log-filter").value;
+  const trading = filter === "__trading__";
+  const url     = "/api/scheduler/logs" + (!filter || trading ? "" : "?job=" + encodeURIComponent(filter));
   let data;
   try {
     const r = await fetch(url);
@@ -214,14 +264,16 @@ async function loadLogs() {
       `<tr><td colspan="5" class="state-error">Error loading logs: ${e.message}</td></tr>`;
     return;
   }
-  const logs  = data.logs || [];
+  let logs = data.logs || [];
+  if (trading) logs = logs.filter(e => _TRADING_JOBS.has(e.job));
+  const cap = filter ? 200 : 50;
   const tbody = document.getElementById("log-tbody");
-  document.getElementById("log-count").textContent = `${Math.min(logs.length, 50)} of ${logs.length} entries`;
+  document.getElementById("log-count").textContent = `${Math.min(logs.length, cap)} of ${logs.length} entries`;
   if (!logs.length) {
     tbody.innerHTML = `<tr><td colspan="5" class="muted">No runs recorded yet — history accumulates after jobs fire.</td></tr>`;
     return;
   }
-  tbody.innerHTML = logs.slice(0, 50).map(e => {
+  tbody.innerHTML = logs.slice(0, cap).map(e => {
     const t = e.ts ? (() => {
       try {
         return new Date(e.ts).toLocaleString("en-US", {
@@ -253,59 +305,52 @@ loadLogs();
 
 // ── Model Audit ───────────────────────────────────────────────────────────────
 
-function renderCurveSVG(curves, label, W = 200, H = 140) {
-  const PAD = 24;
-  const iW = W - PAD * 2, iH = H - PAD * 2;
+let _auditCurveStore = {};   // plotId → { curves, label }
 
-  const toSVG = (xv, yv) => ({ sx: PAD + xv * iW, sy: PAD + (1 - yv) * iH });
-
-  const polyline = function(pts, color, dash) {
-    if (pts.length < 2) return "";
-    var pts_str = pts.map(function(p) { return p.sx.toFixed(1) + "," + p.sy.toFixed(1); }).join(" ");
-    var dash_attr = dash ? " stroke-dasharray=\"" + dash + "\"" : "";
-    return "<polyline points=\"" + pts_str + "\" fill=\"none\" stroke=\"" + color + "\" stroke-width=\"1.8\" stroke-linejoin=\"round\" stroke-linecap=\"round\"" + dash_attr + " />";
-  };
-
-  const dots = (pts, color) =>
-    pts.map(p => `<circle cx="${p.sx.toFixed(1)}" cy="${p.sy.toFixed(1)}" r="2.5" fill="${color}"/>`).join("");
-
-  const diag = `<line x1="${PAD}" y1="${PAD+iH}" x2="${PAD+iW}" y2="${PAD}"
-    stroke="currentColor" stroke-width="1" opacity=".25" stroke-dasharray="4,3"/>`;
-
-  const ticks = [0, 0.25, 0.5, 0.75, 1].map(v => {
-    const x = PAD + v * iW, y = PAD + (1 - v) * iH;
-    return `<line x1="${x}" y1="${PAD+iH}" x2="${x}" y2="${PAD+iH+3}" stroke="currentColor" opacity=".3" stroke-width="1"/>
-            <line x1="${PAD-3}" y1="${y}" x2="${PAD}" y2="${y}" stroke="currentColor" opacity=".3" stroke-width="1"/>`;
-  }).join("");
-
-  const axis = `<rect x="${PAD}" y="${PAD}" width="${iW}" height="${iH}"
-    fill="none" stroke="currentColor" opacity=".15" stroke-width="1"/>`;
-
-  const rawPts = (curves.raw?.x || []).map((x, i) => toSVG(x, curves.raw.y[i]));
-  const calPts = curves.calibrated ? (curves.calibrated.x || []).map((x, i) => toSVG(x, curves.calibrated.y[i])) : [];
-
-  const rawColor = "var(--text-muted, #666)";
-  const calColor = "var(--pass, #4ade80)";
-
-  const xLabel = `<text x="${PAD+iW/2}" y="${H-2}" text-anchor="middle" font-size="8" fill="currentColor" opacity=".4">Predicted</text>`;
-  const yLabel = `<text x="6" y="${PAD+iH/2}" text-anchor="middle" font-size="8" fill="currentColor" opacity=".4"
-    transform="rotate(-90,6,${PAD+iH/2})">Actual</text>`;
-
-  const legend = calPts.length
-    ? `<line x1="${PAD+2}" y1="${PAD-8}" x2="${PAD+12}" y2="${PAD-8}" stroke="${rawColor}" stroke-width="1.5" stroke-dasharray="3,2"/>
-       <text x="${PAD+14}" y="${PAD-5}" font-size="7.5" fill="currentColor" opacity=".55">raw</text>
-       <line x1="${PAD+38}" y1="${PAD-8}" x2="${PAD+48}" y2="${PAD-8}" stroke="${calColor}" stroke-width="1.5"/>
-       <text x="${PAD+50}" y="${PAD-5}" font-size="7.5" fill="currentColor" opacity=".55">calibrated</text>`
-    : `<line x1="${PAD+2}" y1="${PAD-8}" x2="${PAD+12}" y2="${PAD-8}" stroke="${rawColor}" stroke-width="1.5"/>
-       <text x="${PAD+14}" y="${PAD-5}" font-size="7.5" fill="currentColor" opacity=".55">raw</text>`;
-
-  return `<svg viewBox="0 0 ${W} ${H}" class="audit-svg" xmlns="http://www.w3.org/2000/svg">
-    ${axis}${ticks}${diag}
-    ${polyline(rawPts, rawColor, "4,3")}${dots(rawPts, rawColor)}
-    ${calPts.length ? polyline(calPts, calColor) + dots(calPts, calColor) : ""}
-    ${xLabel}${yLabel}${legend}
-  </svg>`;
+function _plotId(name, cls) {
+  return "audit-p-" + (name + (cls ? "-" + cls : "")).replace(/[^a-z0-9]/gi, "_");
 }
+
+function _plotTraces(curves) {
+  const rawX = curves.raw?.x  || [];
+  const rawY = curves.raw?.y  || [];
+  const calX = curves.calibrated?.x || [];
+  const calY = curves.calibrated?.y || [];
+  const traces = [
+    { name: "Perfect", x: [0, 1], y: [0, 1], mode: "lines",
+      line: { color: "rgba(150,150,150,0.3)", dash: "dash", width: 1 },
+      showlegend: false, hoverinfo: "skip" },
+    { name: "Raw", x: rawX, y: rawY, mode: "lines+markers",
+      line: { color: "rgba(150,150,150,0.75)", dash: "dot", width: 2 },
+      marker: { size: 4, color: "rgba(150,150,150,0.75)" } },
+  ];
+  if (calX.length) {
+    traces.push({ name: "Calibrated", x: calX, y: calY, mode: "lines+markers",
+      line: { color: "#4ade80", width: 2 },
+      marker: { size: 4, color: "#4ade80" } });
+  }
+  return traces;
+}
+
+function _plotLayout(small) {
+  const grid = "rgba(150,150,150,0.12)";
+  const font = { size: small ? 9 : 11, color: "rgba(200,200,200,0.8)" };
+  return {
+    paper_bgcolor: "transparent", plot_bgcolor: "transparent",
+    font,
+    margin: small ? { t:4, b:20, l:28, r:4 } : { t:10, b:52, l:52, r:10 },
+    xaxis: { range: [0, 1], gridcolor: grid, zeroline: false,
+             title: small ? "" : "Mean predicted prob.",
+             tickfont: { size: 9 }, showticklabels: true },
+    yaxis: { range: [0, 1], gridcolor: grid, zeroline: false,
+             title: small ? "" : "Fraction of positives",
+             tickfont: { size: 9 } },
+    showlegend: !small,
+    legend: { orientation: "h", y: -0.22, font: { size: 10 } },
+  };
+}
+
+const _plotCfg = { responsive: true, displayModeBar: false };
 
 function renderAuditCard(name, r) {
   const label = AUDIT_MODEL_LABELS[name] || name;
@@ -316,13 +361,17 @@ function renderAuditCard(name, r) {
     </div>`;
   }
 
-  const br = r.brier_raw?.toFixed(4) ?? "—";
-  const bc = r.brier_calibrated?.toFixed(4) ?? null;
+  const tr  = r.training || {};
+  const mi  = r.model_info || {};
+  const br  = tr.brier_raw?.toFixed(4) ?? "—";
+  const bc  = tr.brier_calibrated?.toFixed(4) ?? null;
+  const nRows   = mi.test_rows?.toLocaleString() ?? "?";
+  const cutoff  = tr.split_cutoff || tr.meta_cutoff || mi.test_cutoff || "?";
 
   const brierHTML = `<div class="audit-brier">
     <div class="audit-brier-item">
       <span class="audit-brier-label">Brier (raw)</span>
-      <span class="audit-brier-val ${bc ? 'raw' : ''}">${br}</span>
+      <span class="audit-brier-val ${bc ? "raw" : ""}">${br}</span>
     </div>
     ${bc ? `<div class="audit-brier-item">
       <span class="audit-brier-label">Brier (calibrated)</span>
@@ -333,26 +382,24 @@ function renderAuditCard(name, r) {
       <span class="audit-brier-val improved">-${(parseFloat(br)-parseFloat(bc)).toFixed(4)}</span>
     </div>` : ""}
   </div>
-  <div class="muted" style="font-size:.75rem;margin-bottom:.4rem">${r.test_rows?.toLocaleString()} test rows · cutoff ${r.split_cutoff || "?"}</div>`;
+  <div class="muted" style="font-size:.75rem;margin-bottom:.4rem">${nRows} test rows · cutoff ${String(cutoff).slice(0,10)}</div>`;
 
   let curvesHTML = '<div class="audit-curves-row">';
   if (r.type === "multiclass") {
-    curvesHTML += Object.entries(r.curves || {}).map(([cls, cv]) => {
-      const svgBig   = renderCurveSVG(cv, cls, 560, 340);
-      const svgSmall = renderCurveSVG(cv, cls);
-      const titleAttr = `${label} — ${cls}`;
+    const perClass = tr.per_class_curves || {};
+    curvesHTML += Object.entries(perClass).map(([cls]) => {
+      const pid = _plotId(name, cls);
       return `<div class="audit-curve-wrap">
         <div class="audit-curve-label">${cls}</div>
-        ${svgSmall}
-        <button class="audit-max-btn" onclick="openAuditModal(${JSON.stringify(titleAttr)},${JSON.stringify(svgBig)})">&#x26F6;</button>
+        <div id="${pid}" class="audit-plot"></div>
+        <button class="audit-max-btn" onclick="openAuditModal(${JSON.stringify(label + ' — ' + cls).replace(/"/g,'&quot;')},${JSON.stringify(pid).replace(/"/g,'&quot;')})">&#x26F6;</button>
       </div>`;
     }).join("");
   } else {
-    const svgBig   = renderCurveSVG(r.curve || {}, label, 560, 340);
-    const svgSmall = renderCurveSVG(r.curve || {}, label);
+    const pid = _plotId(name, null);
     curvesHTML += `<div class="audit-curve-wrap">
-      ${svgSmall}
-      <button class="audit-max-btn" onclick="openAuditModal(${JSON.stringify(label)},${JSON.stringify(svgBig)})">&#x26F6;</button>
+      <div id="${pid}" class="audit-plot"></div>
+      <button class="audit-max-btn" onclick="openAuditModal(${JSON.stringify(label).replace(/"/g,'&quot;')},${JSON.stringify(pid).replace(/"/g,'&quot;')})">&#x26F6;</button>
     </div>`;
   }
   curvesHTML += "</div>";
@@ -362,6 +409,34 @@ function renderAuditCard(name, r) {
     ${brierHTML}
     ${curvesHTML}
   </div>`;
+}
+
+function attachAuditCharts(data) {
+  Object.keys(_auditCurveStore).forEach(id => { try { Plotly.purge(id); } catch(_) {} });
+  _auditCurveStore = {};
+
+  for (const [name, r] of Object.entries(data.models || {})) {
+    if (!r.ok) continue;
+    const label = AUDIT_MODEL_LABELS[name] || name;
+    const tr    = r.training || {};
+    if (r.type === "multiclass") {
+      for (const [cls, classData] of Object.entries(tr.per_class_curves || {})) {
+        const pid = _plotId(name, cls);
+        const el  = document.getElementById(pid);
+        if (!el) continue;
+        const cv = classData.curves_quantile || {};
+        _auditCurveStore[pid] = { curves: cv, label: label + " — " + cls };
+        Plotly.newPlot(pid, _plotTraces(cv), _plotLayout(true), _plotCfg);
+      }
+    } else {
+      const pid = _plotId(name, null);
+      const el  = document.getElementById(pid);
+      if (!el) continue;
+      const cv = tr.curves_quantile || {};
+      _auditCurveStore[pid] = { curves: cv, label };
+      Plotly.newPlot(pid, _plotTraces(cv), _plotLayout(true), _plotCfg);
+    }
+  }
 }
 
 async function runAudit() {
@@ -396,6 +471,7 @@ async function runAudit() {
       .map(([name, r]) => renderAuditCard(name, r))
       .join("");
     body.innerHTML = `<div class="audit-grid">${cards}</div>`;
+    attachAuditCharts(data);
 
   } catch(e) {
     errEl.textContent = "Audit failed: " + e.message;
@@ -411,14 +487,17 @@ document.getElementById("audit-run-btn").addEventListener("click", runAudit);
 
 // ── Audit chart modal ─────────────────────────────────────────────────────────
 
-function openAuditModal(title, svgHTML) {
+function openAuditModal(title, sourcePlotId) {
+  const stored = _auditCurveStore[sourcePlotId];
+  if (!stored) return;
   document.getElementById("audit-modal-title").textContent = title;
-  document.getElementById("audit-modal-svg-wrap").innerHTML = svgHTML;
+  Plotly.newPlot("audit-modal-plot", _plotTraces(stored.curves), _plotLayout(false), _plotCfg);
   document.getElementById("audit-modal").classList.add("open");
 }
 
 function closeAuditModal() {
   document.getElementById("audit-modal").classList.remove("open");
+  try { Plotly.purge("audit-modal-plot"); } catch(_) {}
 }
 
 document.getElementById("audit-modal-close").addEventListener("click", closeAuditModal);

@@ -63,3 +63,341 @@
 2026-07-22 17:05:08,122 WARNING _current_mark failed for V: name 's' is not defined
 2026-07-22 17:05:09,207 WARNING _current_mark failed for RTX: name 's' is not defined
 2026-07-22 17:06:16,250 INFO [POP] No new labels tonight — skipping retrain and failure analysis.
+2026-07-23 17:00:08,379 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-23 17:00:18,611 INFO IV surface flag on 20260706_QUBT_PUT_2: short strike 7.5 now +54.0vp expensive — consider closing
+2026-07-23 17:00:20,398 INFO IV surface flag on 20260706_SMR_PUT_2: short strike 7.5 now -2.7vp cheap — vol moved against position
+2026-07-23 17:00:23,223 INFO IV surface flag on 20260707_QUBT_PUT_3: short strike 7.5 now +54.0vp expensive — consider closing
+2026-07-23 17:00:42,995 INFO [POP] No new labels tonight — skipping retrain and failure analysis.
+2026-07-24 17:00:07,492 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-24 17:00:08,707 INFO EXPIRED 20260706_NFLX_CAL_1: ul=70.09500122070312  P&L=$11.00  WIN
+2026-07-24 17:00:08,762 INFO [eval] trade 20260706_NFLX_CAL_1 outcome recorded: win +100.0%
+2026-07-24 17:00:08,867 INFO EXPIRED 20260706_QUBT_PUT_2: ul=7.440000057220459  P&L=$110.00  WIN
+2026-07-24 17:00:08,869 INFO [eval] trade 20260706_QUBT_PUT_2 outcome recorded: win +100.0%
+2026-07-24 17:00:08,965 INFO EXPIRED 20260706_ORCL_PUT_3: ul=114.98999786376953  P&L=$90.00  WIN
+2026-07-24 17:00:08,967 INFO [eval] trade 20260706_ORCL_PUT_3 outcome recorded: win +100.0%
+2026-07-24 17:00:09,076 INFO EXPIRED 20260706_SMR_PUT_2: ul=8.100000381469727  P&L=$96.00  WIN
+2026-07-24 17:00:09,077 INFO [eval] trade 20260706_SMR_PUT_2 outcome recorded: win +61.5%
+2026-07-24 17:00:09,196 INFO EXPIRED 20260706_NVO_CAL_3: ul=48.790000915527344  P&L=$-113.00  LOSS
+2026-07-24 17:00:09,197 INFO [eval] trade 20260706_NVO_CAL_3 outcome recorded: loss -39.4%
+2026-07-24 17:00:09,292 INFO EXPIRED 20260707_SPY_CAL_1: ul=738.8599853515625  P&L=$-119.00  LOSS
+2026-07-24 17:00:09,293 INFO [eval] trade 20260707_SPY_CAL_1 outcome recorded: loss -65.8%
+2026-07-24 17:00:09,378 INFO EXPIRED 20260707_COP_PUT_2: ul=120.2699966430664  P&L=$-113.00  LOSS
+2026-07-24 17:00:09,381 INFO [eval] trade 20260707_COP_PUT_2 outcome recorded: loss -60.4%
+2026-07-24 17:00:09,418 INFO EXPIRED 20260707_QUBT_PUT_3: ul=7.440000057220459  P&L=$87.00  WIN
+2026-07-24 17:00:09,420 INFO [eval] trade 20260707_QUBT_PUT_3 outcome recorded: win +100.0%
+2026-07-24 17:00:09,508 INFO EXPIRED 20260709_ACHR_PUT_1: ul=4.769999980926514  P&L=$-28.00  LOSS
+2026-07-24 17:00:09,510 INFO [eval] trade 20260709_ACHR_PUT_1 outcome recorded: loss -57.1%
+2026-07-24 17:00:09,567 INFO EXPIRED 20260709_NFLX_CAL_2: ul=70.09500122070312  P&L=$10.00  WIN
+2026-07-24 17:00:09,569 INFO [eval] trade 20260709_NFLX_CAL_2 outcome recorded: win +100.0%
+2026-07-24 17:00:09,608 INFO EXPIRED 20260709_SPY_CAL_3: ul=738.8599853515625  P&L=$-78.00  LOSS
+2026-07-24 17:00:09,609 INFO [eval] trade 20260709_SPY_CAL_3 outcome recorded: loss -63.9%
+2026-07-24 17:00:09,645 INFO EXPIRED 20260710_SPY_CAL_1: ul=738.8599853515625  P&L=$-76.00  LOSS
+2026-07-24 17:00:09,646 INFO [eval] trade 20260710_SPY_CAL_1 outcome recorded: loss -61.3%
+2026-07-24 17:00:09,774 INFO EXPIRED 20260710_AAPL_CAL_2: ul=333.07000732421875  P&L=$132.00  WIN
+2026-07-24 17:00:09,775 INFO [eval] trade 20260710_AAPL_CAL_2 outcome recorded: win +100.0%
+2026-07-24 17:00:09,873 INFO EXPIRED 20260710_SOFI_CAL_3: ul=16.479999542236328  P&L=$-108.00  LOSS
+2026-07-24 17:00:09,875 INFO [eval] trade 20260710_SOFI_CAL_3 outcome recorded: loss -56.2%
+2026-07-24 17:00:15,197 INFO EXPIRED 20260714AM_V_LON_1: ul=355.6400146484375  P&L=$-615.00  LOSS
+2026-07-24 17:00:15,199 INFO [eval] trade 20260714AM_V_LON_1 outcome recorded: loss -100.0%
+2026-07-24 17:00:16,646 INFO EXPIRED 20260716PM_APP_COV_1: ul=392.05999755859375  P&L=$400.00  WIN
+2026-07-24 17:00:16,648 INFO [eval] trade 20260716PM_APP_COV_1 outcome recorded: win +100.0%
+2026-07-24 17:00:16,757 INFO EXPIRED 20260716PM_TXN_COV_2: ul=279.6400146484375  P&L=$360.00  WIN
+2026-07-24 17:00:16,759 INFO [eval] trade 20260716PM_TXN_COV_2 outcome recorded: win +100.0%
+2026-07-24 17:00:16,913 INFO EXPIRED 20260716PM_LRCX_COV_3: ul=305.3999938964844  P&L=$525.00  WIN
+2026-07-24 17:00:16,915 INFO [eval] trade 20260716PM_LRCX_COV_3 outcome recorded: win +100.0%
+2026-07-24 17:00:16,954 INFO EXPIRED 20260717AM_LRCX_COV_1: ul=305.3999938964844  P&L=$540.00  WIN
+2026-07-24 17:00:16,956 INFO [eval] trade 20260717AM_LRCX_COV_1 outcome recorded: win +100.0%
+2026-07-24 17:00:22,270 INFO [POP] 19 trade(s) newly labeled — triggering POP model retrain.
+2026-07-24 17:00:25,831 INFO [POP] Loaded 173 extra records from C:\Project Y\data\etrade_labeled_trades.jsonl
+2026-07-24 17:00:26,226 INFO [POP] 204 labeled rows loaded — 0 enriched with chain Greeks
+2026-07-24 17:00:26,243 INFO [POP] etrade-only: kept 173 / 204 rows
+2026-07-24 17:00:26,354 INFO [POP] Dropping 32 all-null columns: ['atm_iv', 'pcr', 'earnings_days_away', 'signal_score', 'vol_oi_ratio', 'iv_skew', 'iv_term_slope', 'otm_pcr', 'sector_rsi', 'sector_iv_ratio', 'vvix', 'vix_3m', 'vix_term_slope', 'earnings_inside_expiry', 'news_sentiment_score', 'analyst_rec_change', 'short_interest_pct', 'iv_skew_20d', 'gex_proxy', 'max_pain_strike', 'oi_concentration', 'wings_iv_ratio', 'dollar_index', 'fed_within_dte', 'cpi_within_dte', 'pop', 'ev', 'net_delta', 'net_theta', 'net_gamma', 'net_vega', 'capital_required']
+2026-07-24 17:00:28,758 INFO [POP] Retrain complete — AUC=0.8701  acc=0.8889  threshold=0.20  rows=138
+2026-07-24 17:00:28,783 INFO [FAILURES] 223 trades  win=54.7%  gap=10  iv_crush=0  theta=91
+2026-07-24 17:00:28,784 INFO [FAILURES]   Call Credit Spread              5 trades  100% win  gap=0 theta=0
+2026-07-24 17:00:28,784 INFO [FAILURES]   Call Debit Spread               24 trades  21% win  gap=7 theta=12
+2026-07-24 17:00:28,785 INFO [FAILURES]   Complex-2leg                    15 trades  27% win  gap=0 theta=11
+2026-07-24 17:00:28,785 INFO [FAILURES]   Complex-4leg                    12 trades  58% win  gap=0 theta=5
+2026-07-24 17:00:28,786 INFO [FAILURES]   Complex-8leg                    5 trades  80% win  gap=0 theta=1
+2026-07-24 17:00:28,786 INFO [FAILURES]   Covered Call                    5 trades  80% win  gap=0 theta=1
+2026-07-24 17:00:28,786 INFO [FAILURES]   Iron Condor                     26 trades  88% win  gap=0 theta=3
+2026-07-24 17:00:28,787 INFO [FAILURES]   Long Call                       44 trades  20% win  gap=0 theta=35
+2026-07-24 17:00:28,787 INFO [FAILURES]   Put Credit Spread               35 trades  80% win  gap=0 theta=7
+2026-07-24 17:00:28,788 INFO [FAILURES]   Put Debit Spread                25 trades  48% win  gap=3 theta=10
+2026-07-24 17:00:28,788 INFO [FAILURES]   Short Call                      7 trades  71% win  gap=0 theta=2
+2026-07-27 17:00:03,347 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-27 17:00:19,506 INFO [POP] No new labels tonight — skipping retrain and failure analysis.
+2026-07-27 17:00:19,506 INFO [MONITOR] Monday — running weekly model health check.
+2026-07-27 17:00:25,241 INFO [feature_drift] report written: 4256 recent / 116 baseline snapshots; 7 flagged
+2026-07-27 17:00:28,625 WARNING [monitor] feature build failed for regime: y contains previously unseen labels: 'unknown'
+2026-07-27 17:00:28,641 INFO [monitor] report written — drift=major_shift  degraded=none  flagged=37
+2026-07-27 17:00:28,668 INFO [MONITOR] drift=major_shift  degraded=none  flagged_features=37
+2026-07-27 17:00:28,669 WARNING [MONITOR] 37 features show distribution shift: ['atm_iv', 'iv_rank_proxy', 'hv20', 'iv_rank_52w', 'iv_term_slope']
+2026-07-28 17:00:14,462 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-28 17:00:28,686 INFO CLOSED (stop loss) 20260728AM_SPY_PDS_1: mark=5.205  P&L=$-1321.50 (-200.8% of max)
+2026-07-28 17:00:28,702 INFO [eval] trade 20260728AM_SPY_PDS_1 outcome recorded: loss -200.8%
+2026-07-28 17:00:29,815 INFO [POP] 1 trade(s) newly labeled — triggering POP model retrain.
+2026-07-28 17:00:36,565 INFO [POP] Loaded 173 extra records from C:\Project Y\data\etrade_labeled_trades.jsonl
+2026-07-28 17:00:37,237 INFO [POP] 999 labeled rows loaded — 84 enriched with chain Greeks
+2026-07-28 17:00:37,253 INFO [POP] etrade-only: kept 173 / 999 rows
+2026-07-28 17:00:37,933 INFO [POP] Dropping 32 all-null columns: ['atm_iv', 'pcr', 'earnings_days_away', 'signal_score', 'vol_oi_ratio', 'iv_skew', 'iv_term_slope', 'otm_pcr', 'sector_rsi', 'sector_iv_ratio', 'vvix', 'vix_3m', 'vix_term_slope', 'earnings_inside_expiry', 'news_sentiment_score', 'analyst_rec_change', 'short_interest_pct', 'iv_skew_20d', 'gex_proxy', 'max_pain_strike', 'oi_concentration', 'wings_iv_ratio', 'dollar_index', 'fed_within_dte', 'cpi_within_dte', 'pop', 'ev', 'net_delta', 'net_theta', 'net_gamma', 'net_vega', 'capital_required']
+2026-07-28 17:00:40,866 INFO [POP] Retrain complete — AUC=0.8701  acc=0.8889  threshold=0.20  rows=138
+2026-07-28 17:00:40,882 INFO [FAILURES] 224 trades  win=54.5%  gap=10  iv_crush=0  theta=92
+2026-07-28 17:00:40,882 INFO [FAILURES]   Call Credit Spread              5 trades  100% win  gap=0 theta=0
+2026-07-28 17:00:41,030 INFO [FAILURES]   Call Debit Spread               24 trades  21% win  gap=7 theta=12
+2026-07-28 17:00:41,030 INFO [FAILURES]   Complex-2leg                    15 trades  27% win  gap=0 theta=11
+2026-07-28 17:00:41,030 INFO [FAILURES]   Complex-4leg                    12 trades  58% win  gap=0 theta=5
+2026-07-28 17:00:41,030 INFO [FAILURES]   Complex-8leg                    5 trades  80% win  gap=0 theta=1
+2026-07-28 17:00:41,045 INFO [FAILURES]   Covered Call                    5 trades  80% win  gap=0 theta=1
+2026-07-28 17:00:41,045 INFO [FAILURES]   Iron Condor                     26 trades  88% win  gap=0 theta=3
+2026-07-28 17:00:41,045 INFO [FAILURES]   Long Call                       44 trades  20% win  gap=0 theta=35
+2026-07-28 17:00:41,045 INFO [FAILURES]   Put Credit Spread               35 trades  80% win  gap=0 theta=7
+2026-07-28 17:00:41,045 INFO [FAILURES]   Put Debit Spread                26 trades  46% win  gap=3 theta=11
+2026-07-28 17:00:41,045 INFO [FAILURES]   Short Call                      7 trades  71% win  gap=0 theta=2
+2026-07-29 17:27:01,544 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-29 17:27:18,328 INFO [POP] No new labels tonight — skipping retrain and failure analysis.
+2026-07-30 17:00:10,227 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-30 17:00:27,432 INFO CLOSED (stop loss) 20260729AM_SPY_PDS_2: mark=3.47  P&L=$-1185.50 (-208.9% of max)
+2026-07-30 17:00:27,495 INFO [eval] trade 20260729AM_SPY_PDS_2 outcome recorded: loss -208.9%
+2026-07-30 17:00:36,025 INFO [POP] 1 trade(s) newly labeled — triggering POP model retrain.
+2026-07-30 17:00:41,686 INFO [POP] Loaded 173 extra records from C:\Project Y\data\etrade_labeled_trades.jsonl
+2026-07-30 17:00:41,883 ERROR [POP] Retrain failed: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 14560)
+2026-07-30 17:00:42,025 INFO [FAILURES] 225 trades  win=54.2%  gap=10  iv_crush=0  theta=93
+2026-07-30 17:00:42,025 INFO [FAILURES]   Call Credit Spread              5 trades  100% win  gap=0 theta=0
+2026-07-30 17:00:42,025 INFO [FAILURES]   Call Debit Spread               24 trades  21% win  gap=7 theta=12
+2026-07-30 17:00:42,025 INFO [FAILURES]   Complex-2leg                    15 trades  27% win  gap=0 theta=11
+2026-07-30 17:00:42,025 INFO [FAILURES]   Complex-4leg                    12 trades  58% win  gap=0 theta=5
+2026-07-30 17:00:42,025 INFO [FAILURES]   Complex-8leg                    5 trades  80% win  gap=0 theta=1
+2026-07-30 17:00:42,025 INFO [FAILURES]   Covered Call                    5 trades  80% win  gap=0 theta=1
+2026-07-30 17:00:42,025 INFO [FAILURES]   Iron Condor                     26 trades  88% win  gap=0 theta=3
+2026-07-30 17:00:42,025 INFO [FAILURES]   Long Call                       44 trades  20% win  gap=0 theta=35
+2026-07-30 17:00:42,025 INFO [FAILURES]   Put Credit Spread               35 trades  80% win  gap=0 theta=7
+2026-07-30 17:00:42,025 INFO [FAILURES]   Put Debit Spread                27 trades  44% win  gap=3 theta=12
+2026-07-30 17:00:42,025 INFO [FAILURES]   Short Call                      7 trades  71% win  gap=0 theta=2
+2026-07-31 17:00:05,197 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-07-31 17:00:06,408 INFO EXPIRED 20260713_APP_COV_1: ul=395.6099853515625  P&L=$670.00  WIN
+2026-07-31 17:00:06,408 INFO [eval] trade 20260713_APP_COV_1 outcome recorded: win +100.0%
+2026-07-31 17:00:06,520 INFO EXPIRED 20260713_VRT_COV_2: ul=241.61000061035156  P&L=$450.00  WIN
+2026-07-31 17:00:06,532 INFO [eval] trade 20260713_VRT_COV_2 outcome recorded: win +100.0%
+2026-07-31 17:00:06,621 INFO EXPIRED 20260713_ORCL_COV_3: ul=129.88999938964844  P&L=$205.00  WIN
+2026-07-31 17:00:06,621 INFO [eval] trade 20260713_ORCL_COV_3 outcome recorded: win +100.0%
+2026-07-31 17:00:06,721 INFO EXPIRED 20260713_WMT_LON_3: ul=111.20999908447266  P&L=$-160.00  LOSS
+2026-07-31 17:00:06,721 INFO [eval] trade 20260713_WMT_LON_3 outcome recorded: loss -67.0%
+2026-07-31 17:00:06,897 INFO EXPIRED 20260713PM_SHOP_LON_3: ul=117.08999633789062  P&L=$-444.00  LOSS
+2026-07-31 17:00:06,897 INFO [eval] trade 20260713PM_SHOP_LON_3 outcome recorded: loss -60.4%
+2026-07-31 17:00:06,997 INFO EXPIRED 20260714AM_RTX_LON_2: ul=215.2100067138672  P&L=$-117.00  LOSS
+2026-07-31 17:00:06,997 INFO [eval] trade 20260714AM_RTX_LON_2 outcome recorded: loss -18.3%
+2026-07-31 17:00:09,997 INFO EXPIRED 20260717AM_APP_COV_2: ul=395.6099853515625  P&L=$420.00  WIN
+2026-07-31 17:00:10,009 INFO [eval] trade 20260717AM_APP_COV_2 outcome recorded: win +100.0%
+2026-07-31 17:00:11,156 INFO EXPIRED 20260721AM_VRT_COV_2: ul=241.61000061035156  P&L=$410.00  WIN
+2026-07-31 17:00:11,156 INFO [eval] trade 20260721AM_VRT_COV_2 outcome recorded: win +100.0%
+2026-07-31 17:00:11,257 INFO EXPIRED 20260722AM_NET_CDS_1: ul=278.75  P&L=$247.00  WIN
+2026-07-31 17:00:11,257 INFO [eval] trade 20260722AM_NET_CDS_1 outcome recorded: win +13.2%
+2026-07-31 17:00:11,361 INFO EXPIRED 20260722AM_NFLX_CDS_2: ul=71.69999694824219  P&L=$29.00  WIN
+2026-07-31 17:00:11,363 INFO [eval] trade 20260722AM_NFLX_CDS_2 outcome recorded: win +8.1%
+2026-07-31 17:00:12,669 INFO EXPIRED 20260723AM_UNH_PDS_3: ul=414.3599853515625  P&L=$702.00  WIN
+2026-07-31 17:00:12,669 INFO [eval] trade 20260723AM_UNH_PDS_3 outcome recorded: win +61.7%
+2026-07-31 17:00:15,619 INFO CLOSED (stop loss) 20260728AM_ORCL_COV_3: mark=5.425  P&L=$-364.50 (-204.8% of max)
+2026-07-31 17:00:15,619 INFO [eval] trade 20260728AM_ORCL_COV_3 outcome recorded: loss -204.8%
+2026-07-31 17:00:28,296 INFO [POP] 12 trade(s) newly labeled — triggering POP model retrain.
+2026-07-31 17:00:30,488 INFO [POP] Loaded 173 extra records from C:\Project Y\data\etrade_labeled_trades.jsonl
+2026-07-31 17:00:31,167 INFO [POP] 1221 labeled rows loaded — 86 enriched with chain Greeks
+2026-07-31 17:00:31,198 INFO [POP] etrade-only: kept 173 / 1221 rows
+2026-07-31 17:00:31,274 INFO [POP] Dropping 32 all-null columns: ['atm_iv', 'pcr', 'earnings_days_away', 'signal_score', 'vol_oi_ratio', 'iv_skew', 'iv_term_slope', 'otm_pcr', 'sector_rsi', 'sector_iv_ratio', 'vvix', 'vix_3m', 'vix_term_slope', 'earnings_inside_expiry', 'news_sentiment_score', 'analyst_rec_change', 'short_interest_pct', 'iv_skew_20d', 'gex_proxy', 'max_pain_strike', 'oi_concentration', 'wings_iv_ratio', 'dollar_index', 'fed_within_dte', 'cpi_within_dte', 'pop', 'ev', 'net_delta', 'net_theta', 'net_gamma', 'net_vega', 'capital_required']
+2026-07-31 17:00:33,269 INFO [POP] Retrain complete — AUC=0.8701  acc=0.8889  threshold=0.20  rows=138
+2026-07-31 17:00:33,294 INFO [FAILURES] 237 trades  win=54.9%  gap=13  iv_crush=0  theta=94
+2026-07-31 17:00:33,517 INFO [FAILURES]   Call Credit Spread              5 trades  100% win  gap=0 theta=0
+2026-07-31 17:00:33,521 INFO [FAILURES]   Call Debit Spread               26 trades  27% win  gap=7 theta=12
+2026-07-31 17:00:33,521 INFO [FAILURES]   Complex-2leg                    15 trades  27% win  gap=0 theta=11
+2026-07-31 17:00:33,521 INFO [FAILURES]   Complex-4leg                    12 trades  58% win  gap=0 theta=5
+2026-07-31 17:00:33,521 INFO [FAILURES]   Complex-8leg                    5 trades  80% win  gap=0 theta=1
+2026-07-31 17:00:33,521 INFO [FAILURES]   Covered Call                    11 trades  82% win  gap=1 theta=1
+2026-07-31 17:00:33,521 INFO [FAILURES]   Iron Condor                     26 trades  88% win  gap=0 theta=3
+2026-07-31 17:00:33,525 INFO [FAILURES]   Long Call                       44 trades  20% win  gap=0 theta=35
+2026-07-31 17:00:33,525 INFO [FAILURES]   Put Credit Spread               35 trades  80% win  gap=0 theta=7
+2026-07-31 17:00:33,525 INFO [FAILURES]   Put Debit Spread                28 trades  46% win  gap=3 theta=12
+2026-07-31 17:00:33,525 INFO [FAILURES]   Short Call                      7 trades  71% win  gap=0 theta=2
+2026-08-03 17:00:16,849 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-08-03 17:00:48,364 INFO CLOSED (stop loss) 20260803AM_INTC_CDS_2: mark=8.27  P&L=$-1513.50 (-229.5% of max)
+2026-08-03 17:00:48,713 INFO [eval] trade 20260803AM_INTC_CDS_2 outcome recorded: loss -229.5%
+2026-08-03 17:00:49,585 INFO [POP] 1 trade(s) newly labeled — triggering POP model retrain.
+2026-08-03 17:00:54,723 INFO [POP] Loaded 173 extra records from C:\Project Y\data\etrade_labeled_trades.jsonl
+2026-08-03 17:00:54,901 ERROR [POP] Retrain failed: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 3416)
+2026-08-03 17:00:55,213 INFO [FAILURES] 238 trades  win=54.6%  gap=13  iv_crush=0  theta=95
+2026-08-03 17:00:55,213 INFO [FAILURES]   Call Credit Spread              5 trades  100% win  gap=0 theta=0
+2026-08-03 17:00:55,213 INFO [FAILURES]   Call Debit Spread               27 trades  26% win  gap=7 theta=13
+2026-08-03 17:00:55,213 INFO [FAILURES]   Complex-2leg                    15 trades  27% win  gap=0 theta=11
+2026-08-03 17:00:55,213 INFO [FAILURES]   Complex-4leg                    12 trades  58% win  gap=0 theta=5
+2026-08-03 17:00:55,213 INFO [FAILURES]   Complex-8leg                    5 trades  80% win  gap=0 theta=1
+2026-08-03 17:00:55,213 INFO [FAILURES]   Covered Call                    11 trades  82% win  gap=1 theta=1
+2026-08-03 17:00:55,213 INFO [FAILURES]   Iron Condor                     26 trades  88% win  gap=0 theta=3
+2026-08-03 17:00:55,220 INFO [FAILURES]   Long Call                       44 trades  20% win  gap=0 theta=35
+2026-08-03 17:00:55,221 INFO [FAILURES]   Put Credit Spread               35 trades  80% win  gap=0 theta=7
+2026-08-03 17:00:55,221 INFO [FAILURES]   Put Debit Spread                28 trades  46% win  gap=3 theta=12
+2026-08-03 17:00:55,223 INFO [FAILURES]   Short Call                      7 trades  71% win  gap=0 theta=2
+2026-08-03 17:00:55,224 INFO [MONITOR] Monday — running weekly model health check.
+2026-08-03 17:00:55,433 WARNING [monitor] feature drift failed: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 3416)
+2026-08-03 17:00:55,605 INFO [MONITOR] drift=?  degraded=none  flagged_features=0
+2026-08-04 17:00:06,522 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-08-04 17:00:13,237 INFO CLOSED (max profit) 20260727AM_PLTR_CDS_1: mark=19.025  P&L=$635.50 (100.4% of max)
+2026-08-04 17:00:13,483 INFO [eval] trade 20260727AM_PLTR_CDS_1 outcome recorded: win +100.4%
+2026-08-04 17:00:32,814 INFO CLOSED (stop loss) 20260803AM_QCOM_COV_3: mark=8.65  P&L=$-672.00 (-348.2% of max)
+2026-08-04 17:00:32,814 INFO [eval] trade 20260803AM_QCOM_COV_3 outcome recorded: loss -348.2%
+2026-08-04 17:00:34,446 INFO [POP] 2 trade(s) newly labeled — triggering POP model retrain.
+2026-08-04 17:00:40,507 INFO [POP] Loaded 173 extra records from C:\Project Y\data\etrade_labeled_trades.jsonl
+2026-08-04 17:00:40,913 ERROR [POP] Retrain failed: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 10460)
+2026-08-04 17:00:41,066 INFO [FAILURES] 240 trades  win=54.6%  gap=14  iv_crush=0  theta=95
+2026-08-04 17:00:41,066 INFO [FAILURES]   Call Credit Spread              5 trades  100% win  gap=0 theta=0
+2026-08-04 17:00:41,076 INFO [FAILURES]   Call Debit Spread               28 trades  29% win  gap=7 theta=13
+2026-08-04 17:00:41,079 INFO [FAILURES]   Complex-2leg                    15 trades  27% win  gap=0 theta=11
+2026-08-04 17:00:41,081 INFO [FAILURES]   Complex-4leg                    12 trades  58% win  gap=0 theta=5
+2026-08-04 17:00:41,082 INFO [FAILURES]   Complex-8leg                    5 trades  80% win  gap=0 theta=1
+2026-08-04 17:00:41,084 INFO [FAILURES]   Covered Call                    12 trades  75% win  gap=2 theta=1
+2026-08-04 17:00:41,086 INFO [FAILURES]   Iron Condor                     26 trades  88% win  gap=0 theta=3
+2026-08-04 17:00:41,088 INFO [FAILURES]   Long Call                       44 trades  20% win  gap=0 theta=35
+2026-08-04 17:00:41,089 INFO [FAILURES]   Put Credit Spread               35 trades  80% win  gap=0 theta=7
+2026-08-04 17:00:41,092 INFO [FAILURES]   Put Debit Spread                28 trades  46% win  gap=3 theta=12
+2026-08-04 17:00:41,095 INFO [FAILURES]   Short Call                      7 trades  71% win  gap=0 theta=2
+2026-08-05 17:12:16,532 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-08-05 17:12:51,158 INFO STOP-LOSS SKIPPED (paper trade) 20260729AM_T_CDS_3: mark=0.0  pnl=-203.0% (threshold -200.0%)
+2026-08-05 17:13:03,534 INFO STOP-LOSS SKIPPED (paper trade) 20260803AM_IWM_PDS_2: mark=0.82  pnl=-204.1% (threshold -200.0%)
+2026-08-05 17:13:03,859 INFO STOP-LOSS SKIPPED (paper trade) 20260803AM_QCOM_COV_3: mark=4.55  pnl=-216.0% (threshold -200.0%)
+2026-08-05 17:13:04,031 INFO STOP-LOSS SKIPPED (paper trade) 20260803PM_IWM_PDS_1: mark=0.76  pnl=-208.1% (threshold -200.0%)
+2026-08-05 17:13:12,754 INFO [POP] No new labels tonight — skipping retrain and failure analysis.
+2026-08-06 17:00:07,185 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-08-06 17:00:27,272 INFO STOP-LOSS SKIPPED (paper trade) 20260729AM_T_CDS_3: mark=0.0  pnl=-203.0% (threshold -200.0%)
+2026-08-06 17:00:43,094 INFO STOP-LOSS SKIPPED (paper trade) 20260803AM_QCOM_COV_3: mark=5.35  pnl=-271.5% (threshold -200.0%)
+2026-08-06 17:00:53,178 INFO STOP-LOSS SKIPPED (paper trade) 20260805AM_UNH_CDS_3: mark=3.62  pnl=-200.3% (threshold -200.0%)
+2026-08-06 17:00:55,376 INFO [POP] No new labels tonight — skipping retrain and failure analysis.
+2026-08-07 17:00:06,158 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-08-07 17:00:08,418 INFO EXPIRED 20260721AM_C_CAL_2: ul=134.98500061035156  P&L=$-61.50  LOSS
+2026-08-07 17:00:08,426 INFO [eval] trade 20260721AM_C_CAL_2 outcome recorded: loss -9.6%
+2026-08-07 17:00:08,551 INFO EXPIRED 20260721AM_XLE_CAL_3: ul=57.47999954223633  P&L=$-134.00  LOSS
+2026-08-07 17:00:08,555 INFO [eval] trade 20260721AM_XLE_CAL_3 outcome recorded: loss -50.4%
+2026-08-07 17:00:08,670 INFO EXPIRED 20260721AM_TGT_PUT_2: ul=149.69000244140625  P&L=$-366.00  LOSS
+2026-08-07 17:00:08,674 INFO [eval] trade 20260721AM_TGT_PUT_2 outcome recorded: loss -57.7%
+2026-08-07 17:00:08,788 INFO EXPIRED 20260721PM_LOW_CAL_1: ul=223.32000732421875  P&L=$1070.00  WIN
+2026-08-07 17:00:08,788 INFO [eval] trade 20260721PM_LOW_CAL_1 outcome recorded: win +100.0%
+2026-08-07 17:00:08,910 INFO EXPIRED 20260721PM_MRK_CAL_3: ul=128.57000732421875  P&L=$-2.00  LOSS
+2026-08-07 17:00:08,910 INFO [eval] trade 20260721PM_MRK_CAL_3 outcome recorded: loss -0.3%
+2026-08-07 17:00:11,466 INFO EXPIRED 20260723AM_C_CDS_2: ul=134.98500061035156  P&L=$98.50  WIN
+2026-08-07 17:00:11,474 INFO [eval] trade 20260723AM_C_CDS_2 outcome recorded: win +19.7%
+2026-08-07 17:00:11,601 INFO EXPIRED 20260723AM_QCOM_COV_3: ul=167.8699951171875  P&L=$300.00  WIN
+2026-08-07 17:00:11,601 INFO [eval] trade 20260723AM_QCOM_COV_3 outcome recorded: win +100.0%
+2026-08-07 17:00:11,671 INFO EXPIRED 20260724AM_C_CDS_3: ul=134.98500061035156  P&L=$-111.50  LOSS
+2026-08-07 17:00:11,671 INFO [eval] trade 20260724AM_C_CDS_3 outcome recorded: loss -38.5%
+2026-08-07 17:00:11,842 INFO EXPIRED 20260727AM_IWM_CDS_1: ul=301.5  P&L=$317.00  WIN
+2026-08-07 17:00:11,842 INFO [eval] trade 20260727AM_IWM_CDS_1 outcome recorded: win +76.0%
+2026-08-07 17:00:11,903 INFO EXPIRED 20260727AM_C_PDS_2: ul=134.98500061035156  P&L=$-473.50  LOSS
+2026-08-07 17:00:11,903 INFO [eval] trade 20260727AM_C_PDS_2 outcome recorded: loss -145.7%
+2026-08-07 17:00:11,983 INFO EXPIRED 20260727AM_PFE_CDS_3: ul=26.75  P&L=$55.00  WIN
+2026-08-07 17:00:11,987 INFO [eval] trade 20260727AM_PFE_CDS_3 outcome recorded: win +100.0%
+2026-08-07 17:00:16,663 INFO EXPIRED 20260728AM_C_PDS_3: ul=134.98500061035156  P&L=$-511.50  LOSS
+2026-08-07 17:00:16,671 INFO [eval] trade 20260728AM_C_PDS_3 outcome recorded: loss -177.3%
+2026-08-07 17:00:16,890 INFO EXPIRED 20260728AM_WFC_PDS_1: ul=87.23500061035156  P&L=$-227.00  LOSS
+2026-08-07 17:00:16,894 INFO [eval] trade 20260728AM_WFC_PDS_1 outcome recorded: loss -115.5%
+2026-08-07 17:00:17,001 INFO EXPIRED 20260728AM_UBER_CDS_2: ul=75.01000213623047  P&L=$131.00  WIN
+2026-08-07 17:00:17,005 INFO [eval] trade 20260728AM_UBER_CDS_2 outcome recorded: win +57.0%
+2026-08-07 17:00:17,117 INFO EXPIRED 20260728AM_OXY_PDS_3: ul=55.915000915527344  P&L=$-236.00  LOSS
+2026-08-07 17:00:17,120 INFO [eval] trade 20260728AM_OXY_PDS_3 outcome recorded: loss -151.8%
+2026-08-07 17:00:17,991 INFO EXPIRED 20260728PM_SCHW_CDS_2: ul=107.58999633789062  P&L=$-54.50  LOSS
+2026-08-07 17:00:17,995 INFO [eval] trade 20260728PM_SCHW_CDS_2 outcome recorded: loss -29.2%
+2026-08-07 17:00:18,921 INFO EXPIRED 20260729AM_XLE_COV_1: ul=57.47999954223633  P&L=$24.00  WIN
+2026-08-07 17:00:18,925 INFO [eval] trade 20260729AM_XLE_COV_1 outcome recorded: win +100.0%
+2026-08-07 17:00:18,985 INFO EXPIRED 20260729AM_PFE_CDS_2: ul=26.75  P&L=$55.00  WIN
+2026-08-07 17:00:18,985 INFO [eval] trade 20260729AM_PFE_CDS_2 outcome recorded: win +100.0%
+2026-08-07 17:00:19,084 INFO EXPIRED 20260729AM_T_CDS_3: ul=23.795000076293945  P&L=$-67.00  LOSS
+2026-08-07 17:00:19,088 INFO [eval] trade 20260729AM_T_CDS_3 outcome recorded: loss -203.0%
+2026-08-07 17:00:19,160 INFO EXPIRED 20260729AM_PFE_CDS_1: ul=26.75  P&L=$55.50  WIN
+2026-08-07 17:00:19,164 INFO [eval] trade 20260729AM_PFE_CDS_1 outcome recorded: win +100.0%
+2026-08-07 17:00:19,243 INFO EXPIRED 20260729AM_T_CDS_2: ul=23.795000076293945  P&L=$-60.50  LOSS
+2026-08-07 17:00:19,247 INFO [eval] trade 20260729AM_T_CDS_2 outcome recorded: loss -153.2%
+2026-08-07 17:00:28,578 INFO EXPIRED 20260730PM_AXP_CDS_1: ul=341.0  P&L=$-378.00  LOSS
+2026-08-07 17:00:28,578 INFO [eval] trade 20260730PM_AXP_CDS_1 outcome recorded: loss -72.4%
+2026-08-07 17:00:28,709 INFO EXPIRED 20260730PM_WFC_PDS_2: ul=87.23500061035156  P&L=$-242.50  LOSS
+2026-08-07 17:00:28,711 INFO [eval] trade 20260730PM_WFC_PDS_2 outcome recorded: loss -154.0%
+2026-08-07 17:00:28,756 INFO EXPIRED 20260730PM_XLE_CDS_3: ul=57.47999954223633  P&L=$-165.50  LOSS
+2026-08-07 17:00:28,756 INFO [eval] trade 20260730PM_XLE_CDS_3 outcome recorded: loss -195.9%
+2026-08-07 17:00:29,000 INFO EXPIRED 20260731AM_GLD_CDS_1: ul=398.510009765625  P&L=$388.00  WIN
+2026-08-07 17:00:29,027 INFO [eval] trade 20260731AM_GLD_CDS_1 outcome recorded: win +100.0%
+2026-08-07 17:00:32,762 INFO EXPIRED 20260731AM_NKE_CDS_3: ul=41.70000076293945  P&L=$-142.50  LOSS
+2026-08-07 17:00:32,762 INFO [eval] trade 20260731AM_NKE_CDS_3 outcome recorded: loss -247.8%
+2026-08-07 17:00:32,832 INFO EXPIRED 20260731PM_GLD_CDS_1: ul=398.510009765625  P&L=$369.00  WIN
+2026-08-07 17:00:32,832 INFO [eval] trade 20260731PM_GLD_CDS_1 outcome recorded: win +100.0%
+2026-08-07 17:00:32,932 INFO EXPIRED 20260731PM_WFC_CDS_2: ul=87.23500061035156  P&L=$-71.00  LOSS
+2026-08-07 17:00:32,932 INFO [eval] trade 20260731PM_WFC_CDS_2 outcome recorded: loss -67.3%
+2026-08-07 17:00:33,055 INFO EXPIRED 20260731PM_T_CDS_3: ul=23.795000076293945  P&L=$17.00  WIN
+2026-08-07 17:00:33,071 INFO [eval] trade 20260731PM_T_CDS_3 outcome recorded: win +45.3%
+2026-08-07 17:00:34,439 INFO STOP-LOSS SKIPPED (paper trade) 20260803AM_IWM_PDS_2: mark=0.11  pnl=-230.5% (threshold -200.0%)
+2026-08-07 17:00:35,518 INFO STOP-LOSS SKIPPED (paper trade) 20260803AM_QCOM_COV_3: mark=9.225  pnl=-540.6% (threshold -200.0%)
+2026-08-07 17:00:35,753 INFO STOP-LOSS SKIPPED (paper trade) 20260803PM_IWM_PDS_1: mark=0.11  pnl=-240.2% (threshold -200.0%)
+2026-08-07 17:00:45,404 INFO IV surface flag on 20260805AM_NKE_CDS_2: short strike 45.0 now +3.3vp expensive — consider closing
+2026-08-07 17:00:57,145 INFO [POP] 29 trade(s) newly labeled — triggering POP model retrain.
+2026-08-07 17:01:14,044 INFO [POP] Loaded 173 extra records from C:\Project Y\data\etrade_labeled_trades.jsonl
+2026-08-07 17:01:59,472 INFO [POP] 7570 labeled rows loaded — 2321 enriched with chain Greeks
+2026-08-07 17:01:59,857 INFO [POP] etrade-only: kept 173 / 7570 rows
+2026-08-07 17:02:00,685 INFO [POP] Dropping 32 all-null columns: ['atm_iv', 'pcr', 'earnings_days_away', 'signal_score', 'vol_oi_ratio', 'iv_skew', 'iv_term_slope', 'otm_pcr', 'sector_rsi', 'sector_iv_ratio', 'vvix', 'vix_3m', 'vix_term_slope', 'earnings_inside_expiry', 'news_sentiment_score', 'analyst_rec_change', 'short_interest_pct', 'iv_skew_20d', 'gex_proxy', 'max_pain_strike', 'oi_concentration', 'wings_iv_ratio', 'dollar_index', 'fed_within_dte', 'cpi_within_dte', 'pop', 'ev', 'net_delta', 'net_theta', 'net_gamma', 'net_vega', 'capital_required']
+2026-08-07 17:02:03,143 INFO [POP] Retrain complete — AUC=0.8701  acc=0.8889  threshold=0.20  rows=138
+2026-08-07 17:02:03,205 INFO [FAILURES] 283 trades  win=53.4%  gap=14  iv_crush=0  theta=118
+2026-08-07 17:02:03,205 INFO [FAILURES]   Call Credit Spread              5 trades  100% win  gap=0 theta=0
+2026-08-07 17:02:03,207 INFO [FAILURES]   Call Debit Spread               60 trades  35% win  gap=9 theta=30
+2026-08-07 17:02:03,209 INFO [FAILURES]   Complex-2leg                    15 trades  27% win  gap=0 theta=11
+2026-08-07 17:02:03,210 INFO [FAILURES]   Complex-4leg                    12 trades  58% win  gap=0 theta=5
+2026-08-07 17:02:03,211 INFO [FAILURES]   Complex-8leg                    5 trades  80% win  gap=0 theta=1
+2026-08-07 17:02:03,211 INFO [FAILURES]   Covered Call                    10 trades  100% win  gap=0 theta=0
+2026-08-07 17:02:03,211 INFO [FAILURES]   Iron Condor                     26 trades  88% win  gap=0 theta=3
+2026-08-07 17:02:03,211 INFO [FAILURES]   Long Call                       44 trades  20% win  gap=0 theta=35
+2026-08-07 17:02:03,211 INFO [FAILURES]   Long Strangle                   6 trades  33% win  gap=1 theta=3
+2026-08-07 17:02:03,211 INFO [FAILURES]   Put Credit Spread               35 trades  80% win  gap=0 theta=7
+2026-08-07 17:02:03,211 INFO [FAILURES]   Put Debit Spread                38 trades  42% win  gap=4 theta=18
+2026-08-07 17:02:03,211 INFO [FAILURES]   Short Call                      7 trades  71% win  gap=0 theta=2
+2026-08-10 17:00:34,687 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-08-10 17:00:53,432 INFO EXPIRED 20260803AM_GLD_CDS_1: ul=402.55999755859375  P&L=$323.00  WIN
+2026-08-10 17:00:53,642 INFO [eval] trade 20260803AM_GLD_CDS_1 outcome recorded: win +100.0%
+2026-08-10 17:00:53,774 INFO EXPIRED 20260803AM_IWM_PDS_2: ul=299.9800109863281  P&L=$-631.00  LOSS
+2026-08-10 17:00:53,775 INFO [eval] trade 20260803AM_IWM_PDS_2 outcome recorded: loss -234.6%
+2026-08-10 17:00:54,099 INFO STOP-LOSS SKIPPED (paper trade) 20260803AM_QCOM_COV_3: mark=4.7  pnl=-226.4% (threshold -200.0%)
+2026-08-10 17:00:54,127 INFO EXPIRED 20260803PM_IWM_PDS_1: ul=299.9800109863281  P&L=$-497.50  LOSS
+2026-08-10 17:00:54,129 INFO [eval] trade 20260803PM_IWM_PDS_1 outcome recorded: loss -245.7%
+2026-08-10 17:01:00,374 INFO IV surface flag on 20260805AM_NKE_CDS_2: short strike 45.0 now +3.3vp expensive — consider closing
+2026-08-10 17:01:09,537 INFO [POP] 3 trade(s) newly labeled — triggering POP model retrain.
+2026-08-10 17:01:24,215 INFO [POP] Loaded 173 extra records from C:\Project Y\data\etrade_labeled_trades.jsonl
+2026-08-10 17:01:33,592 INFO [POP] 7570 labeled rows loaded — 2321 enriched with chain Greeks
+2026-08-10 17:01:34,044 INFO [POP] etrade-only: kept 173 / 7570 rows
+2026-08-10 17:01:34,916 INFO [POP] Dropping 32 all-null columns: ['atm_iv', 'pcr', 'earnings_days_away', 'signal_score', 'vol_oi_ratio', 'iv_skew', 'iv_term_slope', 'otm_pcr', 'sector_rsi', 'sector_iv_ratio', 'vvix', 'vix_3m', 'vix_term_slope', 'earnings_inside_expiry', 'news_sentiment_score', 'analyst_rec_change', 'short_interest_pct', 'iv_skew_20d', 'gex_proxy', 'max_pain_strike', 'oi_concentration', 'wings_iv_ratio', 'dollar_index', 'fed_within_dte', 'cpi_within_dte', 'pop', 'ev', 'net_delta', 'net_theta', 'net_gamma', 'net_vega', 'capital_required']
+2026-08-10 17:01:37,702 INFO [POP] Retrain complete — AUC=0.8701  acc=0.8889  threshold=0.20  rows=138
+2026-08-10 17:01:37,921 INFO [FAILURES] 286 trades  win=53.1%  gap=14  iv_crush=0  theta=120
+2026-08-10 17:01:37,922 INFO [FAILURES]   Call Credit Spread              5 trades  100% win  gap=0 theta=0
+2026-08-10 17:01:37,922 INFO [FAILURES]   Call Debit Spread               61 trades  36% win  gap=9 theta=30
+2026-08-10 17:01:37,922 INFO [FAILURES]   Complex-2leg                    15 trades  27% win  gap=0 theta=11
+2026-08-10 17:01:37,926 INFO [FAILURES]   Complex-4leg                    12 trades  58% win  gap=0 theta=5
+2026-08-10 17:01:37,926 INFO [FAILURES]   Complex-8leg                    5 trades  80% win  gap=0 theta=1
+2026-08-10 17:01:37,926 INFO [FAILURES]   Covered Call                    10 trades  100% win  gap=0 theta=0
+2026-08-10 17:01:37,926 INFO [FAILURES]   Iron Condor                     26 trades  88% win  gap=0 theta=3
+2026-08-10 17:01:37,926 INFO [FAILURES]   Long Call                       44 trades  20% win  gap=0 theta=35
+2026-08-10 17:01:37,929 INFO [FAILURES]   Long Strangle                   6 trades  33% win  gap=1 theta=3
+2026-08-10 17:01:37,929 INFO [FAILURES]   Put Credit Spread               35 trades  80% win  gap=0 theta=7
+2026-08-10 17:01:37,929 INFO [FAILURES]   Put Debit Spread                40 trades  40% win  gap=4 theta=20
+2026-08-10 17:01:37,929 INFO [FAILURES]   Short Call                      7 trades  71% win  gap=0 theta=2
+2026-08-10 17:01:37,931 INFO [MONITOR] Monday — running weekly model health check.
+2026-08-10 17:01:45,253 INFO [feature_drift] report written: 33654 recent / 3614 baseline snapshots; 20 flagged
+2026-08-10 17:01:46,164 INFO [monitor] report written — drift=major_shift  degraded=none  flagged=27
+2026-08-10 17:01:46,184 INFO [MONITOR] drift=major_shift  degraded=none  flagged_features=27
+2026-08-10 17:01:46,184 WARNING [MONITOR] 27 features show distribution shift: ['iv_rank_proxy', 'hv20', 'iv_rank_52w', 'beta_60d', 'atr_pct']
+2026-08-11 17:00:34,227 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-08-11 17:00:51,068 INFO STOP-LOSS SKIPPED (paper trade) 20260803AM_QCOM_COV_3: mark=4.5  pnl=-212.5% (threshold -200.0%)
+2026-08-11 17:00:57,876 INFO IV surface flag on 20260805AM_NKE_CDS_2: short strike 45.0 now +3.3vp expensive — consider closing
+2026-08-11 17:01:08,380 INFO STOP-LOSS SKIPPED (paper trade) 20260811AM_MRNA_CDS_3: mark=3.02  pnl=-215.1% (threshold -200.0%)
+2026-08-11 17:01:13,633 INFO [POP] No new labels tonight — skipping retrain and failure analysis.

@@ -42,3 +42,19 @@ def vega(S, K, T, r, sigma):
         return 0.0
     D1 = d1(S, K, T, r, sigma)
     return S * norm.pdf(D1) * np.sqrt(T) / 100.0
+
+
+def bs_price(S: float, K: float, T: float, r: float, sigma: float, option_type: str) -> float:
+    """Black-Scholes price for a European call or put (per share).
+    Returns 0.0 when T <= 0 (expired) or sigma <= 0 (degenerate inputs).
+    option_type: 'call' or 'put'
+    """
+    if T <= 0 or sigma <= 0 or S <= 0 or K <= 0:
+        if option_type == "call":
+            return max(S - K, 0.0)
+        return max(K - S, 0.0)
+    D1 = d1(S, K, T, r, sigma)
+    D2 = D1 - sigma * np.sqrt(T)
+    if option_type == "call":
+        return S * norm.cdf(D1) - K * np.exp(-r * T) * norm.cdf(D2)
+    return K * np.exp(-r * T) * norm.cdf(-D2) - S * norm.cdf(-D1)

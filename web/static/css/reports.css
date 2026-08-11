@@ -296,6 +296,91 @@
 :root[data-theme="light"] .crj-td-bad  { color: #c0392b; }
 :root[data-theme="light"] .crj-td-warn { color: #b7791f; }
 
+/* ── Scan Candidates tab ─────────────────────────────────────────────────── */
+.scr-badge {
+  display: inline-block;
+  padding: .15rem .45rem;
+  border-radius: 4px;
+  font-size: .78rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.scr-badge-win         { background: #d4edda; color: #155724; }
+.scr-badge-loss        { background: #f8d7da; color: #721c24; }
+.scr-badge-pending     { background: var(--surface); color: #888; border: 1px solid var(--border); }
+.scr-badge-unlabelable { background: #fff3cd; color: #856404; }
+
+.scr-row-win  { background: rgba(26, 127, 55, 0.08); }
+.scr-row-loss { background: rgba(192, 57, 43, 0.08); }
+
+.scr-pnl-pos { color: #1a7f37; font-weight: 600; font-variant-numeric: tabular-nums; }
+.scr-pnl-neg { color: #c0392b; font-weight: 600; font-variant-numeric: tabular-nums; }
+.scr-dir-ok  { color: #1a7f37; font-weight: 700; text-align: center; }
+.scr-dir-no  { color: #c0392b; font-weight: 700; text-align: center; }
+
+.scr-rank-top {
+  display: inline-block;
+  padding: .1rem .4rem;
+  border-radius: 4px;
+  font-size: .78rem;
+  font-weight: 700;
+  background: #1a4fa8;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+.scr-rank {
+  display: inline-block;
+  font-size: .82rem;
+  font-weight: 500;
+  color: #555;
+  font-variant-numeric: tabular-nums;
+}
+
+.scr-details {
+  max-width: 320px;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+  color: #666;
+  font-size: .8rem;
+  cursor: help;
+}
+
+@media (prefers-color-scheme: dark) {
+  .scr-row-win  { background: rgba(111, 207, 151, 0.08); }
+  .scr-row-loss { background: rgba(235, 87, 87, 0.08); }
+  .scr-badge-win         { background: #1a4a2a; color: #6fcf97; }
+  .scr-badge-loss        { background: #4a1a1a; color: #eb5757; }
+  .scr-badge-unlabelable { background: #4a3a00; color: #f6d860; }
+  .scr-pnl-pos { color: #6fcf97; }
+  .scr-pnl-neg { color: #eb5757; }
+  .scr-dir-ok  { color: #6fcf97; }
+  .scr-dir-no  { color: #eb5757; }
+  .scr-details { color: #999; }
+  .scr-rank    { color: #aaa; }
+}
+:root[data-theme="dark"] .scr-row-win  { background: rgba(111, 207, 151, 0.08); }
+:root[data-theme="dark"] .scr-row-loss { background: rgba(235, 87, 87, 0.08); }
+:root[data-theme="dark"] .scr-badge-win         { background: #1a4a2a; color: #6fcf97; }
+:root[data-theme="dark"] .scr-badge-loss        { background: #4a1a1a; color: #eb5757; }
+:root[data-theme="dark"] .scr-badge-unlabelable { background: #4a3a00; color: #f6d860; }
+:root[data-theme="dark"] .scr-pnl-pos { color: #6fcf97; }
+:root[data-theme="dark"] .scr-pnl-neg { color: #eb5757; }
+:root[data-theme="dark"] .scr-dir-ok  { color: #6fcf97; }
+:root[data-theme="dark"] .scr-dir-no  { color: #eb5757; }
+:root[data-theme="dark"] .scr-details { color: #999; }
+:root[data-theme="dark"] .scr-rank    { color: #aaa; }
+:root[data-theme="light"] .scr-badge-win         { background: #d4edda; color: #155724; }
+:root[data-theme="light"] .scr-badge-loss        { background: #f8d7da; color: #721c24; }
+:root[data-theme="light"] .scr-badge-unlabelable { background: #fff3cd; color: #856404; }
+:root[data-theme="light"] .scr-pnl-pos { color: #1a7f37; }
+:root[data-theme="light"] .scr-pnl-neg { color: #c0392b; }
+:root[data-theme="light"] .scr-dir-ok  { color: #1a7f37; }
+:root[data-theme="light"] .scr-dir-no  { color: #c0392b; }
+:root[data-theme="light"] .scr-details { color: #666; }
+
 /* ── (legacy card classes kept for potential reuse) ── */
 .crj-day {
   margin-bottom: 1.5rem;

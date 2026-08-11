@@ -1,13 +1,10 @@
 #!/usr/bin/env python
 """
-Standalone entry point for the 2 PM EDT afternoon paper-trade scan.
-Schedule: daily Mon-Fri at 14:00 EDT on the Ubuntu server.
-
-Mirrors morning_scan.py but passes scan_time="afternoon" so trade IDs
-use the PM prefix and the scan_time field is set for ML feature use.
+Standalone entry point for cron — runs at 2:00 PM EDT Mon-Fri.
 """
 import sys
 import json
+import time
 import logging
 from pathlib import Path
 
@@ -20,13 +17,27 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(message)s",
     handlers=[
-        logging.FileHandler(Path(__file__).parent.parent / "data" / "logs" / "afternoon_scan.log"),
+        logging.FileHandler(_LOG_DIR / "afternoon_scan.log"),
         logging.StreamHandler(sys.stdout),
     ],
 )
 
 from scripts.paper_trade_engine import run_morning_scan
+from scripts.cron_logger import record_run, acquire_lock, release_lock
 
-result = run_morning_scan(scan_time="afternoon")
-print(json.dumps(result, indent=2, default=str))
-sys.exit(0)
+from datetime import datetime, timezone
+t0 = time.time()
+started_at = datetime.now(timezone.utc).isoformat()
+acquire_lock("afternoon_scan")
+result, error = None, None
+try:
+    result = run_morning_scan(scan_time="afternoon")
+    print(json.dumps(result, indent=2, default=str))
+except Exception as e:
+    error = str(e)
+    logging.error(f"afternoon_scan failed: {e}")
+finally:
+    release_lock("afternoon_scan")
+
+record_run("afternoon_scan", result, time.time() - t0, error, started_at=started_at)
+sys.exit(1 if error else 0)

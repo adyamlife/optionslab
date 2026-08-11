@@ -8,6 +8,7 @@ Database: data/ml_training.duckdb
 Main table: regime_training  (one row per ticker per trading day)
 """
 from pathlib import Path
+import time
 import duckdb
 import json as _json_mod
 import pandas as pd
@@ -22,10 +23,24 @@ _DB_PATH = _ROOT / "data" / "ml_training.duckdb"
 TABLE = "regime_training"
 
 
-def connect() -> duckdb.DuckDBPyConnection:
-    """Return a new DuckDB connection to the shared database file."""
+def connect(read_only: bool = False, retries: int = 8, delay: float = 0.5) -> duckdb.DuckDBPyConnection:
+    """Return a new DuckDB connection to the shared database file.
+
+    read_only=True allows bypassing the exclusive write lock for pure reads.
+    Retries with exponential backoff when a cross-process lock is held.
+    """
     _DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-    return duckdb.connect(str(_DB_PATH))
+    last_exc: Exception | None = None
+    for attempt in range(max(1, retries)):
+        try:
+            return duckdb.connect(str(_DB_PATH), read_only=read_only)
+        except duckdb.IOException as exc:
+            if "lock" not in str(exc).lower():
+                raise
+            last_exc = exc
+            if attempt < retries - 1:
+                time.sleep(delay * (2 ** attempt))
+    raise last_exc
 
 
 def get_historical_atm_iv(ticker: str, days_ago: int = 7) -> float | None:
@@ -146,6 +161,7 @@ CREATE TABLE IF NOT EXISTS {SNAPSHOTS_TABLE} (
     status           VARCHAR,
     recommended_structure VARCHAR,
     signal_score     DOUBLE,
+    signal_pct       DOUBLE,
     expiry           VARCHAR,
     dte              DOUBLE,
     vol_oi_ratio     DOUBLE,
@@ -226,7 +242,31 @@ CREATE TABLE IF NOT EXISTS {SNAPSHOTS_TABLE} (
     put_vol            BIGINT,
     sector_return_1d   DOUBLE,
     move_index         DOUBLE,
-    gate_summary       JSON
+    gate_summary       JSON,
+    -- Phase 1: raw pricing inputs (allow Greek regeneration if calc changes)
+    expected_move      DOUBLE,
+    risk_free_rate     DOUBLE,
+    -- Phase 1: trade geometry (objective facts at entry)
+    net_delta          DOUBLE,
+    net_gamma          DOUBLE,
+    net_theta          DOUBLE,
+    net_vega           DOUBLE,
+    spread_width       DOUBLE,
+    credit_received    DOUBLE,
+    max_profit         DOUBLE,
+    max_loss           DOUBLE,
+    capital_required   DOUBLE,
+    short_strike       DOUBLE,
+    long_strike        DOUBLE,
+    short_strike_pct   DOUBLE,
+    long_strike_pct    DOUBLE,
+    -- Phase 1: optimizer opinion (derived judgments, kept separate from geometry)
+    pop                DOUBLE,
+    ev                 DOUBLE,
+    quality_score      DOUBLE,
+    -- Schema version: records which feature set this row was written with
+    -- 1 = market context only, 2 = + geometry/Greeks, 3 = + optimizer opinions
+    feature_schema_version INTEGER
 )
 """
 
@@ -303,16 +343,74 @@ CREATE TABLE IF NOT EXISTS earnings_iv_tracker (
 )
 """
 
+# Canonical settlement prices — one authoritative row per (ticker, expiry date).
+# Written by the evening check at options expiry; read by all labeling consumers.
+# Separate from intraday_bars so settlement semantics are never conflated with
+# archived market data (different conventions, corporate actions, index cash settlement).
+_EXPIRY_SETTLEMENTS_DDL = """
+CREATE TABLE IF NOT EXISTS expiry_settlements (
+    ticker           VARCHAR NOT NULL,
+    date             VARCHAR NOT NULL,
+    settlement_price DOUBLE  NOT NULL,
+    source           VARCHAR NOT NULL,
+    retrieved_at     VARCHAR NOT NULL,
+    confidence       DOUBLE  NOT NULL DEFAULT 1.0,
+    PRIMARY KEY (ticker, date)
+)
+"""
+
 
 def ensure_archive_tables() -> None:
-    """Create the four Tier 0 flywheel tables if they don't exist yet."""
+    """Create the Tier 0 flywheel tables if they don't exist yet."""
     with connect() as con:
-        for ddl in (_INTRADAY_BARS_DDL, _VIX_TERM_DDL, _OI_CHANGES_DDL, _EARNINGS_IV_DDL):
+        for ddl in (_INTRADAY_BARS_DDL, _VIX_TERM_DDL, _OI_CHANGES_DDL,
+                    _EARNINGS_IV_DDL, _EXPIRY_SETTLEMENTS_DDL):
             con.execute(ddl)
         con.execute("CREATE INDEX IF NOT EXISTS idx_intraday_ticker ON intraday_bars (ticker, date)")
         con.execute("CREATE INDEX IF NOT EXISTS idx_oi_ticker ON oi_changes (ticker, date, expiry)")
         con.execute("CREATE INDEX IF NOT EXISTS idx_earnings_ticker ON earnings_iv_tracker (ticker)")
         con.commit()
+
+
+def upsert_expiry_settlement(ticker: str, date: str, price: float,
+                              source: str, confidence: float = 1.0) -> None:
+    """Persist one canonical settlement price. INSERT OR REPLACE so evening re-runs are idempotent."""
+    from datetime import datetime as _dt
+    with connect() as con:
+        con.execute(
+            "INSERT OR REPLACE INTO expiry_settlements "
+            "(ticker, date, settlement_price, source, retrieved_at, confidence) "
+            "VALUES (?, ?, ?, ?, ?, ?)",
+            [ticker, date, price, source, _dt.now().isoformat(), confidence],
+        )
+        con.commit()
+
+
+def lookup_expiry_settlement(con, ticker: str, date_str: str) -> tuple[float | None, str]:
+    """
+    Return (settlement_price, source) for ticker on date_str, or (None, '') if not found.
+    Checks expiry_settlements first (canonical, confidence=1.0), then intraday_bars.
+    """
+    # 1. Canonical settlement store
+    row = con.execute(
+        "SELECT settlement_price FROM expiry_settlements WHERE ticker = ? AND date = ?",
+        [ticker, date_str],
+    ).fetchone()
+    if row:
+        return float(row[0]), "expiry_settlement"
+
+    # 2. Archived intraday bars (written by archive_intraday_bars the next morning)
+    rows = con.execute(
+        "SELECT date, close FROM intraday_bars "
+        "WHERE ticker = ? AND date <= ? ORDER BY date DESC, time DESC LIMIT 1",
+        [ticker, date_str],
+    ).fetchall()
+    if rows:
+        bar_date, close = rows[0]
+        src = "intraday_bars" if str(bar_date)[:10] == date_str[:10] else "intraday_bars_prev"
+        return float(close), src
+
+    return None, ""
 
 
 def _insert_intraday_bars(rows: list[dict]) -> None:
@@ -442,6 +540,33 @@ def ensure_snapshot_tables() -> None:
             ("vol_pcr",             "DOUBLE"),
             ("pcr_diverge",         "DOUBLE"),
             ("hy_oas",              "DOUBLE"),
+            # Phase 1: raw pricing inputs
+            ("expected_move",       "DOUBLE"),
+            ("risk_free_rate",      "DOUBLE"),
+            # Phase 1: trade geometry
+            ("net_delta",           "DOUBLE"),
+            ("net_gamma",           "DOUBLE"),
+            ("net_theta",           "DOUBLE"),
+            ("net_vega",            "DOUBLE"),
+            ("spread_width",        "DOUBLE"),
+            ("credit_received",     "DOUBLE"),
+            ("max_profit",          "DOUBLE"),
+            ("max_loss",            "DOUBLE"),
+            ("capital_required",    "DOUBLE"),
+            ("short_strike",        "DOUBLE"),
+            ("long_strike",         "DOUBLE"),
+            ("short_strike_pct",    "DOUBLE"),
+            ("long_strike_pct",     "DOUBLE"),
+            # Phase 1: optimizer opinion
+            ("pop",                 "DOUBLE"),
+            ("ev",                  "DOUBLE"),
+            ("quality_score",       "DOUBLE"),
+            # Schema versioning
+            ("feature_schema_version", "INTEGER"),
+            # Phase 2: promoted top-level column (backfilled from candidate JSON)
+            ("trade_structure",        "VARCHAR"),
+            # Normalized signal alignment score (bounded [-1,1]) — replaces raw signal_score in training
+            ("signal_pct",             "DOUBLE"),
         ]:
             try:
                 con.execute(f"ALTER TABLE {SNAPSHOTS_TABLE} ADD COLUMN {col} {typ}")
@@ -612,10 +737,17 @@ def persist_feature_snapshot(ticker: str, date_str: str, features: dict) -> None
 class _NumpyEncoder(_json_mod.JSONEncoder):
     """Coerce numpy scalars (bool_, int64, float32, …) to native Python types.
     numpy.bool_ is not a subclass of Python bool, so the default encoder rejects it.
-    All numpy scalars expose .item() which returns the equivalent native type."""
+    All numpy scalars expose .item() which returns the equivalent native type.
+    pandas DataFrames stored as transient chain refs on candidate dicts are dropped."""
     def default(self, obj):
         if hasattr(obj, "item"):   # numpy scalar
             return obj.item()
+        try:
+            import pandas as _pd
+            if isinstance(obj, _pd.DataFrame):
+                return None   # transient chain ref — not stored
+        except ImportError:
+            pass
         return super().default(obj)
 
 
@@ -925,6 +1057,158 @@ def load_ml_predictions_count() -> int:
             return con.execute(f"SELECT count(*) FROM {ML_PREDICTIONS_TABLE}").fetchone()[0]
     except Exception:
         return 0
+
+
+# ── Layer B: Historical Reality tables ───────────────────────────────────────
+
+_IV_HISTORY_DDL = """
+CREATE TABLE IF NOT EXISTS iv_history (
+    ticker          VARCHAR NOT NULL,
+    collected_date  DATE    NOT NULL,
+    atm_iv          DOUBLE,
+    hv20            DOUBLE,
+    iv_rank_52w     DOUBLE,
+    spot            DOUBLE,
+    PRIMARY KEY (ticker, collected_date)
+)
+"""
+
+_TICKER_PROFILE_SNAPSHOTS_DDL = """
+CREATE TABLE IF NOT EXISTS ticker_profile_snapshots (
+    ticker              VARCHAR NOT NULL,
+    profile_date        DATE    NOT NULL,
+    -- containment rates per regime (raw, from backfill)
+    containment_mr      DOUBLE,
+    containment_tr      DOUBLE,
+    containment_lv      DOUBLE,
+    containment_hv      DOUBLE,
+    n_mr                INTEGER,
+    n_tr                INTEGER,
+    n_lv                INTEGER,
+    n_hv                INTEGER,
+    -- Bayesian survival (k=15 prior strength blended with universe prior)
+    bayes_survival_mr   DOUBLE,
+    bayes_survival_tr   DOUBLE,
+    bayes_survival_lv   DOUBLE,
+    bayes_survival_hv   DOUBLE,
+    -- Wilson 95% CI anchored to the dominant-regime cell
+    survival_lo95       DOUBLE,
+    survival_hi95       DOUBLE,
+    -- VP ratio (hv20 / forward_hv) per regime — structural, from backfill
+    vp_ratio_mr         DOUBLE,
+    vp_ratio_tr         DOUBLE,
+    vp_ratio_lv         DOUBLE,
+    vp_ratio_hv         DOUBLE,
+    -- IV/RV ratio (atm_iv / future_hv5d) — requires live iv_history rows
+    iv_rv_ratio         DOUBLE,
+    iv_rv_n             INTEGER,
+    -- Profile Quality Score (composite 0-1)
+    pq_n_score          DOUBLE,
+    pq_recency_score    DOUBLE,
+    pq_uncertainty_score DOUBLE,
+    pq_span_score       DOUBLE,
+    profile_quality     DOUBLE,
+    -- Regime diversity: Shannon entropy / log(4), 0 = monoculture, 1 = perfectly balanced
+    regime_diversity    DOUBLE,
+    -- Span metadata
+    n_total             INTEGER,
+    date_min            DATE,
+    date_max            DATE,
+    PRIMARY KEY (ticker, profile_date)
+)
+"""
+
+_CALIBRATION_HISTORY_DDL = """
+CREATE TABLE IF NOT EXISTS calibration_history (
+    week_ending      DATE    NOT NULL,
+    metric           VARCHAR NOT NULL,
+    regime           VARCHAR NOT NULL DEFAULT '',
+    pop_bucket       VARCHAR NOT NULL DEFAULT '',
+    n_trades         INTEGER,
+    predicted_value  DOUBLE,
+    actual_value     DOUBLE,
+    abs_error        DOUBLE,
+    notes            VARCHAR,
+    computed_at      VARCHAR,
+    PRIMARY KEY (week_ending, metric, regime, pop_bucket)
+)
+"""
+
+_iv_history_ready          = False
+_ticker_profile_ready      = False
+_calibration_history_ready = False
+
+
+def ensure_calibration_history_table() -> None:
+    global _calibration_history_ready
+    if _calibration_history_ready:
+        return
+    with connect() as con:
+        con.execute(_CALIBRATION_HISTORY_DDL)
+        con.execute(
+            "CREATE INDEX IF NOT EXISTS idx_cal_hist_week "
+            "ON calibration_history (week_ending, metric)"
+        )
+        con.commit()
+    _calibration_history_ready = True
+
+
+def ensure_iv_history_table() -> None:
+    global _iv_history_ready
+    if _iv_history_ready:
+        return
+    with connect() as con:
+        con.execute(_IV_HISTORY_DDL)
+        con.execute(
+            "CREATE INDEX IF NOT EXISTS idx_iv_history_ticker "
+            "ON iv_history (ticker, collected_date)"
+        )
+        con.commit()
+    _iv_history_ready = True
+
+
+def ensure_ticker_profile_snapshots_table() -> None:
+    global _ticker_profile_ready
+    if _ticker_profile_ready:
+        return
+    with connect() as con:
+        con.execute(_TICKER_PROFILE_SNAPSHOTS_DDL)
+        con.execute(
+            "CREATE INDEX IF NOT EXISTS idx_ticker_profile_ticker "
+            "ON ticker_profile_snapshots (ticker, profile_date)"
+        )
+        con.commit()
+    _ticker_profile_ready = True
+
+
+def get_ticker_profile(ticker: str) -> dict | None:
+    """Return the most recent profile row for ticker, or None if not found."""
+    try:
+        ensure_ticker_profile_snapshots_table()
+        df = read_df(
+            "SELECT * FROM ticker_profile_snapshots "
+            "WHERE ticker = ? ORDER BY profile_date DESC LIMIT 1",
+            [ticker],
+        )
+        return df.to_dict("records")[0] if len(df) else None
+    except Exception:
+        return None
+
+
+def load_all_ticker_profiles() -> dict[str, dict]:
+    """Return most-recent profile per ticker as {ticker: profile_dict}."""
+    try:
+        ensure_ticker_profile_snapshots_table()
+        df = read_df(
+            "SELECT * FROM ("
+            "  SELECT *, ROW_NUMBER() OVER "
+            "    (PARTITION BY ticker ORDER BY profile_date DESC) AS rn "
+            "  FROM ticker_profile_snapshots"
+            ") t WHERE rn = 1"
+        )
+        return {r["ticker"]: r for r in df.to_dict("records")}
+    except Exception:
+        return {}
 
 
 def load_chain_index_from_db() -> dict:

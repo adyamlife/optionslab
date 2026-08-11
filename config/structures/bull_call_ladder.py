@@ -17,8 +17,8 @@ BULL_CALL_LADDER = OptionStructure(
     # First short leg (OTM)
     short_delta_lo = 0.25,
     short_delta_hi = 0.40,
-    capital_type    = "debit",
-    requires_margin = False,
+    capital_type    = "margin",
+    requires_margin = True,   # upper short call is uncovered — stock rallying above it creates uncapped loss
     dte_min = 21,
     dte_max = 60,
     profit_target_pct = 0.50,

@@ -1209,17 +1209,28 @@ _RUN_HISTORY_FILE = Path(__file__).parent.parent / "data" / "scheduler_runs.json
 _SCAN_TIMEOUT = 600
 
 # ── Load persisted run history from disk ──────────────────────────────────────
+def _read_run_history_file() -> list:
+    """Read scheduler_runs.jsonl from disk and return as a list, newest last."""
+    try:
+        if not _RUN_HISTORY_FILE.exists():
+            return []
+        lines = _RUN_HISTORY_FILE.read_text(encoding="utf-8").splitlines()
+        result = []
+        for ln in lines[-_RUN_HISTORY_MAX:]:
+            try:
+                result.append(json.loads(ln))
+            except Exception:
+                pass
+        return result
+    except Exception:
+        return []
+
+
 def _load_run_history():
     try:
-        if _RUN_HISTORY_FILE.exists():
-            lines = _RUN_HISTORY_FILE.read_text(encoding="utf-8").splitlines()
-            loaded = []
-            for ln in lines[-_RUN_HISTORY_MAX:]:
-                try:
-                    loaded.append(json.loads(ln))
-                except Exception:
-                    pass
-            _run_history.extend(loaded)
+        loaded = _read_run_history_file()
+        _run_history.extend(loaded)
+        if loaded:
             app.logger.info(f"Loaded {len(loaded)} scheduler run entries from disk")
     except Exception as e:
         app.logger.warning(f"Could not load scheduler run history: {e}")
@@ -1250,6 +1261,37 @@ def _scan_is_running(key):
         return False
     return (time.time() - s.get("started", 0)) < _SCAN_TIMEOUT
 
+def _collect_quality_summary() -> dict:
+    """Return collected/errors/first_error from the last training_collect run."""
+    s = _scan_status.get("training_collect", {})
+    result = s.get("result")
+    if not isinstance(result, dict):
+        return {}
+    n_ok  = result.get("collected", 0)
+    errs  = result.get("errors", [])
+    n_err = len(errs) if isinstance(errs, list) else 0
+    out = {"collected": n_ok, "errors": n_err, "total": n_ok + n_err}
+    if n_err and isinstance(errs, list) and errs:
+        first = errs[0]
+        out["first_error"] = {"ticker": first.get("ticker"), "error": str(first.get("error", ""))[:120]}
+    return out
+
+
+def _compact_result_summary(result, max_len=600) -> str:
+    """Collapse list fields to counts so the error messages stay visible."""
+    if not isinstance(result, dict):
+        return str(result)[:max_len]
+    compact = {}
+    for k, v in result.items():
+        if isinstance(v, list):
+            compact[f"{k}_count"] = len(v)
+            if v and "error" in k.lower():
+                compact[f"{k}_sample"] = str(v[0])[:120]
+        else:
+            compact[k] = v
+    return str(compact)[:max_len]
+
+
 def _run_in_bg(key, fn, **kwargs):
     import threading, time, traceback
     from datetime import datetime, timezone
@@ -1260,7 +1302,7 @@ def _run_in_bg(key, fn, **kwargs):
             result = fn(**kwargs)
             dur = round(time.time() - t0, 1)
             entry = {"job": key, "ts": ts, "state": "done", "duration_s": dur,
-                     "summary": str(result)[:300] if result else ""}
+                     "summary": _compact_result_summary(result) if result else ""}
             _scan_status[key] = {"state": "done", "result": result, "started": t0}
             app.logger.info(f"_run_in_bg({key}) done in {dur}s")
         except BaseException as e:
@@ -1365,14 +1407,29 @@ def _start_training_data_scheduler():
         _mlc.refresh_async()
 
     def _daily_label():
+        r1, r2 = {}, {}
         try:
-            tdc.label_pending_snapshots()
+            r1 = tdc.label_pending_snapshots()
         except Exception as e:
             app.logger.error(f"daily label_pending_snapshots failed: {e}")
         try:
             tdc.label_snapshots_with_forward_returns()
         except Exception as e:
             app.logger.error(f"daily label_snapshots_with_forward_returns failed: {e}")
+        try:
+            r2 = tdc.label_rejected_candidates()
+        except Exception as e:
+            app.logger.error(f"daily label_rejected_candidates failed: {e}")
+        try:
+            tdc.write_labeling_manifest({"executed_trades": r1, "rejected_candidates": r2})
+        except Exception as e:
+            app.logger.error(f"write_labeling_manifest failed: {e}")
+        try:
+            v = tdc.validate_labels()
+            if not v["ok"]:
+                app.logger.warning(f"Label invariant violations after daily label: {len(v['violations'])}")
+        except Exception as e:
+            app.logger.error(f"validate_labels failed: {e}")
         try:
             from scripts import feature_drift as fd
             fd.compute_drift_report()
@@ -1402,8 +1459,15 @@ def _start_training_data_scheduler():
             app.logger.error(f"scheduled afternoon scan failed: {e}")
 
     def _run_evening_and_label():
-        pte.run_evening_check()
+        result = pte.run_evening_check()
+        # Store canonical settlement prices for rejected candidates expiring today
+        # before _daily_label() runs, so labelers get settlement_source='expiry_settlement'.
+        try:
+            tdc.store_expiry_settlements()
+        except Exception as e:
+            app.logger.error(f"store_expiry_settlements failed: {e}")
         _daily_label()
+        return result
 
     def _evening_check():
         if _scan_is_running("evening_check"):
@@ -1541,7 +1605,7 @@ def api_scheduler_status():
     from scripts.ml_cache import ml_cache as _mlc
     from scripts.db import row_count, read_df, SNAPSHOTS_TABLE, CHAIN_TABLE, table_exists
 
-    # APScheduler next run times
+    # Next run times — from APScheduler if running, otherwise computed from cron schedule
     jobs = {}
     if _training_data_scheduler:
         for job in _training_data_scheduler.get_jobs():
@@ -1550,9 +1614,65 @@ def api_scheduler_status():
                 "next_run": nrt.isoformat() if nrt else None,
                 "next_run_human": nrt.strftime("%a %b %d %I:%M %p %Z") if nrt else "paused",
             }
+    else:
+        # Scheduler disabled — compute next fire times from known cron schedule
+        import pytz as _ptz
+        from datetime import timedelta as _td2
+        _et = _ptz.timezone("America/New_York")
+        _now_et = datetime.now(_et)
+
+        def _next_cron(hour, minute, days="mon-fri"):
+            """Return next future datetime for a daily cron at hour:minute ET."""
+            candidate = _now_et.replace(hour=hour, minute=minute, second=0, microsecond=0)
+            if candidate <= _now_et:
+                candidate += _td2(days=1)
+            if days == "mon-fri":
+                while candidate.weekday() >= 5:
+                    candidate += _td2(days=1)
+            return candidate
+
+        def _fmt(dt):
+            return {"next_run": dt.isoformat(), "next_run_human": dt.strftime("%a %b %d %I:%M %p %Z")}
+
+        _sc = _scheduler_cfg
+        jobs["morning_scan"]   = _fmt(_next_cron(_sc["morning_scan_hour"],   _sc["morning_scan_minute"]))
+        jobs["afternoon_scan"] = _fmt(_next_cron(_sc.get("afternoon_scan_hour", 14), _sc.get("afternoon_scan_minute", 0)))
+        jobs["evening_check"]  = _fmt(_next_cron(_sc["evening_check_hour"],  _sc["evening_check_minute"]))
+        jobs["oi_open"]        = _fmt(_next_cron(_sc["oi_open_hour"],        _sc["oi_open_minute"]))
+        jobs["oi_close"]       = _fmt(_next_cron(_sc["oi_close_hour"],       _sc["oi_close_minute"]))
+        jobs["daily_archive"]  = _fmt(_next_cron(_sc["daily_archive_hour"],  _sc["daily_archive_minute"]))
+        # Data collect: next interval boundary strictly in the future, within window
+        _interval = _sc.get("collect_interval_minutes", 30)
+        _mins = _now_et.minute
+        _next_boundary_mins = (_mins // _interval + 1) * _interval
+        _collect_next = _now_et.replace(second=0, microsecond=0) + _td2(minutes=_next_boundary_mins - _mins)
+        if _collect_next.hour >= _sc["collect_hour_end"] or _collect_next.weekday() >= 5:
+            _collect_next = _now_et.replace(hour=_sc["collect_hour_start"], minute=0, second=0, microsecond=0) + _td2(days=1)
+            while _collect_next.weekday() >= 5:
+                _collect_next += _td2(days=1)
+        jobs["collect"] = _fmt(_collect_next)
 
     # Last run status for each tracked job
+    _lock_dir = Path(__file__).parent.parent / "data" / "locks"
+
     def _job_status(key):
+        # Cron process running? lock file is the signal.
+        lock_file = _lock_dir / f"{key}.lock"
+        if lock_file.exists():
+            try:
+                started_iso = lock_file.read_text().strip()
+                started_ts = datetime.fromisoformat(started_iso).timestamp()
+                age = round(time.time() - started_ts, 0)
+            except Exception:
+                started_ts = None
+                age = None
+            return {
+                "state":   "running",
+                "started": started_ts,
+                "age_min": round(age / 60, 1) if age else None,
+                "result":  None,
+                "error":   None,
+            }
         s = _scan_status.get(key, {"state": "idle"})
         started = s.get("started")
         age = round(time.time() - started, 0) if started else None
@@ -1576,6 +1696,36 @@ def api_scheduler_status():
     except Exception:
         regime_rows = snap_rows = chain_rows = labeled = None
 
+    # Layer B — Historical Reality pipeline stats
+    layer_b = {}
+    try:
+        from scripts.db import connect as _lb_connect
+        with _lb_connect() as _lbc:
+            _iv = _lbc.execute(
+                "SELECT count(*) AS n, count(DISTINCT ticker) AS t, max(collected_date) AS d "
+                "FROM iv_history"
+            ).fetchone()
+            layer_b["iv_rows"]    = int(_iv[0]) if _iv and _iv[0] is not None else 0
+            layer_b["iv_tickers"] = int(_iv[1]) if _iv and _iv[1] is not None else 0
+            layer_b["iv_last"]    = str(_iv[2])[:10] if _iv and _iv[2] is not None else None
+
+            _pr = _lbc.execute(
+                "SELECT count(DISTINCT ticker) AS t, max(profile_date) AS d "
+                "FROM ticker_profile_snapshots"
+            ).fetchone()
+            layer_b["profile_tickers"] = int(_pr[0]) if _pr and _pr[0] is not None else 0
+            layer_b["profile_last"]    = str(_pr[1])[:10] if _pr and _pr[1] is not None else None
+
+            _ch = _lbc.execute(
+                "SELECT count(*) AS n, count(DISTINCT week_ending) AS w "
+                "FROM calibration_history"
+            ).fetchone()
+            layer_b["calib_rows"]  = int(_ch[0]) if _ch and _ch[0] is not None else 0
+            layer_b["calib_weeks"] = int(_ch[1]) if _ch and _ch[1] is not None else 0
+            layer_b["phase3_weeks_remaining"] = max(0, 20 - layer_b["calib_weeks"])
+    except Exception:
+        layer_b = {"error": "Layer B tables not yet created"}
+
     return jsonify({
         "ok": True,
         "scheduler_enabled": _scheduler_cfg["enabled"],
@@ -1583,6 +1733,7 @@ def api_scheduler_status():
         "scheduler_jobs": jobs,
         "job_status": {
             "morning_scan":      _job_status("morning_scan"),
+            "afternoon_scan":    _job_status("afternoon_scan"),
             "evening_check":     _job_status("evening_check"),
             "training_collect":  _job_status("training_collect"),
             "regime_backfill":   _job_status("regime_backfill"),
@@ -1602,6 +1753,8 @@ def api_scheduler_status():
             "chain_snaps": int(chain_rows) if chain_rows is not None else None,
             "labeled":     int(labeled) if labeled is not None else None,
         },
+        "collect_quality": _collect_quality_summary(),
+        "layer_b": layer_b,
     })
 
 
@@ -1630,9 +1783,14 @@ def api_scheduler_resume(job_id):
 @app.route("/api/scheduler/logs")
 def api_scheduler_logs():
     job_filter = request.args.get("job")
-    logs = list(reversed(_run_history))   # newest first
+    # Re-read file on every request so Layer B cron entries (written by
+    # standalone scripts outside Flask) appear without a server restart.
+    logs = _read_run_history_file()
+    if not logs:
+        logs = list(_run_history)   # fallback to in-memory if file unavailable
+    logs = list(reversed(logs))     # newest first
     if job_filter:
-        logs = [e for e in logs if e["job"] == job_filter]
+        logs = [e for e in logs if e.get("job") == job_filter]
     return jsonify({"ok": True, "logs": logs, "total": len(logs)})
 
 
@@ -1687,6 +1845,15 @@ def api_morning_scan_status():
     return jsonify(s)
 
 
+@app.route("/api/paper-trades/afternoon-scan", methods=["POST"])
+def api_afternoon_scan():
+    force = request.json.get("force", False) if request.is_json else False
+    if _scan_is_running("afternoon_scan"):
+        return jsonify({"ok": False, "running": True, "error": "Scan already in progress"})
+    _run_in_bg("afternoon_scan", lambda: pte.run_morning_scan(scan_time="afternoon", force=force))
+    return jsonify({"ok": True, "running": True, "message": "Afternoon scan started"})
+
+
 @app.route("/api/paper-trades/evening-check", methods=["POST"])
 def api_evening_check():
     force = request.json.get("force", False) if request.is_json else False
@@ -1718,8 +1885,57 @@ def api_training_data_label():
     """Hit by external cron once a day (e.g. alongside evening check)."""
     from scripts import training_data_collector as tdc
     try:
-        result = tdc.label_pending_snapshots()
-        return jsonify({"ok": True, **result})
+        tdc.store_expiry_settlements()
+        r1 = tdc.label_pending_snapshots()
+        r2 = tdc.label_rejected_candidates()
+        run_stats = {"executed_trades": r1, "rejected_candidates": r2}
+        manifest_path = tdc.write_labeling_manifest(run_stats)
+        validation    = tdc.validate_labels()
+        if not validation["ok"]:
+            app.logger.warning(
+                f"Label invariant violations: {len(validation['violations'])} — see {manifest_path}"
+            )
+        return jsonify({
+            "ok":                validation["ok"],
+            "executed_trades":   r1,
+            "rejected_candidates": r2,
+            "manifest":          manifest_path,
+            "validation":        {"ok": validation["ok"], "violations": len(validation["violations"])},
+        })
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+
+@app.route("/api/training-data/backfill-settlements", methods=["POST"])
+def api_training_data_backfill_settlements():
+    """
+    Historical settlement backfill — run once to recover exact closing prices
+    for all past expiry dates in training_snapshots, then re-label rows that
+    were previously estimated with forward-return proxies.
+
+    Pipeline:
+      1. backfill_historical_settlements()  — fetch yfinance history, upsert expiry_settlements
+      2. relabel_previously_unlabelable()   — retry rows that were marked unlabelable
+      3. label_rejected_candidates()        — label new rejected rows with exact settlement
+      4. relabel_low_confidence_labels()    — upgrade forward-return estimates to exact labels
+      5. validate_labels()                  — invariant check
+    """
+    from scripts import training_data_collector as tdc
+    try:
+        r_settle  = tdc.backfill_historical_settlements()
+        r_unlabel = tdc.relabel_previously_unlabelable()
+        r_reject  = tdc.label_rejected_candidates()
+        r_upgrade = tdc.relabel_low_confidence_labels()
+        validation = tdc.validate_labels()
+        return jsonify({
+            "ok":                     validation["ok"],
+            "settlements_stored":     r_settle,
+            "relabeled_unlabelable":  r_unlabel,
+            "rejected_labeled":       r_reject,
+            "low_confidence_upgraded": r_upgrade,
+            "validation":             {"ok": validation["ok"],
+                                       "violations": len(validation["violations"])},
+        })
     except Exception as e:
         return jsonify({"ok": False, "error": str(e)}), 500
 
@@ -1813,6 +2029,164 @@ def api_training_data_backfill_regime():
 def api_training_data_backfill_regime_status():
     s = _scan_status.get("regime_backfill", {"state": "idle"})
     return jsonify(s)
+
+
+@app.route("/api/training-data/rejected-candidates")
+def api_rejected_candidates():
+    """
+    Return scan candidate snapshots filtered by date.
+    Supports ?date=YYYY-MM-DD  or  ?from=&to=  or  ?days=N.
+    """
+    import json as _json, traceback as _tb, decimal as _dec, math as _math
+    from collections import defaultdict
+    from scripts.db import connect as _dbconnect
+
+    def _f(v):
+        """Coerce a scalar value to a JSON-safe Python primitive.
+
+        Handles None, bool, int, str, float (including NaN/Inf guard),
+        decimal.Decimal, and numpy scalars. Always returns something
+        json.dumps() can serialise.
+        """
+        if v is None:
+            return None
+        if isinstance(v, bool):
+            return v
+        if isinstance(v, int):
+            return v
+        if isinstance(v, float):
+            return None if (_math.isnan(v) or _math.isinf(v)) else v
+        if isinstance(v, str):
+            return v
+        if isinstance(v, _dec.Decimal):
+            f = float(v)
+            return None if (_math.isnan(f) or _math.isinf(f)) else f
+        try:
+            # numpy scalar (int64, float64, etc.)
+            item = v.item()
+            if isinstance(item, float) and (_math.isnan(item) or _math.isinf(item)):
+                return None
+            return item
+        except AttributeError:
+            return str(v)
+
+    try:
+        date_arg = request.args.get("date", "").strip()
+        from_arg = request.args.get("from", "").strip()
+        to_arg   = request.args.get("to",   "").strip()
+        days_arg = request.args.get("days", "").strip()
+
+        where_clauses = ["(source IN ('scan_morning','scan_afternoon') OR source IS NULL)"]
+        params = []
+
+        if date_arg:
+            where_clauses.append("LEFT(CAST(collected_at AS VARCHAR), 10) = ?")
+            params.append(date_arg)
+        elif from_arg or to_arg:
+            if from_arg:
+                where_clauses.append("LEFT(CAST(collected_at AS VARCHAR), 10) >= ?")
+                params.append(from_arg)
+            if to_arg:
+                where_clauses.append("LEFT(CAST(collected_at AS VARCHAR), 10) <= ?")
+                params.append(to_arg)
+        elif days_arg:
+            try:
+                n = int(days_arg)
+                where_clauses.append(
+                    f"LEFT(CAST(collected_at AS VARCHAR), 10) >= "
+                    f"CAST(CURRENT_DATE - INTERVAL '{n}' DAY AS VARCHAR)"
+                )
+            except ValueError:
+                pass
+
+        where_sql = " AND ".join(where_clauses)
+
+        with _dbconnect(read_only=True) as con:
+            rows = con.execute(f"""
+                SELECT
+                    ticker,
+                    LEFT(CAST(collected_at AS VARCHAR), 10)     AS date,
+                    SUBSTR(CAST(collected_at AS VARCHAR), 12, 5) AS scan_time,
+                    source,
+                    spot,
+                    expiry,
+                    dte,
+                    candidate,
+                    outcome,
+                    labeled,
+                    snapshot_id,
+                    ml_p_win,
+                    ml_composite_score
+                FROM training_snapshots
+                WHERE {where_sql}
+                ORDER BY collected_at DESC
+            """, params).fetchall()
+
+        def _parse_json(raw) -> dict:
+            """Parse a DuckDB JSON column value to a dict.
+
+            DuckDB returns JSON NULL as the Python string "null", which
+            json.loads() converts to None — not a dict. Guard against that
+            and any other non-dict result so callers can always use .get().
+            """
+            if raw is None:
+                return {}
+            if isinstance(raw, dict):
+                return raw
+            if isinstance(raw, str):
+                try:
+                    parsed = _json.loads(raw)
+                    return parsed if isinstance(parsed, dict) else {}
+                except (_json.JSONDecodeError, ValueError):
+                    return {}
+            return {}
+
+        result = []
+        for row in rows:
+            ticker, date, scan_time, source, spot, expiry, dte, cand_raw, out_raw, labeled, sid, ml_p_win, ml_composite_score = row
+            cand = _parse_json(cand_raw)
+            out  = _parse_json(out_raw)
+
+            result.append({
+                "snapshot_id":       str(sid) if sid else None,
+                "ticker":            str(ticker) if ticker else None,
+                "date":              str(date)[:10] if date else None,
+                "scan_time":         str(scan_time) if scan_time else None,
+                "source":            str(source) if source else None,
+                "spot":              _f(spot),
+                "expiry":            str(expiry)[:10] if expiry else None,
+                "dte":               _f(dte),
+                "structure":         cand.get("structure"),
+                "details":           cand.get("details") or cand.get("rejection_reason"),
+                "expected_move_pct": _f(cand.get("expected_move_pct") or cand.get("expected_move")),
+                "pop":               _f(cand.get("pop")),
+                "ev":                _f(cand.get("ev") or cand.get("expected_value")),
+                "signal_score":      _f(cand.get("signal_score")),
+                "iv_rank":           _f(cand.get("iv_rank_52w") or cand.get("iv_rank")),
+                "short_strike":      _f(cand.get("short_strike")),
+                "long_strike":       _f(cand.get("long_strike")),
+                "net_credit":        _f(cand.get("net_credit") or cand.get("max_profit")),
+                "labeled":           bool(labeled),
+                "unlabelable":       bool(out.get("unlabelable")),
+                "win":               out.get("win"),
+                "realized_pnl":      _f(out.get("realized_pnl") or out.get("pnl_per_share")),
+                "direction_correct": out.get("direction_correct"),
+                "settlement_source": out.get("settlement_source"),
+                "label_confidence":  _f(out.get("label_confidence")),
+                "ml_p_win":          _f(ml_p_win),
+                "ml_composite_score":_f(ml_composite_score),
+            })
+
+        by_date = defaultdict(list)
+        for r in result:
+            by_date[r["date"]].append(r)
+        dates = sorted((d for d in by_date.keys() if d), reverse=True)
+
+        return jsonify({"ok": True, "total": len(result), "dates": dates, "rows": result})
+
+    except Exception as e:
+        app.logger.error(f"rejected-candidates error: {e}\n{_tb.format_exc()}")
+        return jsonify({"ok": False, "error": str(e)})
 
 
 @app.route("/api/training-data/train-models", methods=["POST"])
@@ -2649,4 +3023,5 @@ def _build_hedge_suggestions(structure, ec, cur_mark, unreal_pct, dte, spot, str
 
 if __name__ == "__main__":
     settings_path = os.path.join(os.path.dirname(__file__), "..", "config", "settings.toml")
-    app.run(debug=True, port=5000, extra_files=[settings_path], threaded=True)
+    import os as _os
+    app.run(debug=True, port=int(_os.environ.get("PORT", 5000)), extra_files=[settings_path], threaded=True)

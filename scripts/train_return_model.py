@@ -137,8 +137,9 @@ def build_feature_matrix(df: pd.DataFrame, dummy_cols: list = None, fit: bool = 
     for col in NUMERIC_FEATURES:
         X[col] = pd.to_numeric(df.get(col), errors="coerce")
 
-    for col in LAG_COLS:
-        X[col] = pd.to_numeric(df.get(col), errors="coerce")
+    # Lag features excluded from training: at single-row inference they are filled
+    # with NaN, causing the model to traverse a different tree path than training
+    # data. Removing them from both training and artifact eliminates the divergence.
 
     cat_df = pd.DataFrame(index=df.index)
     for col in CAT_COLS:
@@ -157,13 +158,12 @@ def build_feature_matrix(df: pd.DataFrame, dummy_cols: list = None, fit: bool = 
 
 
 def build_catboost_matrix(df: pd.DataFrame):
-    """Feature matrix for CatBoost: numerics + lags as float, categoricals as raw strings.
+    """Feature matrix for CatBoost: numerics as float, categoricals as raw strings.
     CatBoost uses ordered target statistics on string values — no encoding needed."""
     X = pd.DataFrame(index=df.index)
     for col in NUMERIC_FEATURES:
         X[col] = pd.to_numeric(df.get(col), errors="coerce")
-    for col in LAG_COLS:
-        X[col] = pd.to_numeric(df.get(col), errors="coerce")
+    # Lag features excluded — see build_feature_matrix comment.
     for col in CAT_COLS:
         col_vals = df[col].astype(str) if col in df.columns else pd.Series(["unknown"] * len(df), index=df.index)
         X[col] = col_vals.fillna("unknown")
@@ -246,10 +246,6 @@ def train(out_path=_MODEL_PATH) -> dict:
     df = load_labeled_data()
     if df.empty:
         return {"ok": False, "error": "No labeled rows available"}
-
-    df = compute_lag_features(df)
-    if df.empty:
-        return {"ok": False, "error": "No rows remain after computing lag features"}
 
     train_df, test_df, cutoff = time_based_split(df)
     if train_df.empty or test_df.empty:
@@ -416,7 +412,7 @@ def train(out_path=_MODEL_PATH) -> dict:
         "dummy_cols":          dummy_cols,   # for inference alignment (replaces feature_encoders)
         "numeric_features":    NUMERIC_FEATURES,
         "cat_cols":            CAT_COLS,
-        "lag_cols":            LAG_COLS,
+        "lag_cols":            [],      # excluded from training — no NaN divergence at inference
         "lag_sources":         LAG_SOURCES,
         "lag_days":            LAG_DAYS,
         "feature_importances": feature_importances,

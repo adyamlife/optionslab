@@ -34,13 +34,18 @@ Meta-features (17):
   direction_entropy near 0 → direction model very confident (one class dominates).
   iv_confidence near 1 → IV model strongly predicts expansion or contraction.
 
-Target:
-  forward_return > 0  (1 = up, 0 = down/flat)
-  — The unified trade score is P(up) × 100.
-  — Score >60 = bullish lean, <40 = bearish lean, 40–60 = neutral/uncertain.
+Targets (two models trained simultaneously):
+  PRIMARY   target_trade_win       — win from training_snapshots (structure-specific outcome).
+            Saved to meta_ensemble.joblib.  Score = P(win) × 100.
+  SECONDARY target_market_direction — forward_return > 0 from regime_training.
+            Saved to meta_ensemble_direction.joblib.  Score = P(up) × 100.
+
+  Keeping both allows diagnosing whether a meta-feature predicts market movement
+  (direction model) vs option outcome (win model) — different objects, different signals.
 
 Run standalone: python -m scripts.train_meta_ensemble
-Output: data/models/meta_ensemble.joblib
+Output: data/models/meta_ensemble.joblib  (win target, primary)
+        data/models/meta_ensemble_direction.joblib  (direction target, secondary)
 """
 import logging
 import sys
@@ -52,11 +57,17 @@ import pandas as pd
 from sklearn.metrics import accuracy_score, brier_score_loss, classification_report, roc_auc_score
 from xgboost import XGBClassifier
 
+# Pickle compatibility: these classes were once defined in this module and are
+# referenced by their old path in older .joblib files.
+from scripts.blended_classifier import BlendedBinaryClassifier as _BlendedBinaryClassifier  # noqa: F401
+from scripts.blended_classifier import BlendedMultiClassifier  as _BlendedMultiClassifier   # noqa: F401
+
 log = logging.getLogger(__name__)
 
 _ROOT       = Path(__file__).resolve().parent.parent
-_MODEL_PATH = _ROOT / "data" / "models" / "meta_ensemble.joblib"
-_MODELS_DIR = _ROOT / "data" / "models"
+_MODEL_PATH           = _ROOT / "data" / "models" / "meta_ensemble.joblib"
+_MODEL_PATH_DIRECTION = _ROOT / "data" / "models" / "meta_ensemble_direction.joblib"
+_MODELS_DIR           = _ROOT / "data" / "models"
 
 # Fallback cutoff used only when base-model artifacts don't expose their cutoffs.
 _META_CUTOFF_FALLBACK = pd.Timestamp("2026-02-20")
@@ -256,7 +267,7 @@ def build_meta_dataset(df: pd.DataFrame, models: dict) -> tuple[pd.DataFrame, pd
             p_gt10    = _rc_proba("gt10",    0.161)
             p_pos     = _rc_proba("positive", 0.500)
             p_gt5     = _rc_proba("gt5",      0.300)
-            p_decile  = _rc_proba("decile",   0.100)
+            p_decile  = _rc_proba("top_decile", 0.100)
 
             results["p_return_gt10"]     = p_gt10
             results["p_return_positive"] = p_pos
@@ -350,8 +361,108 @@ def _precision_at_k(proba: np.ndarray, y_true: np.ndarray, ks=(10, 25, 50)) -> d
     return results
 
 
+def _train_and_save(
+    X_meta: pd.DataFrame,
+    y: pd.Series,
+    X_val: pd.DataFrame,
+    y_val: pd.Series,
+    meta_cutoff: pd.Timestamp,
+    out_path: Path,
+    target_name: str,
+) -> dict:
+    """Train one XGB stacker, calibrate, save, and return metrics."""
+    n          = len(X_meta)
+    val_split  = int(n * 0.70)
+    test_split = int(n * 0.85)
+    X_train_s  = X_meta.iloc[:val_split]
+    X_val_s    = X_meta.iloc[val_split:test_split]
+    X_test_s   = X_meta.iloc[test_split:]
+    y_train_s  = y.iloc[:val_split]
+    y_val_s    = y.iloc[val_split:test_split]
+    y_test_s   = y.iloc[test_split:]
+
+    model = XGBClassifier(
+        n_estimators=100, max_depth=2, learning_rate=0.05,
+        subsample=0.8, colsample_bytree=0.8,
+        objective="binary:logistic", eval_metric="logloss",
+        random_state=42, n_jobs=-1,
+    )
+    model.fit(X_train_s, y_train_s)
+
+    y_pred = model.predict(X_test_s)
+    y_prob = model.predict_proba(X_test_s)[:, 1]
+    acc    = float(accuracy_score(y_test_s, y_pred))
+    auc    = float(roc_auc_score(y_test_s, y_prob)) if len(np.unique(y_test_s)) > 1 else None
+
+    up_pct_test  = float(y_test_s.mean())
+    majority_acc = max(up_pct_test, 1 - up_pct_test)
+
+    meta_feature_stats = {
+        f: {"mean": round(float(X_meta[f].mean()), 4),
+            "std":  round(float(X_meta[f].std()), 4)}
+        for f in META_FEATURES
+    }
+
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    artifact = {
+        "model":              model,
+        "meta_features":      META_FEATURES,
+        "meta_cutoff":        str(meta_cutoff.date()),
+        "meta_feature_stats": meta_feature_stats,
+        "target":             target_name,
+        "train_rows":         len(X_train_s),
+        "val_rows":           len(X_val_s),
+        "test_rows":          len(X_test_s),
+        "accuracy":           round(acc, 4),
+        "auc":                round(auc, 4) if auc is not None else None,
+    }
+    joblib.dump(artifact, out_path)
+
+    # Calibration disabled for win target: ~300 val rows at 27% win rate gives
+    # isotonic regression too few positives (~81) to fit reliably — over-corrects
+    # and inflates Brier. Direction model may still benefit if val set is larger.
+    brier_before = brier_after = None
+    if target_name != "win":
+        try:
+            brier_before = float(brier_score_loss(y_test_s, y_prob))
+            from scripts.calibrate_models import IsotonicCalibrator
+            cal_model = IsotonicCalibrator(model)
+            cal_model.fit(X_val_s, y_val_s)
+            brier_after = float(brier_score_loss(y_test_s, cal_model.predict_proba(X_test_s)[:, 1]))
+            if brier_after < brier_before:
+                joblib.dump({**artifact, "model": cal_model, "calibrated": True,
+                             "brier_before": round(brier_before, 4),
+                             "brier_after":  round(brier_after, 4)},
+                            out_path.with_name(out_path.stem + "_calibrated.joblib"))
+            else:
+                log.info("Calibration did not improve Brier (%.4f→%.4f); raw model preferred",
+                         brier_before, brier_after)
+        except Exception as e:
+            log.warning("Calibration failed (%s): %s", target_name, e)
+
+    return {
+        "target":              target_name,
+        "accuracy":            round(acc, 4),
+        "auc":                 round(auc, 4) if auc is not None else None,
+        "naive_majority_acc":  round(majority_acc, 4),
+        "train_rows":          len(X_train_s),
+        "val_rows":            len(X_val_s),
+        "test_rows":           len(X_test_s),
+        "up_pct_in_test":      round(up_pct_test, 4),
+        "feature_importances": dict(zip(META_FEATURES, model.feature_importances_.tolist())),
+        "meta_feature_stats":  meta_feature_stats,
+        "precision_at_k":      _precision_at_k(y_prob, y_test_s.values),
+        "classification_report": classification_report(
+            y_test_s, y_pred, output_dict=True),
+        "model_path":          str(out_path),
+        "brier_before": round(brier_before, 4) if brier_before is not None else None,
+        "brier_after":  round(brier_after,  4) if brier_after  is not None else None,
+    }
+
+
 def train(data_path=None, out_path=_MODEL_PATH) -> dict:
-    from scripts.db import read_df, TABLE
+    from scripts.db import read_df, TABLE, SNAPSHOTS_TABLE
+
     df = read_df(f"SELECT * FROM {TABLE} WHERE labeled = true")
     df = df.dropna(subset=["forward_return", "rsi", "adx", "hv20"])
     df["date"] = pd.to_datetime(df["date"])
@@ -372,111 +483,92 @@ def train(data_path=None, out_path=_MODEL_PATH) -> dict:
         }
 
     log.info("[MetaEnsemble] Building meta-feature matrix from %d held-out rows…", len(meta_df))
-    X_meta, y_meta = build_meta_dataset(meta_df, models)
+    X_meta, y_direction = build_meta_dataset(meta_df, models)
 
     if len(X_meta) < 200:
         return {"ok": False, "error": f"Too few valid meta-rows after inference ({len(X_meta)})"}
 
-    # ── Three-way split: 70% train / 15% val (calibration) / 15% test ────────
-    n          = len(X_meta)
-    val_split  = int(n * 0.70)
-    test_split = int(n * 0.85)
-    X_train, X_val, X_test = (X_meta.iloc[:val_split],
-                               X_meta.iloc[val_split:test_split],
-                               X_meta.iloc[test_split:])
-    y_train, y_val, y_test = (y_meta.iloc[:val_split],
-                               y_meta.iloc[val_split:test_split],
-                               y_meta.iloc[test_split:])
-
-    # ── Shallow stacker — low depth prevents overfitting on 7 meta-features ──
-    model = XGBClassifier(
-        n_estimators=100, max_depth=2, learning_rate=0.05,
-        subsample=0.8, colsample_bytree=0.8,
-        objective="binary:logistic", eval_metric="logloss",
-        random_state=42, n_jobs=-1,
+    # ── Primary target: win from training_snapshots ────────────────────────────
+    # Pull labeled win outcomes, join on ticker+date to X_meta rows.
+    labeled_wins = read_df(
+        f"SELECT ticker, LEFT(CAST(collected_at AS VARCHAR), 10) AS date, "
+        f"CAST(JSON_EXTRACT(outcome, '$.win') AS BOOLEAN) AS win "
+        f"FROM {SNAPSHOTS_TABLE} WHERE labeled = true"
     )
-    model.fit(X_train, y_train)
+    labeled_wins["date"] = pd.to_datetime(labeled_wins["date"])
+    labeled_wins = labeled_wins.dropna(subset=["win"])
 
-    y_pred = model.predict(X_test)
-    y_prob = model.predict_proba(X_test)[:, 1]
-    acc    = float(accuracy_score(y_test, y_pred))
-    auc    = float(roc_auc_score(y_test, y_prob)) if len(np.unique(y_test)) > 1 else None
-    report = classification_report(y_test, y_pred,
-                                   target_names=["Down", "Up"], output_dict=True)
-
-    # ── Baselines ─────────────────────────────────────────────────────────────
-    up_pct_test          = float(y_test.mean())
-    naive_majority_acc   = max(up_pct_test, 1 - up_pct_test)     # always predict majority class
-    baseline_p_up_acc    = float(accuracy_score(y_test, (X_test["p_up"] >= 0.5).astype(int)))
-    baseline_regime_acc  = float(accuracy_score(y_test, (X_test["p_uptrend"] >= 0.5).astype(int)))
-
-    # ── Meta-feature statistics for SHAP / explainability ────────────────────
-    meta_feature_stats = {
-        f: {"mean": round(float(X_meta[f].mean()), 4),
-            "std":  round(float(X_meta[f].std()), 4)}
-        for f in META_FEATURES
-    }
-
-    feature_importances = dict(zip(META_FEATURES, model.feature_importances_.tolist()))
-
-    precision_at_k = _precision_at_k(y_prob, y_test.values)
+    win_join = X_meta.copy()
+    win_join["ticker"] = meta_df["ticker"].values
+    win_join["date"]   = meta_df["date"].values
+    win_join = win_join.merge(
+        labeled_wins[["ticker", "date", "win"]],
+        on=["ticker", "date"], how="inner",
+    )
+    n_win_matches = len(win_join)
+    log.info("[MetaEnsemble] Win-target matches after join: %d / %d", n_win_matches, len(X_meta))
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    artifact = {
-        "model":               model,
-        "meta_features":       META_FEATURES,
-        "meta_cutoff":         str(meta_cutoff.date()),
-        "meta_feature_stats":  meta_feature_stats,
-        "train_rows":          len(X_train),
-        "val_rows":            len(X_val),
-        "test_rows":           len(X_test),
-        "accuracy":            round(acc, 4),
-        "auc":                 round(auc, 4) if auc is not None else None,
-    }
-    joblib.dump(artifact, out_path)
 
-    # ── Calibrate on val (not test) ───────────────────────────────────────────
-    brier_before = brier_after = None
-    try:
-        brier_before = float(brier_score_loss(y_test, y_prob))
-        from scripts.calibrate_models import IsotonicCalibrator
-        cal_model = IsotonicCalibrator(model)
-        cal_model.fit(X_val, y_val)
-        brier_after = float(brier_score_loss(y_test, cal_model.predict_proba(X_test)[:, 1]))
-        if brier_after < brier_before:
-            joblib.dump({**artifact, "model": cal_model, "calibrated": True,
-                         "brier_before": round(brier_before, 4),
-                         "brier_after":  round(brier_after, 4)},
-                        out_path.with_name(out_path.stem + "_calibrated.joblib"))
-        else:
-            log.info("Calibration did not improve Brier (%.4f→%.4f); raw model preferred",
-                     brier_before, brier_after)
-    except Exception as e:
-        log.warning("Calibration failed: %s", e)
+    results: dict = {"ok": True, "meta_cutoff": str(meta_cutoff.date())}
 
-    return {
-        "ok":                  True,
-        "meta_cutoff":         str(meta_cutoff.date()),
-        "accuracy":            round(acc, 4),
-        "auc":                 round(auc, 4) if auc is not None else None,
-        "naive_majority_acc":  round(naive_majority_acc, 4),
-        "vs_direction_only":   round(baseline_p_up_acc, 4),
-        "vs_regime_only":      round(baseline_regime_acc, 4),
-        "beats_majority":      acc > naive_majority_acc,
-        "beats_direction":     acc > baseline_p_up_acc,
-        "beats_regime":        acc > baseline_regime_acc,
-        "train_rows":          len(X_train),
-        "val_rows":            len(X_val),
-        "test_rows":           len(X_test),
-        "up_pct_in_test":      round(up_pct_test, 4),
-        "feature_importances": feature_importances,
-        "meta_feature_stats":  meta_feature_stats,
-        "classification_report": report,
-        "precision_at_k":      precision_at_k,
-        "model_path":          str(out_path),
-        "brier_before": round(brier_before, 4) if brier_before is not None else None,
-        "brier_after":  round(brier_after, 4)  if brier_after  is not None else None,
-    }
+    # ── Train primary model on win ─────────────────────────────────────────────
+    if n_win_matches >= 200:
+        X_win = win_join[META_FEATURES].reset_index(drop=True)
+        y_win = win_join["win"].astype(int).reset_index(drop=True)
+        r_win = _train_and_save(X_win, y_win, X_win, y_win, meta_cutoff, out_path, "win")
+        results["win"] = r_win
+        # Expose top-level keys for backward compat with train_all.py reporting
+        results.update({k: r_win[k] for k in ("accuracy", "auc", "train_rows",
+                                                "val_rows", "test_rows", "model_path")})
+    else:
+        log.warning(
+            "[MetaEnsemble] Only %d win-target matches — too few for reliable win model. "
+            "Falling back to direction target for primary model.", n_win_matches
+        )
+        results["win_fallback"] = True
+
+    # ── Train secondary model on market direction ──────────────────────────────
+    r_dir = _train_and_save(
+        X_meta, y_direction, X_meta, y_direction,
+        meta_cutoff, _MODEL_PATH_DIRECTION, "market_direction",
+    )
+    results["direction"] = r_dir
+
+    # If win model couldn't be trained, promote direction model to primary path
+    if results.get("win_fallback"):
+        import shutil
+        shutil.copy2(_MODEL_PATH_DIRECTION, out_path)
+        log.warning("[MetaEnsemble] Primary path set to direction model as fallback.")
+        results.update({k: r_dir[k] for k in ("accuracy", "auc", "train_rows",
+                                                "val_rows", "test_rows")})
+        results["model_path"] = str(out_path)
+
+    return results
+
+
+def _print_model_result(label: str, r: dict) -> None:
+    print(f"\n{'─' * 60}")
+    print(f"  {label}  (target: {r['target']})")
+    print(f"{'─' * 60}")
+    print(f"  Accuracy: {r['accuracy']}  |  AUC: {r['auc']}"
+          f"  |  Majority-naive: {r['naive_majority_acc']}")
+    print(f"  Rows — train: {r['train_rows']}  val: {r['val_rows']}  test: {r['test_rows']}"
+          f"  (Win%: {r['up_pct_in_test']:.1%})")
+    if r.get("brier_before") is not None:
+        print(f"  Brier: {r['brier_before']} → {r['brier_after']} (after calibration)")
+    print(f"\n  Feature importances:")
+    for f, imp in sorted(r["feature_importances"].items(), key=lambda x: -x[1]):
+        stats = r["meta_feature_stats"][f]
+        print(f"    {f:<22} imp={imp:.3f}  mean={stats['mean']:.3f}  std={stats['std']:.3f}")
+    pak = r.get("precision_at_k") or {}
+    if pak:
+        print(f"\n  Precision@K (base rate {r['up_pct_in_test']:.1%}):")
+        for k in [10, 25, 50]:
+            p = pak.get(f"P@{k}"); rr = pak.get(f"R@{k}"); lft = pak.get(f"Lift@{k}")
+            if p is not None:
+                print(f"    @{k:<4}  P={p:.4f}  R={rr:.4f}  Lift={lft:.2f}x")
+    print(f"  Model: {r['model_path']}")
 
 
 if __name__ == "__main__":
@@ -487,29 +579,10 @@ if __name__ == "__main__":
         sys.exit(1)
 
     print(f"\nMeta-cutoff (derived from base models): {result['meta_cutoff']}")
-    print(f"Accuracy : {result['accuracy']}  |  AUC : {result['auc']}")
-    print(f"\nBaselines (test set, Up%={result['up_pct_in_test']:.1%}):")
-    print(f"  Majority-class naive : {result['naive_majority_acc']:.4f}  beats: {result['beats_majority']}")
-    print(f"  Direction model only : {result['vs_direction_only']:.4f}  beats: {result['beats_direction']}")
-    print(f"  Regime model only    : {result['vs_regime_only']:.4f}  beats: {result['beats_regime']}")
-    print(f"\nRows — train: {result['train_rows']}  val: {result['val_rows']}  test: {result['test_rows']}")
+    if result.get("win_fallback"):
+        print("WARNING: win-target join had too few rows — direction model used as primary.")
 
-    if result.get("brier_before") is not None:
-        print(f"\nBrier before calibration: {result['brier_before']} → after: {result['brier_after']}")
-
-    print("\nMeta-feature importances:")
-    for f, imp in sorted(result["feature_importances"].items(), key=lambda x: -x[1]):
-        stats = result["meta_feature_stats"][f]
-        print(f"  {f:<22} importance={imp:.3f}  mean={stats['mean']:.3f}  std={stats['std']:.3f}")
-
-    pak = result.get("precision_at_k") or {}
-    if pak:
-        up_pct = result["up_pct_in_test"]
-        print(f"\nPrecision@K (meta_score ranking, base rate {up_pct:.1%}):")
-        print(f"  {'K':>6}  {'Precision':>10}  {'Recall':>8}  {'Lift':>6}")
-        print("  " + "-" * 36)
-        for k in [10, 25, 50]:
-            p = pak.get(f"P@{k}"); r = pak.get(f"R@{k}"); l = pak.get(f"Lift@{k}")
-            if p is not None:
-                print(f"  {k:>6}  {p:>10.4f}  {r:>8.4f}  {l:>6.2f}x")
-    print(f"\nModel saved to {result['model_path']}")
+    if "win" in result:
+        _print_model_result("PRIMARY  meta_ensemble.joblib", result["win"])
+    if "direction" in result:
+        _print_model_result("SECONDARY meta_ensemble_direction.joblib", result["direction"])

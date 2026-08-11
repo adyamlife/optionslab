@@ -1,62 +1,177 @@
 {
-  "20260617_ARQQ_CAL_1": {
-    "actual_return_pct": -20.48,
+  "20260803AM_INTC_CDS_2": {
+    "actual_return_pct": -229.5,
     "outcome": "loss",
-    "closed_at": "2026-07-17T21:00:05.256610+00:00"
+    "closed_at": "2026-08-03T21:00:48.733623+00:00"
   },
-  "20260618_BTC_PUT_2": {
-    "actual_return_pct": -35.75,
+  "20260727AM_PLTR_CDS_1": {
+    "actual_return_pct": 100.4,
+    "outcome": "win",
+    "closed_at": "2026-08-04T21:00:19.708024+00:00"
+  },
+  "20260803AM_QCOM_COV_3": {
+    "actual_return_pct": -348.2,
     "outcome": "loss",
-    "closed_at": "2026-07-17T21:00:05.364767+00:00"
+    "closed_at": "2026-08-04T21:00:50.438813+00:00"
   },
-  "20260619_ARQQ_CAL_2": {
-    "actual_return_pct": -25.0,
+  "20260721AM_C_CAL_2": {
+    "actual_return_pct": -9.61,
     "outcome": "loss",
-    "closed_at": "2026-07-17T21:00:05.401077+00:00"
+    "closed_at": "2026-08-07T21:00:08.426273+00:00"
   },
-  "20260622_BTC_PUT_1": {
-    "actual_return_pct": -62.16,
+  "20260721AM_XLE_CAL_3": {
+    "actual_return_pct": -50.38,
     "outcome": "loss",
-    "closed_at": "2026-07-17T21:00:05.437681+00:00"
+    "closed_at": "2026-08-07T21:00:08.555939+00:00"
   },
-  "20260623_BTC_PUT_3": {
-    "actual_return_pct": -66.67,
+  "20260721AM_TGT_PUT_2": {
+    "actual_return_pct": -57.73,
     "outcome": "loss",
-    "closed_at": "2026-07-17T21:00:05.467847+00:00"
+    "closed_at": "2026-08-07T21:00:08.674071+00:00"
   },
-  "20260625_ARQQ_CAL_3": {
-    "actual_return_pct": -26.58,
-    "outcome": "loss",
-    "closed_at": "2026-07-17T21:00:05.631411+00:00"
-  },
-  "20260629_NVDA_PUT_2": {
-    "actual_return_pct": -56.25,
-    "outcome": "loss",
-    "closed_at": "2026-07-17T21:00:05.756820+00:00"
-  },
-  "20260629_SPY_IRO_3": {
+  "20260721PM_LOW_CAL_1": {
     "actual_return_pct": 100.0,
     "outcome": "win",
-    "closed_at": "2026-07-17T21:00:05.896837+00:00"
+    "closed_at": "2026-08-07T21:00:08.788319+00:00"
   },
-  "20260702_ACHR_PUT_1": {
-    "actual_return_pct": 33.33,
+  "20260721PM_MRK_CAL_3": {
+    "actual_return_pct": -0.31,
+    "outcome": "loss",
+    "closed_at": "2026-08-07T21:00:08.910117+00:00"
+  },
+  "20260723AM_C_CDS_2": {
+    "actual_return_pct": 19.7,
     "outcome": "win",
-    "closed_at": "2026-07-17T21:00:06.007163+00:00"
+    "closed_at": "2026-08-07T21:00:11.470940+00:00"
   },
-  "20260702_ARQQ_CAL_2": {
-    "actual_return_pct": -29.87,
-    "outcome": "loss",
-    "closed_at": "2026-07-17T21:00:06.039289+00:00"
+  "20260723AM_QCOM_COV_3": {
+    "actual_return_pct": 100.0,
+    "outcome": "win",
+    "closed_at": "2026-08-07T21:00:11.601566+00:00"
   },
-  "20260702_SPY_CAL_3": {
-    "actual_return_pct": -63.93,
+  "20260724AM_C_CDS_3": {
+    "actual_return_pct": -38.45,
     "outcome": "loss",
-    "closed_at": "2026-07-17T21:00:06.081261+00:00"
+    "closed_at": "2026-08-07T21:00:11.671049+00:00"
   },
-  "20260717AM_NEM_COV_3": {
-    "actual_return_pct": -480.0,
+  "20260727AM_IWM_CDS_1": {
+    "actual_return_pct": 76.02,
+    "outcome": "win",
+    "closed_at": "2026-08-07T21:00:11.842620+00:00"
+  },
+  "20260727AM_C_PDS_2": {
+    "actual_return_pct": -145.69,
     "outcome": "loss",
-    "closed_at": "2026-07-17T21:00:26.606412+00:00"
+    "closed_at": "2026-08-07T21:00:11.903123+00:00"
+  },
+  "20260727AM_PFE_CDS_3": {
+    "actual_return_pct": 100.0,
+    "outcome": "win",
+    "closed_at": "2026-08-07T21:00:11.983020+00:00"
+  },
+  "20260728AM_C_PDS_3": {
+    "actual_return_pct": -177.3,
+    "outcome": "loss",
+    "closed_at": "2026-08-07T21:00:16.671022+00:00"
+  },
+  "20260728AM_WFC_PDS_1": {
+    "actual_return_pct": -115.52,
+    "outcome": "loss",
+    "closed_at": "2026-08-07T21:00:16.890391+00:00"
+  },
+  "20260728AM_UBER_CDS_2": {
+    "actual_return_pct": 56.96,
+    "outcome": "win",
+    "closed_at": "2026-08-07T21:00:17.001012+00:00"
+  },
+  "20260728PM_SCHW_CDS_2": {
+    "actual_return_pct": -29.22,
+    "outcome": "loss",
+    "closed_at": "2026-08-07T21:00:17.995044+00:00"
+  },
+  "20260729AM_XLE_COV_1": {
+    "actual_return_pct": 100.0,
+    "outcome": "win",
+    "closed_at": "2026-08-07T21:00:18.921858+00:00"
+  },
+  "20260729AM_PFE_CDS_2": {
+    "actual_return_pct": 100.0,
+    "outcome": "win",
+    "closed_at": "2026-08-07T21:00:18.985774+00:00"
+  },
+  "20260729AM_T_CDS_3": {
+    "actual_return_pct": -203.03,
+    "outcome": "loss",
+    "closed_at": "2026-08-07T21:00:19.088245+00:00"
+  },
+  "20260729AM_PFE_CDS_1": {
+    "actual_return_pct": 100.0,
+    "outcome": "win",
+    "closed_at": "2026-08-07T21:00:19.160107+00:00"
+  },
+  "20260729AM_T_CDS_2": {
+    "actual_return_pct": -153.16,
+    "outcome": "loss",
+    "closed_at": "2026-08-07T21:00:19.243988+00:00"
+  },
+  "20260728AM_OXY_PDS_3": {
+    "actual_return_pct": -151.77,
+    "outcome": "loss",
+    "closed_at": "2026-08-07T21:00:17.118840+00:00"
+  },
+  "20260730PM_AXP_CDS_1": {
+    "actual_return_pct": -72.41,
+    "outcome": "loss",
+    "closed_at": "2026-08-07T21:00:28.578213+00:00"
+  },
+  "20260730PM_WFC_PDS_2": {
+    "actual_return_pct": -153.97,
+    "outcome": "loss",
+    "closed_at": "2026-08-07T21:00:28.710184+00:00"
+  },
+  "20260730PM_XLE_CDS_3": {
+    "actual_return_pct": -195.86,
+    "outcome": "loss",
+    "closed_at": "2026-08-07T21:00:28.756074+00:00"
+  },
+  "20260731AM_GLD_CDS_1": {
+    "actual_return_pct": 100.0,
+    "outcome": "win",
+    "closed_at": "2026-08-07T21:00:29.024822+00:00"
+  },
+  "20260731AM_NKE_CDS_3": {
+    "actual_return_pct": -247.83,
+    "outcome": "loss",
+    "closed_at": "2026-08-07T21:00:32.762857+00:00"
+  },
+  "20260731PM_GLD_CDS_1": {
+    "actual_return_pct": 100.0,
+    "outcome": "win",
+    "closed_at": "2026-08-07T21:00:32.832125+00:00"
+  },
+  "20260731PM_WFC_CDS_2": {
+    "actual_return_pct": -67.3,
+    "outcome": "loss",
+    "closed_at": "2026-08-07T21:00:32.932546+00:00"
+  },
+  "20260731PM_T_CDS_3": {
+    "actual_return_pct": 45.33,
+    "outcome": "win",
+    "closed_at": "2026-08-07T21:00:33.055825+00:00"
+  },
+  "20260803AM_GLD_CDS_1": {
+    "actual_return_pct": 100.0,
+    "outcome": "win",
+    "closed_at": "2026-08-10T21:00:53.639940+00:00"
+  },
+  "20260803AM_IWM_PDS_2": {
+    "actual_return_pct": -234.57,
+    "outcome": "loss",
+    "closed_at": "2026-08-10T21:00:53.774076+00:00"
+  },
+  "20260803PM_IWM_PDS_1": {
+    "actual_return_pct": -245.68,
+    "outcome": "loss",
+    "closed_at": "2026-08-10T21:00:54.128904+00:00"
   }
 }

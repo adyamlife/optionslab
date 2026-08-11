@@ -87,10 +87,10 @@ weight = 8.0
 min_bucket_n = 5
 
 [portfolio_risk]
-max_ticker_trades   = 5    # max open positions per ticker before blocking new entries
+max_ticker_trades   = 2    # max open positions per ticker (1 AM + 1 PM at most)
 max_sector_count    = 2    # max open trades in the same sector ETF
 max_deployment_pct  = 20.0 # max % of total notional capital deployed
-max_net_delta       = 3.0  # max net portfolio delta in underlying-equivalent shares
+max_net_delta       = 25.0  # TEMP: legacy book expires 2026-08-21; restore to 3.0 after
 max_net_theta       = 0.0  # max |portfolio theta| per day (0 = gate disabled until calibrated)
 max_net_gamma       = 0.0  # max |portfolio gamma| (0 = gate disabled until calibrated)
 corr_warn_threshold = 0.75 # 60d return correlation above this → warning (not block)
@@ -105,11 +105,19 @@ news_per_unit_bearish =  2   # penalty per net bearish article (net = bullish_ct
 news_per_unit_bullish =  1   # bonus per net bullish article
 news_max_penalty      = 10   # cap on total news penalty
 news_max_bonus        =  5   # cap on total news bonus
+synthetic_quotes      = 15   # chain built from closed-market lastPrice×0.98/1.02 fills
 
 [penalty_triggers]
 p_win_bearish_threshold = 0.45   # p_win below this → ML bearish (penalises Uptrend structures)
 p_win_bullish_threshold = 0.55   # p_win above this → ML bullish (penalises Downtrend structures)
 low_volume_threshold    = 0.80   # rel_volume below this triggers the low_volume penalty
+
+[return_norm]
+# Clip bounds for normalising the return regressor's expected_return (float, fraction)
+# to the [0, 100] s_ev range. Values outside the clip are capped at 0 / 100.
+# -30% expected return → score 0; +30% → score 100; 0% → score 50 (neutral).
+clip_lo = -0.30
+clip_hi =  0.30
 
 [quality]
 # Minimum composite score for a ticker to appear in top_trades.

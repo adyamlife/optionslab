@@ -1,0 +1,1 @@
+{"run_id": "2026-07-29T13:45:04Z", "n_trades": 2, "date_range": {"from": "2026-06-26", "to": "2026-06-29"}, "grids_hash": "de0cd039b682", "recommended_grids": {"credit_delta_grid": [], "width_grid": [], "debit_long_delta_grid": [], "debit_short_delta_grid": []}, "calibration_metrics": {}, "written": false}

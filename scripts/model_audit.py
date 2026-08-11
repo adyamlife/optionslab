@@ -425,11 +425,6 @@ def _audit_direction_classifier() -> dict:
             y      = sub["_direction"].astype(int).values
             return X, y
 
-        # Direction model is 3-class (Down=0 / Flat=1 / Up=2).
-        # _direction_target already strips Flat rows; y is 0=Down, 1=Up.
-        # Use predict_proba[:, 2] (P(Up)) as the binary positive-class signal.
-        _up_idx = art_raw.get("class_names", ["Down", "Flat", "Up"]).index("Up")
-
         df = load_labeled_data()
         if df.empty:
             return {"ok": False, "error": "No labeled data"}
@@ -437,6 +432,18 @@ def _audit_direction_classifier() -> dict:
         X_test, y_test     = _make_Xy(test_df)
         if len(y_test) == 0:
             return {"ok": False, "error": "Test split empty after dropping Flat rows"}
+
+        # Determine P(Up) column index. classes_ may report 3 classes but the
+        # wrapped model (BlendedMultiClassifier) can output only 2 columns, so
+        # always cap by the actual predict_proba output shape.
+        _class_names = art_raw.get("class_names", ["Down", "Flat", "Up"])
+        try:
+            _model_classes = list(art_raw["model"].classes_)
+            _raw_idx = _model_classes.index("Up") if "Up" in _model_classes else len(_model_classes) - 1
+        except AttributeError:
+            _raw_idx = _class_names.index("Up") if "Up" in _class_names else len(_class_names) - 1
+        _n_cols = art_raw["model"].predict_proba(X_test[:1]).shape[1]
+        _up_idx = min(_raw_idx, _n_cols - 1)
         training = {"split_cutoff": str(cutoff)[:10],
                     **_binary_metrics(art_raw, art_cal, X_test, y_test,
                                       pos_class_idx=_up_idx)}

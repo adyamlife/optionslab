@@ -121,8 +121,8 @@ max_risk_pct = 0.12          # max loss per trade as % of capital
 max_concurrent_positions = 2
 
 [dte]
-min_dte = 2
-max_dte = 30
+min_dte = 7
+max_dte = 60
 event_blackout_days = 5  # skip ticker if earnings fall within this many days of expiry
 
 # Preferred DTE targets for expiry selection. pick_expiry() chooses the available
@@ -134,10 +134,24 @@ candidate_dte = [14, 21, 30, 45, 60, 90]
 # Applied in filter_candidates() before composite scoring.
 # Thresholds marked (future) require POP model data — loaded but not enforced yet.
 [min_trade]
-min_expected_roi     = 0.10   # (credit / capital_required) × pop_estimate ≥ this; 0 = disabled
+min_expected_roi     = 0.10   # fallback when iv_rank unavailable; 0 = disabled
 max_theta_per_day    = 0.05   # |net_theta| per share per day above this → skip (high theta decay risk)
 min_liquidity_score  = 0.60   # composite of OI, bid-ask tightness, rel_volume; 0 = disabled
 max_drawdown_proxy   = 0.95   # max_loss / capital_required above this → skip (nearly total-loss trades)
+
+# Regime-aware ROI gate: threshold scales with IV rank so the system demands
+# stronger returns when premiums are rich and relaxes when they compress.
+# iv_rank_52w thresholds are upper-exclusive: high = [iv_high_threshold, ∞)
+roi_high_iv          = 0.18   # IV rank ≥ iv_high_threshold  → require 18%
+roi_normal_iv        = 0.12   # IV rank in [iv_low_threshold, iv_high_threshold) → require 12%
+roi_low_iv           = 0.08   # IV rank < iv_low_threshold   → require 8%
+iv_low_threshold     = 30     # IV rank below this = low-IV regime
+iv_high_threshold    = 60     # IV rank at or above this = high-IV regime
+# Trending regime multiplier: applied on top of the IV-rank threshold when the ML
+# regime label is "Trending". Ubuntu backfill shows only 17.1% 5-day containment
+# in Trending (vs 75-90% in all other regimes) — directional tickers need a much
+# stronger ROI case before a short-premium trade is worth taking.
+trending_roi_multiplier = 1.5
 
 # The thresholds below are strategy-level metrics — meaningful only over 50+ closed trades.
 # They are stored here for future use by the performance analytics module,
@@ -162,10 +176,10 @@ short_delta_hi = 0.25
 min_credit_pct_of_width = 0.25   # credit must be >= 25% of spread width
 
 [debit_spread]
-long_delta_lo = 0.45
-long_delta_hi = 0.65
-short_delta_lo = 0.15
-short_delta_hi = 0.20
+long_delta_lo  = 0.50   # ATM-ish long leg — slightly tighter, still directional
+long_delta_hi  = 0.65
+short_delta_lo = 0.25   # moderately OTM — brings enough credit to keep R/R near 1:1
+short_delta_hi = 0.35
 
 [liquidity]
 min_open_interest = 200       # min OI required on each leg's strike
@@ -240,6 +254,25 @@ call_delta_hi = 0.25
 put_delta_lo  = 0.15
 put_delta_hi  = 0.25
 
+[short_strangle]
+# OTM short put + OTM short call — undefined risk on both sides
+call_delta_lo = 0.20
+call_delta_hi = 0.30
+put_delta_lo  = 0.20
+put_delta_hi  = 0.30
+
+[short_straddle]
+# ATM short call + ATM short put — widest premium, highest gamma risk
+atm_delta_lo = 0.45
+atm_delta_hi = 0.55
+
+[iron_butterfly]
+# ATM short legs (same as short straddle) + OTM long wings (defined risk)
+short_delta_lo = 0.45
+short_delta_hi = 0.55
+long_delta_lo  = 0.15
+long_delta_hi  = 0.25
+
 # Paper trade managed-exit rules
 [management]
 profit_target_pct = 0.90  # close when spread mark reaches this % of entry credit (90% of max profit)
@@ -301,8 +334,8 @@ risk_free_rate = 0.043  # annualised risk-free rate (update periodically with 3-
 [optimize_grid]
 credit_delta_grid      = [0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40]
 width_grid             = [1, 1.5, 2, 3, 5, 7, 10, 15, 20, 30]
-debit_long_delta_grid  = [0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65]
-debit_short_delta_grid = [0.10, 0.15, 0.20, 0.25, 0.30]
+debit_long_delta_grid  = [0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65]  # long leg — unchanged
+debit_short_delta_grid = [0.20, 0.25, 0.30, 0.35, 0.40]              # short leg — widened from 0.10-0.20
 
 # IV edge / vol-surface mispricing thresholds (vega points).
 # skip_vp: skip entering if surface edge is this many vp against us.
@@ -321,13 +354,16 @@ bonus_scale = 0.15
 # exclude_structures: additional structure names to always skip in paper trades,
 #   regardless of margin setting (e.g. strategies you are not yet comfortable with).
 [paper_trades]
-margin_account     = false
+margin_account     = true
 exclude_structures  = ["Covered Call"]  # requires owning 100 shares — not paper-tradeable without shares
 min_profit_amount   = 0.50    # paper-trade override: lower gate vs live ($0.50/sh)
 min_confidence      = 0.50    # paper-trade override: all outcomes are training data, 0.70 is too strict
 min_open_interest   = 50      # paper-trade override: allow thinner strikes (live uses 200)
 max_theta_per_day   = 0.0     # paper-trade override: disable theta gate entirely (collect all structures)
-min_expected_roi    = 0.075   # paper-trade override: 7.5% vs 10% live (but ROI gate now uses per-share units)
+min_expected_roi    = 0.075   # paper-trade fallback when iv_rank unavailable
+roi_high_iv         = 0.14    # paper-trade high-IV override (lower than live 18% to collect more training data)
+roi_normal_iv       = 0.09    # paper-trade normal-IV override
+roi_low_iv          = 0.06    # paper-trade low-IV override
 min_liquidity_score = 0.30    # paper-trade override: collect diverse structures (live uses 0.60)
 
 [ai]

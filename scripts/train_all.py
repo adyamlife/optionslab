@@ -80,9 +80,9 @@ def step_regime_backfill():
     result = build_regime_dataset()
     log.info(
         "Backfill done: %d rows, %d tickers → %s",
-        result.get("n_rows", 0),
-        result.get("n_tickers", 0),
-        result.get("path", "?"),
+        result.get("rows", result.get("n_rows", 0)),
+        result.get("tickers", result.get("n_tickers", 0)),
+        result.get("out_path", result.get("path", "?")),
     )
 
 

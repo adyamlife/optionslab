@@ -13,6 +13,8 @@ IRON_CONDOR = OptionStructure(
     short_delta_hi = 0.25,
     min_credit_pct = 0.25,
     capital_type   = "spread_width",
+    dte_min = 21,
+    dte_max = 45,
     # Gate: reject if earnings are within 12 days — IV spike on either wing
     # converts an IC from a range trade into a defined-loss gap trade.
     constraints = StructureConstraints(earnings_dte_min=12),

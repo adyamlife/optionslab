@@ -1,0 +1,35 @@
+{
+  "run_timestamp": "2026-07-30T17:05:10.133636",
+  "label_schema_version": 1,
+  "quality_rule_set": "ruleset_v1_2026-07-28",
+  "code_commit": "0bf6149",
+  "run_stats": {
+    "executed_trades": {
+      "labeled": 148,
+      "total_records": 5754
+    },
+    "rejected_candidates": {
+      "labeled": 74,
+      "no_fwd_data": 5,
+      "skipped_future": 2353,
+      "total_attempted": 2432,
+      "direction_backfilled": 2
+    }
+  },
+  "db_counts": {
+    "total_snapshots": 5754,
+    "labeled": 1048,
+    "unlabeled": 4706,
+    "train_feasibility": 1000,
+    "train_quality": 959,
+    "train_direction": 854,
+    "train_outcome": 151,
+    "still_unlabelable": 0
+  },
+  "validation": {
+    "ok": true,
+    "checked": 1048,
+    "violations": 0,
+    "sample_violations": []
+  }
+}

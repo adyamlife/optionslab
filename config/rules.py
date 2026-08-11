@@ -57,8 +57,16 @@ FLP_PUT_LONG_DELTA_RANGE   = (_settings["financed_long_put"]["put_long_delta_lo"
 RATIO_BACKSPREAD_SHORT_DELTA_RANGE = (_settings["ratio_backspread"]["short_delta_lo"], _settings["ratio_backspread"]["short_delta_hi"])
 RATIO_BACKSPREAD_LONG_DELTA_RANGE  = (_settings["ratio_backspread"]["long_delta_lo"],  _settings["ratio_backspread"]["long_delta_hi"])
 
-LONG_STRANGLE_CALL_DELTA_RANGE = (_settings["long_strangle"]["call_delta_lo"], _settings["long_strangle"]["call_delta_hi"])
-LONG_STRANGLE_PUT_DELTA_RANGE  = (_settings["long_strangle"]["put_delta_lo"],  _settings["long_strangle"]["put_delta_hi"])
+LONG_STRANGLE_CALL_DELTA_RANGE  = (_settings["long_strangle"]["call_delta_lo"], _settings["long_strangle"]["call_delta_hi"])
+LONG_STRANGLE_PUT_DELTA_RANGE   = (_settings["long_strangle"]["put_delta_lo"],  _settings["long_strangle"]["put_delta_hi"])
+
+SHORT_STRANGLE_CALL_DELTA_RANGE = (_settings["short_strangle"]["call_delta_lo"], _settings["short_strangle"]["call_delta_hi"])
+SHORT_STRANGLE_PUT_DELTA_RANGE  = (_settings["short_strangle"]["put_delta_lo"],  _settings["short_strangle"]["put_delta_hi"])
+
+SHORT_STRADDLE_ATM_DELTA_RANGE  = (_settings["short_straddle"]["atm_delta_lo"], _settings["short_straddle"]["atm_delta_hi"])
+
+IRON_BUTTERFLY_SHORT_DELTA_RANGE = (_settings["iron_butterfly"]["short_delta_lo"], _settings["iron_butterfly"]["short_delta_hi"])
+IRON_BUTTERFLY_LONG_DELTA_RANGE  = (_settings["iron_butterfly"]["long_delta_lo"],  _settings["iron_butterfly"]["long_delta_hi"])
 
 PROFIT_TARGET_PCT  = _settings["management"]["profit_target_pct"]
 STOP_LOSS_MULT     = _settings["management"]["stop_loss_mult"]

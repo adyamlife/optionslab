@@ -730,9 +730,10 @@ def _eval_hv30(preference: str, market: dict) -> EvaluationResult:
 
 def _eval_iv_percentile(preference: str, market: dict) -> EvaluationResult:
     """IV rank vs 52-week range — absolute vol level context."""
-    ivr = market.get("iv_rank_52w")
-    if ivr is None:
+    _ivr_raw = market.get("iv_rank_52w")
+    if _ivr_raw is None:
         return EvaluationResult.missing()
+    ivr = float(_ivr_raw) / 100.0   # stored as 0–100; thresholds and display use 0–1
     p = _p("iv_percentile")
     high_lo  = p.get("high_lo",   0.60)
     high_top = p.get("high_top",  0.80)

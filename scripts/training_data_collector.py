@@ -28,6 +28,7 @@ option_chain_snapshots. JSON columns store nested fields (candidate, strikes,
 outcome). Labeling does in-place SQL UPDATEs — no full-file rewrites.
 """
 import logging
+import re
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
@@ -38,6 +39,7 @@ log = logging.getLogger(__name__)
 
 from config.watchlist import WATCHLIST
 from scripts.analyze import analyze_ticker, days_to_earnings
+from scripts.black_scholes import bs_price
 from scripts.candidate_provider import _payoff_per_share
 from scripts.data_fetch import (
     pick_expiry,
@@ -53,6 +55,26 @@ _ROOT = Path(__file__).resolve().parent.parent
 
 # How many strikes either side of ATM to store per expiry
 _CHAIN_STRIKE_RADIUS = 10
+
+# Labeling schema version — bump when any labeling logic changes semantics
+LABEL_SCHEMA_VERSION = 1
+
+# Fingerprint of the current quality rule set (update when thresholds change)
+QUALITY_RULESET_FINGERPRINT = "ruleset_v1_2026-07-28"
+
+# Structures where a directional win is defined
+_DIRECTION_WIN_MAP = {
+    "Call Debit Spread":  lambda fwd, em: fwd > 0,
+    "Put Debit Spread":   lambda fwd, em: fwd < 0,
+    "Call Credit Spread": lambda fwd, em: fwd < 0,
+    "Put Credit Spread":  lambda fwd, em: fwd > 0,
+    "Iron Condor":        lambda fwd, em: abs(fwd) < em,
+    "Jade Lizard":        lambda fwd, em: fwd >= 0,
+    "Long Strangle":      lambda fwd, em: abs(fwd) > em,
+    "Long Straddle":      lambda fwd, em: abs(fwd) > em,
+    # Calendar Spread profits when underlying stays near short strike at short-leg expiry
+    "Calendar Spread":    lambda fwd, em: abs(fwd) < em,
+}
 
 
 def _load_all() -> list:
@@ -229,6 +251,56 @@ def _build_gate_summary(candidates: list, row: dict) -> dict:
     }
 
 
+def _partial_label_candidate(candidate: dict) -> dict:
+    """
+    Compute trade_feasible and trade_quality immediately at collection time.
+    direction_correct / realized_pnl / win are left None — filled by the
+    daily label_rejected_candidates() pass once forward returns are available.
+    """
+    details = (candidate.get("details") or "").strip()
+
+    # Feasibility: option chain had no usable strikes or was illiquid
+    not_feasible_phrases = (
+        "No strikes found",
+        "Illiquid",
+        "wide bid",
+        "net credit <=0",
+        "cannot price",
+    )
+    trade_feasible = not any(p.lower() in details.lower() for p in not_feasible_phrases)
+
+    # Quality: trade passed all risk/reward filters (no "[Best EV]" fallback label)
+    if not trade_feasible:
+        trade_quality = None
+    else:
+        meets_min  = candidate.get("meets_min_profit")
+        meets_loss = candidate.get("meets_max_loss")
+        if meets_min is None and meets_loss is None:
+            # Older candidates without explicit filter flags — infer from details
+            trade_quality = "best ev" not in details.lower() and "below" not in details.lower()
+        else:
+            trade_quality = bool(meets_min) and bool(meets_loss)
+
+    return {
+        "trade_feasible":        trade_feasible,
+        "trade_quality":         trade_quality,
+        "direction_correct":     None,   # filled by label_rejected_candidates()
+        "realized_pnl":          None,   # filled at expiry (CCS only)
+        "win":                   None,   # filled at expiry
+        "unlabelable":           False,
+        "method":                "partial_at_collection",
+        "label_schema_version":  LABEL_SCHEMA_VERSION,
+        "quality_rule_set":      QUALITY_RULESET_FINGERPRINT,
+        "settlement_source":     None,
+        "label_confidence":      None,
+        # eligibility masks — train_outcome requires win to be filled first
+        "train_feasibility":     True,
+        "train_quality":         trade_feasible is True,
+        "train_direction":       False,  # flipped True once direction_correct is set
+        "train_outcome":         False,  # flipped True once win is set
+    }
+
+
 def _build_snapshot_record(ticker: str, vix_price, spy_hist=None,
                            index_trends: dict | None = None,
                            vix_ctx: dict | None = None,
@@ -383,6 +455,7 @@ def _build_snapshot_record(ticker: str, vix_price, spy_hist=None,
         "status":                row.get("status"),
         "recommended_structure": row.get("recommended_structure"),
         "signal_score":          row.get("signal_score"),
+        "signal_pct":            row.get("signal_pct"),
         "candidate":             recommended,
         "expiry":                (recommended or {}).get("expiry") or row.get("expiry"),
         "dte":                   (recommended or {}).get("dte") or row.get("dte"),
@@ -466,7 +539,7 @@ def _build_snapshot_record(ticker: str, vix_price, spy_hist=None,
         "gate_summary":          _build_gate_summary(candidates, row),
         # ───────────────────────────────────────────────────────────────────────
         "labeled":               False,
-        "outcome":               None,
+        "outcome":               _partial_label_candidate(recommended) if recommended else None,
         "labeled_at":            None,
     }
 
@@ -858,6 +931,114 @@ def collect_snapshots() -> dict:
     }
 
 
+_CAL_BACK_RE    = re.compile(r"BUY [\d.]+([CP]) \((\d{4}-\d{2}-\d{2}),")
+_CAL_BACK_IV_RE = re.compile(r"back IV (\d+)%")
+_CAL_STRIKE_RE  = re.compile(r"SELL ([\d.]+)[CP]")  # "back IV 77%" in details
+
+_RISK_FREE_RATE = 0.03  # constant used for BS approximations
+
+
+def _label_calendar_bs(r: dict, front_exp_date: date, s_front: float) -> dict | None:
+    """
+    Approximate P&L for a Calendar or Diagonal Spread at front-leg expiry.
+
+    Method (3B): value the surviving back leg with Black-Scholes using the
+    best available IV estimate and the remaining time to back_expiry.  Net out
+    the short-leg intrinsic and the original net debit.
+
+    IV resolution order:
+      1. Row-level atm_iv (entry-time IV stored at scan time)
+      2. Back-leg IV parsed from the details string ("back IV 77%")
+      3. Row-level hv20 (historical vol as rough proxy)
+      4. 0.30 (30% default — better than refusing to label)
+
+    Caveats stored in the outcome dict so downstream code can filter:
+    - iv_source: which fallback was used
+    - approx: True — marks this label as model-generated, not market price
+
+    Returns None when required structural fields are missing or un-parseable.
+    """
+    candidate = r.get("candidate") or {}
+    details   = candidate.get("details", "") or ""
+
+    m = _CAL_BACK_RE.search(details)
+    if not m:
+        return None
+    opt_type    = "call" if m.group(1) == "C" else "put"
+    back_expiry = date.fromisoformat(m.group(2))
+
+    tau_back = (back_expiry - front_exp_date).days / 365.0
+    if tau_back <= 0:
+        return None
+
+    debit = candidate.get("max_loss")
+    try:
+        if debit is None or not (debit >= 0):  # catches None and NaN
+            return None
+    except TypeError:
+        return None
+
+    # IV fallback chain.  pandas returns NaN (not None) for SQL NULLs, so we
+    # must use `not (iv > 0)` rather than `iv <= 0` to catch NaN correctly.
+    def _valid_iv(v) -> bool:
+        try:
+            return v is not None and v > 0
+        except TypeError:
+            return False  # NaN or other non-comparable type
+
+    iv_source = "entry_atm_iv"
+    iv = r.get("atm_iv")
+    if not _valid_iv(iv):
+        m_iv = _CAL_BACK_IV_RE.search(details)
+        if m_iv:
+            iv = float(m_iv.group(1)) / 100.0
+            iv_source = "details_back_iv"
+    if not _valid_iv(iv):
+        hv = r.get("hv20")
+        if _valid_iv(hv):
+            iv = hv
+            iv_source = "hv20_fallback"
+    if not _valid_iv(iv):
+        iv = 0.30
+        iv_source = "default_30pct"
+
+    structure = candidate.get("structure", "")
+    if structure == "Calendar Spread":
+        # Both legs share the same ATM strike
+        k_long  = candidate.get("short_strike") or candidate.get("long_strike")
+        if k_long is None:
+            # Old rows don't have strike fields — parse from details string
+            # e.g. "SELL 165.0C (2026-07-17, 17d) / BUY 165.0C (2026-08-07, 38d)"
+            m_k = _CAL_STRIKE_RE.search(details)
+            if m_k:
+                k_long = float(m_k.group(1))
+        k_short = k_long
+    else:
+        # Diagonal: long_strike on the back leg, short_strike on the front leg
+        k_long  = candidate.get("long_strike")
+        k_short = candidate.get("short_strike")
+
+    if None in (k_long, k_short):
+        return None
+
+    back_leg_value    = bs_price(s_front, k_long, tau_back, _RISK_FREE_RATE, iv, opt_type)
+    if opt_type == "call":
+        short_leg_assign  = max(s_front - k_short, 0.0)
+    else:
+        short_leg_assign  = max(k_short - s_front, 0.0)
+
+    pnl = round(float(back_leg_value - short_leg_assign - debit), 4)
+    return {
+        "pnl_per_share":        pnl,
+        "win":                  bool(pnl > 0),
+        "spot_at_front_expiry": round(float(s_front), 2),
+        "back_leg_bs_value":    round(float(back_leg_value), 4),
+        "short_leg_assign":     round(float(short_leg_assign), 4),
+        "iv_source":            iv_source,
+        "approx":               True,
+    }
+
+
 def label_pending_snapshots() -> dict:
     """
     Fill in the actual outcome for snapshots whose candidate's expiry has
@@ -892,18 +1073,28 @@ def label_pending_snapshots() -> dict:
             win = exit_data.get("win")
             if pnl is None:
                 continue
-            r["labeled"] = True
-            r["outcome"] = {
-                "pnl_per_share":  round(pnl, 4),
-                "win":            bool(win),
-                "exit_reason":    exit_data.get("reason"),
-                "pnl_pct_of_max": exit_data.get("pnl_pct_of_max"),
-                "hit_tp":         exit_data.get("hit_tp"),
-                "hit_sl":         exit_data.get("hit_sl"),
-                "mae_pct":        exit_data.get("mae_pct"),
-                "mfe_pct":        exit_data.get("mfe_pct"),
-                "days_held":      exit_data.get("days_held"),
+            try:
+                dte = float(r.get("dte") or 0)
+            except (TypeError, ValueError):
+                dte = 0.0
+            core = {
+                "pnl_per_share":     round(pnl, 4),
+                "win":               bool(win),
+                "realized_pnl":      round(pnl, 4),
+                "trade_feasible":    True,
+                "trade_quality":     True,
+                "direction_correct": None,   # filled by label_rejected_candidates() backfill pass once forward_1d/3d/5d are available
+                "exit_reason":       exit_data.get("reason"),
+                "pnl_pct_of_max":    exit_data.get("pnl_pct_of_max"),
+                "hit_tp":            exit_data.get("hit_tp"),
+                "hit_sl":            exit_data.get("hit_sl"),
+                "mae_pct":           exit_data.get("mae_pct"),
+                "mfe_pct":           exit_data.get("mfe_pct"),
+                "days_held":         exit_data.get("days_held"),
             }
+            r["labeled"] = True
+            r["outcome"] = {**core, **_eligibility_masks(core),
+                            **_provenance("paper_trade_exit", "paper_trade_engine", dte)}
             r["labeled_at"] = datetime.now().isoformat()
             labeled_count += 1
             continue
@@ -920,11 +1111,15 @@ def label_pending_snapshots() -> dict:
         cache_key = (ticker, str(exp_date))
         if cache_key not in price_cache:
             try:
-                # Fetch the close on the expiry date specifically — not today's
-                # price, which would mislabel records labeled days after expiry.
-                import yfinance as _yf
-                _h = _yf.Ticker(ticker).history(start=str(exp_date), end=str(exp_date + timedelta(days=3)))
-                price_cache[cache_key] = float(_h["Close"].iloc[0]) if not _h.empty else None
+                from scripts.db import connect as _dbconnect, lookup_expiry_settlement
+                with _dbconnect(read_only=True) as _con:
+                    _s, _ = lookup_expiry_settlement(_con, ticker, str(exp_date))
+                if _s is not None:
+                    price_cache[cache_key] = _s
+                else:
+                    import yfinance as _yf
+                    _h = _yf.Ticker(ticker).history(start=str(exp_date), end=str(exp_date + timedelta(days=3)))
+                    price_cache[cache_key] = float(_h["Close"].iloc[0]) if not _h.empty else None
             except Exception:
                 price_cache[cache_key] = None
         s_t = price_cache[cache_key]
@@ -933,16 +1128,54 @@ def label_pending_snapshots() -> dict:
 
         pnl_arr = _payoff_per_share(r["candidate"].get("structure"), r["candidate"], np.array([s_t]))
         if pnl_arr is None:
-            # Path-dependent structure — can't be labeled this way
+            structure = (r.get("candidate") or {}).get("structure", "")
+            if structure in ("Calendar Spread", "Diagonal Spread"):
+                bs_outcome = _label_calendar_bs(r, exp_date, s_t)
+                if bs_outcome is not None:
+                    try:
+                        dte = float(r.get("dte") or 0)
+                    except (TypeError, ValueError):
+                        dte = 0.0
+                    bs_outcome.update({
+                        "trade_feasible": True, "trade_quality": True,
+                        "direction_correct": None, "realized_pnl": bs_outcome.get("pnl_per_share"),
+                        **_eligibility_masks({**bs_outcome, "trade_feasible": True, "trade_quality": True}),
+                        **_provenance("calendar_bs_approx", "yfinance", dte),
+                    })
+                    r["labeled"] = True
+                    r["outcome"] = bs_outcome
+                    r["labeled_at"] = datetime.now().isoformat()
+                    labeled_count += 1
+                    continue
+            # Genuinely unlabelable (path-dependent, missing fields)
             r["labeled"] = True
-            r["outcome"] = {"unlabelable": True}
+            r["outcome"] = {
+                "unlabelable": True, "trade_feasible": True, "trade_quality": True,
+                "win": None, "realized_pnl": None, "direction_correct": None,
+                **_eligibility_masks({"trade_feasible": True, "trade_quality": True, "win": None}),
+                **_provenance("unlabelable", "none", 0.0),
+            }
             r["labeled_at"] = datetime.now().isoformat()
             labeled_count += 1
             continue
 
+        try:
+            dte = float(r.get("dte") or 0)
+        except (TypeError, ValueError):
+            dte = 0.0
         pnl = float(pnl_arr[0])
+        core = {
+            "pnl_per_share":     round(pnl, 4),
+            "realized_pnl":      round(pnl, 4),
+            "win":               pnl > 0,
+            "spot_at_expiry":    round(s_t, 2),
+            "trade_feasible":    True,
+            "trade_quality":     True,
+            "direction_correct": None,
+        }
         r["labeled"] = True
-        r["outcome"] = {"pnl_per_share": round(pnl, 4), "win": pnl > 0, "spot_at_expiry": round(s_t, 2)}
+        r["outcome"] = {**core, **_eligibility_masks(core),
+                        **_provenance("hold_to_expiry", "yfinance", dte)}
         r["labeled_at"] = datetime.now().isoformat()
         labeled_count += 1
 
@@ -950,6 +1183,809 @@ def label_pending_snapshots() -> dict:
     labeled_records = [r for r in records if r.get("labeled") and r.get("snapshot_id")]
     update_snapshot_labels(labeled_records)
     return {"labeled": labeled_count, "total_records": len(records)}
+
+
+def backfill_historical_settlements() -> dict:
+    """
+    One-time (or periodic) backfill of canonical settlement prices for all
+    historical expiry dates found in training_snapshots.
+
+    yfinance provides daily closing prices going back years, so this can
+    recover exact settlement for every past expiry — not just tonight's.
+    Prices are stored in expiry_settlements; all downstream labelers
+    (relabel_previously_unlabelable, relabel_low_confidence_labels,
+    label_rejected_candidates) pick them up automatically via _lookup_settlement.
+
+    Groups by ticker to minimise API calls (one history() fetch per ticker,
+    reads all needed expiry dates from the returned DataFrame).
+
+    Returns {"stored": N, "tickers_fetched": K, "already_stored": M, "errors": [...]}.
+    """
+    from scripts.db import connect as _dbconnect, upsert_expiry_settlement, ensure_archive_tables
+
+    ensure_archive_tables()
+    records = _load_all()
+    today_str = date.today().isoformat()
+
+    # Collect all (ticker, expiry_date) pairs from snapshots with past expiry
+    all_pairs: dict[str, set[str]] = {}   # ticker → {date_str, ...}
+    for r in records:
+        raw_expiry = r.get("expiry")
+        try:
+            expiry = str(raw_expiry)[:10] if raw_expiry and str(raw_expiry) != "nan" else ""
+        except Exception:
+            expiry = ""
+        ticker = r.get("ticker") or ""
+        if not expiry or not ticker or expiry >= today_str:
+            continue
+        all_pairs.setdefault(ticker, set()).add(expiry)
+
+    total_pairs = sum(len(v) for v in all_pairs.values())
+
+    # Remove already-stored pairs (idempotent — skip what's done)
+    already_stored = 0
+    needed = {tkr: set(dates) for tkr, dates in all_pairs.items()}
+    try:
+        with _dbconnect(read_only=True) as con:
+            existing = con.execute(
+                "SELECT ticker, date FROM expiry_settlements"
+            ).fetchall()
+        for tkr, dt in existing:
+            if tkr in needed and dt in needed[tkr]:
+                needed[tkr].discard(dt)
+                already_stored += 1
+                if not needed[tkr]:
+                    del needed[tkr]
+    except Exception:
+        pass  # table may not exist yet — ensure_archive_tables() creates it below
+
+    # Phase 1: fetch all prices from yfinance (no DB writes yet)
+    to_write: list[tuple[str, str, float]] = []   # (ticker, date, price)
+    tickers_fetched, errors = [], []
+
+    for ticker, expiry_dates in sorted(needed.items()):
+        try:
+            hist = yf.Ticker(ticker).history(period="max")
+            if hist.empty:
+                errors.append({"ticker": ticker, "error": "no history"})
+                continue
+            hist.index = hist.index.tz_localize(None) if hist.index.tzinfo else hist.index
+            date_to_close = {str(d.date()): float(c) for d, c in zip(hist.index, hist["Close"])}
+            tickers_fetched.append(ticker)
+
+            for exp_str in sorted(expiry_dates):
+                price = date_to_close.get(exp_str)
+                if price is None:
+                    exp_d = date.fromisoformat(exp_str)
+                    for delta in range(1, 6):
+                        prev = str(exp_d - timedelta(days=delta))
+                        if prev in date_to_close:
+                            price = date_to_close[prev]
+                            break
+                if price is None:
+                    errors.append({"ticker": ticker, "expiry": exp_str, "error": "no close found"})
+                    continue
+                to_write.append((ticker, exp_str, price))
+        except Exception as e:
+            errors.append({"ticker": ticker, "error": str(e)})
+
+    # Phase 2: write all settlements in a single DB connection
+    stored = 0
+    if to_write:
+        from datetime import datetime as _dt
+        now_iso = _dt.now().isoformat()
+        try:
+            with _dbconnect() as con:
+                for ticker, exp_str, price in to_write:
+                    con.execute(
+                        "INSERT OR REPLACE INTO expiry_settlements "
+                        "(ticker, date, settlement_price, source, retrieved_at, confidence) "
+                        "VALUES (?, ?, ?, ?, ?, ?)",
+                        [ticker, exp_str, price, "yfinance_history", now_iso, 1.0],
+                    )
+                con.commit()
+                stored = len(to_write)
+        except Exception as e:
+            errors.append({"batch_write": str(e)})
+
+    log.info(f"backfill_historical_settlements: stored={stored}/{total_pairs} tickers={len(tickers_fetched)} already={already_stored} errors={len(errors)}")
+    return {
+        "stored":          stored,
+        "total_pairs":     total_pairs,
+        "already_stored":  already_stored,
+        "tickers_fetched": len(tickers_fetched),
+        "errors":          errors,
+    }
+
+
+def relabel_previously_unlabelable() -> dict:
+    """
+    Re-process snapshots that were previously marked unlabelable=True.
+
+    Call this once after adding new payoff handlers — it finds every row that
+    the old labeler gave up on and retries with the current _payoff_per_share
+    and _label_calendar_bs implementations.  Already-correct real labels are
+    never touched.
+
+    Uses _lookup_settlement so it benefits from backfill_historical_settlements()
+    without any extra yfinance calls when settlements are already stored.
+
+    Returns {"relabeled": N, "still_unlabelable": M, "skipped_no_expiry": K}.
+    """
+    from scripts.db import connect as _dbconnect
+    records = _load_all()
+    today = date.today()
+    price_cache: dict = {}
+    relabeled = 0
+    still_unlabelable = 0
+    skipped = 0
+
+    with _dbconnect() as con:
+        for r in records:
+            try:
+                outcome = r.get("outcome") or {}
+                if not (r.get("labeled") and outcome.get("unlabelable")):
+                    continue
+            except Exception:
+                continue
+
+            if not r.get("expiry") or not r.get("candidate"):
+                skipped += 1
+                continue
+
+            try:
+                exp_date = date.fromisoformat(str(r["expiry"])[:10])
+            except Exception:
+                skipped += 1
+                continue
+
+            if exp_date > today:
+                skipped += 1
+                continue
+
+            ticker = r["ticker"]
+            exp_str = str(exp_date)
+            cache_key = (ticker, exp_str)
+
+            if cache_key not in price_cache:
+                # 1. Canonical settlement store (populated by backfill or evening check)
+                s_t, settle_src = _lookup_settlement(con, ticker, exp_str)
+                if s_t is None:
+                    # 2. yfinance fallback for dates not yet in expiry_settlements
+                    try:
+                        _h = yf.Ticker(ticker).history(
+                            start=exp_str, end=str(exp_date + timedelta(days=3))
+                        )
+                        s_t = float(_h["Close"].iloc[0]) if not _h.empty else None
+                        settle_src = "yfinance_history" if s_t is not None else ""
+                    except Exception:
+                        s_t = None
+                        settle_src = ""
+                price_cache[cache_key] = (s_t, settle_src)
+
+            s_t, settle_src = price_cache[cache_key]
+            if s_t is None:
+                skipped += 1
+                continue
+
+            structure = r["candidate"].get("structure", "")
+            try:
+                dte = float(r.get("dte") or 0)
+            except (TypeError, ValueError):
+                dte = 0.0
+
+            pnl_arr = _payoff_per_share(structure, r["candidate"], np.array([s_t]))
+            if pnl_arr is not None:
+                pnl = float(pnl_arr[0])
+                core = {
+                    "pnl_per_share": round(pnl, 4), "win": pnl > 0,
+                    "spot_at_expiry": round(s_t, 2),
+                    "trade_feasible": True, "trade_quality": True,
+                    "direction_correct": None, "realized_pnl": round(pnl, 4),
+                }
+                r["outcome"] = {**core, **_eligibility_masks(core),
+                                **_provenance("hold_to_expiry", settle_src, dte)}
+                r["labeled_at"] = datetime.now().isoformat()
+                relabeled += 1
+                continue
+
+            if structure in ("Calendar Spread", "Diagonal Spread"):
+                bs_outcome = _label_calendar_bs(r, exp_date, s_t)
+                if bs_outcome is not None:
+                    r["outcome"] = bs_outcome
+                    r["labeled_at"] = datetime.now().isoformat()
+                    relabeled += 1
+                    continue
+
+            still_unlabelable += 1
+
+    from scripts.db import update_snapshot_labels
+    changed = [r for r in records if r.get("snapshot_id")
+               and r.get("labeled")
+               and not (r.get("outcome") or {}).get("unlabelable")
+               and r.get("labeled_at")]
+    update_snapshot_labels(changed)
+    return {"relabeled": relabeled, "still_unlabelable": still_unlabelable, "skipped_no_expiry": skipped}
+
+
+def relabel_low_confidence_labels() -> dict:
+    """
+    Upgrade labels previously computed from forward-return estimates to exact
+    settlement prices now available in expiry_settlements.
+
+    Targets rows where:
+      - labeled=True
+      - settlement_source is forward_Nd (not intraday_bars or expiry_settlement)
+      - expiry date is in the past
+      - expiry_settlements now has an exact price for that (ticker, date)
+
+    Re-runs the full labeling logic (direction_correct, realized_pnl, win,
+    eligibility masks, provenance) and overwrites the outcome.
+
+    Returns {"upgraded": N, "no_settlement": M, "skipped": K}.
+    """
+    from scripts.db import connect as _dbconnect
+    records = _load_all()
+    today = date.today()
+    upgraded, no_settlement, skipped = 0, 0, 0
+    changed = []
+
+    _estimated_sources = {"forward_1d", "forward_3d", "forward_5d"}
+
+    with _dbconnect() as con:
+        for r in records:
+            outcome = r.get("outcome") or {}
+            src = outcome.get("settlement_source", "")
+
+            # Only upgrade rows with estimated (forward-return) settlement
+            if src not in _estimated_sources:
+                continue
+            if not r.get("labeled") or outcome.get("unlabelable"):
+                continue
+
+            expiry = (r.get("expiry") or "")[:10]
+            ticker = r.get("ticker", "")
+            if not expiry or not ticker:
+                skipped += 1
+                continue
+
+            try:
+                exp_date = date.fromisoformat(expiry)
+            except Exception:
+                skipped += 1
+                continue
+
+            if exp_date > today:
+                skipped += 1
+                continue
+
+            # Check if exact settlement is now available
+            s_t, new_src = _lookup_settlement(con, ticker, expiry)
+            if s_t is None or new_src not in ("expiry_settlement", "intraday_bars"):
+                no_settlement += 1
+                continue
+
+            candidate = r.get("candidate") or {}
+            structure = candidate.get("structure", "")
+            spot = r.get("spot")
+            try:
+                dte = float(r.get("dte") or 0)
+            except (TypeError, ValueError):
+                dte = 0.0
+
+            # Recompute direction_correct with exact settlement
+            fwd = (s_t / float(spot) - 1.0) if spot else None
+            direction_fn = _DIRECTION_WIN_MAP.get(structure)
+            direction_correct = None
+            if fwd is not None and direction_fn is not None:
+                try:
+                    em = float(r.get("expected_move_pct") or 0)
+                    direction_correct = bool(direction_fn(fwd, em))
+                except Exception:
+                    pass
+
+            # Recompute realized_pnl if feasible
+            trade_feasible = outcome.get("trade_feasible")
+            trade_quality  = outcome.get("trade_quality")
+            realized_pnl   = outcome.get("realized_pnl")
+            win            = outcome.get("win")
+
+            if trade_feasible:
+                pnl_arr = _payoff_per_share(structure, candidate, np.array([s_t]))
+                if pnl_arr is not None:
+                    realized_pnl = round(float(pnl_arr[0]), 4)
+                    win = realized_pnl > 0
+
+            core = {
+                "direction_correct": direction_correct,
+                "trade_feasible":    trade_feasible,
+                "trade_quality":     trade_quality,
+                "realized_pnl":      realized_pnl,
+                "win":               win,
+                "spot_at_expiry":    round(s_t, 2),
+                # Preserve any original fields not being upgraded
+                **{k: v for k, v in outcome.items()
+                   if k not in ("direction_correct", "trade_feasible", "trade_quality",
+                                "realized_pnl", "win", "spot_at_expiry",
+                                "settlement_source", "label_confidence", "method",
+                                "train_feasibility", "train_quality", "train_direction", "train_outcome")},
+            }
+            r["outcome"] = {**core, **_eligibility_masks(core),
+                            **_provenance("upgraded_from_estimate", new_src, dte)}
+            r["labeled_at"] = datetime.now().isoformat()
+            changed.append(r)
+            upgraded += 1
+
+    from scripts.db import update_snapshot_labels
+    if changed:
+        update_snapshot_labels(changed)
+    log.info(f"relabel_low_confidence_labels: upgraded={upgraded} no_settlement={no_settlement} skipped={skipped}")
+    return {"upgraded": upgraded, "no_settlement": no_settlement, "skipped": skipped}
+
+
+# ── Labeling helpers shared across all labeling functions ────────────────────
+
+# Regex to parse CCS strikes from details: "SELL 1080.0C / BUY 1100.0C"
+_CCS_STRIKES_RE = re.compile(r"SELL ([\d.]+)C\s*/\s*BUY ([\d.]+)C")
+
+
+def _label_confidence(settlement_source: str, dte: float) -> float:
+    """
+    Deterministic confidence score in [0, 1] based on settlement source
+    and the gap between the forward-return horizon and the option DTE.
+
+    Confidence function version: 1 (bump LABEL_SCHEMA_VERSION when this changes).
+      intraday_bars         → 1.00  (exact settlement session)
+      intraday_bars_prev    → 0.85  (one session before expiry)
+      forward_Nd proxy      → 1 - |N - DTE| / max(DTE, 1), clipped to [0, 1]
+    """
+    if settlement_source in ("intraday_bars", "expiry_settlement", "yfinance_history", "yfinance_eod"):
+        return 1.0
+    if settlement_source == "intraday_bars_prev":
+        return 0.85
+    # forward_1d / forward_3d / forward_5d — penalise horizon mismatch
+    try:
+        horizon = int(settlement_source.split("_")[-1].replace("d", ""))
+    except Exception:
+        horizon = 5
+    return round(max(0.0, 1.0 - abs(horizon - dte) / max(dte, 1.0)), 2)
+
+
+def _eligibility_masks(outcome: dict) -> dict:
+    """
+    Derive training eligibility masks from the four core targets.
+    Every row contributes to train_feasibility; higher stages require
+    the preceding stage's target to be non-null and passing.
+    """
+    feasible = outcome.get("trade_feasible")
+    quality  = outcome.get("trade_quality")
+    win      = outcome.get("win")
+    return {
+        "train_feasibility": True,
+        "train_quality":     feasible is True,
+        "train_direction":   outcome.get("direction_correct") is not None,
+        "train_outcome":     feasible is True and quality is True and win is not None,
+    }
+
+
+def _provenance(method: str, settlement_source: str, dte: float) -> dict:
+    """Standard provenance block appended to every outcome dict."""
+    return {
+        "method":               method,
+        "settlement_source":    settlement_source,
+        "label_confidence":     _label_confidence(settlement_source, dte),
+        "label_schema_version": LABEL_SCHEMA_VERSION,
+        "quality_rule_set":     QUALITY_RULESET_FINGERPRINT,
+    }
+
+# Alias — label_rejected_candidates uses this name; authoritative map is _DIRECTION_WIN_MAP above.
+_DIRECTION_WIN = _DIRECTION_WIN_MAP
+
+
+def _pick_forward_return(r: dict) -> tuple[float | None, str | None]:
+    """Return (forward_return_fraction, source_label) using nearest-DTE logic."""
+    try:
+        dte = float(r.get("dte") or 0)
+    except (TypeError, ValueError):
+        dte = 5.0
+    candidates = []
+    if r.get("forward_1d") is not None:
+        candidates.append((1,  r["forward_1d"],  "forward_1d"))
+    if r.get("forward_3d") is not None:
+        candidates.append((3,  r["forward_3d"],  "forward_3d"))
+    if r.get("forward_5d") is not None:
+        candidates.append((5,  r["forward_5d"],  "forward_5d"))
+    if not candidates:
+        return None, None
+    # prefer the source whose horizon is closest to dte (without going under if possible)
+    candidates.sort(key=lambda x: abs(x[0] - dte))
+    _, fwd, label = candidates[0]
+    try:
+        return float(fwd), label
+    except (TypeError, ValueError):
+        return None, None
+
+
+def _lookup_settlement(con, ticker: str, expiry_str: str) -> tuple[float | None, str]:
+    """
+    Return (settlement_price, source) for ticker on expiry_str.
+
+    Lookup order:
+      1. expiry_settlements  — canonical, written by evening check at expiry (confidence=1.0)
+      2. intraday_bars       — 5m bar archive written the next morning
+      3. (caller handles)    — forward-return approximation
+
+    Using db.lookup_expiry_settlement so the hierarchy lives in one place.
+    """
+    from scripts.db import lookup_expiry_settlement
+    return lookup_expiry_settlement(con, ticker, expiry_str[:10])
+
+
+def label_rejected_candidates() -> dict:
+    """
+    Label snapshots that are still marked unlabelable=True and represent
+    rejected candidates from the morning scan (no valid setup, quality filter
+    failures, illiquid spreads).
+
+    Four targets are stored in the outcome JSON per row:
+      direction_correct  — did the underlying move in the predicted direction?
+      trade_feasible     — could a valid structure be constructed?
+      trade_quality      — did it pass risk/reward filters? (None if not feasible)
+      realized_pnl       — reconstructed terminal payoff (None if not feasible)
+
+    Settlement hierarchy for realized_pnl:
+      1. intraday_bars on or before expiry  (settlement_source = 'intraday_bars')
+      2. intraday_bars nearest prior session (settlement_source = 'intraday_bars_prev')
+      3. spot * (1 + forward_return)        (settlement_source = forward_Nd label)
+
+    Returns counts by outcome type.
+    """
+    from scripts.db import load_all_snapshots, update_snapshot_labels, connect
+
+    records  = load_all_snapshots()
+    today    = date.today()
+    now_iso  = datetime.now().isoformat()
+    labeled  = 0
+    no_fwd   = 0
+    skipped  = 0
+    changed  = []
+
+    with connect() as con:
+        for r in records:
+            outcome   = r.get("outcome") or {}
+            candidate = r.get("candidate") or {}
+
+            # Target rows:
+            #   (a) previously marked unlabelable=True  (legacy backfill)
+            #   (b) labeled=False, non-paper-trade, expiry passed  (new daily flow)
+            is_legacy_unlabelable = r.get("labeled") and outcome.get("unlabelable")
+            is_new_rejected = (
+                not r.get("labeled")
+                and r.get("source") != "paper_trade_entry"
+                and candidate
+                and r.get("expiry")
+            )
+            if not is_legacy_unlabelable and not is_new_rejected:
+                continue
+
+            # For new rejected rows, only process once expiry has passed
+            if is_new_rejected:
+                try:
+                    exp_date = date.fromisoformat(str(r["expiry"])[:10])
+                except Exception:
+                    skipped += 1
+                    continue
+                if exp_date > today:
+                    skipped += 1
+                    continue
+
+            structure = candidate.get("structure", "")
+            ticker    = r.get("ticker", "")
+            spot      = r.get("spot")
+            em_pct    = r.get("expected_move_pct") or 0.0
+            details   = candidate.get("details", "") or ""
+
+            try:
+                dte = float(r.get("dte") or 0)
+            except (TypeError, ValueError):
+                dte = 5.0
+
+            # ── settlement price (canonical store → intraday_bars → forward estimate) ─
+            expiry_str = (r.get("expiry") or "")[:10]
+            s_t, settlement_src = (None, "") if not expiry_str else \
+                _lookup_settlement(con, ticker, expiry_str)
+
+            # ── direction_correct ─────────────────────────────────────────
+            # Prefer exact settlement-based direction; fall back to forward return.
+            direction_fn = _DIRECTION_WIN.get(structure)
+            fwd, fwd_src = _pick_forward_return(r)
+            direction_correct = None
+
+            if direction_fn is not None and spot:
+                if s_t is not None:
+                    # Exact: actual underlying move over the full trade horizon
+                    try:
+                        exact_fwd = float(s_t) / float(spot) - 1.0
+                        direction_correct = bool(direction_fn(exact_fwd, em_pct))
+                        if not settlement_src:
+                            settlement_src = "expiry_settlement"
+                    except Exception:
+                        pass
+                if direction_correct is None and fwd is not None:
+                    # Fallback: forward return proxy (horizon may not match DTE)
+                    direction_correct = bool(direction_fn(fwd, em_pct))
+                    if not settlement_src:
+                        settlement_src = fwd_src
+
+            if direction_correct is None:
+                no_fwd += 1
+                continue
+
+            # ── feasibility & quality ─────────────────────────────────────
+            trade_feasible = outcome.get("trade_feasible")
+            trade_quality  = outcome.get("trade_quality")
+            if trade_feasible is None:
+                no_setup_phrases = ("no strikes found", "illiquid", "wide bid", "net credit <=0", "cannot price")
+                trade_feasible = not any(p in details.lower() for p in no_setup_phrases)
+                if trade_feasible:
+                    meets_min  = candidate.get("meets_min_profit")
+                    meets_loss = candidate.get("meets_max_loss")
+                    trade_quality = (bool(meets_min) and bool(meets_loss)) if (
+                        meets_min is not None or meets_loss is not None
+                    ) else ("best ev" not in details.lower())
+
+            # ── realized_pnl (CCS only) ───────────────────────────────────
+            realized_pnl = None
+            win          = None
+            method       = "rejected_no_valid_setup"
+
+            if trade_feasible:
+                if s_t is None and spot and fwd is not None:
+                    s_t = float(spot) * (1.0 + float(fwd))
+                    settlement_src = fwd_src
+
+                m_ccs = _CCS_STRIKES_RE.search(details)
+                if m_ccs and structure == "Call Credit Spread" and s_t is not None:
+                    k_short = float(m_ccs.group(1))
+                    k_long  = float(m_ccs.group(2))
+                    credit  = float(candidate.get("max_profit") or 0.0)
+                    if s_t <= k_short:
+                        realized_pnl = round(credit, 4)
+                    elif s_t >= k_long:
+                        realized_pnl = round(credit - (k_long - k_short), 4)
+                    else:
+                        realized_pnl = round(credit - (s_t - k_short), 4)
+                    win    = realized_pnl > 0
+                    method = "reconstructed_ccs"
+                else:
+                    method = "rejected_quality_filter"
+
+            # ── label_confidence — use shared helper (covers all source types) ──
+            confidence = _label_confidence(settlement_src, dte)
+
+            r["labeled"]    = True
+            r["labeled_at"] = now_iso
+            r["outcome"] = {
+                # core targets
+                "direction_correct":     direction_correct,
+                "trade_feasible":        trade_feasible,
+                "trade_quality":         trade_quality,
+                "realized_pnl":          realized_pnl,
+                "win":                   win,
+                # eligibility masks
+                "train_feasibility":     True,
+                "train_quality":         trade_feasible is True,
+                "train_direction":       True,
+                "train_outcome":         trade_feasible is True and trade_quality is True and win is not None,
+                # provenance
+                "unlabelable":           False,
+                "method":                method,
+                "settlement_source":     settlement_src,
+                "label_confidence":      confidence,
+                "label_schema_version":  LABEL_SCHEMA_VERSION,
+                "quality_rule_set":      QUALITY_RULESET_FINGERPRINT,
+            }
+            changed.append(r)
+            labeled += 1
+
+    # ── Backfill direction_correct for closed paper trades ───────────────────
+    # label_pending_snapshots() sets direction_correct=None because forward
+    # returns aren't available yet at close time. label_snapshots_with_forward_returns()
+    # fills forward_1d/3d/5d on those rows later the same day. This pass picks
+    # them up and computes direction_correct using the same logic as rejected rows.
+    direction_backfilled = 0
+    direction_changed = []
+    for r in records:
+        outcome = r.get("outcome") or {}
+        if (
+            r.get("labeled")
+            and r.get("source") == "paper_trade_entry"
+            and outcome.get("direction_correct") is None
+            and outcome.get("trade_feasible") is True
+        ):
+            fwd, _ = _pick_forward_return(r)
+            if fwd is None:
+                continue
+            candidate = r.get("candidate") or {}
+            structure = candidate.get("structure", "")
+            direction_fn = _DIRECTION_WIN_MAP.get(structure)
+            if direction_fn is None:
+                continue
+            try:
+                em = float(candidate.get("expected_move") or candidate.get("expected_move_pct") or 0)
+            except (TypeError, ValueError):
+                em = 0.0
+            try:
+                outcome["direction_correct"] = bool(direction_fn(fwd, em))
+                outcome["train_direction"] = True
+                r["outcome"] = outcome
+                direction_changed.append(r)
+                direction_backfilled += 1
+            except Exception:
+                continue
+
+    if direction_changed:
+        update_snapshot_labels(direction_changed)
+
+    update_snapshot_labels(changed)
+    return {
+        "labeled":              labeled,
+        "no_fwd_data":          no_fwd,
+        "skipped_future":       skipped,
+        "total_attempted":      labeled + no_fwd + skipped,
+        "direction_backfilled": direction_backfilled,
+    }
+
+
+def validate_labels(records: list[dict] | None = None) -> dict:
+    """
+    Task 5 — Invariant validator.
+
+    Checks every labeled row against the labeling invariants.  Runs cheaply
+    after every labeling pass and before writing the manifest.
+
+    Returns {"ok": bool, "violations": [...], "checked": N}.
+    """
+    if records is None:
+        records = _load_all()
+
+    violations = []
+
+    def _v(snap_id: str, msg: str):
+        violations.append({"snapshot_id": snap_id, "violation": msg})
+
+    for r in records:
+        o = r.get("outcome") or {}
+        sid = r.get("snapshot_id", "?")
+
+        if not r.get("labeled"):
+            continue  # unlabeled rows are not subject to outcome invariants
+
+        feasible  = o.get("trade_feasible")
+        quality   = o.get("trade_quality")
+        win       = o.get("win")
+        pnl       = o.get("realized_pnl")
+        conf      = o.get("label_confidence")
+        method    = o.get("method")
+
+        # I1: trade_quality non-null only when trade_feasible=True
+        if quality is not None and feasible is not True:
+            _v(sid, f"trade_quality={quality!r} but trade_feasible={feasible!r}")
+
+        # I2: realized_pnl non-null only when settlement_source is set
+        if pnl is not None and not o.get("settlement_source"):
+            _v(sid, "realized_pnl set but no settlement_source")
+
+        # I3: win=True impossible when realized_pnl < 0
+        if win is True and pnl is not None and pnl < 0:
+            _v(sid, f"win=True but realized_pnl={pnl}")
+
+        # I4: win=False impossible when realized_pnl > 0
+        if win is False and pnl is not None and pnl > 0:
+            _v(sid, f"win=False but realized_pnl={pnl}")
+
+        # I5: train_outcome=True requires feasible+quality+win
+        if o.get("train_outcome"):
+            if feasible is not True or quality is not True or win is None:
+                _v(sid, f"train_outcome=True but feasible={feasible} quality={quality} win={win}")
+
+        # I6: label_confidence in [0, 1] when present
+        if conf is not None:
+            try:
+                if not (0.0 <= float(conf) <= 1.0):
+                    _v(sid, f"label_confidence={conf} out of [0,1]")
+            except (TypeError, ValueError):
+                _v(sid, f"label_confidence={conf!r} not numeric")
+
+        # I7: direction_correct is boolean or None — never another type
+        dc = o.get("direction_correct")
+        if dc is not None and not isinstance(dc, bool):
+            _v(sid, f"direction_correct={dc!r} is not bool")
+
+        # I8: every labeled row must reference a schema version
+        if o.get("label_schema_version") is None and method not in (None, ""):
+            _v(sid, "labeled row missing label_schema_version")
+
+    return {"ok": len(violations) == 0, "checked": len([r for r in records if r.get("labeled")]),
+            "violations": violations}
+
+
+def write_labeling_manifest(run_stats: dict) -> str:
+    """
+    Task 6 — Labeling manifest.
+
+    Produces a JSON audit file in data/labeling_manifests/ for every labeling
+    run.  The manifest captures schema version, code state, row counts by label
+    type, and validation results — giving a reproducible audit trail for the
+    dataset as a whole.
+
+    Returns the path of the written manifest file.
+    """
+    import json as _json
+    import subprocess as _sub
+
+    manifest_dir = _ROOT / "data" / "labeling_manifests"
+    manifest_dir.mkdir(parents=True, exist_ok=True)
+
+    # Code commit hash — best-effort
+    try:
+        commit = _sub.check_output(
+            ["git", "rev-parse", "--short", "HEAD"],
+            cwd=str(_ROOT), stderr=_sub.DEVNULL, text=True
+        ).strip()
+    except Exception:
+        commit = "unknown"
+
+    # Row counts from the live DB
+    from scripts.db import connect as _connect
+    counts: dict = {}
+    try:
+        with _connect(read_only=True) as con:
+            counts["total_snapshots"]   = con.execute("SELECT COUNT(*) FROM training_snapshots").fetchone()[0]
+            counts["labeled"]           = con.execute("SELECT COUNT(*) FROM training_snapshots WHERE labeled=true").fetchone()[0]
+            counts["unlabeled"]         = counts["total_snapshots"] - counts["labeled"]
+            counts["train_feasibility"] = con.execute(
+                "SELECT COUNT(*) FROM training_snapshots WHERE labeled=true "
+                "AND json_extract_string(outcome,'$.train_feasibility')='true'").fetchone()[0]
+            counts["train_quality"]     = con.execute(
+                "SELECT COUNT(*) FROM training_snapshots WHERE labeled=true "
+                "AND json_extract_string(outcome,'$.train_quality')='true'").fetchone()[0]
+            counts["train_direction"]   = con.execute(
+                "SELECT COUNT(*) FROM training_snapshots WHERE labeled=true "
+                "AND json_extract_string(outcome,'$.train_direction')='true'").fetchone()[0]
+            counts["train_outcome"]     = con.execute(
+                "SELECT COUNT(*) FROM training_snapshots WHERE labeled=true "
+                "AND json_extract_string(outcome,'$.train_outcome')='true'").fetchone()[0]
+            counts["still_unlabelable"] = con.execute(
+                "SELECT COUNT(*) FROM training_snapshots WHERE labeled=true "
+                "AND json_extract_string(outcome,'$.unlabelable')='true'").fetchone()[0]
+    except Exception as exc:
+        counts["error"] = str(exc)
+
+    # Validation
+    validation = validate_labels()
+
+    run_ts = datetime.now().isoformat()
+    manifest = {
+        "run_timestamp":            run_ts,
+        "label_schema_version":     LABEL_SCHEMA_VERSION,
+        "quality_rule_set":         QUALITY_RULESET_FINGERPRINT,
+        "code_commit":              commit,
+        "run_stats":                run_stats,
+        "db_counts":                counts,
+        "validation":               {
+            "ok":         validation["ok"],
+            "checked":    validation["checked"],
+            "violations": len(validation["violations"]),
+            # Store first 10 violations for diagnosis — full list in validate_labels()
+            "sample_violations": validation["violations"][:10],
+        },
+    }
+
+    fname = manifest_dir / f"manifest_{run_ts[:19].replace(':', '-')}.json"
+    fname.write_text(_json.dumps(manifest, indent=2))
+    log.info(f"Labeling manifest written: {fname}")
+    return str(fname)
 
 
 def _fetch_vix_now() -> float | None:
@@ -1008,16 +2044,153 @@ def _ml_scores_at_entry(ticker: str) -> dict:
         return _empty
 
 
+def store_expiry_settlements(today_str: str | None = None) -> dict:
+    """
+    Canonical settlement store — write-once step called by the evening check.
+
+    For every training snapshot whose expiry == today and that is not yet labeled,
+    fetch the underlying closing price and persist it to expiry_settlements.
+    All downstream labelers (label_pending_snapshots, label_rejected_candidates)
+    check expiry_settlements first, so they get settlement_source='expiry_settlement'
+    and label_confidence=1.0 instead of falling back to forward-return estimates.
+
+    Returns {"stored": N, "tickers": [...], "errors": [...]}.
+    """
+    import yfinance as _yf
+    from datetime import datetime as _dt
+    from scripts.db import connect as _dbconnect, upsert_expiry_settlement, ensure_archive_tables
+
+    ensure_archive_tables()
+
+    today_str = today_str or date.today().isoformat()
+
+    # Find unique tickers with unlabeled snapshots expiring today
+    from scripts.db import load_all_snapshots
+    records = load_all_snapshots()
+    tickers_needed: set[str] = set()
+    for r in records:
+        if (
+            not r.get("labeled")
+            and r.get("source") != "paper_trade_entry"  # paper trades handled by run_evening_check
+            and r.get("expiry", "")[:10] == today_str
+            and r.get("ticker")
+        ):
+            tickers_needed.add(r["ticker"])
+
+    stored, errors = 0, []
+    stored_tickers = []
+
+    for ticker in sorted(tickers_needed):
+        # Skip if already stored for today (idempotent)
+        try:
+            with _dbconnect(read_only=True) as con:
+                existing = con.execute(
+                    "SELECT settlement_price FROM expiry_settlements WHERE ticker=? AND date=?",
+                    [ticker, today_str],
+                ).fetchone()
+            if existing:
+                stored_tickers.append(ticker)
+                stored += 1
+                continue
+        except Exception:
+            pass
+
+        try:
+            hist = _yf.Ticker(ticker).history(period="1d")
+            if hist.empty:
+                errors.append({"ticker": ticker, "error": "no price data"})
+                continue
+            price = float(hist["Close"].iloc[-1])
+            upsert_expiry_settlement(ticker, today_str, price, source="yfinance_eod", confidence=1.0)
+            stored_tickers.append(ticker)
+            stored += 1
+            log.info(f"Settlement stored: {ticker} {today_str} @ {price:.4f}")
+        except Exception as e:
+            errors.append({"ticker": ticker, "error": str(e)})
+            log.warning(f"Failed to store settlement for {ticker} on {today_str}: {e}")
+
+    return {"stored": stored, "tickers": stored_tickers, "errors": errors}
+
+
+def _extract_trade_fields(candidate: dict | None, spot: float | None) -> dict:
+    """
+    Extract Phase-1 trade geometry, Greeks, and optimizer opinion from a candidate dict.
+    Returns a flat dict ready to merge into a snapshot record.
+    All fields default to None so missing data is explicit rather than absent.
+    feature_schema_version = 2 when geometry is present, 1 otherwise.
+    """
+    if not candidate:
+        return {"feature_schema_version": 1}
+
+    c = candidate if isinstance(candidate, dict) else {}
+
+    # Raw pricing inputs (allow Greek regeneration if calculation changes)
+    expected_move   = c.get("expected_move")
+    risk_free_rate  = c.get("risk_free_rate")
+
+    # Greeks (net position)
+    net_delta = c.get("net_delta")
+    net_gamma = c.get("net_gamma")
+    net_theta = c.get("net_theta")
+    net_vega  = c.get("net_vega")
+
+    # Geometry
+    max_profit       = c.get("max_profit")
+    max_loss         = c.get("max_loss")
+    capital_required = c.get("capital_required")
+    spread_width     = c.get("spread_width") or (
+        (abs(max_profit) + abs(max_loss)) if (max_profit is not None and max_loss is not None) else None
+    )
+    credit_received  = c.get("credit") or (max_profit if c.get("is_credit") else None)
+
+    # Strikes (absolute and as % of spot)
+    short_strike = c.get("short_strike") or c.get("sell_strike")
+    long_strike  = c.get("long_strike")  or c.get("buy_strike")
+    short_strike_pct = (short_strike / spot) if (short_strike and spot) else None
+    long_strike_pct  = (long_strike  / spot) if (long_strike  and spot) else None
+
+    # Optimizer opinion (kept separate from geometry for clean ablation)
+    pop           = c.get("pop")
+    ev            = c.get("ev") or c.get("expected_value")
+    quality_score = c.get("quality_score") or c.get("score")
+
+    has_geometry = any(v is not None for v in (net_delta, spread_width, max_profit, pop))
+    has_optimizer = any(v is not None for v in (pop, ev, quality_score))
+    schema_version = 3 if has_optimizer else (2 if has_geometry else 1)
+
+    return {
+        "expected_move":      expected_move,
+        "risk_free_rate":     risk_free_rate,
+        "net_delta":          net_delta,
+        "net_gamma":          net_gamma,
+        "net_theta":          net_theta,
+        "net_vega":           net_vega,
+        "spread_width":       spread_width,
+        "credit_received":    credit_received,
+        "max_profit":         max_profit,
+        "max_loss":           max_loss,
+        "capital_required":   capital_required,
+        "short_strike":       short_strike,
+        "long_strike":        long_strike,
+        "short_strike_pct":   short_strike_pct,
+        "long_strike_pct":    long_strike_pct,
+        "pop":                pop,
+        "ev":                 ev,
+        "quality_score":      quality_score,
+        "feature_schema_version": schema_version,
+    }
+
+
 def write_paper_trade_snapshot(trade: dict, analyze_row: dict) -> None:
     """
     Write a training snapshot at the moment a paper trade is opened.
 
     Uses the already-fetched analyze_row (no re-fetch) so the morning scan
-    doesn't pay an extra round-trip per trade. Tier 1-5 supplemental fields
-    (beta, atr_pct, etc.) are None — they aren't in analyze_ticker output.
-    Labeling is done by label_pending_snapshots() once the trade closes, using
-    the actual managed-exit P&L from paper_trades.json instead of the
-    hold-to-expiry payoff function.
+    doesn't pay an extra round-trip per trade. Tier 1 fields are populated
+    directly from analyze_row (same source as scan snapshots); Tier 2-5
+    fields (sector, macro, earnings) remain None since analyze_ticker
+    doesn't fetch them. Labeling is done by label_pending_snapshots() once
+    the trade closes, using the actual managed-exit P&L.
     """
     from scripts.db import insert_snapshot
     ticker = trade["ticker"]
@@ -1049,29 +2222,55 @@ def write_paper_trade_snapshot(trade: dict, analyze_row: dict) -> None:
         "status":           analyze_row.get("status"),
         "recommended_structure": analyze_row.get("recommended_structure"),
         "signal_score":     analyze_row.get("signal_score"),
+        "signal_pct":       analyze_row.get("signal_pct"),
         "candidate":        candidate,
         "expiry":           trade.get("expiry"),
         "dte":              trade.get("dte_at_entry"),
-        # Tier 1-5 fields not available from analyze_ticker — left None
-        "vol_oi_ratio": None, "iv_skew": None, "iv_term_slope": None,
-        "otm_pcr": None, "beta_60d": None, "atr_pct": None, "iv_rank_52w": None,
-        "sector_etf": None, "sector_trend": None, "sector_rsi": None, "sector_iv_ratio": None,
-        "sector_return_1d": None,
+        # Tier 1 — available from analyze_ticker (same fields as write_scan_all_snapshots)
+        "vol_oi_ratio":     analyze_row.get("vol_oi_ratio"),
+        "call_vol":         analyze_row.get("call_vol"),
+        "put_vol":          analyze_row.get("put_vol"),
+        "iv_skew":          analyze_row.get("vol_skew_pct"),
+        "short_interest_pct": analyze_row.get("short_interest"),
+        "iv_term_slope":    analyze_row.get("iv_term_slope"),
+        "otm_pcr":          None,
+        "beta_60d":         analyze_row.get("beta_60d"),
+        "atr_pct":          analyze_row.get("atr_pct"),
+        "iv_rank_52w":      analyze_row.get("iv_rank_52w"),
+        "max_pain_strike":  analyze_row.get("max_pain_strike"),
+        "oi_concentration": analyze_row.get("oi_concentration"),
+        "vvix":             analyze_row.get("vvix"),
+        "vix_3m":           analyze_row.get("vix_3m"),
+        "vix_term_slope":   analyze_row.get("vix_term_slope"),
+        "move_index":       analyze_row.get("move_index"),
+        "iv_change_5d":     analyze_row.get("iv_change_5d"),
+        "unusual_activity": analyze_row.get("unusual_activity"),
+        "iv_hv_ratio":      analyze_row.get("iv_hv_ratio"),
+        "expected_move_pct": analyze_row.get("expected_move_pct"),
+        "term_slope":       analyze_row.get("term_slope"),
+        "vol_pcr":          analyze_row.get("vol_pcr"),
+        "pcr_diverge":      analyze_row.get("pcr_diverge"),
+        "hy_oas":           analyze_row.get("hy_oas"),
+        "yield_10y":        analyze_row.get("yield_10y"),
+        "yield_3m":         analyze_row.get("yield_3m"),
+        "yield_curve":      analyze_row.get("yield_curve"),
+        "fed_within_dte":   analyze_row.get("fed_within_dte"),
+        "cpi_within_dte":   analyze_row.get("cpi_within_dte"),
+        # Tier 2-5 — not available from analyze_ticker
+        "sector_etf": None, "sector_trend": None, "sector_rsi": None,
+        "sector_iv_ratio": None, "sector_return_1d": None,
         "spy_trend": None, "spy_rsi": None, "qqq_trend": None, "qqq_rsi": None,
-        "iwm_trend": None, "iwm_rsi": None, "vvix": None, "vix_3m": None,
-        "vix_term_slope": None, "move_index": None, "earnings_inside_expiry": None,
-        "news_sentiment_score": None, "analyst_rec_change": None, "short_interest_pct": None,
-        "iv_skew_20d": None, "gex_proxy": None, "max_pain_strike": None,
-        "oi_concentration": None, "wings_iv_ratio": None, "iv_change_5d": None,
-        "unusual_activity": None, "iv_hv_ratio": None, "expected_move_pct": None,
-        "term_slope": None, "vol_pcr": None, "pcr_diverge": None, "hy_oas": None,
-        "yield_10y": None, "yield_3m": None, "yield_curve": None,
-        "dollar_index": None, "fed_within_dte": None, "cpi_within_dte": None,
+        "iwm_trend": None, "iwm_rsi": None, "earnings_inside_expiry": None,
+        "news_sentiment_score": None, "analyst_rec_change": None,
+        "iv_skew_20d": None, "gex_proxy": None, "wings_iv_ratio": None,
+        "dollar_index": None,
         # Paper trade tracking fields
         "source":           "paper_trade_entry",
         "paper_trade_id":   trade["id"],
         # ML model state at entry — for post-hoc audit of signal accuracy
         **_ml_scores_at_entry(ticker),
+        # Phase 1: trade geometry, Greeks, optimizer opinion
+        **_extract_trade_fields(candidate, analyze_row.get("spot")),
         "labeled":          False,
         "outcome":          None,
         "labeled_at":       None,
@@ -1143,6 +2342,7 @@ def write_scan_all_snapshots(rows: list[dict], scan_time: str, opened_tickers: s
                 "status":                  row.get("status"),
                 "recommended_structure":   row.get("recommended_structure"),
                 "signal_score":            row.get("signal_score"),
+                "signal_pct":              row.get("signal_pct"),
                 "candidate":               recommended,
                 "expiry":                  expiry,
                 "dte":                     dte,
@@ -1191,6 +2391,8 @@ def write_scan_all_snapshots(rows: list[dict], scan_time: str, opened_tickers: s
                 "garch_vol_at_entry": None,
                 # ML state at scan time
                 **_ml_scores_at_entry(ticker),
+                # Phase 1: trade geometry, Greeks, optimizer opinion
+                **_extract_trade_fields(recommended, row.get("spot")),
                 "paper_trade_id":  None,
                 "labeled":         False,
                 "outcome":         None,

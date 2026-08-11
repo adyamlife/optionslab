@@ -12,9 +12,220 @@ Pipeline
 All tunable constants (weights, gate thresholds, penalties) live in config/ranking.toml.
 """
 import logging
+from dataclasses import dataclass, field as _dc_field
 from config.rules import MIN_PROFIT_AMOUNT, IV_EDGE_SKIP_VP
 
 log = logging.getLogger(__name__)
+
+
+# ---------------------------------------------------------------------------
+# Repair subsystem
+# ---------------------------------------------------------------------------
+
+@dataclass
+class RepairResult:
+    status: str                          # "PASS" | "FAILED" | "NOT_REPAIRABLE"
+    replacement_candidates: list = _dc_field(default_factory=list)
+    failure_reason: str | None = None    # e.g. "NO_VALID_STRIKES", "STRUCTURE_NOT_SUPPORTED"
+
+
+def _generate_ibf_variants(candidate: dict, context: dict) -> list:
+    """Return repair variants for an Iron Butterfly candidate."""
+    puts  = candidate.get("_ibf_puts")
+    calls = candidate.get("_ibf_calls")
+    if puts is None or calls is None:
+        return []
+    from scripts.analyze import enumerate_ibf_repair_variants
+    return enumerate_ibf_repair_variants(
+        puts, calls, candidate,
+        spot=float(candidate.get("spot_at_entry") or 0),
+        T=float(context.get("dte") or 30) / 365.0,
+        width_target=float(context.get("width_target", 10)),
+        min_profit_amount=float(context.get("min_profit", 0.5)),
+        recommended_structure=context.get("recommended_structure", ""),
+    )
+
+
+def _generate_ds_variants(candidate: dict, context: dict) -> list:
+    """Return repair variants for a Call or Put Debit Spread candidate."""
+    chain       = candidate.get("_ds_chain")
+    option_type = candidate.get("_ds_option_type")
+    if chain is None or option_type is None:
+        return []
+    from scripts.analyze import enumerate_ds_repair_variants
+    return enumerate_ds_repair_variants(
+        chain, candidate, option_type,
+        spot=float(candidate.get("spot_at_entry") or 0),
+        T=float(context.get("dte") or 30) / 365.0,
+        width_target=float(context.get("width_target", 10)),
+        min_profit_amount=float(context.get("min_profit", 0.5)),
+        recommended_structure=context.get("recommended_structure", ""),
+    )
+
+
+def _generate_csp_variants(candidate: dict, context: dict) -> list:
+    """Return repair variants for a Cash Secured Put or Naked Put candidate."""
+    puts = candidate.get("_csp_puts")
+    if puts is None:
+        return []
+    from scripts.analyze import enumerate_csp_repair_variants
+    return enumerate_csp_repair_variants(
+        puts, candidate,
+        spot=float(candidate.get("spot_at_entry") or 0),
+        T=float(context.get("dte") or 30) / 365.0,
+        min_profit_amount=float(context.get("min_profit", 0.5)),
+        recommended_structure=context.get("recommended_structure", ""),
+    )
+
+
+def _generate_ls_variants(candidate: dict, context: dict) -> list:
+    """Return repair variants for a Long Strangle candidate."""
+    puts  = candidate.get("_ls_puts")
+    calls = candidate.get("_ls_calls")
+    if puts is None or calls is None:
+        return []
+    from scripts.analyze import enumerate_ls_repair_variants
+    return enumerate_ls_repair_variants(
+        puts, calls, candidate,
+        spot=float(candidate.get("spot_at_entry") or 0),
+        T=float(context.get("dte") or 30) / 365.0,
+        min_profit_amount=float(context.get("min_profit", 0.5)),
+        recommended_structure=context.get("recommended_structure", ""),
+    )
+
+
+def _generate_pcs_variants(candidate: dict, context: dict) -> list:
+    """Return repair variants for a Put Credit Spread (narrow the spread width)."""
+    puts = candidate.get("_pcs_puts")
+    if puts is None:
+        return []
+    from scripts.analyze import enumerate_cs_repair_variants
+    return enumerate_cs_repair_variants(
+        puts, candidate, "put",
+        spot=float(candidate.get("spot_at_entry") or 0),
+        T=float(context.get("dte") or 30) / 365.0,
+        min_profit_amount=float(context.get("min_profit", 0.5)),
+        recommended_structure=context.get("recommended_structure", ""),
+    )
+
+
+def _generate_ccs_variants(candidate: dict, context: dict) -> list:
+    """Return repair variants for a Call Credit Spread (narrow the spread width)."""
+    calls = candidate.get("_ccs_calls")
+    if calls is None:
+        return []
+    from scripts.analyze import enumerate_cs_repair_variants
+    return enumerate_cs_repair_variants(
+        calls, candidate, "call",
+        spot=float(candidate.get("spot_at_entry") or 0),
+        T=float(context.get("dte") or 30) / 365.0,
+        min_profit_amount=float(context.get("min_profit", 0.5)),
+        recommended_structure=context.get("recommended_structure", ""),
+    )
+
+
+def _generate_ic_variants(candidate: dict, context: dict) -> list:
+    """Return repair variants for an Iron Condor (narrow the put spread)."""
+    puts  = candidate.get("_ic_puts")
+    calls = candidate.get("_ic_calls")
+    if puts is None or calls is None:
+        return []
+    from scripts.analyze import enumerate_ic_repair_variants
+    return enumerate_ic_repair_variants(
+        puts, calls, candidate,
+        spot=float(candidate.get("spot_at_entry") or 0),
+        T=float(context.get("dte") or 30) / 365.0,
+        min_profit_amount=float(context.get("min_profit", 0.5)),
+        recommended_structure=context.get("recommended_structure", ""),
+    )
+
+
+def _generate_straddle_variants(candidate: dict, context: dict) -> list:
+    """Return repair variants for a Short Straddle (move both legs OTM → strangle)."""
+    puts  = candidate.get("_sstr_puts")
+    calls = candidate.get("_sstr_calls")
+    if puts is None or calls is None:
+        return []
+    from scripts.analyze import enumerate_ss_repair_variants
+    return enumerate_ss_repair_variants(
+        puts, calls, candidate,
+        spot=float(candidate.get("spot_at_entry") or 0),
+        T=float(context.get("dte") or 30) / 365.0,
+        min_profit_amount=float(context.get("min_profit", 0.5)),
+        recommended_structure=context.get("recommended_structure", ""),
+    )
+
+
+def _generate_ss_variants(candidate: dict, context: dict) -> list:
+    """Return repair variants for a Short Strangle candidate."""
+    puts  = candidate.get("_ss_puts")
+    calls = candidate.get("_ss_calls")
+    if puts is None or calls is None:
+        return []
+    from scripts.analyze import enumerate_ss_repair_variants
+    return enumerate_ss_repair_variants(
+        puts, calls, candidate,
+        spot=float(candidate.get("spot_at_entry") or 0),
+        T=float(context.get("dte") or 30) / 365.0,
+        min_profit_amount=float(context.get("min_profit", 0.5)),
+        recommended_structure=context.get("recommended_structure", ""),
+    )
+
+
+def _generate_jl_variants(candidate: dict, context: dict) -> list:
+    """Return repair variants for a Jade Lizard candidate."""
+    puts = candidate.get("_jl_puts")
+    if puts is None:
+        return []
+    from scripts.analyze import enumerate_jl_repair_variants
+    return enumerate_jl_repair_variants(
+        puts, candidate,
+        spot=float(candidate.get("spot_at_entry") or 0),
+        T=float(context.get("dte") or 30) / 365.0,
+        min_profit_amount=float(context.get("min_profit", 0.5)),
+        recommended_structure=context.get("recommended_structure", ""),
+    )
+
+
+# Maps structure name → variant generator.  Add new structures here as needed.
+_VARIANT_GENERATORS: dict = {
+    "Iron Butterfly":    _generate_ibf_variants,
+    "Call Debit Spread": _generate_ds_variants,
+    "Put Debit Spread":  _generate_ds_variants,
+    "Cash Secured Put":  _generate_csp_variants,
+    "Naked Put":         _generate_csp_variants,
+    "Long Strangle":     _generate_ls_variants,
+    "Short Strangle":    _generate_ss_variants,
+    "Jade Lizard":       _generate_jl_variants,
+    "Put Credit Spread": _generate_pcs_variants,
+    "Call Credit Spread": _generate_ccs_variants,
+    "Iron Condor":       _generate_ic_variants,
+    "Short Straddle":    _generate_straddle_variants,
+}
+
+
+def attempt_repairs(candidate: dict, context: dict) -> RepairResult:
+    """Try to find a capital- and gate-eligible narrower variant of a candidate.
+
+    Gate-agnostic: callers pass the failed candidate and a context dict; this
+    function generates replacement candidates but does NOT run any gates.
+    Repaired candidates are appended to the caller's evaluation queue and will
+    restart the full gate pipeline from Gate 1.
+
+    A candidate with repair_of set is never re-repaired, preventing loops.
+    """
+    if candidate.get("repair_of") is not None:
+        return RepairResult(status="NOT_REPAIRABLE", failure_reason="ALREADY_REPAIR")
+
+    generator = _VARIANT_GENERATORS.get(candidate.get("structure"))
+    if generator is None:
+        return RepairResult(status="NOT_REPAIRABLE", failure_reason="STRUCTURE_NOT_SUPPORTED")
+
+    variants = generator(candidate, context)
+    if not variants:
+        return RepairResult(status="FAILED", failure_reason="NO_VALID_STRIKES")
+
+    return RepairResult(status="PASS", replacement_candidates=variants)
 
 
 def _load_ranking_cfg() -> dict:
@@ -141,6 +352,18 @@ def _composite_score(row, c, ev, ev_is_proxy: bool = False) -> float:
         ev_range = ev_clip_max - ev_clip_min
         s_ev = (ev_ratio - ev_clip_min) / ev_range * 100
 
+    # When the return regressor is active (expected_return present), replace s_ev
+    # with the regressor's output normalized to [0, 100]. The regressor directly
+    # predicts the forward return; s_ev (structure EV) proxies the same quantity
+    # but through POP × credit — using both would double-count the same signal.
+    _exp_ret = ml.get("expected_return")
+    if _exp_ret is not None:
+        _ret_lo = _g("return_norm", "clip_lo", -0.30)
+        _ret_hi = _g("return_norm", "clip_hi",  0.30)
+        s_ev = max(0.0, min(100.0,
+            (float(_exp_ret) - _ret_lo) / (_ret_hi - _ret_lo) * 100
+        ))
+
     # ── Component 3: ML meta_score + return classifier composite ─────────────
     meta = ml.get("meta_score")
     s_meta = float(meta) if meta is not None else 50.0
@@ -156,7 +379,8 @@ def _composite_score(row, c, ev, ev_is_proxy: bool = False) -> float:
 
     # ── Component 4: POP — probability of profit ──────────────────────────────
     pop_c = c.get("pop")           # candidate pop: 0-100
-    pop_m = ml.get("pop_score")    # ML POP model: 0-1
+    # Prefer structure-family model when available; fall back to pooled pop_score
+    pop_m = c.get("_family_pop_score") or ml.get("pop_score")
     if pop_c is not None:
         s_pop = float(pop_c)
     elif pop_m is not None:
@@ -199,6 +423,11 @@ def _composite_score(row, c, ev, ev_is_proxy: bool = False) -> float:
     )
 
     # ── Penalties ─────────────────────────────────────────────────────────────
+    # Synthetic-quote penalty: chain bid/ask was manufactured from lastPrice when
+    # market was closed — spread and credit estimates are unreliable.
+    if row.get("synthetic_quotes"):
+        score -= _g("penalties", "synthetic_quotes", 15)
+
     p_trend        = _g("penalties", "trend_conflict",        10)
     p_trend_regime = _g("penalties", "trend_conflict_regime",  5)
     p_vol          = _g("penalties", "low_volume",             8)
@@ -419,8 +648,21 @@ def filter_candidates(rows, paper_trade: bool = False, buying_power: float | Non
                 _min_roi = float(_pt_cfg["min_expected_roi"])
             if "min_liquidity_score" in _pt_cfg:
                 _min_liq = float(_pt_cfg["min_liquidity_score"])
+            # Merge regime-aware ROI overrides into _mt so Gate 9 picks them up
+            for _k in ("roi_high_iv", "roi_normal_iv", "roi_low_iv"):
+                if _k in _pt_cfg:
+                    _mt[_k] = _pt_cfg[_k]
         except Exception:
             pass
+
+    # Preload ticker profiles once for the whole batch (advisory note, Task 5).
+    # Best-effort: silently empty if the table doesn't exist yet.
+    _profiles: dict = {}
+    try:
+        from scripts.db import load_all_ticker_profiles as _latp
+        _profiles = _latp()
+    except Exception:
+        pass
 
     # Structured gate rejection log — written at DEBUG, cheap to collect, useful for tuning
     _rejections: list[dict] = []
@@ -443,7 +685,18 @@ def filter_candidates(rows, paper_trade: bool = False, buying_power: float | Non
         confidence = pred_dist.get("confidence")
         meta_score = ml.get("meta_score")
 
-        for c in row.get("candidates", []):
+        # Use a list so repaired variants can be appended and restart from Gate 1.
+        _repair_context = {
+            "dte":                  row.get("dte") or 30,
+            "width_target":         float(_g("defaults", "width_target", 10)),
+            "min_profit":           _min_profit,
+            "recommended_structure": row.get("recommended_structure") or "",
+        }
+        _cqueue = list(row.get("candidates", []))
+        _ci = 0
+        while _ci < len(_cqueue):
+            c = _cqueue[_ci]
+            _ci += 1
             struct = c.get("structure", "")
 
             # ── Step 1: Candidate Universe ─────────────────────────────────────
@@ -469,6 +722,16 @@ def filter_candidates(rows, paper_trade: bool = False, buying_power: float | Non
             if c.get("max_profit") is not None and c["max_profit"] < _min_profit:
                 _reject(_t, struct, "min_profit", _min_profit, round(c["max_profit"], 2))
                 continue
+
+            # Gate 1b: debit spread reward/risk — reject if max_profit < max_loss (R/R < 1:1)
+            # Debit paid should not exceed the potential gain; otherwise the trade is
+            # structurally upside-down before any market movement.
+            if struct in ("Call Debit Spread", "Put Debit Spread"):
+                _mp = c.get("max_profit")
+                _ml = c.get("max_loss")
+                if _mp is not None and _ml is not None and _ml > 0 and _mp < _ml:
+                    _reject(_t, struct, "reward_risk", f"max_profit>={round(_ml,2)}", round(_mp, 2))
+                    continue
 
             # Gate 2: all required strikes present
             if not _strikes_complete(c):
@@ -536,17 +799,90 @@ def filter_candidates(rows, paper_trade: bool = False, buying_power: float | Non
             else:
                 _liq_score = None
 
-            # Gate 9: expected ROI — (max_profit / capital_required) × pop_estimate
-            # Uses POP from candidate when available; falls back to 0.50 (coin flip prior).
+            # Gate 9: regime-aware ROI — (max_profit × POP) / capital_per_share
+            # Threshold scales with IV rank: high IV demands stronger return (premiums
+            # are rich), low IV relaxes the floor (avoid starving in compressed envs).
             if gate_enabled and _min_roi > 0:
                 from scripts.candidate_provider import compute_capital_required as _ccr
                 _cap = _ccr(c)
                 if _cap and _cap > 0:
                     _pop_est  = (c.get("pop") or 50.0) / 100.0
                     _mp       = c.get("max_profit") or 0.0
-                    _roi      = (_mp * _pop_est) / (_cap / 100.0)  # _cap is per-contract, _mp is per-share
-                    if _roi < _min_roi:
-                        _reject(_t, struct, "expected_roi", _min_roi, round(_roi, 3))
+                    _roi      = (_mp * _pop_est) / (_cap / 100.0)
+
+                    # Pick threshold based on IV rank — row-level field, not in candidate JSON
+                    _ivr = row.get("iv_rank_52w") or row.get("iv_rank_proxy")
+                    _iv_lo  = float(_mt.get("iv_low_threshold",  30))
+                    _iv_hi  = float(_mt.get("iv_high_threshold", 60))
+                    if _ivr is not None:
+                        if _ivr >= _iv_hi:
+                            _roi_thresh = float(_mt.get("roi_high_iv",   _min_roi))
+                            _regime_lbl = f"high({_ivr:.0f}%)"
+                        elif _ivr < _iv_lo:
+                            _roi_thresh = float(_mt.get("roi_low_iv",    _min_roi))
+                            _regime_lbl = f"low({_ivr:.0f}%)"
+                        else:
+                            _roi_thresh = float(_mt.get("roi_normal_iv", _min_roi))
+                            _regime_lbl = f"normal({_ivr:.0f}%)"
+                    else:
+                        _roi_thresh = _min_roi  # fallback when IV rank unavailable
+                        _regime_lbl = "unknown"
+
+                    # Trending regime multiplier: 17.1% 5-day containment on Ubuntu backfill
+                    # means directional tickers are far more likely to breach than the
+                    # IV-rank-based threshold assumes. Raise the bar before granting entry.
+                    _ml_regime = (row.get("ml") or {}).get("regime", "")
+                    _trending_mult = float(_mt.get("trending_roi_multiplier", 1.0))
+                    if _ml_regime == "Trending" and _trending_mult > 1.0:
+                        _roi_thresh = round(_roi_thresh * _trending_mult, 3)
+                        _regime_lbl = f"{_regime_lbl}+trending(×{_trending_mult})"
+
+                    if _roi < _roi_thresh:
+                        _reject(_t, struct, "expected_roi", round(_roi_thresh, 3), round(_roi, 3))
+                        log.debug(
+                            "[gate:roi] %s %s — roi=%.3f < thresh=%.3f regime=%s",
+                            _t, struct, _roi, _roi_thresh, _regime_lbl,
+                        )
+                        _rr = attempt_repairs(c, _repair_context)
+                        if _rr.status == "PASS":
+                            log.info(
+                                "[repair] %s %s — roi gate failed; "
+                                "injecting %d variant(s) for full gate re-evaluation",
+                                _t, struct, len(_rr.replacement_candidates),
+                            )
+                            _cqueue.extend(_rr.replacement_candidates)
+                        _cap_rejected.append({
+                            "ticker":           _t,
+                            "structure":        struct,
+                            "required_capital": None,
+                            "buying_power":     round(buying_power, 2) if buying_power else None,
+                            "bp_limit":         None,
+                            "shortfall":        None,
+                            "put_long_strike":   c.get("put_long_strike"),
+                            "put_short_strike":  c.get("put_short_strike"),
+                            "call_short_strike": c.get("call_short_strike"),
+                            "call_long_strike":  c.get("call_long_strike"),
+                            "long_strike":       c.get("long_strike") or c.get("put_long_strike") or c.get("call_long_strike"),
+                            "short_strike":      c.get("short_strike") or c.get("put_short_strike") or c.get("call_short_strike"),
+                            "expiry":           row.get("expiry") or c.get("expiry"),
+                            "dte":              row.get("dte")    or c.get("dte"),
+                            "pop":              c.get("pop"),
+                            "net_credit":       c.get("net_credit") or c.get("max_profit"),
+                            "ev":               round(float(c.get("ev") or 0), 4),
+                            "max_profit":       c.get("max_profit"),
+                            "max_loss":         c.get("max_loss"),
+                            "signal_score":     c.get("signal_score"),
+                            "net_delta":        c.get("net_delta"),
+                            "net_theta":        c.get("net_theta"),
+                            "iv_edge_vp":       c.get("iv_edge_vp"),
+                            "short_leg_oi":     c.get("short_leg_oi"),
+                            "short_leg_volume": c.get("short_leg_volume"),
+                            "short_leg_ba_pct": c.get("short_leg_ba_pct"),
+                            "candidate_id":     c.get("candidate_id"),
+                            "repair_attempted": _rr.status == "PASS",
+                            "repair_failure_reason": _rr.failure_reason,
+                            "gate":             "expected_roi",
+                        })
                         continue
 
             # Gate 10: capital feasibility — skip trades that exceed the usable
@@ -564,6 +900,14 @@ def filter_candidates(rows, paper_trade: bool = False, buying_power: float | Non
                         _t, struct, _cap_needed, buying_power, _util_cap * 100, _bp_limit,
                     )
                     _reject(_t, struct, "capital_feasibility", round(_bp_limit, 2), round(_cap_needed, 2))
+                    _rr = attempt_repairs(c, _repair_context)
+                    if _rr.status == "PASS":
+                        log.info(
+                            "[repair] %s %s — capital gate failed; "
+                            "injecting %d variant(s) for full gate re-evaluation",
+                            _t, struct, len(_rr.replacement_candidates),
+                        )
+                        _cqueue.extend(_rr.replacement_candidates)
                     _cap_rejected.append({
                         "ticker":           _t,
                         "structure":        struct,
@@ -573,9 +917,20 @@ def filter_candidates(rows, paper_trade: bool = False, buying_power: float | Non
                         "shortfall":        round(_cap_needed - _bp_limit, 2),
                         "long_strike":      c.get("long_strike") or c.get("put_long_strike") or c.get("call_long_strike"),
                         "short_strike":     c.get("short_strike") or c.get("put_short_strike") or c.get("call_short_strike"),
+                        "put_long_strike":   c.get("put_long_strike"),
+                        "put_short_strike":  c.get("put_short_strike"),
+                        "call_short_strike": c.get("call_short_strike"),
+                        "call_long_strike":  c.get("call_long_strike"),
+                        "long_put_strike":   c.get("long_put_strike"),
+                        "short_put_strike":  c.get("short_put_strike"),
+                        "short_call_strike": c.get("short_call_strike"),
+                        "long_call_strike":  c.get("long_call_strike"),
+                        "call_strike":       c.get("call_strike"),
+                        "put_strike":        c.get("put_strike"),
                         "expiry":           row.get("expiry") or c.get("expiry"),
                         "dte":              row.get("dte")    or c.get("dte"),
                         "pop":              c.get("pop"),
+                        "net_credit":       c.get("net_credit") or c.get("max_profit"),
                         "ev":               round(float(c.get("ev") or 0), 4),
                         "max_profit":       c.get("max_profit"),
                         "max_loss":         c.get("max_loss"),
@@ -586,6 +941,10 @@ def filter_candidates(rows, paper_trade: bool = False, buying_power: float | Non
                         "short_leg_oi":     c.get("short_leg_oi"),
                         "short_leg_volume": c.get("short_leg_volume"),
                         "short_leg_ba_pct": c.get("short_leg_ba_pct"),
+                        "candidate_id":     c.get("candidate_id"),
+                        "repair_attempted": _rr.status == "PASS",
+                        "repair_failure_reason": _rr.failure_reason,
+                        "gate":             "capital_feasibility",
                     })
                     continue
 
@@ -612,6 +971,39 @@ def filter_candidates(rows, paper_trade: bool = False, buying_power: float | Non
                 _reject(_t, struct, "liquidity", _min_vol_ranker, _cand_vol)
                 log.debug("[gate:liquidity] %s %s — volume %d < %d", _t, struct, _cand_vol, _min_vol_ranker)
                 continue
+
+            # Strip transient chain refs before storing in result
+            c.pop("_ibf_puts",    None)
+            c.pop("_ibf_calls",   None)
+            c.pop("_ds_chain",    None)
+            c.pop("_ds_option_type", None)
+            c.pop("_csp_puts",    None)
+            c.pop("_ls_puts",     None)
+            c.pop("_ls_calls",    None)
+
+            # Advisory note: historical survival from ticker_profile_snapshots.
+            # Zero effect on EV, gates, or ranking — informational only.
+            _prof = _profiles.get(_t)
+            if _prof and (_prof.get("profile_quality") or 0) >= 0.40:
+                _ml_reg   = (row.get("ml") or {}).get("regime", "")
+                _reg_key  = {
+                    "Mean-reverting":    "mr",
+                    "Trending":          "tr",
+                    "Low-vol-squeeze":   "lv",
+                    "High-vol-breakout": "hv",
+                }.get(_ml_reg)
+                if _reg_key:
+                    _surv  = _prof.get(f"bayes_survival_{_reg_key}")
+                    _n_reg = _prof.get(f"n_{_reg_key}", 0) or 0
+                    _lo    = _prof.get("survival_lo95")
+                    _hi    = _prof.get("survival_hi95")
+                    _pq    = _prof.get("profile_quality", 0)
+                    if _surv is not None and _lo is not None and _hi is not None:
+                        c["historical_note"] = (
+                            f"Historical: {_t} in {_ml_reg} regime survived "
+                            f"{_surv:.0%} (n={_n_reg}, 95% CI: {_lo:.0%}–{_hi:.0%}). "
+                            f"Profile quality: {_pq:.2f}."
+                        )
 
             result.append({
                 "row":             row,
@@ -640,6 +1032,30 @@ def filter_candidates(rows, paper_trade: bool = False, buying_power: float | Non
             log.info(f"[filter] strikes_incomplete by structure: "
                      f"{dict(_si_structs.most_common())}")
         log.debug(f"[filter] rejection detail: {_rejections}")
+
+    # Within-group dedup: keep best EV per (ticker, structure, expiry).
+    # Prevents multiple repair variants of the same thesis from all surviving
+    # into the final ranked pool — only the highest-EV feasible variant advances.
+    if result:
+        _dedup: dict = {}
+        for _r in result:
+            _rc   = _r["candidate"]
+            _key  = (
+                _r["row"].get("ticker") or _rc.get("ticker") or "",
+                _rc.get("structure") or "",
+                _r["row"].get("expiry") or _rc.get("expiry") or "",
+            )
+            if _key not in _dedup or _r["ev"] > _dedup[_key]["ev"]:
+                _dedup[_key] = _r
+        _before = len(result)
+        result = list(_dedup.values())
+        if len(result) < _before:
+            log.info(
+                "[filter] within-group dedup: %d → %d candidates "
+                "(%d duplicate variants removed)",
+                _before, len(result), _before - len(result),
+            )
+
     return result, _cap_rejected
 
 
@@ -867,7 +1283,71 @@ def rank_candidates(rows, n=3, score_fn=None, quality_floor=None, open_positions
     for item, pct in zip(items, _ev_pct_ranks):
         item["candidate"]["_ev_pct_rank"] = pct
 
-    # Step 3b: Composite score (used for quality gate + tie-break) and ranker score
+    # Step 3a2: Percentile-rank bid-ask spread across surviving candidates.
+    # Lower short_leg_ba_pct = tighter spread = better liquidity = higher rank.
+    # Blended into liquidity_score (30% weight) so the tiebreaker sort picks it up
+    # automatically without changing the sort key.
+    _ba_vals = [item["candidate"].get("short_leg_ba_pct") for item in items]
+    _ba_present = [v for v in _ba_vals if v is not None]
+    if len(_ba_present) >= 2:
+        _sorted_ba = sorted(
+            range(len(items)),
+            key=lambda i: _ba_vals[i] if _ba_vals[i] is not None else float("inf"),
+        )
+        # rank_pos 0 = tightest spread (best) → assign highest pct_rank
+        _n_ba = len(items)
+        for _rank_pos, _orig_idx in enumerate(_sorted_ba):
+            _ba_pct = round((_n_ba - 1 - _rank_pos) / max(_n_ba - 1, 1) * 100, 1)
+            item = items[_orig_idx]
+            item["candidate"]["_ba_liq_pct_rank"] = _ba_pct
+            # Only blend when both Gate-8 liquidity_score and spread data exist
+            if _ba_vals[_orig_idx] is not None and item["liquidity_score"] is not None:
+                item["liquidity_score"] = round(
+                    0.70 * item["liquidity_score"] + 0.30 * (_ba_pct / 100.0), 3
+                )
+
+    # Step 3b: Per-candidate family POP score (structure-specific model when available).
+    # Falls back to pooled pop_score from regime_predictor when no family model exists.
+    # Injected into candidate dict as _family_pop_score; _composite_score prefers it.
+    try:
+        import joblib as _jl, pandas as _pd
+        from scripts.train_pop_model import (
+            build_feature_matrix as _pop_bfm,
+            _family_for_structure as _fam_of,
+            _family_model_path as _fam_path,
+        )
+        _fam_cache: dict = {}
+        for _item in items:
+            _struct = _item["candidate"].get("structure") or ""
+            if not _struct:
+                continue
+            _fam = _fam_of(_struct)
+            if _fam not in _fam_cache:
+                _cal = _fam_path(_fam).with_name(f"pop_{_fam}_calibrated.joblib")
+                _base = _fam_path(_fam)
+                try:
+                    _fam_cache[_fam] = _jl.load(_cal) if _cal.exists() else (
+                        _jl.load(_base) if _base.exists() else None)
+                except Exception:
+                    _fam_cache[_fam] = None
+            _art = _fam_cache[_fam]
+            if _art is None:
+                continue
+            try:
+                _merged = {**_item["row"], **_item["candidate"]}
+                _Xf, _ = _pop_bfm(_pd.DataFrame([_merged]),
+                                   encoders=_art.get("feature_encoders"), fit=False)
+                _drop = _art.get("dropped_cols") or []
+                if _drop:
+                    _Xf = _Xf.drop(columns=[c for c in _drop if c in _Xf.columns])
+                _fp = round(float(_art["model"].predict_proba(_Xf)[0][1]), 4)
+                _item["candidate"]["_family_pop_score"] = _fp
+            except Exception as _fe:
+                log.debug("[pop_family] %s %s → %s", _item["row"].get("ticker"), _struct, _fe)
+    except ImportError:
+        pass  # train_pop_model not available
+
+    # Step 3c: Composite score (used for quality gate + tie-break) and ranker score
     for item in items:
         item["composite"] = _composite_score(
             item["row"], item["candidate"], item["ev"], item["ev_is_proxy"]
@@ -911,6 +1391,7 @@ def rank_candidates(rows, n=3, score_fn=None, quality_floor=None, open_positions
     # Step 5: Rank by ranker_score (cross-sectional ML signal) when available,
     # fall back to composite score when ranker not trained.
     has_ranker = any(v["ranker_score"] is not None for v in best.values())
+    log.info("Ranking: %s", "XGBRanker" if has_ranker else "composite score (XGBRanker not trained)")
     if has_ranker:
         ranked = sorted(
             best.values(),

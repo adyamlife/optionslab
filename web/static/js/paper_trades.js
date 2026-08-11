@@ -487,16 +487,14 @@ function renderOpenTradesTable(trades) {
         <td class="spot-price muted" data-ticker="${esc(t.ticker)}">…</td>
         <td class="na">$${(t.entry_credit ?? 0).toFixed(3)}</td>
         <td class="muted" style="font-size:0.78rem">${isDebit ? "Debit" : "Max loss"}: $${(t.max_loss ?? 0).toFixed(3)}</td>
-        <td class="pt-pnl-ps ${unrCls}">${unr != null ? fmt$(parseFloat(unr), 3) : "—"}</td>
         <td class="pt-pnl-total ${unrCls}">${unrTotal != null ? fmt$(unrTotal) : "—"}</td>
-        <td class="muted" style="font-size:0.78rem">${esc(t.signal_rating ?? "—")}</td>
         <td>
           <button class="pt-del-btn" data-id="${esc(t.id)}" title="Remove this paper trade">✕</button>
         </td>
       </tr>`;
   }).join("");
 
-  const hdrs = ["Ticker","Structure","Entered","Expiry","DTE","Strikes","Price","Max Profit","Risk","P&amp;L/sh","P&amp;L $","Signal",""];
+  const hdrs = ["Ticker","Structure","Entered","Expiry","DTE","Strikes","Price","Max Profit","Risk","P&amp;L $",""];
   const thRow = hdrs.map((h, i) => {
     if (i === hdrs.length - 1) return `<th></th>`;
     const isSorted = _openSortCol === i;
@@ -650,9 +648,7 @@ function applyLiveMarks(marksMap) {
         const unr      = parseFloat(live.unrealized);
         const unrTotal = unr * 100;
         const cls      = unr >= 0 ? "pass" : "fail";
-        const plSh  = row.querySelector("td.pt-pnl-ps");
         const plTot = row.querySelector("td.pt-pnl-total");
-        if (plSh)  { plSh.textContent  = fmt$(unr, 3);  plSh.className  = `pt-pnl-ps ${cls}`; }
         if (plTot) { plTot.textContent = fmt$(unrTotal); plTot.className = `pt-pnl-total ${cls}`; }
       }
     }
@@ -1030,11 +1026,10 @@ function renderDayWiseLog(allTrades, marksMap) {
             <td class="muted">${esc(t.expiry ?? "—")}</td>
             <td class="na">—</td>
             <td class="muted" style="font-size:0.78rem">Debit paid: $${totalDebit.toFixed(3)} total</td>
+            <td class="muted">—</td>
             <td>${statusTxt}</td>
             <td class="muted" style="font-size:0.75rem">—</td>
-            <td class="${pnlCls}">—</td>
             <td class="${pnlCls}">${fmt$(totalPnl)}</td>
-            <td class="muted" style="font-size:0.75rem">—</td>
           </tr>`];
       }
 
@@ -1059,18 +1054,25 @@ function renderDayWiseLog(allTrades, marksMap) {
         ? `Calendar Spread <span class="muted">(Call Debit)</span>`
         : esc(t.structure);
 
+      const stk = t.strikes ?? {};
+      let strikesStr = "—";
+      if (stk.put_long  != null) strikesStr = `${stk.put_long}/${stk.put_short} · ${stk.call_short}/${stk.call_long}`;
+      else if (stk.short != null && stk.long != null) strikesStr = `${stk.long}/${stk.short}`;
+      else if (stk.short != null) strikesStr = `${stk.short}`;
+
       return [`
         <tr class="${rowCls}">
           <td><strong>${esc(t.ticker)}</strong></td>
           <td style="font-size:0.78rem;color:#aaa">${structLabel}</td>
           <td class="muted">${esc(t.expiry ?? "—")}</td>
+          <td>${dteLabel(t.expiry)}</td>
+          <td class="muted" style="font-size:0.8rem">${esc(strikesStr)}</td>
+          <td class="spot-price muted" data-ticker="${esc(t.ticker)}">…</td>
           <td class="na">$${(t.entry_credit ?? 0).toFixed(3)}</td>
-          <td class="muted" style="font-size:0.78rem">${isDebit ? "Debit paid" : "Max loss"}: $${(t.max_loss ?? 0).toFixed(3)}</td>
+          <td class="muted" style="font-size:0.78rem">${isDebit ? "Debit" : "Max loss"}: $${(t.max_loss ?? 0).toFixed(3)}</td>
           <td>${statusLabel(t.status)}</td>
           <td class="muted" style="font-size:0.75rem">${exitTxt}</td>
-          <td class="${pnlCls}"${liveTip}>${pnlPs != null ? fmt$(pnlPs, 3) : "—"}</td>
           <td class="${pnlCls}">${pnlTot != null ? fmt$(pnlTot) : "—"}</td>
-          <td class="muted" style="font-size:0.75rem">${esc(t.signal_rating ?? "—")}</td>
         </tr>`];
     }).join("");
 
@@ -1079,9 +1081,10 @@ function renderDayWiseLog(allTrades, marksMap) {
       <div class="table-scroll" style="margin-bottom:1.4rem">
         <table class="journal-table pt-trades-table">
           <thead><tr>
-            <th>Ticker</th><th>Structure</th><th>Expiry</th>
-            <th>Max Profit</th><th>Risk</th><th>Status</th><th>Exit</th>
-            <th>P&L/sh</th><th>P&L $</th><th>Signal</th>
+            <th>Ticker</th><th>Structure</th><th>Expiry</th><th>DTE</th>
+            <th>Strikes</th><th>Price</th><th>Max Profit</th><th>Risk</th>
+            <th>Status</th><th>Exit</th>
+            <th>P&amp;L $</th>
           </tr></thead>
           <tbody>${rows}</tbody>
         </table>
@@ -1089,6 +1092,25 @@ function renderDayWiseLog(allTrades, marksMap) {
   }).join("");
 
   el.innerHTML = overallBanner + html;
+
+  // Fetch current prices and fill spot-price cells in day-wise log
+  const dwTickers = [...new Set(
+    [...el.querySelectorAll("td.spot-price[data-ticker]")].map(c => c.dataset.ticker).filter(Boolean)
+  )];
+  if (dwTickers.length) {
+    fetch(`/api/quotes?tickers=${dwTickers.join(",")}`)
+      .then(r => r.json())
+      .then(prices => {
+        el.querySelectorAll("td.spot-price[data-ticker]").forEach(cell => {
+          const p = prices[cell.dataset.ticker];
+          if (p != null) { cell.textContent = `$${p.toFixed(2)}`; cell.classList.remove("muted"); }
+          else cell.textContent = "—";
+        });
+      })
+      .catch(() => {
+        el.querySelectorAll("td.spot-price[data-ticker]").forEach(cell => { cell.textContent = "—"; });
+      });
+  }
 }
 
 // ── Tab switching ─────────────────────────────────────────────────────────────

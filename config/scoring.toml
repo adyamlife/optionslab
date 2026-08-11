@@ -111,6 +111,12 @@ adx_above      = 25.0   # AND ticker ADX above this (checked per-ticker)
 
 # "chop" = fallback when neither fear nor calm_trend conditions are met
 
+# ── ML classifier regime labels (mapped to equivalent scoring profiles) ────────
+# The ML regime model uses different label names than the rule-based detector above.
+# These sections give them the same budget/signal profiles as their nearest equivalent.
+# "Trending"       → same profile as calm_trend (strong directional market)
+# "Low-vol-squeeze"→ same profile as chop (range-bound, low realised vol)
+
 # ── Regime budget multipliers ─────────────────────────────────────────────────
 # Scale the factor budgets per regime.
 # final_budget = base_budget × mult
@@ -130,6 +136,16 @@ flow         = 0.5
 technical    = 1.2    # some signal but less reliable
 market_ctx   = 1.0
 flow         = 1.0    # flow/sentiment matter most when price drifts
+
+[regime.Trending.budget_mult]
+technical    = 2.0
+market_ctx   = 0.8
+flow         = 0.5
+
+[regime.Low-vol-squeeze.budget_mult]
+technical    = 1.2
+market_ctx   = 1.0
+flow         = 1.0
 
 # ── Rating thresholds (fraction of max possible score) ────────────────────────
 # e.g. strong_pct = 0.50 means score must be ≥50% of the theoretical max
@@ -175,6 +191,33 @@ near_tie_margin   = 0.05   # pct gap below which two candidates are flagged as a
 # effective_max = Σ(base_weight × regime_mult) for all active signals
 #
 # Unspecified signals default to 1.0 (no regime boost/penalty).
+
+[regime.Trending.signal_mult]
+ema200        = 1.5
+weekly_trend  = 1.3
+adx           = 1.4
+macd          = 1.3
+rsi           = 0.9
+iv_premium    = 0.8
+news          = 0.8
+pcr           = 0.8
+analyst       = 0.9
+short_interest = 0.9
+iv_term       = 1.0
+vol_skew      = 1.0
+rel_volume    = 1.1
+
+[regime.Low-vol-squeeze.signal_mult]
+rsi           = 1.4
+iv_premium    = 1.3
+vol_skew      = 1.3
+iv_term       = 1.2
+pcr           = 1.1
+news          = 1.0
+rel_volume    = 0.9
+ema200        = 0.5
+weekly_trend  = 0.6
+adx           = 0.4
 
 [regime.calm_trend.signal_mult]
 ema200        = 1.5   # trend is highly reliable in calm_trend

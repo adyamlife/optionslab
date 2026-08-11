@@ -198,11 +198,27 @@ def _load_candidate_dte() -> list[int]:
     return [21, 30, 45]
 
 
+def _expiry_total_oi(ticker_obj, expiry: str) -> int:
+    """Total open interest across calls + puts for one expiry. Used as tie-breaker only."""
+    try:
+        with _YF_CONCURRENCY:
+            chain = ticker_obj.option_chain(expiry)
+        calls_oi = chain.calls["openInterest"].fillna(0).sum()
+        puts_oi  = chain.puts["openInterest"].fillna(0).sum()
+        return int(calls_oi + puts_oi)
+    except Exception:
+        return 0
+
+
 def pick_expiry(ticker_obj, min_dte, max_dte):
     """Pick the available expiry whose DTE is closest to one of the candidate_dte
     targets (from settings.toml [dte] candidate_dte). Only considers expirations
     within [min_dte, max_dte]. Falls back to midpoint of window if no target fits,
-    and to the nearest available expiry if nothing is within the window at all."""
+    and to the nearest available expiry if nothing is within the window at all.
+
+    Tie-breaker: when two expiries are within 3 DTE of the same best distance,
+    prefer the one with higher total chain open interest (deeper liquidity pool).
+    """
     today      = datetime.now().date()
     targets    = _load_candidate_dte()
     expirations = _get_expirations(ticker_obj)
@@ -215,20 +231,32 @@ def pick_expiry(ticker_obj, min_dte, max_dte):
             candidates.append((exp, dte))
 
     if candidates:
-        # Score each available expiry by its distance to the nearest candidate_dte target
         def _target_dist(dte_val):
             return min(abs(dte_val - t) for t in targets)
-        best = min(candidates, key=lambda c: _target_dist(c[1]))
+
+        min_dist = min(_target_dist(dte) for _, dte in candidates)
+        # All expiries within 3 DTE of the best distance are considered "tied"
+        tied = [(exp, dte) for exp, dte in candidates if _target_dist(dte) <= min_dist + 3]
+
+        if len(tied) == 1:
+            return tied[0]
+
+        # OI tie-breaker: prefer the expiry with a deeper liquidity pool
+        best = max(tied, key=lambda item: _expiry_total_oi(ticker_obj, item[0]))
         return best
 
     if not expirations:
         return None, None
 
-    # Fallback: closest expiry to nearest target, ignoring window
+    # Fallback: closest expiry to nearest target.
+    # Still enforce min_dte as a hard floor — never return 0DTE or same-day assign.
     def _score(exp):
         dte = (datetime.strptime(exp, "%Y-%m-%d").date() - today).days
         return min(abs(dte - t) for t in targets)
-    best = min(expirations, key=_score)
+
+    floored = [e for e in expirations
+               if (datetime.strptime(e, "%Y-%m-%d").date() - today).days >= min_dte]
+    best = min(floored if floored else expirations, key=_score)
     dte  = (datetime.strptime(best, "%Y-%m-%d").date() - today).days
     return best, dte
 
@@ -269,11 +297,14 @@ def _fill_bid_ask(df, spot, dte, option_type, r=_RFR_FALLBACK):
     T = max(dte, 1) / 365.0
 
     # Pass 1 — closed market: fill bid/ask from lastPrice
+    # Tag synthesized rows so downstream callers can flag the candidate.
     closed_mask = (df["bid"] == 0) & (df["ask"] == 0) & (df["lastPrice"] > 0)
     for idx in df[closed_mask].index:
         last = df.at[idx, "lastPrice"]
         df.at[idx, "bid"] = round(last * 0.98, 2)
         df.at[idx, "ask"] = round(last * 1.02, 2)
+    if closed_mask.any():
+        df.loc[closed_mask, "_synthetic"] = True
 
     # Pass 2 — fill IV from mid-price wherever it is 0 or missing
     zero_iv_mask = df["impliedVolatility"].fillna(0) < 1e-4

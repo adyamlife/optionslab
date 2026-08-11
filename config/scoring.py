@@ -32,6 +32,29 @@ def _cfg() -> dict:
     return _cache
 
 
+def _resolve_regime(regime: str) -> str:
+    """Return the regime key to use for scoring lookups.
+
+    If the ML model emits a label not present in scoring.toml, fall back to
+    'chop' so the scoring engine never KeyErrors on an unknown regime.
+    """
+    regimes = _cfg().get("regime", {})
+    if regime in regimes:
+        return regime
+    # Known ML label → canonical scoring.toml label mappings
+    _ml_map = {
+        "Trending":        "Trending",
+        "Low-vol-squeeze": "Low-vol-squeeze",
+        "calm_trend":      "calm_trend",
+        "fear":            "fear",
+        "chop":            "chop",
+    }
+    canonical = _ml_map.get(regime)
+    if canonical and canonical in regimes:
+        return canonical
+    return "chop"  # safe fallback for any unregistered future label
+
+
 # ── Regime detection ──────────────────────────────────────────────────────────
 
 def detect_regime(mkt_ctx: dict | None, adx: float | None = None) -> str:
@@ -90,7 +113,7 @@ def get_sub_weight(factor: str, sub: str, regime: str) -> float:
         return 0.0
 
     base_budget = float(f["budget"])
-    mult        = cfg["regime"][regime]["budget_mult"].get(factor, 1.0)
+    mult        = cfg["regime"][_resolve_regime(regime)]["budget_mult"].get(factor, 1.0)
     budget      = base_budget * mult
 
     defaults    = dict(f["sub_weights"])
@@ -112,7 +135,7 @@ def get_factor_budget(factor: str, regime: str) -> float:
     if f is None:
         return 0.0
     base = float(f["budget"])
-    mult = cfg["regime"][regime]["budget_mult"].get(factor, 1.0)
+    mult = cfg["regime"][_resolve_regime(regime)]["budget_mult"].get(factor, 1.0)
     return base * mult
 
 
@@ -158,6 +181,10 @@ _REGIME_EXPLANATIONS: dict[str, str] = {
                    "technical signals carry double the normal weight"),
     "chop":       ("No clear macro regime — flow and oscillator signals carry more "
                    "weight than trend; technicals are noisier than usual"),
+    "Trending":   ("ML regime: strong directional trend — price action and trend "
+                   "indicators carry elevated weight; oscillators de-emphasized"),
+    "Low-vol-squeeze": ("ML regime: low realized vol, range-bound — oscillator and "
+                        "IV signals carry more weight; trend signals de-emphasized"),
 }
 
 
@@ -177,7 +204,7 @@ def weight_profile(regime: str) -> dict[str, float]:
     result: dict[str, float] = {}
     for factor in cfg["factors"]:
         base = float(cfg["factors"][factor]["budget"])
-        mult = cfg["regime"][regime]["budget_mult"].get(factor, 1.0)
+        mult = cfg["regime"][_resolve_regime(regime)]["budget_mult"].get(factor, 1.0)
         result[factor] = round(base * mult, 4)
     return result
 

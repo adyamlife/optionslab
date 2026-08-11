@@ -185,7 +185,108 @@ def _payoff_per_share(structure_name: str, candidate: dict, S_T: np.ndarray) -> 
     the same formulas backtest.py/paper_trade_engine.py use for expiry P&L.
     Returns None for structures with no clean expiry-based payoff (Calendar,
     Diagonal, Jade Lizard, Covered Call — path/ownership-dependent).
+    Long Strangle and Long Straddle are handled explicitly: both legs expire
+    at the same date so payoff = max(S_T-call_k,0) + max(put_k-S_T,0) - debit.
     """
+    # ── Name-based handlers for structures with non-standard field layouts ─────
+
+    # Long Strangle / Long Straddle: buy OTM call + buy OTM put.
+    # Terminal payoff is purely a function of S_T — no path dependency.
+    if structure_name in ("Long Strangle", "Long Straddle"):
+        call_k = candidate.get("ls_call_k")
+        put_k  = candidate.get("ls_put_k")
+        call_d = candidate.get("ls_call_debit")
+        put_d  = candidate.get("ls_put_debit")
+        if None in (call_k, put_k, call_d, put_d):
+            return None
+        return np.maximum(S_T - call_k, 0.0) + np.maximum(put_k - S_T, 0.0) - (call_d + put_d)
+
+    # Short Straddle: sell ATM call + sell ATM put.
+    # Fields: put_short_strike, call_short_strike, max_profit (total credit).
+    if structure_name == "Short Straddle":
+        put_k   = candidate.get("put_short_strike")
+        call_k  = candidate.get("call_short_strike")
+        credit  = candidate.get("max_profit")
+        if None in (put_k, call_k, credit):
+            return None
+        return credit - np.maximum(S_T - call_k, 0.0) - np.maximum(put_k - S_T, 0.0)
+
+    # Ratio Call Backspread: sell 1 × short_K call, buy 2 × long_K call.
+    # Fields: short_strike, long_strike, rbc_net_cost (positive = net debit).
+    if structure_name == "Ratio Call Backspread":
+        k_s  = candidate.get("short_strike")
+        k_l  = candidate.get("long_strike")
+        cost = candidate.get("rbc_net_cost")
+        if None in (k_s, k_l, cost):
+            return None
+        return 2.0 * np.maximum(S_T - k_l, 0.0) - np.maximum(S_T - k_s, 0.0) - cost
+
+    # Ratio Put Backspread: sell 1 × short_K put (higher), buy 2 × long_K put (lower).
+    # Fields: short_strike, long_strike, rbp_net_cost (positive = net debit).
+    if structure_name == "Ratio Put Backspread":
+        k_s  = candidate.get("short_strike")
+        k_l  = candidate.get("long_strike")
+        cost = candidate.get("rbp_net_cost")
+        if None in (k_s, k_l, cost):
+            return None
+        return 2.0 * np.maximum(k_l - S_T, 0.0) - np.maximum(k_s - S_T, 0.0) - cost
+
+    # Risk Reversal: sell OTM put (short_strike), buy OTM call (long_strike).
+    # Fields: short_strike (put), long_strike (call), rr_net_credit.
+    if structure_name == "Risk Reversal":
+        k_put  = candidate.get("short_strike")
+        k_call = candidate.get("long_strike")
+        credit = candidate.get("rr_net_credit", 0.0) or 0.0
+        if None in (k_put, k_call):
+            return None
+        return np.maximum(S_T - k_call, 0.0) - np.maximum(k_put - S_T, 0.0) + credit
+
+    # Financed Long Put: long put + short call spread to finance it.
+    # Fields: put_strike, short_call_strike, long_call_strike, flp_net_cost.
+    if structure_name == "Financed Long Put":
+        k_put  = candidate.get("put_strike")
+        k_sc   = candidate.get("short_call_strike")
+        k_lc   = candidate.get("long_call_strike")
+        cost   = candidate.get("flp_net_cost")
+        if None in (k_put, k_sc, k_lc, cost):
+            return None
+        return (np.maximum(k_put - S_T, 0.0)
+                - np.maximum(S_T - k_sc, 0.0)
+                + np.maximum(S_T - k_lc, 0.0)
+                - cost)
+
+    # Financed Long Call: long call + short put spread to finance it.
+    # Fields: call_strike, short_put_strike, long_put_strike, flc_net_cost.
+    if structure_name == "Financed Long Call":
+        k_call = candidate.get("call_strike")
+        k_sp   = candidate.get("short_put_strike")
+        k_lp   = candidate.get("long_put_strike")
+        cost   = candidate.get("flc_net_cost")
+        if None in (k_call, k_sp, k_lp, cost):
+            return None
+        return (np.maximum(S_T - k_call, 0.0)
+                - np.maximum(k_sp - S_T, 0.0)
+                + np.maximum(k_lp - S_T, 0.0)
+                - cost)
+
+    # Bear Combo: put debit spread + call credit spread (4 legs).
+    # Fields: long_put_strike, short_put_strike, short_call_strike, long_call_strike, bc_net_cost.
+    if structure_name == "Bear Combo":
+        k_lp  = candidate.get("long_put_strike")
+        k_sp  = candidate.get("short_put_strike")
+        k_sc  = candidate.get("short_call_strike")
+        k_lc  = candidate.get("long_call_strike")
+        cost  = candidate.get("bc_net_cost")
+        if None in (k_lp, k_sp, k_sc, k_lc, cost):
+            return None
+        return (np.maximum(k_lp - S_T, 0.0)
+                - np.maximum(k_sp - S_T, 0.0)
+                - np.maximum(S_T - k_sc, 0.0)
+                + np.maximum(S_T - k_lc, 0.0)
+                - cost)
+
+    # ── Registry-based dispatch for standard two-leg / single-leg / iron-condor ─
+
     st = get_structure(structure_name)
     if st is None:
         return None
@@ -412,11 +513,43 @@ def compute_capital_required(candidate: dict) -> float | None:
         return round(max_loss * 100, 2)
 
     if ctype == "margin":
-        # Standard broker formula: 20% of notional + premium collected − OTM amount
-        # Approximated here as 20% of (spot × 100) — actual broker varies
         if spot <= 0:
             return None
         notional       = spot * 100
+        structure_name = candidate.get("structure", "")
+
+        if structure_name == "Risk Reversal":
+            # Net debit → capital = debit paid; net credit → put-side margin less credit.
+            net_credit = max_profit - max_loss
+            if net_credit <= 0:
+                return round(max_loss * 100, 2)
+            otm_amount = max(0.0, (spot - short_strike) * 100) if short_strike else 0.0
+            return round(notional * 0.20 + net_credit * 100 - otm_amount, 2)
+
+        if structure_name == "Short Straddle":
+            # Both legs are ATM (same strike, OTM=0). Broker takes margin on the
+            # larger leg only — use half the total premium as each leg's premium.
+            leg_premium = (max_profit / 2) * 100
+            return round(notional * 0.20 + leg_premium, 2)
+
+        if structure_name == "Short Strangle":
+            # Two OTM short legs at different strikes. Broker takes the larger margin.
+            # short_strike = put short; long_strike field stores the call short strike.
+            call_short_strike = candidate.get("long_strike") or 0.0
+            leg_premium = (max_profit / 2) * 100   # approximate each leg's share
+            put_otm    = max(0.0, (spot - short_strike) * 100) if short_strike else 0.0
+            call_otm   = max(0.0, (call_short_strike - spot) * 100) if call_short_strike else 0.0
+            put_margin  = notional * 0.20 + leg_premium - put_otm
+            call_margin = notional * 0.20 + leg_premium - call_otm
+            return round(max(put_margin, call_margin), 2)
+
+        if structure_name in ("Bull Call Ladder",):
+            # Upper short call is uncovered — broker requires margin on that leg.
+            # Approximate: 20% of notional (conservative, no premium offset since
+            # max_profit reflects the net of all three legs, not just the naked leg).
+            return round(notional * 0.20, 2)
+
+        # Generic naked / short-vol margin: 20% of notional + premium − OTM amount
         premium_credit = max_profit * 100
         otm_amount     = max(0.0, (spot - short_strike) * 100) if short_strike else 0.0
         return round(notional * 0.20 + premium_credit - otm_amount, 2)

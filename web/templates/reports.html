@@ -4,7 +4,10 @@
 
 {% block head %}
   <link rel="stylesheet" href="/static/css/reports.css?v={{ asset_v }}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@31.0.0/styles/ag-grid.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@31.0.0/styles/ag-theme-alpine.min.css">
   <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ag-grid-community@31.0.0/dist/ag-grid-community.min.noStyle.js"></script>
 {% endblock %}
 
 {% block body %}
@@ -21,6 +24,7 @@
   <div class="rpt-tab-nav">
     <button class="rpt-tab-btn active" data-tab="gates">Gate Rejections</button>
     <button class="rpt-tab-btn" data-tab="cap-rej">Capital Rejected</button>
+    <button class="rpt-tab-btn" data-tab="scan-rej">Scan Candidates</button>
   </div>
 
   <!-- ═══════════════════════════════════════════════════════════
@@ -133,11 +137,60 @@
       <span id="crj-count" class="muted crj-count-label"></span>
     </div>
 
-    <div id="crj-body" class="crj-table-wrap">
-      <p class="muted" style="font-size:.85rem">Select a date range and click Load.</p>
-    </div>
+    <div id="crj-status" class="muted" style="font-size:.85rem;margin-bottom:.5rem">Select a date range and click Load.</div>
+    <div id="crj-grid" class="ag-theme-alpine" style="height:600px;width:100%;display:none"></div>
 
   </div><!-- /cap-rej tab -->
+
+  <!-- ═══════════════════════════════════════════════════════════
+       REPORT 3 — SCAN CANDIDATES (REJECTED)
+  ═══════════════════════════════════════════════════════════════ -->
+  <div class="rpt-tab-panel" data-tab="scan-rej">
+
+    <p class="muted" style="font-size:.88rem;margin-bottom:1rem">
+      All candidates evaluated by the morning/afternoon scan. Filter by day to see what was considered and why it was rejected.
+    </p>
+
+    <div class="rpt-filters">
+      <div class="rpt-filter-field">
+        <label>Date</label>
+        <input type="date" id="scr-date" class="crj-date-input">
+      </div>
+      <div class="rpt-filter-field">
+        <label>From</label>
+        <input type="date" id="scr-from" class="crj-date-input">
+      </div>
+      <div class="rpt-filter-field">
+        <label>To</label>
+        <input type="date" id="scr-to" class="crj-date-input">
+      </div>
+      <div class="rpt-filter-field">
+        <label>Ticker</label>
+        <input type="text" id="scr-ticker" placeholder="e.g. AAPL" maxlength="10"
+               style="text-transform:uppercase;width:90px" autocomplete="off">
+      </div>
+      <div class="rpt-filter-field">
+        <label>Outcome</label>
+        <select id="scr-outcome">
+          <option value="">All</option>
+          <option value="win">Win</option>
+          <option value="loss">Loss</option>
+          <option value="unlabelable">Unlabelable</option>
+          <option value="unlabeled">Not yet labeled</option>
+        </select>
+      </div>
+      <button id="scr-run-btn" class="rpt-btn">Load</button>
+      <span id="scr-count" class="muted crj-count-label"></span>
+    </div>
+
+    <!-- KPI row -->
+    <div id="scr-kpis" class="rpt-kpi-row" style="display:none;margin-bottom:1.2rem"></div>
+
+    <div id="scr-status" class="muted" style="font-size:.85rem;margin-bottom:.5rem">Select a date or range and click Load.</div>
+    <div id="scr-grid" class="ag-theme-alpine" style="height:600px;width:100%;display:none"></div>
+
+
+  </div><!-- /scan-rej tab -->
 
 </main>
 {% endblock %}
@@ -344,105 +397,102 @@ function renderGateReport(d) {
 // Auto-load on page open
 fetchGateReport();
 
-// ── Capital-Rejected Trades — sortable table ──────────────────────────────────
+// ── Capital-Rejected Trades — AG Grid ────────────────────────────────────────
 
-const CRJ_COLS = [
-  { key: "date",             label: "Date",       fmt: v => v ?? "—",                                        num: false },
-  { key: "ticker",           label: "Ticker",     fmt: v => v ?? "—",                                        num: false },
-  { key: "structure",        label: "Structure",  fmt: v => v ?? "—",                                        num: false },
-  { key: "scan_time",        label: "Scan",       fmt: v => v ?? "—",                                        num: false },
-  { key: "required_capital", label: "Required $", fmt: v => v != null ? "$" + Number(v).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}) : "—", num: true  },
-  { key: "bp_limit",         label: "BP Limit",   fmt: (v,r) => { const x = v ?? r.buying_power; return x != null ? "$" + Number(x).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}) : "—"; }, num: true  },
-  { key: "shortfall",        label: "Shortfall",  fmt: v => v != null ? "$" + Number(v).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}) : "—", num: true  },
-  { key: "_strikes",         label: "Strikes",    fmt: (v,r) => (r.long_strike != null && r.short_strike != null) ? `${r.long_strike} / ${r.short_strike}` : "—", num: false },
-  { key: "expiry",           label: "Expiry",     fmt: v => v ?? "—",                                        num: false },
-  { key: "dte",              label: "DTE",        fmt: v => v != null ? v + "d" : "—",                       num: true  },
-  { key: "pop",              label: "POP %",      fmt: v => v != null ? Number(v).toFixed(1) + "%" : "—",   num: true  },
-  { key: "ev",               label: "EV",         fmt: v => v != null ? "$" + Number(v).toFixed(3) : "—",   num: true  },
-  { key: "signal_score",     label: "Signal",     fmt: v => v != null ? Number(v).toFixed(2) : "—",         num: true  },
-  { key: "net_delta",        label: "Δ Delta",    fmt: v => v != null ? Number(v).toFixed(3) : "—",         num: true  },
-  { key: "iv_edge_vp",       label: "IV Edge",    fmt: v => v != null ? Number(v).toFixed(2) + " vp" : "—", num: true  },
-  { key: "short_leg_oi",    label: "Short OI",   fmt: v => v != null ? Number(v).toLocaleString() : "—",  num: true  },
-  { key: "short_leg_volume",label: "Leg Vol",    fmt: v => v != null ? Number(v).toLocaleString() : "—",  num: true  },
-  { key: "short_leg_ba_pct",label: "BA Spread",  fmt: v => v != null ? (Number(v)*100).toFixed(1) + "%" : "—", num: true  },
+const CRJ_COL_DEFS = [
+  { field: "date",             headerName: "Date",       width: 110, pinned: "left" },
+  { field: "ticker",           headerName: "Ticker",     width: 80,  pinned: "left",
+    cellStyle: { fontWeight: 600 } },
+  { field: "structure",        headerName: "Structure",  width: 160 },
+  { field: "scan_time",        headerName: "Scan",       width: 70  },
+  { field: "required_capital", headerName: "Required $", width: 125,
+    valueFormatter: p => p.value != null ? "$" + Number(p.value).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}) : "—",
+    cellStyle: { color: "#c0392b", fontWeight: 600 }
+  },
+  { field: "bp_limit",         headerName: "BP Limit",   width: 115,
+    valueFormatter: p => { const x = p.value ?? (p.data && p.data.buying_power); return x != null ? "$" + Number(x).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}) : "—"; }
+  },
+  { field: "shortfall",        headerName: "Shortfall",  width: 115,
+    valueFormatter: p => p.value != null ? "$" + Number(p.value).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}) : "—",
+    cellStyle: { color: "#e97c00", fontWeight: 600 }
+  },
+  { headerName: "Strikes",     width: 220,
+    valueGetter: p => {
+      const r = p.data;
+      if (!r) return "—";
+      const s = r.structure;
+      if ((s === "Iron Condor" || s === "Iron Butterfly") && r.put_long_strike != null)
+        return `${r.put_long_strike}P / ${r.put_short_strike}P · ${r.call_short_strike}C / ${r.call_long_strike}C`;
+      if ((s === "Short Strangle" || s === "Short Straddle") && r.put_short_strike != null)
+        return `${r.put_short_strike}P · ${r.call_short_strike}C`;
+      if (s === "Bear Combo" && r.long_put_strike != null)
+        return `${r.long_put_strike}P / ${r.short_put_strike}P · ${r.short_call_strike}C / ${r.long_call_strike}C`;
+      if (s === "Financed Long Call" && r.call_strike != null)
+        return `${r.short_put_strike}P / ${r.long_put_strike}P · ${r.call_strike}C`;
+      if (s === "Financed Long Put" && r.put_strike != null)
+        return `${r.put_strike}P · ${r.short_call_strike}C / ${r.long_call_strike}C`;
+      return (r.long_strike != null && r.short_strike != null) ? `${r.long_strike} / ${r.short_strike}` : "—";
+    }
+  },
+  { field: "expiry",           headerName: "Expiry",     width: 105 },
+  { field: "dte",              headerName: "DTE",        width: 65,
+    valueFormatter: p => p.value != null ? p.value + "d" : "—"
+  },
+  { field: "pop",              headerName: "POP %",      width: 80,
+    valueFormatter: p => p.value != null ? Number(p.value).toFixed(1) + "%" : "—"
+  },
+  { field: "net_credit",       headerName: "Credit",     width: 85,
+    valueFormatter: p => p.value != null ? "$" + Number(p.value).toFixed(3) : "—"
+  },
+  { field: "ev",               headerName: "EV",         width: 85,
+    valueFormatter: p => p.value != null ? "$" + Number(p.value).toFixed(3) : "—"
+  },
+  { field: "signal_score",     headerName: "Signal",     width: 80,
+    valueFormatter: p => p.value != null ? Number(p.value).toFixed(2) : "—"
+  },
+  { field: "net_delta",        headerName: "Δ Delta",    width: 85,
+    valueFormatter: p => p.value != null ? Number(p.value).toFixed(3) : "—"
+  },
+  { field: "iv_edge_vp",       headerName: "IV Edge",    width: 90,
+    valueFormatter: p => p.value != null ? Number(p.value).toFixed(2) + " vp" : "—"
+  },
+  { field: "short_leg_oi",     headerName: "Short OI",   width: 100,
+    valueFormatter: p => p.value != null ? Number(p.value).toLocaleString() : "—"
+  },
+  { field: "short_leg_volume", headerName: "Leg Vol",    width: 100,
+    valueFormatter: p => p.value != null ? Number(p.value).toLocaleString() : "—"
+  },
+  { field: "short_leg_ba_pct", headerName: "BA Spread",  width: 95,
+    valueFormatter: p => p.value != null ? (Number(p.value)*100).toFixed(1) + "%" : "—"
+  },
 ];
 
-let _crjRows  = [];
-let _crjSort  = { col: "date", dir: 1 };  // dir: 1=asc, -1=desc
+let _crjGrid = null;
 
-function _crjSortVal(row, col) {
-  if (col.key === "_strikes") return row.long_strike ?? -Infinity;
-  const v = row[col.key];
-  if (v == null) return col.num ? -Infinity : "";
-  return col.num ? Number(v) : String(v);
-}
-
-function _crjRenderTable() {
-  const body  = $('crj-body');
-  if (!_crjRows.length) {
-    body.innerHTML = '<p class="muted" style="font-size:.85rem">No capital-rejected trades in this range.</p>';
-    return;
-  }
-
-  const colIdx = CRJ_COLS.findIndex(c => c.key === _crjSort.col);
-  const sorted = [..._crjRows].sort((a, b) => {
-    const col = CRJ_COLS[colIdx] ?? CRJ_COLS[0];
-    const av = _crjSortVal(a, col), bv = _crjSortVal(b, col);
-    if (av < bv) return -1 * _crjSort.dir;
-    if (av > bv) return  1 * _crjSort.dir;
-    return 0;
-  });
-
-  const thead = CRJ_COLS.map((c, i) => {
-    const active = _crjSort.col === c.key;
-    const arrow  = active ? (_crjSort.dir === 1 ? " ▲" : " ▼") : "";
-    return `<th class="crj-th${active ? " crj-th-active" : ""}" data-colidx="${i}">${c.label}${arrow}</th>`;
-  }).join("");
-
-  const tbody = sorted.map(row => {
-    const cells = CRJ_COLS.map(c => {
-      const val = c.fmt(row[c.key], row);
-      const cls = (c.key === "required_capital") ? ' class="crj-td-bad"'
-                : (c.key === "shortfall")        ? ' class="crj-td-warn"'
-                : (c.key === "ticker")           ? ' class="crj-td-ticker"'
-                : "";
-      return `<td${cls}>${val}</td>`;
-    }).join("");
-    return `<tr>${cells}</tr>`;
-  }).join("");
-
-  body.innerHTML = `
-    <div class="table-scroll">
-      <table class="crj-table">
-        <thead><tr>${thead}</tr></thead>
-        <tbody>${tbody}</tbody>
-      </table>
-    </div>`;
-
-  body.querySelectorAll('.crj-th').forEach(th => {
-    th.addEventListener('click', () => {
-      const idx = parseInt(th.dataset.colidx, 10);
-      const key = CRJ_COLS[idx].key;
-      if (_crjSort.col === key) {
-        _crjSort.dir *= -1;
-      } else {
-        _crjSort.col = key;
-        _crjSort.dir = CRJ_COLS[idx].num ? -1 : 1;
-      }
-      _crjRenderTable();
-    });
+function _initCrjGrid() {
+  _crjGrid = agGrid.createGrid($('crj-grid'), {
+    columnDefs: CRJ_COL_DEFS,
+    rowData: [],
+    defaultColDef: { sortable: true, resizable: true, filter: true, suppressMovable: false },
+    tooltipShowDelay: 300,
+    pagination: true,
+    paginationPageSize: 100,
+    suppressCellFocus: true,
+    enableCellTextSelection: true,
   });
 }
 
 async function crjLoad() {
-  const body  = $('crj-body');
-  const count = $('crj-count');
-  const from  = $('crj-from').value;
-  const to    = $('crj-to').value;
+  const status = $('crj-status');
+  const count  = $('crj-count');
+  const from   = $('crj-from').value;
+  const to     = $('crj-to').value;
 
-  body.innerHTML = '<p class="muted" style="font-size:.85rem">Loading…</p>';
+  status.textContent = 'Loading…';
+  status.style.display = '';
+  status.style.color = '';
   count.textContent = '';
-  _crjRows = [];
+  $('crj-grid').style.display = 'none';
 
   const params = new URLSearchParams();
   if (from) params.set('from', from);
@@ -454,16 +504,279 @@ async function crjLoad() {
     const d = await r.json();
     if (!d.ok) throw new Error(d.error);
     const days = d.days || [];
-    // Flatten day groups → one row array; inject date onto each trade
-    _crjRows = days.flatMap(g => (g.trades || []).map(t => ({ ...t, date: g.date })));
-    const total = _crjRows.length;
+    const rows = days.flatMap(g => (g.trades || []).map(t => ({ ...t, date: g.date })));
+    const total = rows.length;
     count.textContent = total ? `${total} trade${total !== 1 ? 's' : ''} across ${days.length} day${days.length !== 1 ? 's' : ''}` : '';
-    _crjRenderTable();
+    if (total) {
+      status.style.display = 'none';
+      $('crj-grid').style.display = '';
+      if (!_crjGrid) _initCrjGrid();
+      _crjGrid.setGridOption('rowData', rows);
+    } else {
+      status.textContent = 'No capital-rejected trades in this range.';
+    }
   } catch(e) {
-    body.innerHTML = `<p class="muted" style="font-size:.85rem;color:var(--danger)">Error: ${e.message}</p>`;
+    status.textContent = `Error: ${e.message}`;
+    status.style.color = 'var(--danger)';
   }
 }
 
 $('crj-run-btn').addEventListener('click', crjLoad);
+
+// ── Scan Candidates — AG Grid ────────────────────────────────────────────────
+
+let _scrGrid = null;
+let _scrRows = [];
+
+function _assignDayRanks(rows) {
+  const groups = {};
+  for (const r of rows) {
+    const key = (r.date || "") + "|" + (r.scan_time || "");
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(r);
+  }
+  for (const group of Object.values(groups)) {
+    const scored = group.filter(r => r.ml_composite_score != null);
+    scored.sort((a, b) => Number(b.ml_composite_score) - Number(a.ml_composite_score));
+    scored.forEach((r, i) => { r._day_rank = i + 1; });
+    group.filter(r => r.ml_composite_score == null).forEach(r => { r._day_rank = null; });
+  }
+}
+
+function _outcomeVal(row) {
+  if (!row.labeled)    return "Pending";
+  if (row.unlabelable) return "Unlabelable";
+  if (row.win === true)  return "Win";
+  if (row.win === false) return "Loss";
+  return "—";
+}
+
+const SCR_COL_DEFS = [
+  { field: "date",             headerName: "Date",          width: 110, pinned: "left" },
+  { field: "scan_time",        headerName: "Scan",          width: 70  },
+  { field: "_day_rank",        headerName: "Rank",          width: 75,
+    sort: "asc",
+    comparator: (a, b) => {
+      if (a == null && b == null) return 0;
+      if (a == null) return 1;
+      if (b == null) return -1;
+      return a - b;
+    },
+    cellRenderer: p => {
+      if (p.value == null) return "—";
+      const cls = p.value <= 3 ? "scr-rank-top" : "scr-rank";
+      return `<span class="${cls}">#${p.value}</span>`;
+    }
+  },
+  { field: "ml_p_win",         headerName: "P(win)",        width: 80,
+    valueFormatter: p => (p.value != null && Number(p.value) > 0) ? (Number(p.value)*100).toFixed(1) + "%" : "—"
+  },
+  { field: "ticker",           headerName: "Ticker",        width: 80, pinned: "left",
+    cellStyle: { fontWeight: 600 }
+  },
+  { field: "structure",        headerName: "Structure",     width: 160 },
+  { field: "expiry",           headerName: "Expiry",        width: 105 },
+  { field: "dte",              headerName: "DTE",           width: 65,
+    valueFormatter: p => p.value != null ? p.value + "d" : "—"
+  },
+  { field: "spot",             headerName: "Spot",          width: 90,
+    valueFormatter: p => p.value != null ? "$" + Number(p.value).toFixed(2) : "—"
+  },
+  { field: "short_strike",     headerName: "Short Strike",  width: 110,
+    valueFormatter: p => p.value != null ? Number(p.value).toFixed(0) : "—"
+  },
+  { field: "long_strike",      headerName: "Long Strike",   width: 105,
+    valueFormatter: p => p.value != null ? Number(p.value).toFixed(0) : "—"
+  },
+  { field: "net_credit",       headerName: "Credit",        width: 85,
+    valueFormatter: p => p.value != null ? "$" + Number(p.value).toFixed(3) : "—"
+  },
+  { field: "pop",              headerName: "POP %",         width: 80,
+    valueFormatter: p => p.value != null ? Number(p.value).toFixed(1) + "%" : "—"
+  },
+  { field: "ev",               headerName: "EV",            width: 85,
+    valueFormatter: p => p.value != null ? "$" + Number(p.value).toFixed(3) : "—"
+  },
+  { field: "signal_score",     headerName: "Signal",        width: 80,
+    valueFormatter: p => p.value != null ? Number(p.value).toFixed(2) : "—"
+  },
+  { field: "iv_rank",          headerName: "IV Rank",       width: 80,
+    valueFormatter: p => p.value != null ? (Number(p.value)*100).toFixed(0) + "%" : "—"
+  },
+  { field: "expected_move_pct",headerName: "EM %",          width: 75,
+    valueFormatter: p => p.value != null ? (Number(p.value)*100).toFixed(1) + "%" : "—"
+  },
+  { field: "_outcome",         headerName: "Outcome",       width: 105,
+    valueGetter: p => _outcomeVal(p.data),
+    cellRenderer: p => {
+      const cls = { Win: "scr-badge-win", Loss: "scr-badge-loss",
+                    Pending: "scr-badge-pending", Unlabelable: "scr-badge-unlabelable" }[p.value] || "scr-badge-pending";
+      return `<span class="scr-badge ${cls}">${p.value}</span>`;
+    }
+  },
+  { field: "realized_pnl",    headerName: "P&L/share",     width: 100,
+    valueFormatter: p => p.value != null ? (p.value >= 0 ? "+$" : "-$") + Math.abs(Number(p.value)).toFixed(3) : "—",
+    cellStyle: p => p.value == null ? {} : { color: p.value >= 0 ? "#1a7f37" : "#c0392b", fontWeight: 600 }
+  },
+  { field: "direction_correct",headerName: "Dir ✓",         width: 65,
+    valueFormatter: p => p.value === true ? "✓" : p.value === false ? "✗" : "—",
+    cellStyle: p => p.value === true ? { color: "#1a7f37", fontWeight: 700 }
+                  : p.value === false ? { color: "#c0392b", fontWeight: 700 } : {}
+  },
+  { field: "label_confidence", headerName: "Conf",          width: 70,
+    valueFormatter: p => p.value != null ? (Number(p.value)*100).toFixed(0) + "%" : "—"
+  },
+  { field: "details",          headerName: "Details / Gate", flex: 1, minWidth: 200,
+    tooltipField: "details",
+    valueFormatter: p => p.value || "—"
+  },
+];
+
+function _scrRowStyle(p) {
+  if (!p.data || !p.data.labeled || p.data.unlabelable) return {};
+  if (p.data.win === true)  return { background: "rgba(26,127,55,0.08)" };
+  if (p.data.win === false) return { background: "rgba(192,57,43,0.08)" };
+  return {};
+}
+
+// ── Scan candidates row-detail config (uses shared showRowDetail from common.js) ─
+
+const _scrDetailOpts = {
+  title: (r) => {
+    const outcome = _outcomeVal(r);
+    const color = { Win: "#1a7f37", Loss: "#c0392b", Pending: "#888", Unlabelable: "#888" }[outcome] || "#888";
+    return `<span style="font-size:1.05rem">${r.ticker ?? "—"}</span>` +
+      `<span style="margin:0 .45rem;opacity:.4">·</span>` +
+      `<span style="font-size:.88rem;opacity:.75">${r.structure ?? "—"}</span>` +
+      `<span style="margin-left:.7rem;padding:.12rem .5rem;border-radius:4px;font-size:.76rem;` +
+      `background:${color}22;color:${color};border:1px solid ${color}44">${outcome}</span>`;
+  },
+  fields: [
+    { key: "date",              label: "Date" },
+    { key: "scan_time",         label: "Scan Time" },
+    { key: "_day_rank",         label: "Rank",        format: v => v == null ? "—" : v <= 3 ? `#${v} ⭐` : `#${v}` },
+    { key: "ml_p_win",          label: "P(win)",       format: v => (v != null && Number(v) > 0) ? (Number(v)*100).toFixed(1) + "%" : "—" },
+    { key: "ticker",            label: "Ticker" },
+    { key: "structure",         label: "Structure" },
+    { key: "expiry",            label: "Expiry" },
+    { key: "dte",               label: "DTE",          format: v => v != null ? v + "d" : "—" },
+    { key: "spot",              label: "Spot",         format: v => v != null ? "$" + Number(v).toFixed(2) : "—" },
+    { key: "short_strike",      label: "Short Strike", format: v => v != null ? Number(v).toFixed(0) : "—" },
+    { key: "long_strike",       label: "Long Strike",  format: v => v != null ? Number(v).toFixed(0) : "—" },
+    { key: "net_credit",        label: "Credit",       format: v => v != null ? "$" + Number(v).toFixed(3) : "—" },
+    { key: "pop",               label: "POP %",        format: v => v != null ? Number(v).toFixed(1) + "%" : "—" },
+    { key: "ev",                label: "EV",           format: v => v != null ? "$" + Number(v).toFixed(3) : "—" },
+    { key: "signal_score",      label: "Signal",       format: v => v != null ? Number(v).toFixed(2) : "—" },
+    { key: "iv_rank",           label: "IV Rank",      format: v => v != null ? (Number(v)*100).toFixed(0) + "%" : "—" },
+    { key: "expected_move_pct", label: "EM %",         format: v => v != null ? (Number(v)*100).toFixed(1) + "%" : "—" },
+    { key: "ml_composite_score",label: "ML Score",     format: v => v != null ? Number(v).toFixed(2) : "—" },
+    { key: "realized_pnl",      label: "P&L/share",   format: v => v != null ? (v >= 0 ? "+$" : "-$") + Math.abs(Number(v)).toFixed(3) : "—" },
+    { key: "direction_correct", label: "Dir ✓",        format: v => v === true ? "✓ Yes" : v === false ? "✗ No" : "—" },
+    { key: "label_confidence",  label: "Confidence",   format: v => v != null ? (Number(v)*100).toFixed(0) + "%" : "—" },
+    { key: "details",           label: "Details / Gate", wide: true },
+  ],
+};
+
+function _initScrGrid() {
+  const el = $('scr-grid');
+  const opts = {
+    columnDefs: SCR_COL_DEFS,
+    rowData: [],
+    defaultColDef: {
+      sortable: true,
+      resizable: true,
+      filter: true,
+      suppressMovable: false,
+    },
+    getRowStyle: _scrRowStyle,
+    tooltipShowDelay: 300,
+    pagination: true,
+    paginationPageSize: 100,
+    suppressCellFocus: true,
+    enableCellTextSelection: true,
+    ...agRowDetail(_scrDetailOpts),
+  };
+  _scrGrid = agGrid.createGrid(el, opts);
+}
+
+function _scrApplyOutcomeFilter() {
+  const val = $('scr-outcome').value;
+  const filter = _scrGrid.getFilterInstance('_outcome');
+  if (!val) {
+    _scrGrid.setFilterModel(null);
+  } else {
+    const label = { win: "Win", loss: "Loss", unlabelable: "Unlabelable", unlabeled: "Pending" }[val] || "";
+    _scrGrid.setFilterModel({ _outcome: { filterType: "text", type: "equals", filter: label } });
+  }
+  _scrGrid.onFilterChanged();
+}
+
+async function scrLoad() {
+  const count = $('scr-count');
+  const status = $('scr-status');
+  const date  = $('scr-date').value;
+  const from  = $('scr-from').value;
+  const to    = $('scr-to').value;
+
+  status.textContent = 'Loading…';
+  count.textContent = '';
+  $('scr-kpis').style.display = 'none';
+  $('scr-grid').style.display = 'none';
+  _scrRows = [];
+
+  const params = new URLSearchParams();
+  if (date)      params.set('date', date);
+  else if (from) params.set('from', from);
+  if (to)        params.set('to', to);
+  if (!date && !from && !to) params.set('days', '30');
+
+  try {
+    const r = await fetch(`/api/training-data/rejected-candidates?${params}`);
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error || 'Unknown error');
+    _scrRows = d.rows || [];
+    _assignDayRanks(_scrRows);
+
+    const total   = _scrRows.length;
+    const labeled = _scrRows.filter(r => r.labeled && !r.unlabelable).length;
+    const wins    = _scrRows.filter(r => r.win === true).length;
+    const losses  = _scrRows.filter(r => r.win === false).length;
+    const pending = _scrRows.filter(r => !r.labeled).length;
+    const winRate = labeled > 0 ? (wins / labeled * 100).toFixed(1) + "%" : "—";
+
+    count.textContent = total ? `${total} candidate${total !== 1 ? 's' : ''} across ${d.dates.length} day${d.dates.length !== 1 ? 's' : ''}` : '';
+    status.textContent = '';
+
+    if (total > 0) {
+      $('scr-kpis').style.display = '';
+      $('scr-kpis').innerHTML = [
+        ["Total Candidates", total,   ""],
+        ["Labeled",          labeled, ""],
+        ["Win Rate",         winRate, wins > 0 ? "#1a7f37" : ""],
+        ["Wins",             wins,    wins > 0  ? "#1a7f37" : ""],
+        ["Losses",           losses,  losses > 0 ? "#c0392b" : ""],
+        ["Pending",          pending, "#888"],
+      ].map(([label, val, color]) => `
+        <div class="rpt-kpi">
+          <div class="rpt-kpi-val" style="${color ? 'color:' + color : ''}">${val}</div>
+          <div class="rpt-kpi-label">${label}</div>
+        </div>`).join('');
+
+      $('scr-grid').style.display = '';
+      if (!_scrGrid) _initScrGrid();
+      _scrGrid.setGridOption('rowData', _scrRows);
+      _scrApplyOutcomeFilter();
+    } else {
+      status.textContent = 'No candidates found for this filter.';
+    }
+  } catch(e) {
+    status.textContent = `Error: ${e.message}`;
+    status.style.color = 'var(--danger)';
+  }
+}
+
+$('scr-run-btn').addEventListener('click', scrLoad);
+$('scr-ticker').addEventListener('keydown', e => { if (e.key === 'Enter') scrLoad(); });
+$('scr-outcome').addEventListener('change', () => { if (_scrGrid) _scrApplyOutcomeFilter(); });
 </script>
 {% endblock %}

@@ -17,6 +17,8 @@ BEAR_COMBO = OptionStructure(
     short_delta_hi = 0.25,
     capital_type    = "debit",    # max loss = call spread width + net cost (fully defined)
     requires_margin = False,      # all four legs defined; no naked exposure
+    dte_min = 21,
+    dte_max = 60,
     hedge = HedgeDef(
         structure    = "Tighten Put Spread Width",
         details      = "Reduce the put spread width to lower max loss on the call side.",

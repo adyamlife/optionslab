@@ -650,3 +650,212 @@ document.addEventListener("click", e => {
   try { detail = JSON.parse(btn.dataset.info); } catch { return; }
   _openInfoModal(type, detail);
 });
+
+// ── Row-detail modal — shared across all pages ────────────────────────────────
+//
+// showRowDetail(data, opts) — show a popup with all fields from `data`.
+//
+// opts (all optional):
+//   title      : string | (data) => htmlString — modal header
+//   fields     : [{ key, label, format?(val,data)→str, wide?:bool }]
+//                If omitted, auto-generates from Object.keys(data).
+//   labels     : { key: "Label" }   — quick label override (used when no fields array)
+//   formatters : { key: (val,data)→str } — quick formatter override
+//   exclude    : ["key1","key2"]    — keys to hide (used when no fields array)
+//
+// Usage with AG Grid:
+//   onRowClicked: (e) => showRowDetail(e.data, myOpts)
+//
+// Usage with plain HTML tables:
+//   attachRowDetail(tbodyEl, rowDataFn, myOpts)
+//   where rowDataFn(tr) returns the data object for that row.
+
+(function () {
+  // ── DOM bootstrap (lazy, one modal for the whole app) ──────────────────────
+  function _ensure() {
+    if (document.getElementById("rdm-overlay")) return;
+
+    const style = document.createElement("style");
+    style.textContent = `
+      #rdm-overlay {
+        display:none; position:fixed; inset:0; z-index:9500;
+        background:rgba(0,0,0,.6); overflow-y:auto;
+      }
+      #rdm-box {
+        background:var(--surface,#1c1c1c);
+        border:1px solid var(--border,#333);
+        border-radius:10px;
+        max-width:700px; width:calc(100% - 2rem);
+        margin:3.5rem auto 2rem; padding:1.5rem 1.8rem;
+        position:relative; box-shadow:0 8px 40px rgba(0,0,0,.5);
+      }
+      #rdm-close {
+        position:absolute; top:.8rem; right:1rem;
+        background:none; border:none; font-size:1.4rem; line-height:1;
+        cursor:pointer; color:var(--text-muted,#888);
+        padding:.1rem .3rem; border-radius:4px;
+      }
+      #rdm-close:hover { color:var(--text,#eee); }
+      #rdm-title {
+        font-size:1rem; font-weight:700;
+        margin:0 0 1.1rem; padding-right:2rem;
+        border-bottom:1px solid var(--border,#333);
+        padding-bottom:.7rem;
+        line-height:1.4;
+      }
+      #rdm-grid {
+        display:grid;
+        grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+        gap:.55rem 1rem;
+      }
+      .rdm-field { display:flex; flex-direction:column; gap:.12rem; }
+      .rdm-field.rdm-wide { grid-column:1/-1; }
+      .rdm-label {
+        font-size:.68rem; text-transform:uppercase;
+        letter-spacing:.06em; color:var(--text-muted,#888);
+      }
+      .rdm-value {
+        font-size:.88rem; font-weight:600;
+        color:var(--text,#eee); word-break:break-word;
+      }
+      .rdm-value.rdm-blank { opacity:.35; font-weight:400; }
+      .rdm-divider {
+        grid-column:1/-1; border:none;
+        border-top:1px solid var(--border,#333); margin:.3rem 0;
+      }
+    `;
+    document.head.appendChild(style);
+
+    const overlay = document.createElement("div");
+    overlay.id = "rdm-overlay";
+    overlay.innerHTML = `
+      <div id="rdm-box">
+        <button id="rdm-close" title="Close">&times;</button>
+        <div id="rdm-title"></div>
+        <div id="rdm-grid"></div>
+      </div>`;
+    document.body.appendChild(overlay);
+
+    overlay.addEventListener("click", e => { if (e.target === overlay) _close(); });
+    document.getElementById("rdm-close").addEventListener("click", _close);
+    document.addEventListener("keydown", _esc);
+  }
+
+  function _esc(e) { if (e.key === "Escape") _close(); }
+
+  function _close() {
+    const el = document.getElementById("rdm-overlay");
+    if (el) el.style.display = "none";
+  }
+
+  // ── Generic value formatter ────────────────────────────────────────────────
+  function _autoFmt(val) {
+    if (val == null)          return "—";
+    if (val === true)         return "✓ Yes";
+    if (val === false)        return "✗ No";
+    const n = Number(val);
+    if (!isNaN(n) && val !== "" && Math.abs(n) < 1e9) {
+      // looks like a number — show as-is with reasonable precision
+      return Number.isInteger(n) ? String(n) : n.toFixed(4).replace(/\.?0+$/, "");
+    }
+    return String(val);
+  }
+
+  function _humanLabel(key) {
+    return key
+      .replace(/^_+/, "")              // strip leading underscores
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, c => c.toUpperCase());
+  }
+
+  // ── Public API ─────────────────────────────────────────────────────────────
+
+  /**
+   * Show a detail popup for a data row.
+   *
+   * @param {Object} data   - flat key/value row object
+   * @param {Object} [opts] - display options (see header comment)
+   */
+  window.showRowDetail = function showRowDetail(data, opts = {}) {
+    _ensure();
+
+    // Title
+    const titleEl = document.getElementById("rdm-title");
+    if (typeof opts.title === "function") {
+      titleEl.innerHTML = opts.title(data);
+    } else if (typeof opts.title === "string") {
+      titleEl.innerHTML = opts.title;
+    } else {
+      titleEl.textContent = "Row Detail";
+    }
+
+    // Build field list
+    let fields;
+    if (Array.isArray(opts.fields) && opts.fields.length) {
+      fields = opts.fields;
+    } else {
+      const exclude  = new Set(opts.exclude || []);
+      const labels   = opts.labels    || {};
+      const fmtrs    = opts.formatters || {};
+      fields = Object.keys(data)
+        .filter(k => !exclude.has(k))
+        .map(k => ({
+          key:    k,
+          label:  labels[k]  ?? _humanLabel(k),
+          format: fmtrs[k]   ?? null,
+        }));
+    }
+
+    // Render grid cells
+    const cells = fields.map(f => {
+      const raw = data[f.key];
+      const str = f.format ? f.format(raw, data) : _autoFmt(raw);
+      const blank = str === "—" || str === "" || str == null;
+      return f.wide
+        ? `<hr class="rdm-divider"><div class="rdm-field rdm-wide">
+             <span class="rdm-label">${f.label}</span>
+             <span class="rdm-value${blank ? " rdm-blank" : ""}">${str || "—"}</span>
+           </div>`
+        : `<div class="rdm-field">
+             <span class="rdm-label">${f.label}</span>
+             <span class="rdm-value${blank ? " rdm-blank" : ""}">${str || "—"}</span>
+           </div>`;
+    });
+
+    document.getElementById("rdm-grid").innerHTML = cells.join("");
+    document.getElementById("rdm-overlay").style.display = "block";
+  };
+
+  /**
+   * Attach row-click handlers to all <tr> elements inside a table body.
+   *
+   * @param {HTMLElement} container  - <tbody> or any element containing <tr>s
+   * @param {Function}    rowDataFn  - (tr) => dataObject
+   * @param {Object}      [opts]     - same opts passed to showRowDetail
+   */
+  window.attachRowDetail = function attachRowDetail(container, rowDataFn, opts = {}) {
+    container.querySelectorAll("tr").forEach(tr => {
+      tr.style.cursor = "pointer";
+      tr.addEventListener("click", e => {
+        // Don't fire if user clicked a button or link inside the row
+        if (e.target.closest("button,a,input,select")) return;
+        const data = rowDataFn(tr);
+        if (data) showRowDetail(data, opts);
+      });
+    });
+  };
+
+  /**
+   * Helper: build gridOptions fragment for AG Grid.
+   * Merges onRowClicked + rowStyle cursor into any existing gridOptions object.
+   *
+   * @param {Object} opts - showRowDetail opts
+   * @returns {Object}    - { onRowClicked, rowStyle } to spread into gridOptions
+   */
+  window.agRowDetail = function agRowDetail(opts = {}) {
+    return {
+      onRowClicked: (e) => showRowDetail(e.data, opts),
+      rowStyle: { cursor: "pointer" },
+    };
+  };
+})();

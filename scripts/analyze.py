@@ -1,5 +1,6 @@
 import sys
 import os
+import uuid as _uuid
 from concurrent.futures import ThreadPoolExecutor as _TPE
 from datetime import datetime, date
 
@@ -154,6 +155,16 @@ PARAM_INFO = {
     "ls_call_delta_hi":   (rules.LONG_STRANGLE_CALL_DELTA_RANGE[1], "Upper bound of |delta| for the OTM call leg of a Long Strangle."),
     "ls_put_delta_lo":    (rules.LONG_STRANGLE_PUT_DELTA_RANGE[0],  "Lower bound of |delta| for the OTM put leg of a Long Strangle."),
     "ls_put_delta_hi":    (rules.LONG_STRANGLE_PUT_DELTA_RANGE[1],  "Upper bound of |delta| for the OTM put leg of a Long Strangle."),
+    "ss_call_delta_lo":   (rules.SHORT_STRANGLE_CALL_DELTA_RANGE[0], "Lower bound of |delta| for the OTM call leg of a Short Strangle."),
+    "ss_call_delta_hi":   (rules.SHORT_STRANGLE_CALL_DELTA_RANGE[1], "Upper bound of |delta| for the OTM call leg of a Short Strangle."),
+    "ss_put_delta_lo":    (rules.SHORT_STRANGLE_PUT_DELTA_RANGE[0],  "Lower bound of |delta| for the OTM put leg of a Short Strangle."),
+    "ss_put_delta_hi":    (rules.SHORT_STRANGLE_PUT_DELTA_RANGE[1],  "Upper bound of |delta| for the OTM put leg of a Short Strangle."),
+    "sstr_atm_delta_lo":  (rules.SHORT_STRADDLE_ATM_DELTA_RANGE[0], "Lower bound of |delta| for ATM legs of a Short Straddle."),
+    "sstr_atm_delta_hi":  (rules.SHORT_STRADDLE_ATM_DELTA_RANGE[1], "Upper bound of |delta| for ATM legs of a Short Straddle."),
+    "ibf_short_delta_lo": (rules.IRON_BUTTERFLY_SHORT_DELTA_RANGE[0], "Lower bound of |delta| for ATM short legs of an Iron Butterfly."),
+    "ibf_short_delta_hi": (rules.IRON_BUTTERFLY_SHORT_DELTA_RANGE[1], "Upper bound of |delta| for ATM short legs of an Iron Butterfly."),
+    "ibf_long_delta_lo":  (rules.IRON_BUTTERFLY_LONG_DELTA_RANGE[0],  "Lower bound of |delta| for OTM long wings of an Iron Butterfly."),
+    "ibf_long_delta_hi":  (rules.IRON_BUTTERFLY_LONG_DELTA_RANGE[1],  "Upper bound of |delta| for OTM long wings of an Iron Butterfly."),
     "bc_put_long_delta_lo":   (rules.BEAR_COMBO_PUT_LONG_DELTA_RANGE[0],   "Lower bound of |delta| for the long (ATM-ish) put in a Bear Combo."),
     "bc_put_long_delta_hi":   (rules.BEAR_COMBO_PUT_LONG_DELTA_RANGE[1],   "Upper bound of |delta| for the long (ATM-ish) put in a Bear Combo."),
     "bc_put_short_delta_lo":  (rules.BEAR_COMBO_PUT_SHORT_DELTA_RANGE[0],  "Lower bound of |delta| for the short (OTM) put in a Bear Combo."),
@@ -223,6 +234,738 @@ def find_short_strike(df, option_type, delta_range, min_oi=0):
     cand = cand.copy()
     cand["dist"] = (cand["delta"].abs() - mid).abs()
     return cand.sort_values("dist").iloc[0]
+
+
+def _build_ibf_candidate(
+    puts, calls, short_put, short_call, long_put, long_call,
+    spot, T, width_target, min_profit_amount, recommended_structure,
+    candidate_id=None, repair_of=None, repair_iteration=0,
+    repair_distance=0, repair_reason=None,
+):
+    """Build a single Iron Butterfly candidate dict from four option rows.
+
+    Returns a candidate dict (structure="Iron Butterfly") or None if the
+    credit / max-loss check fails.  Provenance fields are populated when
+    this is a repair variant (repair_of is not None).
+    """
+    credit_put  = round(float(short_put["bid"])  - float(long_put["ask"]),  3)
+    credit_call = round(float(short_call["bid"]) - float(long_call["ask"]), 3)
+    total_credit = round(credit_put + credit_call, 3)
+    put_width    = round(float(short_put["strike"])  - float(long_put["strike"]),  2)
+    call_width   = round(float(long_call["strike"])  - float(short_call["strike"]), 2)
+    width        = max(put_width, call_width)
+    max_loss     = round(width - total_credit, 3)
+    if total_credit <= 0 or max_loss <= 0:
+        return None
+    ibf_pop, ibf_ev = pop_ev_iron_condor(
+        short_put["delta"], short_call["delta"], total_credit, width
+    )
+    meets_profit, profit_msg = profit_note(total_credit, min_profit_amount)
+    pd_, pth, pgm, pvg = _net_greeks(spot, T, long_put,  short_put,  "put")
+    cd_, cth, cgm, cvg = _net_greeks(spot, T, long_call, short_call, "call")
+    import uuid as _uuid
+    cid = candidate_id or str(_uuid.uuid4())
+    c = {
+        "structure":    "Iron Butterfly",
+        "recommended":  recommended_structure == "Iron Butterfly",
+        "details": (f"SELL {short_put['strike']}P/BUY {long_put['strike']}P + "
+                    f"SELL {short_call['strike']}C/BUY {long_call['strike']}C "
+                    f"(credit ~${total_credit:.2f}, max loss ${max_loss:.2f}, "
+                    f"put width ${put_width:.0f} / call width ${call_width:.0f}, "
+                    f"{profit_msg})"),
+        "pop":              ibf_pop,
+        "ev":               ibf_ev,
+        "max_profit":       total_credit,
+        "meets_min_profit": meets_profit,
+        "max_loss":         max_loss,
+        "meets_max_loss":   bool(max_loss <= width_target),
+        "net_delta":  round((pd_ or 0) + (cd_ or 0), 3),
+        "net_theta":  round((pth or 0) + (cth or 0), 4),
+        "net_gamma":  round((pgm or 0) + (cgm or 0), 6),
+        "net_vega":   round((pvg or 0) + (cvg or 0), 4),
+        "is_credit":  True,
+        "put_long_strike":   long_put["strike"],
+        "put_short_strike":  short_put["strike"],
+        "call_short_strike": short_call["strike"],
+        "call_long_strike":  long_call["strike"],
+        "spot_at_entry":     round(spot, 2),
+        "candidate_id":      cid,
+    }
+    if repair_of is not None:
+        c["repair_of"]        = repair_of
+        c["repair_iteration"] = repair_iteration
+        c["repair_distance"]  = repair_distance
+        c["repair_reason"]    = repair_reason or "capital"
+    return c
+
+
+def enumerate_ibf_repair_variants(
+    puts, calls, original_candidate, spot, T, width_target,
+    min_profit_amount, recommended_structure, min_oi=0,
+):
+    """Return repair candidates for an Iron Butterfly that failed the capital gate.
+
+    Enumerates all long-leg strikes that are *closer to ATM* than the original
+    long legs (i.e., narrower wings = smaller capital requirement), ordered by
+    repair_distance (narrowest first).  Each variant is a fully-priced
+    independent candidate.  Returns [] if no feasible variants exist.
+
+    The original candidate's put_long_strike anchors repair_distance=0; each
+    one-increment step toward ATM increases repair_distance by 1.
+    """
+    orig_id          = original_candidate.get("candidate_id")
+    orig_long_put_k  = float(original_candidate.get("put_long_strike") or 0)
+    orig_long_call_k = float(original_candidate.get("call_long_strike") or 0)
+
+    # Short legs are fixed (ATM) — reuse from the original candidate.
+    short_put_k  = float(original_candidate.get("put_short_strike") or 0)
+    short_call_k = float(original_candidate.get("call_short_strike") or 0)
+
+    short_put  = puts[puts["strike"]  == short_put_k]
+    short_call = calls[calls["strike"] == short_call_k]
+    if short_put.empty or short_call.empty:
+        return []
+    short_put  = short_put.iloc[0]
+    short_call = short_call.iloc[0]
+
+    # Candidate long put strikes: between orig_long_put_k (exclusive) and short_put_k (exclusive)
+    put_candidates = puts[
+        (puts["strike"] > orig_long_put_k) & (puts["strike"] < short_put_k)
+    ]
+    if min_oi > 0:
+        put_candidates = put_candidates[put_candidates["openInterest"].fillna(0) >= min_oi]
+    put_candidates = put_candidates.sort_values("strike")  # ascending → narrowest first
+
+    # Candidate long call strikes: between short_call_k (exclusive) and orig_long_call_k (exclusive)
+    call_candidates = calls[
+        (calls["strike"] > short_call_k) & (calls["strike"] < orig_long_call_k)
+    ]
+    if min_oi > 0:
+        call_candidates = call_candidates[call_candidates["openInterest"].fillna(0) >= min_oi]
+    call_candidates = call_candidates.sort_values("strike", ascending=False)  # descending → narrowest first
+
+    if put_candidates.empty or call_candidates.empty:
+        return []
+
+    import uuid as _uuid
+    variants = []
+    # Pair by index position — match the i-th nearest put with i-th nearest call
+    n = min(len(put_candidates), len(call_candidates))
+    for i in range(n):
+        lp = put_candidates.iloc[i]
+        lc = call_candidates.iloc[i]
+        c = _build_ibf_candidate(
+            puts, calls, short_put, short_call, lp, lc,
+            spot, T, width_target, min_profit_amount, recommended_structure,
+            candidate_id=str(_uuid.uuid4()),
+            repair_of=orig_id,
+            repair_iteration=i + 1,
+            repair_distance=i + 1,
+            repair_reason="capital",
+        )
+        if c is not None:
+            variants.append(c)
+    return variants
+
+
+def enumerate_csp_repair_variants(
+    puts, original_candidate, spot, T,
+    min_profit_amount, recommended_structure, min_oi=0,
+):
+    """Return repair candidates for a Cash Secured Put (or naked short put).
+
+    Repair = move short strike lower (further OTM) → smaller collateral
+    requirement and lower premium.  Enumerates all put strikes below the
+    original short strike, ordered by repair_distance (closest first).
+    """
+    orig_id   = original_candidate.get("candidate_id")
+    orig_k    = float(original_candidate.get("short_strike") or 0)
+
+    candidates_df = puts[puts["strike"] < orig_k].sort_values("strike", ascending=False)
+    if min_oi > 0:
+        candidates_df = candidates_df[candidates_df["openInterest"].fillna(0) >= min_oi]
+    if candidates_df.empty:
+        return []
+
+    import uuid as _uuid
+    structure = original_candidate.get("structure", "Cash Secured Put")
+    variants = []
+    for i, (_, row) in enumerate(candidates_df.iterrows()):
+        if not _valid_price(row.get("bid")):
+            continue
+        credit    = round(float(row["bid"]), 3)
+        breakeven = round(float(row["strike"]) - credit, 2)
+        pop       = round((1.0 - abs(float(row.get("delta") or 0))) * 100, 1)
+        meets_profit, profit_msg = profit_note(credit, min_profit_amount)
+        _iv = float(row.get("impliedVolatility") or 0)
+        _th = round(-(bs_theta(spot, row["strike"], T, RISK_FREE_RATE, _iv, "put") if _iv > 0 else 0.0), 4)
+        _gm = round(-(bs_gamma(spot, row["strike"], T, RISK_FREE_RATE, _iv) if _iv > 0 else 0.0), 4)
+        _vg = round(-(bs_vega(spot,  row["strike"], T, RISK_FREE_RATE, _iv) if _iv > 0 else 0.0), 4)
+        _nd = round(-float(row.get("delta") or 0), 3)
+        variants.append({
+            "candidate_id":     str(_uuid.uuid4()),
+            "structure":        structure,
+            "recommended":      recommended_structure in (structure, "Naked Put"),
+            "details":          (f"SELL {row['strike']}P (delta {row['delta']:.2f}, "
+                                 f"credit ~${credit:.2f}, breakeven ${breakeven:.2f}, {profit_msg})"),
+            "pop":              pop,
+            "ev":               None,
+            "max_profit":       credit,
+            "meets_min_profit": meets_profit,
+            "max_loss":         round(breakeven, 3),
+            "meets_max_loss":   None,
+            "net_delta":        _nd,
+            "net_theta":        _th,
+            "net_gamma":        _gm,
+            "net_vega":         _vg,
+            "is_credit":        True,
+            "short_strike":     row["strike"],
+            "spot_at_entry":    round(spot, 2),
+            "repair_of":        orig_id,
+            "repair_iteration": i + 1,
+            "repair_distance":  i + 1,
+            "repair_reason":    "capital",
+        })
+    return variants
+
+
+def enumerate_ss_repair_variants(
+    puts, calls, original_candidate, spot, T,
+    min_profit_amount, recommended_structure, min_oi=0,
+):
+    """Return repair variants for a Short Strangle.
+
+    Repair = move both legs further OTM. Larger OTM amount → smaller margin
+    requirement (20% notional − OTM_amount per leg). Variants ordered by
+    step count from the original strikes (closest-OTM first).
+    """
+    orig_id     = original_candidate.get("candidate_id")
+    orig_put_k  = float(original_candidate.get("short_strike") or original_candidate.get("put_short_strike")  or 0)
+    orig_call_k = float(original_candidate.get("long_strike")  or original_candidate.get("call_short_strike") or 0)
+
+    put_cands  = puts[puts["strike"]   < orig_put_k ].sort_values("strike", ascending=False)
+    call_cands = calls[calls["strike"] > orig_call_k].sort_values("strike")
+    if min_oi > 0:
+        put_cands  = put_cands [put_cands ["openInterest"].fillna(0) >= min_oi]
+        call_cands = call_cands[call_cands["openInterest"].fillna(0) >= min_oi]
+    if put_cands.empty or call_cands.empty:
+        return []
+
+    import uuid as _uuid
+    variants = []
+    for i in range(min(len(put_cands), len(call_cands), 5)):
+        sp = put_cands.iloc[i]
+        sc = call_cands.iloc[i]
+        if not (_valid_price(sp.get("bid")) and _valid_price(sc.get("bid"))):
+            continue
+        put_credit  = round(float(sp["bid"]), 3)
+        call_credit = round(float(sc["bid"]), 3)
+        total_credit = round(put_credit + call_credit, 3)
+        put_k  = float(sp["strike"])
+        call_k = float(sc["strike"])
+        put_be  = round(put_k  - total_credit, 2)
+        call_be = round(call_k + total_credit, 2)
+
+        put_otm    = max(0.0, spot - put_k)
+        call_otm   = max(0.0, call_k - spot)
+        leg_credit = total_credit / 2
+        put_margin  = max(0.0, spot * 0.20 * 100 - put_otm  * 100 + leg_credit * 100)
+        call_margin = max(0.0, spot * 0.20 * 100 - call_otm * 100 + leg_credit * 100)
+        margin_req  = round(max(put_margin, call_margin) + total_credit * 100, 0)
+
+        meets_profit, profit_msg = profit_note(total_credit, min_profit_amount)
+        pop = round(max(0.0, 1.0 - abs(float(sp.get("delta") or 0))
+                                  - abs(float(sc.get("delta") or 0))) * 100, 1)
+        sp_iv = float(sp.get("impliedVolatility") or 0)
+        sc_iv = float(sc.get("impliedVolatility") or 0)
+        _nd  = round(-abs(float(sp.get("delta") or 0)) + abs(float(sc.get("delta") or 0)), 3)
+        _nth = round(-(bs_theta(spot, put_k,  T, RISK_FREE_RATE, sp_iv, "put")  if sp_iv > 0 else 0)
+                    -(bs_theta(spot, call_k, T, RISK_FREE_RATE, sc_iv, "call") if sc_iv > 0 else 0), 4)
+        _ngm = round(-(bs_gamma(spot, put_k,  T, RISK_FREE_RATE, sp_iv) if sp_iv > 0 else 0)
+                    -(bs_gamma(spot, call_k, T, RISK_FREE_RATE, sc_iv) if sc_iv > 0 else 0), 6)
+        _nvg = round(-(bs_vega(spot, put_k,  T, RISK_FREE_RATE, sp_iv) if sp_iv > 0 else 0)
+                    -(bs_vega(spot, call_k, T, RISK_FREE_RATE, sc_iv) if sc_iv > 0 else 0), 4)
+
+        variants.append({
+            "candidate_id":      str(_uuid.uuid4()),
+            "structure":         "Short Strangle",
+            "recommended":       recommended_structure == "Short Strangle",
+            "details":           (f"SELL {put_k:.0f}P (${put_credit:.2f}) + SELL {call_k:.0f}C (${call_credit:.2f}) — "
+                                  f"total credit ${total_credit:.2f}, lower BE ${put_be:.2f}, "
+                                  f"upper BE ${call_be:.2f}, est. margin ~${margin_req:.0f}, {profit_msg}"),
+            "pop":               pop,
+            "ev":                None,
+            "max_profit":        total_credit,
+            "meets_min_profit":  meets_profit,
+            "max_loss":          None,
+            "meets_max_loss":    None,
+            "capital_req":       margin_req,
+            "net_delta":         _nd,
+            "net_theta":         _nth,
+            "net_gamma":         _ngm,
+            "net_vega":          _nvg,
+            "is_credit":         True,
+            "requires_margin":   True,
+            "put_short_strike":  put_k,
+            "call_short_strike": call_k,
+            "short_strike":      put_k,
+            "long_strike":       call_k,
+            "spot_at_entry":     round(spot, 2),
+            "repair_of":         orig_id,
+            "repair_iteration":  i + 1,
+            "repair_distance":   i + 1,
+            "repair_reason":     "capital",
+        })
+    return variants
+
+
+def enumerate_jl_repair_variants(
+    puts, original_candidate, spot, T,
+    min_profit_amount, recommended_structure, min_oi=0,
+):
+    """Return repair variants for a Jade Lizard.
+
+    Repair = move the naked short put further OTM. The call credit spread is
+    held constant (it is defined-risk and not the capital driver). Moving the
+    put lower OTM increases the OTM_amount deduction, reducing margin.
+    """
+    orig_id    = original_candidate.get("candidate_id")
+    orig_put_k = float(original_candidate.get("short_strike") or original_candidate.get("jl_put_strike") or 0)
+    call_credit      = float(original_candidate.get("_jl_call_credit")       or 0)
+    call_short_k     = original_candidate.get("_jl_call_short_strike")
+    call_long_k      = original_candidate.get("_jl_call_long_strike")
+    call_width       = float(original_candidate.get("_jl_call_width")         or 0)
+
+    put_cands = puts[puts["strike"] < orig_put_k].sort_values("strike", ascending=False)
+    if min_oi > 0:
+        put_cands = put_cands[put_cands["openInterest"].fillna(0) >= min_oi]
+    if put_cands.empty:
+        return []
+
+    import uuid as _uuid
+    variants = []
+    for i, (_, row) in enumerate(put_cands.iterrows()):
+        if i >= 5:
+            break
+        if not _valid_price(row.get("bid")):
+            continue
+        put_credit   = round(float(row["bid"]), 3)
+        put_k        = float(row["strike"])
+        total_credit = round(put_credit + call_credit, 3)
+        otm_amount   = max(0.0, spot - put_k)
+        margin_per_share = max(0.20 * spot - otm_amount, 0.10 * put_k)
+        margin_req   = round(margin_per_share * 100, 0)
+        no_upside    = total_credit >= call_width if call_width > 0 else False
+        downside_be  = round(put_k - total_credit, 2)
+        meets_profit, profit_msg = profit_note(total_credit, min_profit_amount)
+        pop = round(max(0.0, 1.0 - abs(float(row.get("delta") or 0))) * 100, 1)
+        _iv  = float(row.get("impliedVolatility") or 0)
+        _nd  = round(-float(row.get("delta") or 0), 3)
+        _nth = round(-(bs_theta(spot, put_k, T, RISK_FREE_RATE, _iv, "put") if _iv > 0 else 0), 4)
+        _ngm = round(-(bs_gamma(spot, put_k, T, RISK_FREE_RATE, _iv)         if _iv > 0 else 0), 6)
+        _nvg = round(-(bs_vega(spot,  put_k, T, RISK_FREE_RATE, _iv)         if _iv > 0 else 0), 4)
+
+        variants.append({
+            "candidate_id":          str(_uuid.uuid4()),
+            "structure":             "Jade Lizard",
+            "recommended":           recommended_structure == "Jade Lizard",
+            "details":               (f"SELL {put_k:.0f}P (naked, delta {row.get('delta', 0):.2f}) + "
+                                      f"SELL {call_short_k}C / BUY {call_long_k}C — "
+                                      f"total credit ~${total_credit:.2f}, "
+                                      f"{'no upside risk' if no_upside else 'upside risk: credit < call spread width'}, "
+                                      f"downside BE ${downside_be:.2f} (uncapped), {profit_msg}, "
+                                      f"est. margin ~${margin_req:.0f}"),
+            "pop":                   pop,
+            "ev":                    None,
+            "max_profit":            total_credit,
+            "meets_min_profit":      meets_profit,
+            "max_loss":              None,
+            "meets_max_loss":        None,
+            "capital_required":      margin_req,
+            "net_delta":             _nd,
+            "net_theta":             _nth,
+            "net_gamma":             _ngm,
+            "net_vega":              _nvg,
+            "is_credit":             True,
+            "requires_margin":       True,
+            "short_strike":          put_k,
+            "jl_put_strike":         put_k,
+            "_jl_call_credit":       call_credit,
+            "_jl_call_short_strike": call_short_k,
+            "_jl_call_long_strike":  call_long_k,
+            "_jl_call_width":        call_width,
+            "spot_at_entry":         round(spot, 2),
+            "repair_of":             orig_id,
+            "repair_iteration":      i + 1,
+            "repair_distance":       i + 1,
+            "repair_reason":         "capital",
+        })
+    return variants
+
+
+def enumerate_cs_repair_variants(
+    chain, original_candidate, option_type, spot, T,
+    min_profit_amount, recommended_structure, min_oi=0,
+):
+    """Repair a Put Credit Spread or Call Credit Spread by narrowing the spread width.
+
+    For PCS: SELL higher-strike put, BUY lower-strike put (long_strike < short_strike).
+             Repair: move long_put UP toward short_put → narrower spread → lower max_loss.
+    For CCS: SELL lower-strike call, BUY higher-strike call (long_strike > short_strike).
+             Repair: move long_call DOWN toward short_call → narrower spread → lower max_loss.
+    """
+    orig_id     = original_candidate.get("candidate_id")
+    short_k     = float(original_candidate.get("short_strike") or 0)
+    orig_long_k = float(original_candidate.get("long_strike")  or 0)
+
+    short_row = chain[chain["strike"] == short_k]
+    if short_row.empty:
+        return []
+    short_row = short_row.iloc[0]
+
+    if option_type == "put":
+        # long_put is BELOW short_put; moving it UP (toward short) = ascending strikes
+        repair_strikes = chain[
+            (chain["strike"] > orig_long_k) & (chain["strike"] < short_k)
+        ].sort_values("strike")
+    else:  # call
+        # long_call is ABOVE short_call; moving it DOWN (toward short) = descending strikes
+        repair_strikes = chain[
+            (chain["strike"] < orig_long_k) & (chain["strike"] > short_k)
+        ].sort_values("strike", ascending=False)
+
+    if min_oi > 0:
+        repair_strikes = repair_strikes[repair_strikes["openInterest"].fillna(0) >= min_oi]
+    if repair_strikes.empty:
+        return []
+
+    import uuid as _uuid
+    structure = "Put Credit Spread" if option_type == "put" else "Call Credit Spread"
+    variants = []
+    for i, (_, long_row) in enumerate(repair_strikes.iterrows()):
+        if i >= 5:
+            break
+        if not (_valid_price(short_row.get("bid")) and _valid_price(long_row.get("ask"))):
+            continue
+        credit = round(float(short_row["bid"]) - float(long_row["ask"]), 3)
+        if credit <= 0:
+            continue
+        if option_type == "put":
+            width = round(float(short_k) - float(long_row["strike"]), 2)
+        else:
+            width = round(float(long_row["strike"]) - float(short_k), 2)
+        if width <= 0:
+            continue
+        max_loss   = round(width - credit, 3)
+        pct        = credit / width * 100 if width > 0 else 0
+        pop, ev    = pop_ev_credit(short_row["delta"], credit, width)
+        meets_profit, profit_msg = profit_note(credit, min_profit_amount)
+        meets_loss, loss_msg     = loss_note(max_loss, width)
+        _nd, _nth, _ngm, _nvg   = _net_greeks(spot, T, long_row, short_row, option_type)
+        if option_type == "put":
+            details = (f"SELL {short_k:.0f}P / BUY {long_row['strike']:.0f}P "
+                       f"(credit ~${credit:.2f}, width ${width:.0f}, {pct:.0f}% of width, "
+                       f"{profit_msg}, max loss ${max_loss:.2f})")
+        else:
+            details = (f"SELL {short_k:.0f}C / BUY {long_row['strike']:.0f}C "
+                       f"(credit ~${credit:.2f}, width ${width:.0f}, {pct:.0f}% of width, "
+                       f"{profit_msg}, max loss ${max_loss:.2f})")
+        variants.append({
+            "candidate_id":     str(_uuid.uuid4()),
+            "structure":        structure,
+            "recommended":      recommended_structure == structure,
+            "details":          details,
+            "pop":              pop,
+            "ev":               ev,
+            "max_profit":       credit,
+            "meets_min_profit": meets_profit,
+            "max_loss":         max_loss,
+            "meets_max_loss":   meets_loss,
+            "net_delta":        _nd,
+            "net_theta":        _nth,
+            "net_gamma":        _ngm,
+            "net_vega":         _nvg,
+            "is_credit":        True,
+            "short_strike":     short_k,
+            "long_strike":      float(long_row["strike"]),
+            "spot_at_entry":    round(spot, 2),
+            "repair_of":        orig_id,
+            "repair_iteration": i + 1,
+            "repair_distance":  i + 1,
+            "repair_reason":    "capital",
+        })
+    return variants
+
+
+def enumerate_ic_repair_variants(
+    puts, calls, original_candidate, spot, T,
+    min_profit_amount, recommended_structure, min_oi=0,
+):
+    """Repair an Iron Condor by narrowing whichever spread side has the larger max_loss.
+
+    Narrows the put side first (move put long_strike UP toward put short_strike).
+    Returns up to 5 variants.
+    """
+    orig_id      = original_candidate.get("candidate_id")
+    put_short_k  = float(original_candidate.get("put_short_strike")  or original_candidate.get("short_strike") or 0)
+    put_long_k   = float(original_candidate.get("put_long_strike")   or original_candidate.get("long_strike")  or 0)
+    call_short_k = float(original_candidate.get("call_short_strike") or 0)
+    call_long_k  = float(original_candidate.get("call_long_strike")  or 0)
+
+    put_short_row = puts[puts["strike"] == put_short_k]
+    call_short_row = calls[calls["strike"] == call_short_k]
+    call_long_row  = calls[calls["strike"] == call_long_k]
+    if put_short_row.empty or call_short_row.empty or call_long_row.empty:
+        return []
+    put_short_row  = put_short_row.iloc[0]
+    call_short_row = call_short_row.iloc[0]
+    call_long_row  = call_long_row.iloc[0]
+
+    repair_puts = puts[
+        (puts["strike"] > put_long_k) & (puts["strike"] < put_short_k)
+    ].sort_values("strike")
+    if min_oi > 0:
+        repair_puts = repair_puts[repair_puts["openInterest"].fillna(0) >= min_oi]
+    if repair_puts.empty:
+        return []
+
+    call_credit = round(float(call_short_row.get("bid", 0)) - float(call_long_row.get("ask", 0)), 3)
+    call_width  = round(call_long_k - call_short_k, 2)
+
+    import uuid as _uuid
+    variants = []
+    for i, (_, pl_row) in enumerate(repair_puts.iterrows()):
+        if i >= 5:
+            break
+        if not (_valid_price(put_short_row.get("bid")) and _valid_price(pl_row.get("ask"))):
+            continue
+        put_credit  = round(float(put_short_row["bid"]) - float(pl_row["ask"]), 3)
+        if put_credit <= 0:
+            continue
+        put_width   = round(float(put_short_k) - float(pl_row["strike"]), 2)
+        total_credit = round(put_credit + call_credit, 3)
+        max_loss     = round(max(put_width, call_width) - total_credit, 3)
+        pop, ev      = pop_ev_iron_condor(put_short_row["delta"], call_short_row["delta"], total_credit, max(put_width, call_width))
+        meets_profit, profit_msg = profit_note(total_credit, min_profit_amount)
+        meets_loss, loss_msg     = loss_note(max_loss, max(put_width, call_width))
+        _pd, _pth, _pgm, _pvg   = _net_greeks(spot, T, pl_row,       put_short_row,  "put")
+        _cd, _cth, _cgm, _cvg   = _net_greeks(spot, T, call_long_row, call_short_row, "call")
+        variants.append({
+            "candidate_id":      str(_uuid.uuid4()),
+            "structure":         "Iron Condor",
+            "recommended":       recommended_structure == "Iron Condor",
+            "details":           (f"SELL {put_short_k:.0f}P/BUY {pl_row['strike']:.0f}P + "
+                                  f"SELL {call_short_k:.0f}C/BUY {call_long_k:.0f}C — "
+                                  f"total credit ~${total_credit:.2f}, max loss ~${max_loss:.2f}, {profit_msg}"),
+            "pop":               pop,
+            "ev":                ev,
+            "max_profit":        total_credit,
+            "meets_min_profit":  meets_profit,
+            "max_loss":          max_loss,
+            "meets_max_loss":    meets_loss,
+            "net_delta":         round((_pd or 0) + (_cd or 0), 3),
+            "net_theta":         round((_pth or 0) + (_cth or 0), 4),
+            "net_gamma":         round((_pgm or 0) + (_cgm or 0), 6),
+            "net_vega":          round((_pvg or 0) + (_cvg or 0), 4),
+            "is_credit":         True,
+            "put_short_strike":  put_short_k,
+            "put_long_strike":   float(pl_row["strike"]),
+            "call_short_strike": call_short_k,
+            "call_long_strike":  call_long_k,
+            "short_strike":      put_short_k,
+            "long_strike":       float(pl_row["strike"]),
+            "spot_at_entry":     round(spot, 2),
+            "repair_of":         orig_id,
+            "repair_iteration":  i + 1,
+            "repair_distance":   i + 1,
+            "repair_reason":     "capital",
+        })
+    return variants
+
+
+def enumerate_ls_repair_variants(
+    puts, calls, original_candidate, spot, T,
+    min_profit_amount, recommended_structure, min_oi=0,
+):
+    """Return repair candidates for a Long Strangle.
+
+    Repair = bring both legs closer to ATM → smaller total debit → lower capital.
+    Enumerates put strikes above original put leg and call strikes below original
+    call leg, paired by index (narrowest first).
+    """
+    orig_id    = original_candidate.get("candidate_id")
+    orig_put_k = float(original_candidate.get("ls_put_k") or 0)
+    orig_call_k = float(original_candidate.get("ls_call_k") or 0)
+
+    put_candidates = puts[
+        (puts["strike"] > orig_put_k) & (puts["strike"] < spot)
+    ]
+    call_candidates = calls[
+        (calls["strike"] < orig_call_k) & (calls["strike"] > spot)
+    ]
+    if min_oi > 0:
+        put_candidates  = put_candidates[put_candidates["openInterest"].fillna(0)  >= min_oi]
+        call_candidates = call_candidates[call_candidates["openInterest"].fillna(0) >= min_oi]
+    put_candidates  = put_candidates.sort_values("strike", ascending=False)   # closer to ATM first
+    call_candidates = call_candidates.sort_values("strike")                   # closer to ATM first
+
+    if put_candidates.empty or call_candidates.empty:
+        return []
+
+    import uuid as _uuid
+    n = min(len(put_candidates), len(call_candidates))
+    variants = []
+    for i in range(n):
+        lp = put_candidates.iloc[i]
+        lc = call_candidates.iloc[i]
+        if not (_valid_price(lp.get("ask")) and _valid_price(lc.get("ask"))):
+            continue
+        put_debit  = round(float(lp["ask"]), 3)
+        call_debit = round(float(lc["ask"]), 3)
+        total_debit = round(put_debit + call_debit, 3)
+        put_k  = float(lp["strike"])
+        call_k = float(lc["strike"])
+        call_be = round(call_k + total_debit, 2)
+        put_be  = round(put_k  - total_debit, 2)
+        pop = round((abs(float(lc.get("delta") or 0)) + abs(float(lp.get("delta") or 0))) * 100, 1)
+        lc_iv = float(lc.get("impliedVolatility") or 0)
+        lp_iv = float(lp.get("impliedVolatility") or 0)
+        _nd  = round(float(lc.get("delta") or 0) + float(lp.get("delta") or 0), 3)
+        _nth = round((bs_theta(spot, call_k, T, RISK_FREE_RATE, lc_iv, "call") if lc_iv > 0 else 0)
+                   + (bs_theta(spot, put_k,  T, RISK_FREE_RATE, lp_iv, "put")  if lp_iv  > 0 else 0), 4)
+        _ngm = round((bs_gamma(spot, call_k, T, RISK_FREE_RATE, lc_iv) if lc_iv > 0 else 0)
+                   + (bs_gamma(spot, put_k,  T, RISK_FREE_RATE, lp_iv) if lp_iv  > 0 else 0), 6)
+        _nvg = round((bs_vega(spot, call_k, T, RISK_FREE_RATE, lc_iv) if lc_iv > 0 else 0)
+                   + (bs_vega(spot, put_k,  T, RISK_FREE_RATE, lp_iv) if lp_iv  > 0 else 0), 4)
+        fits_cap = bool(total_debit <= rules.MAX_LOSS_PER_TRADE)
+        variants.append({
+            "candidate_id":     str(_uuid.uuid4()),
+            "structure":        "Long Strangle",
+            "recommended":      False,
+            "details":          (f"BUY {call_k:.0f}C (${call_debit:.2f}) + BUY {put_k:.0f}P (${put_debit:.2f}) — "
+                                 f"total debit ${total_debit:.2f}/sh, "
+                                 f"upper BE ${call_be:.2f}, lower BE ${put_be:.2f}"),
+            "pop":              pop,
+            "ev":               None,
+            "max_profit":       None,
+            "meets_min_profit": True,
+            "max_loss":         total_debit,
+            "meets_max_loss":   fits_cap,
+            "net_delta":        _nd,
+            "net_theta":        _nth,
+            "net_gamma":        _ngm,
+            "net_vega":         _nvg,
+            "is_credit":        False,
+            "short_strike":     put_k,
+            "long_strike":      call_k,
+            "ls_put_k":         put_k,
+            "ls_call_k":        call_k,
+            "ls_put_debit":     put_debit,
+            "ls_call_debit":    call_debit,
+            "ls_total_debit":   total_debit,
+            "ls_call_be":       call_be,
+            "ls_put_be":        put_be,
+            "ls_fits_cap":      fits_cap,
+            "spot_at_entry":    round(spot, 2),
+            "repair_of":        orig_id,
+            "repair_iteration": i + 1,
+            "repair_distance":  i + 1,
+            "repair_reason":    "capital",
+        })
+    return variants
+
+
+def enumerate_ds_repair_variants(
+    chain, original_candidate, option_type, spot, T,
+    width_target, min_profit_amount, recommended_structure, min_oi=0,
+):
+    """Return repair candidates for a Call or Put Debit Spread that failed a gate.
+
+    Enumerates all long-leg strikes between the original long strike and the fixed
+    short strike (moving the long closer to the short = narrower spread = lower debit
+    = lower capital), ordered by repair_distance (closest first).
+
+    For Call DS: original buys lower_strike, sells higher_strike.
+                 Repair moves long_strike up toward short_strike.
+    For Put DS:  original buys higher_strike, sells lower_strike.
+                 Repair moves long_strike down toward short_strike.
+
+    Each variant is independently priced.  Returns [] if no valid strikes exist.
+    """
+    orig_id       = original_candidate.get("candidate_id")
+    orig_long_k   = float(original_candidate.get("long_strike") or 0)
+    short_k       = float(original_candidate.get("short_strike") or 0)
+
+    short_row = chain[chain["strike"] == short_k]
+    if short_row.empty:
+        return []
+    short_row = short_row.iloc[0]
+
+    # Strikes between orig_long and short (exclusive of both endpoints)
+    if option_type == "call":
+        repair_strikes = chain[
+            (chain["strike"] > orig_long_k) & (chain["strike"] < short_k)
+        ].sort_values("strike")  # ascending = closest to original first
+    else:  # put
+        repair_strikes = chain[
+            (chain["strike"] < orig_long_k) & (chain["strike"] > short_k)
+        ].sort_values("strike", ascending=False)  # descending = closest to original first
+
+    if min_oi > 0:
+        repair_strikes = repair_strikes[repair_strikes["openInterest"].fillna(0) >= min_oi]
+    if repair_strikes.empty:
+        return []
+
+    import uuid as _uuid
+    structure = "Call Debit Spread" if option_type == "call" else "Put Debit Spread"
+    variants = []
+    for i, (_, long_row) in enumerate(repair_strikes.iterrows()):
+        debit = round(float(long_row["ask"]) - float(short_row["bid"]), 3)
+        if debit <= 0:
+            continue
+        if option_type == "call":
+            width = round(float(short_row["strike"]) - float(long_row["strike"]), 2)
+        else:
+            width = round(float(long_row["strike"]) - float(short_row["strike"]), 2)
+        if width <= 0:
+            continue
+        max_profit = round(width - debit, 3)
+        pop, ev = pop_ev_debit(long_row["delta"], debit, width)
+        meets_profit, profit_msg = profit_note(max_profit, min_profit_amount)
+        meets_loss, loss_msg = loss_note(debit, width_target)
+        _nd, _nth, _ngm, _nvg = _net_greeks(spot, T, long_row, short_row, option_type)
+        if option_type == "call":
+            details = (f"BUY {long_row['strike']}C / SELL {short_row['strike']}C "
+                       f"(debit ~${debit:.2f}, width ${width:.0f}, {profit_msg}, {loss_msg})")
+        else:
+            details = (f"BUY {long_row['strike']}P / SELL {short_row['strike']}P "
+                       f"(debit ~${debit:.2f}, width ${width:.0f}, {profit_msg}, {loss_msg})")
+        c = {
+            "candidate_id":     str(_uuid.uuid4()),
+            "structure":        structure,
+            "recommended":      recommended_structure == structure,
+            "details":          details,
+            "pop":              pop,
+            "ev":               ev,
+            "max_profit":       max_profit,
+            "meets_min_profit": meets_profit,
+            "max_loss":         round(debit, 3),
+            "meets_max_loss":   meets_loss,
+            "net_delta":        _nd,
+            "net_theta":        _nth,
+            "net_gamma":        _ngm,
+            "net_vega":         _nvg,
+            "is_credit":        False,
+            "long_strike":      long_row["strike"],
+            "short_strike":     short_row["strike"],
+            "spot_at_entry":    round(spot, 2),
+            "repair_of":        orig_id,
+            "repair_iteration": i + 1,
+            "repair_distance":  i + 1,
+            "repair_reason":    "capital",
+        }
+        variants.append(c)
+    return variants
 
 
 def find_long_strike_for_credit_spread(df, short_row, option_type, width_target, min_oi=0):
@@ -577,10 +1320,12 @@ def _dte_quality(dte: int | None, structure_name: str) -> tuple[float, list[dict
 
 
 def _hard_filter_pass(
-    constraints,   # StructureConstraints | None
+    constraints,            # StructureConstraints | None
     technical: TechnicalContext,
     flow: FlowContext,
     dte: int | None,
+    struct_dte_min: int = 0,   # from OptionStructure.dte_min
+    struct_dte_max: int = 0,   # from OptionStructure.dte_max
 ) -> tuple[bool, list[str]]:
     """
     Return (passes, rejection_reasons).
@@ -594,10 +1339,18 @@ def _hard_filter_pass(
     reasons: list[str] = []
 
     if dte is not None:
-        if constraints.min_dte and dte < constraints.min_dte:
-            reasons.append(f"DTE {dte} < min {constraints.min_dte}")
-        if constraints.max_dte and dte > constraints.max_dte:
-            reasons.append(f"DTE {dte} > max {constraints.max_dte}")
+        # StructureConstraints.min/max_dte take precedence; fall back to OptionStructure fields.
+        _dte_min = (constraints.min_dte or struct_dte_min) if constraints else struct_dte_min
+        _dte_max = (constraints.max_dte or struct_dte_max) if constraints else struct_dte_max
+        # Absolute floor: even unconfigured structs must respect the global minimum.
+        # This catches the pick_expiry fallback edge case where a 0DTE expiry slips through.
+        if not _dte_min:
+            from config import rules as _rules
+            _dte_min = _rules.MIN_DTE
+        if _dte_min and dte < _dte_min:
+            reasons.append(f"DTE {dte} < min {_dte_min}")
+        if _dte_max and dte > _dte_max:
+            reasons.append(f"DTE {dte} > max {_dte_max}")
 
     ed = flow.earnings_dte
     if constraints.earnings_dte_min:
@@ -623,9 +1376,9 @@ def _hard_filter_pass(
     ivr = technical.iv_rank_52w
     if ivr is not None:
         if ivr < constraints.min_iv_rank:
-            reasons.append(f"IV rank {ivr*100:.0f}% below required {constraints.min_iv_rank*100:.0f}%")
+            reasons.append(f"IV rank {ivr:.0f}% below required {constraints.min_iv_rank:.0f}%")
         if ivr > constraints.max_iv_rank:
-            reasons.append(f"IV rank {ivr*100:.0f}% above allowed {constraints.max_iv_rank*100:.0f}%")
+            reasons.append(f"IV rank {ivr:.0f}% above allowed {constraints.max_iv_rank:.0f}%")
 
     if constraints.allowed_trends and technical.trend not in constraints.allowed_trends:
         reasons.append(f"Trend '{technical.trend}' not in allowed {list(constraints.allowed_trends)}")
@@ -697,7 +1450,11 @@ def select_structure(
     for name in candidate_names:
         struct = _STRUCTURE_REGISTRY.get(name)
         constraints = struct.constraints if struct is not None else None
-        passes, filter_reasons = _hard_filter_pass(constraints, technical, flow, dte)
+        passes, filter_reasons = _hard_filter_pass(
+            constraints, technical, flow, dte,
+            struct.dte_min if struct else 0,
+            struct.dte_max if struct else 0,
+        )
         if not passes:
             filtered_out.append({"structure": name, "filter_reasons": filter_reasons})
             continue
@@ -811,6 +1568,17 @@ from config.rules import (
 
 def _valid_price(x):
     return x is not None and not pd.isna(x) and x > 0
+
+
+def _safe_int(v, default: int = 0) -> int:
+    """int() with NaN safety — pandas NaN is truthy, so `nan or 0` still gives nan."""
+    if v is None:
+        return default
+    try:
+        f = float(v)
+        return default if f != f else int(f)  # f != f iff NaN
+    except (TypeError, ValueError):
+        return default
 
 
 def optimize_credit_spread(df, option_type, min_oi=0, min_profit_amount=0, max_loss_limit=None):
@@ -1055,6 +1823,13 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
         result["status"] = "No option chain data"
         result["candidates"] = []
         return result
+
+    # Flag when bid/ask was synthesised from lastPrice (market closed).
+    # Propagated to the row so the ranker can apply a score penalty.
+    result["synthetic_quotes"] = bool(
+        ("_synthetic" in calls.columns and calls["_synthetic"].any()) or
+        ("_synthetic" in puts.columns and puts["_synthetic"].any())
+    )
 
     chain_quality = validate_chain(calls, puts, spot)
     result["chain_quality"] = chain_quality["issues"]
@@ -1316,6 +2091,8 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
                 "is_credit": True,
                 "long_strike": long_put["strike"], "short_strike": short_put["strike"],
                 "spot_at_entry": round(spot, 2),
+                "candidate_id": str(__import__("uuid").uuid4()),
+                "_pcs_puts":    puts,
             })
     else:
         candidates.append({
@@ -1340,8 +2117,9 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
         _csp_vg = round(-(bs_vega(spot,  short_put["strike"], T, RISK_FREE_RATE, _csp_iv) if _csp_iv > 0 else 0.0), 4)
         _csp_nd = round(-float(short_put.get("delta") or 0), 3)
         candidates.append({
+            "candidate_id":    str(__import__("uuid").uuid4()),
             "structure":       "Cash Secured Put",
-            "recommended":     recommended_structure in ("Put Credit Spread",) and iv_env == "High",
+            "recommended":     recommended_structure in ("Cash Secured Put", "Naked Put"),
             "details":         (f"SELL {short_put['strike']}P (delta {short_put['delta']:.2f}, "
                                 f"credit ~${csp_credit:.2f}, breakeven ${csp_breakeven:.2f}, "
                                 f"max loss ${csp_max_loss:.2f}/share if stock → 0, {profit_msg})"),
@@ -1358,6 +2136,7 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
             "is_credit":       True,
             "short_strike":    short_put["strike"],
             "spot_at_entry":   round(spot, 2),
+            "_csp_puts":       puts,
         })
     else:
         candidates.append({
@@ -1451,6 +2230,8 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
                 "is_credit": True,
                 "long_strike": long_call_c["strike"], "short_strike": short_call["strike"],
                 "spot_at_entry": round(spot, 2),
+                "candidate_id": str(__import__("uuid").uuid4()),
+                "_ccs_calls":   calls,
             })
     else:
         candidates.append({
@@ -1464,8 +2245,8 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
     _ic_legs_present = (short_put is not None and long_put is not None
                         and short_call is not None and long_call_c is not None)
     _ic_leg_ois = (
-        [int(short_put.get("openInterest") or 0), int(long_put.get("openInterest") or 0),
-         int(short_call.get("openInterest") or 0), int(long_call_c.get("openInterest") or 0)]
+        [_safe_int(short_put.get("openInterest")), _safe_int(long_put.get("openInterest")),
+         _safe_int(short_call.get("openInterest")), _safe_int(long_call_c.get("openInterest"))]
         if _ic_legs_present else []
     )
     _ic_oi_ok = _ic_legs_present and (min_oi == 0 or min(_ic_leg_ois) >= min_oi)
@@ -1519,12 +2300,197 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
             "is_credit": True,
             "put_long_strike": long_put["strike"], "put_short_strike": short_put["strike"],
             "call_short_strike": short_call["strike"], "call_long_strike": long_call_c["strike"],
+            "short_strike": short_put["strike"],   # primary short leg alias for repair
+            "long_strike":  long_put["strike"],
             "spot_at_entry": round(spot, 2),
+            "candidate_id": str(__import__("uuid").uuid4()),
+            "_ic_puts":     puts,
+            "_ic_calls":    calls,
         })
     elif not _ic_legs_present:
         candidates.append({
             "structure": "Iron Condor", "recommended": False,
             "details": "Missing put or call credit spread leg — no valid strikes in delta range",
+            "pop": None, "ev": None, "max_profit": None, "meets_min_profit": None,
+        })
+
+    # --- Iron Butterfly (ATM short call + ATM short put + OTM long wings; defined risk) ---
+    # Same 4-leg shape as Iron Condor but short legs placed near ATM (~0.50 delta).
+    # Max credit collected when stock pins exactly at short strike.  Profit zone is narrow
+    # so it is only shown when the chain is liquid enough to price all four legs.
+    _ibf_short_put  = find_short_strike(puts,  "put",  (p["ibf_short_delta_lo"], p["ibf_short_delta_hi"]), min_oi)
+    _ibf_short_call = find_short_strike(calls, "call", (p["ibf_short_delta_lo"], p["ibf_short_delta_hi"]), min_oi)
+    _ibf_long_put   = find_short_strike(puts,  "put",  (p["ibf_long_delta_lo"],  p["ibf_long_delta_hi"]),  min_oi)
+    _ibf_long_call  = find_short_strike(calls, "call", (p["ibf_long_delta_lo"],  p["ibf_long_delta_hi"]),  min_oi)
+    _ibf_legs_ok = (
+        _ibf_short_put is not None and _ibf_short_call is not None
+        and _ibf_long_put is not None and _ibf_long_call is not None
+        and _ibf_long_put["strike"] < _ibf_short_put["strike"]
+        and _ibf_short_call["strike"] < _ibf_long_call["strike"]
+    )
+    if _ibf_legs_ok:
+        _ibf_c = _build_ibf_candidate(
+            puts, calls, _ibf_short_put, _ibf_short_call, _ibf_long_put, _ibf_long_call,
+            spot, T, width_target, min_profit_amount, recommended_structure,
+            candidate_id=str(_uuid.uuid4()),
+        )
+        if _ibf_c is None:
+            candidates.append({
+                "structure": "Iron Butterfly", "recommended": recommended_structure == "Iron Butterfly",
+                "details": "Net credit ≤ 0 — wide bid/ask on ATM legs makes structure not viable",
+                "pop": None, "ev": None, "max_profit": None, "meets_min_profit": None,
+            })
+        else:
+            # Store the option chain refs so Gate 10 repair can enumerate variants
+            _ibf_c["_ibf_puts"]  = puts
+            _ibf_c["_ibf_calls"] = calls
+            candidates.append(_ibf_c)
+    else:
+        candidates.append({
+            "structure": "Iron Butterfly", "recommended": False,
+            "details": "Missing ATM or wing strike — chain too thin for Iron Butterfly",
+            "pop": None, "ev": None, "max_profit": None, "meets_min_profit": None,
+        })
+
+    # --- Short Strangle (OTM short put + OTM short call; undefined risk on both sides) ---
+    # Collects premium from both wings.  Undefined risk — requires margin.  Only shown
+    # informational when the paper account can't carry naked exposure.
+    _ssg_short_put  = find_short_strike(puts,  "put",  (p["ss_put_delta_lo"],  p["ss_put_delta_hi"]),  min_oi)
+    _ssg_short_call = find_short_strike(calls, "call", (p["ss_call_delta_lo"], p["ss_call_delta_hi"]), min_oi)
+    _ssg_legs_ok = (
+        _ssg_short_put is not None and _ssg_short_call is not None
+        and _valid_price(_ssg_short_put["bid"]) and _valid_price(_ssg_short_call["bid"])
+        and float(_ssg_short_put["strike"]) < float(_ssg_short_call["strike"])
+    )
+    if _ssg_legs_ok:
+        _ssg_put_credit  = round(float(_ssg_short_put["bid"]),  3)
+        _ssg_call_credit = round(float(_ssg_short_call["bid"]), 3)
+        _ssg_total_credit = round(_ssg_put_credit + _ssg_call_credit, 3)
+        # Approx margin: the larger of the two naked legs (exchange uses max-of-two rule)
+        _ssg_margin_put  = round(spot * 0.20 * 100 - max(0, float(_ssg_short_put["strike"])  - spot) * 100 + _ssg_put_credit  * 100, 0)
+        _ssg_margin_call = round(spot * 0.20 * 100 - max(0, spot - float(_ssg_short_call["strike"])) * 100 + _ssg_call_credit * 100, 0)
+        _ssg_margin_req  = round(max(_ssg_margin_put, _ssg_margin_call) + _ssg_total_credit * 100, 0)
+        # POP: probability both legs expire OTM ≈ 1 - (|put_delta| + |call_delta|)
+        _ssg_pop = round(max(0.0, 1.0 - abs(float(_ssg_short_put.get("delta") or 0))
+                                      - abs(float(_ssg_short_call.get("delta") or 0))) * 100, 1)
+        _ssg_put_be  = round(float(_ssg_short_put["strike"])  - _ssg_total_credit, 2)
+        _ssg_call_be = round(float(_ssg_short_call["strike"]) + _ssg_total_credit, 2)
+        _ssg_meets_profit, _ssg_profit_msg = profit_note(_ssg_total_credit, min_profit_amount)
+        _ssg_put_iv  = float(_ssg_short_put.get("impliedVolatility")  or 0)
+        _ssg_call_iv = float(_ssg_short_call.get("impliedVolatility") or 0)
+        _ssg_nd  = round(-abs(float(_ssg_short_put.get("delta") or 0)) + abs(float(_ssg_short_call.get("delta") or 0)), 3)
+        _ssg_nth = round(-(bs_theta(spot, float(_ssg_short_put["strike"]),  T, RISK_FREE_RATE, _ssg_put_iv,  "put")  if _ssg_put_iv  > 0 else 0)
+                        -(bs_theta(spot, float(_ssg_short_call["strike"]), T, RISK_FREE_RATE, _ssg_call_iv, "call") if _ssg_call_iv > 0 else 0), 4)
+        _ssg_ngm = round(-(bs_gamma(spot, float(_ssg_short_put["strike"]),  T, RISK_FREE_RATE, _ssg_put_iv)  if _ssg_put_iv  > 0 else 0)
+                        -(bs_gamma(spot, float(_ssg_short_call["strike"]), T, RISK_FREE_RATE, _ssg_call_iv) if _ssg_call_iv > 0 else 0), 6)
+        _ssg_nvg = round(-(bs_vega(spot, float(_ssg_short_put["strike"]),  T, RISK_FREE_RATE, _ssg_put_iv)  if _ssg_put_iv  > 0 else 0)
+                        -(bs_vega(spot, float(_ssg_short_call["strike"]), T, RISK_FREE_RATE, _ssg_call_iv) if _ssg_call_iv > 0 else 0), 4)
+        candidates.append({
+            "structure":    "Short Strangle",
+            "recommended":  recommended_structure == "Short Strangle",
+            "details": (f"SELL {_ssg_short_put['strike']}P (${_ssg_put_credit:.2f}) + "
+                        f"SELL {_ssg_short_call['strike']}C (${_ssg_call_credit:.2f}) — "
+                        f"total credit ${_ssg_total_credit:.2f}, lower BE ${_ssg_put_be:.2f}, "
+                        f"upper BE ${_ssg_call_be:.2f}, est. margin ~${_ssg_margin_req:.0f}, "
+                        f"{_ssg_profit_msg}"),
+            "pop":          _ssg_pop,
+            "ev":           None,   # undefined downside — EV not meaningful
+            "max_profit":   _ssg_total_credit,
+            "meets_min_profit": _ssg_meets_profit,
+            "max_loss":     None,   # unlimited
+            "meets_max_loss": None,
+            "capital_req":  _ssg_margin_req,
+            "net_delta":    _ssg_nd,
+            "net_theta":    _ssg_nth,
+            "net_gamma":    _ssg_ngm,
+            "net_vega":     _ssg_nvg,
+            "is_credit":    True,
+            "requires_margin": True,
+            "put_short_strike":  float(_ssg_short_put["strike"]),
+            "call_short_strike": float(_ssg_short_call["strike"]),
+            # aliases used by compute_capital_required and repair generator
+            "short_strike":      float(_ssg_short_put["strike"]),
+            "long_strike":       float(_ssg_short_call["strike"]),
+            "spot_at_entry": round(spot, 2),
+            "candidate_id":  str(_uuid.uuid4()),
+            "_ss_puts":      puts,
+            "_ss_calls":     calls,
+        })
+    else:
+        candidates.append({
+            "structure": "Short Strangle", "recommended": False,
+            "details": "No liquid OTM put/call pair found at target delta range for Short Strangle",
+            "pop": None, "ev": None, "max_profit": None, "meets_min_profit": None,
+        })
+
+    # --- Short Straddle (ATM short call + ATM short put; undefined risk) ---
+    # Highest premium of all neutral structures — both legs placed ATM (~0.50 delta).
+    # Unlimited risk in both directions. Margin-intensive, sharp gamma at expiry.
+    _sstr_short_put  = find_short_strike(puts,  "put",  (p["sstr_atm_delta_lo"], p["sstr_atm_delta_hi"]), min_oi)
+    _sstr_short_call = find_short_strike(calls, "call", (p["sstr_atm_delta_lo"], p["sstr_atm_delta_hi"]), min_oi)
+    _sstr_legs_ok = (
+        _sstr_short_put is not None and _sstr_short_call is not None
+        and _valid_price(_sstr_short_put["bid"]) and _valid_price(_sstr_short_call["bid"])
+    )
+    if _sstr_legs_ok:
+        _sstr_put_credit  = round(float(_sstr_short_put["bid"]),  3)
+        _sstr_call_credit = round(float(_sstr_short_call["bid"]), 3)
+        _sstr_total_credit = round(_sstr_put_credit + _sstr_call_credit, 3)
+        _sstr_put_k  = float(_sstr_short_put["strike"])
+        _sstr_call_k = float(_sstr_short_call["strike"])
+        _sstr_put_be  = round(_sstr_put_k  - _sstr_total_credit, 2)
+        _sstr_call_be = round(_sstr_call_k + _sstr_total_credit, 2)
+        # Reg-T style margin: larger of put/call naked margin + credit received
+        _sstr_margin_put  = round(spot * 0.20 * 100 + _sstr_put_credit  * 100, 0)
+        _sstr_margin_call = round(spot * 0.20 * 100 + _sstr_call_credit * 100, 0)
+        _sstr_margin_req  = round(max(_sstr_margin_put, _sstr_margin_call) + _sstr_total_credit * 100, 0)
+        # POP: probability stock stays between the two breakevens
+        _sstr_pop = round(max(0.0, 1.0 - abs(float(_sstr_short_put.get("delta") or 0))
+                                       - abs(float(_sstr_short_call.get("delta") or 0))) * 100, 1)
+        _sstr_meets_profit, _sstr_profit_msg = profit_note(_sstr_total_credit, min_profit_amount)
+        _sstr_put_iv  = float(_sstr_short_put.get("impliedVolatility")  or 0)
+        _sstr_call_iv = float(_sstr_short_call.get("impliedVolatility") or 0)
+        _sstr_nd  = round(-abs(float(_sstr_short_put.get("delta") or 0)) + abs(float(_sstr_short_call.get("delta") or 0)), 3)
+        _sstr_nth = round(-(bs_theta(spot, _sstr_put_k,  T, RISK_FREE_RATE, _sstr_put_iv,  "put")  if _sstr_put_iv  > 0 else 0)
+                         -(bs_theta(spot, _sstr_call_k, T, RISK_FREE_RATE, _sstr_call_iv, "call") if _sstr_call_iv > 0 else 0), 4)
+        _sstr_ngm = round(-(bs_gamma(spot, _sstr_put_k,  T, RISK_FREE_RATE, _sstr_put_iv)  if _sstr_put_iv  > 0 else 0)
+                         -(bs_gamma(spot, _sstr_call_k, T, RISK_FREE_RATE, _sstr_call_iv) if _sstr_call_iv > 0 else 0), 6)
+        _sstr_nvg = round(-(bs_vega(spot, _sstr_put_k,  T, RISK_FREE_RATE, _sstr_put_iv)  if _sstr_put_iv  > 0 else 0)
+                         -(bs_vega(spot, _sstr_call_k, T, RISK_FREE_RATE, _sstr_call_iv) if _sstr_call_iv > 0 else 0), 4)
+        candidates.append({
+            "structure":    "Short Straddle",
+            "recommended":  recommended_structure == "Short Straddle",
+            "details": (f"SELL {_sstr_put_k:.0f}P (${_sstr_put_credit:.2f}) + "
+                        f"SELL {_sstr_call_k:.0f}C (${_sstr_call_credit:.2f}) — "
+                        f"total credit ${_sstr_total_credit:.2f}, lower BE ${_sstr_put_be:.2f}, "
+                        f"upper BE ${_sstr_call_be:.2f}, est. margin ~${_sstr_margin_req:.0f}, "
+                        f"{_sstr_profit_msg}"),
+            "pop":          _sstr_pop,
+            "ev":           None,   # undefined downside
+            "max_profit":   _sstr_total_credit,
+            "meets_min_profit": _sstr_meets_profit,
+            "max_loss":     None,   # unlimited
+            "meets_max_loss": None,
+            "capital_req":  _sstr_margin_req,
+            "net_delta":    _sstr_nd,
+            "net_theta":    _sstr_nth,
+            "net_gamma":    _sstr_ngm,
+            "net_vega":     _sstr_nvg,
+            "is_credit":    True,
+            "requires_margin": True,
+            "put_short_strike":  _sstr_put_k,
+            "call_short_strike": _sstr_call_k,
+            "short_strike":      _sstr_put_k,   # alias for repair (put leg)
+            "long_strike":       _sstr_call_k,  # alias for repair (call leg)
+            "spot_at_entry": round(spot, 2),
+            "candidate_id":  str(__import__("uuid").uuid4()),
+            "_sstr_puts":    puts,
+            "_sstr_calls":   calls,
+        })
+    else:
+        candidates.append({
+            "structure": "Short Straddle", "recommended": False,
+            "details": "No liquid ATM put/call pair found at target delta range for Short Straddle",
             "pop": None, "ev": None, "max_profit": None, "meets_min_profit": None,
         })
 
@@ -1558,6 +2524,8 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
             "is_credit": False,
             "long_strike": long_call_d["strike"], "short_strike": short_call_d["strike"],
             "spot_at_entry": round(spot, 2),
+            "candidate_id": str(_uuid.uuid4()),
+            "_ds_chain": calls, "_ds_option_type": "call",
         })
     else:
         candidates.append({
@@ -1596,6 +2564,8 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
             "is_credit": False,
             "long_strike": long_put_d["strike"], "short_strike": short_put_d["strike"],
             "spot_at_entry": round(spot, 2),
+            "candidate_id": str(_uuid.uuid4()),
+            "_ds_chain": puts, "_ds_option_type": "put",
         })
     else:
         candidates.append({
@@ -1636,8 +2606,7 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
         _jl_net_vg = round(-_jl_put_vg_raw + (_jl_nvg_call or 0), 4)
         candidates.append({
             "structure": "Jade Lizard",
-            "recommended": (fits_capital and iv_env == "High"
-                             and recommended_structure in ("Put Credit Spread", "Iron Condor")),
+            "recommended": recommended_structure == "Jade Lizard",
             "details": (f"SELL {short_put_jl['strike']}P (naked, delta {short_put_jl['delta']:.2f}) + "
                          f"SELL {short_call['strike']}C / BUY {long_call_c['strike']}C "
                          f"(total credit ~${total_credit_jl:.2f}, call spread width ${width_call:.0f}) - "
@@ -1650,6 +2619,15 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
             "capital_required": round(margin_required, 2),
             "net_delta": _jl_net_d, "net_theta": _jl_net_th, "net_gamma": _jl_net_gm, "net_vega": _jl_net_vg,
             "is_credit": True,
+            # fields used by compute_capital_required and repair generator
+            "short_strike":             float(short_put_jl["strike"]),
+            "jl_put_strike":            float(short_put_jl["strike"]),
+            "candidate_id":             str(_uuid.uuid4()),
+            "_jl_puts":                 puts,
+            "_jl_call_credit":          round(float(credit_call), 3),
+            "_jl_call_short_strike":    float(short_call["strike"]),
+            "_jl_call_long_strike":     float(long_call_c["strike"]),
+            "_jl_call_width":           round(float(width_call), 2),
         })
     else:
         candidates.append({
@@ -1685,8 +2663,11 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
         # Margin requirement on the short put (Reg-T style)
         _rr_otm_amt  = max(0.0, spot - _rr_put_k)
         _rr_margin   = max(0.20 * spot - _rr_otm_amt, 0.10 * _rr_put_k) * 100
-        _rr_fits_cap = bool(_rr_margin <= rules.CAPITAL)
-        _rr_margin_note = (f"naked put requires ~${_rr_margin:.0f} margin "
+        # Net buying power consumed = gross margin minus credit received (credit offsets margin deposit)
+        _rr_net_cap  = max(0.0, _rr_margin - _rr_net * 100) if _rr_is_cred else _rr_margin + abs(_rr_net) * 100
+        _rr_fits_cap = bool(_rr_net_cap <= rules.CAPITAL)
+        _rr_margin_note = (f"naked put requires ~${_rr_margin:.0f} gross margin, "
+                           f"~${_rr_net_cap:.0f} net BP needed "
                            f"({'fits' if _rr_fits_cap else 'exceeds'} ${rules.CAPITAL:.0f} capital)")
 
         # Downside breakeven: stock price below which we start losing money at expiry
@@ -1756,7 +2737,7 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
             # max_loss = true worst case (stock→$0) so Kelly sizing is appropriately conservative
             "max_loss": round(_rr_true_max_loss, 3),
             "meets_max_loss": None,   # uncapped; bypass loss-cap gate, rated on margin
-            "capital_required": round(_rr_margin, 2),
+            "capital_required": round(_rr_net_cap, 2),
             "net_delta": _rr_nd,
             "net_theta": _rr_nth,
             "net_gamma": _rr_ngm,
@@ -2129,7 +3110,7 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
                 f"net {'credit' if _rbc_is_credit else 'debit'} ~${abs(_rbc_net_cost):.2f}, "
                 f"dead zone max loss ${_rbc_max_loss:.2f}/sh (stock between {_rbc_short_k:.0f}–{_rbc_long_k:.0f}), "
                 f"unlimited profit above ${_rbc_upper_be:.2f}, "
-                f"{'credit kept if stock < ' + str(int(_rbc_short_k)) if _rbc_is_credit else 'loss if stock < ' + str(int(_rbc_dead_be))}, "
+                f"{'credit kept if stock < ' + str(_safe_int(_rbc_short_k)) if _rbc_is_credit else 'loss if stock < ' + str(_safe_int(_rbc_dead_be))}, "
                 f"{_rbc_loss_msg}"
             ),
             "pop": _rbc_pop, "ev": None,
@@ -2209,7 +3190,7 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
                 f"net {'credit' if _rbp_is_credit else 'debit'} ~${abs(_rbp_net_cost):.2f}, "
                 f"dead zone max loss ${_rbp_max_loss:.2f}/sh (stock between {_rbp_long_k:.0f}–{_rbp_short_k:.0f}), "
                 f"unlimited profit below ${_rbp_lower_be:.2f}, "
-                f"{'credit kept if stock > ' + str(int(_rbp_short_k)) if _rbp_is_credit else 'loss if stock > ' + str(int(_rbp_dead_be))}, "
+                f"{'credit kept if stock > ' + str(_safe_int(_rbp_short_k)) if _rbp_is_credit else 'loss if stock > ' + str(_safe_int(_rbp_dead_be))}, "
                 f"{_rbp_loss_msg}"
             ),
             "pop": _rbp_pop, "ev": None,
@@ -2276,6 +3257,7 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
                             f"${rules.MAX_LOSS_PER_TRADE:.0f} risk limit — shown informational only")
 
         candidates.append({
+            "candidate_id":    str(__import__("uuid").uuid4()),
             "structure": "Long Strangle",
             "recommended": (
                 _ls_fits_cap
@@ -2307,6 +3289,8 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
             "ls_call_be":   _ls_call_be,
             "ls_put_be":    _ls_put_be,
             "ls_fits_cap":  _ls_fits_cap,
+            "_ls_puts":     puts,
+            "_ls_calls":    calls,
         })
     else:
         candidates.append({
@@ -2392,97 +3376,104 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
         _back_calls, _back_puts = get_option_chain(tkr, diag_back_expiry, spot=spot, dte=diag_back_dte)
         _back_chain = _back_calls if _opt_type == "call" else _back_puts
         _front_chain = calls if _opt_type == "call" else puts
-        T_diag_back = diag_back_dte / 365.0
-        _back_chain = add_deltas(_back_chain, spot, T_diag_back, _opt_type, fallback_vol=_hv_fallback)
-        # Back-month long leg: higher delta (closer to ATM), deeper in-the-money
-        _diag_long = find_short_strike(_back_chain, _opt_type,
-                                        (p["diagonal_long_delta_lo"], p["diagonal_long_delta_hi"]), min_oi)
-        # Front-month short leg: lower delta (further OTM), decays faster
-        _diag_short = find_short_strike(_front_chain, _opt_type,
-                                         (p["diagonal_short_delta_lo"], p["diagonal_short_delta_hi"]), min_oi)
-        if _diag_long is None or _diag_short is None:
+        if _back_chain is None or _back_chain.empty:
             candidates.append({
                 "structure": "Diagonal Spread", "recommended": False,
-                "details": f"No strikes found in target delta ranges ({_diag_direction} diagonal)",
-                "pop": None, "ev": None, "max_profit": None, "meets_min_profit": None,
-            })
-        elif not _valid_price(_diag_long["ask"]) or not _valid_price(_diag_short["bid"]):
-            candidates.append({
-                "structure": "Diagonal Spread", "recommended": False,
-                "details": "Illiquid (no bid/ask) on one or both legs",
+                "details": "No back-month option chain data for diagonal spread",
                 "pop": None, "ev": None, "max_profit": None, "meets_min_profit": None,
             })
         else:
-            # Validate strike direction: bullish call diagonal = short strike > long strike
-            _strike_ok = (
-                (_opt_type == "call" and _diag_short["strike"] >= _diag_long["strike"]) or
-                (_opt_type == "put"  and _diag_short["strike"] <= _diag_long["strike"])
-            )
-            if not _strike_ok:
+            T_diag_back = diag_back_dte / 365.0
+            _back_chain = add_deltas(_back_chain, spot, T_diag_back, _opt_type, fallback_vol=_hv_fallback)
+            # Back-month long leg: higher delta (closer to ATM), deeper in-the-money
+            _diag_long = find_short_strike(_back_chain, _opt_type,
+                                            (p["diagonal_long_delta_lo"], p["diagonal_long_delta_hi"]), min_oi)
+            # Front-month short leg: lower delta (further OTM), decays faster
+            _diag_short = find_short_strike(_front_chain, _opt_type,
+                                             (p["diagonal_short_delta_lo"], p["diagonal_short_delta_hi"]), min_oi)
+            if _diag_long is None or _diag_short is None:
                 candidates.append({
                     "structure": "Diagonal Spread", "recommended": False,
-                    "details": f"Strike mismatch for {_diag_direction} diagonal — cannot build valid spread",
+                    "details": f"No strikes found in target delta ranges ({_diag_direction} diagonal)",
+                    "pop": None, "ev": None, "max_profit": None, "meets_min_profit": None,
+                })
+            elif not _valid_price(_diag_long["ask"]) or not _valid_price(_diag_short["bid"]):
+                candidates.append({
+                    "structure": "Diagonal Spread", "recommended": False,
+                    "details": "Illiquid (no bid/ask) on one or both legs",
                     "pop": None, "ev": None, "max_profit": None, "meets_min_profit": None,
                 })
             else:
-                _diag_debit = _diag_long["ask"] - _diag_short["bid"]
-                if _diag_debit <= 0:
+                # Validate strike direction: bullish call diagonal = short strike > long strike
+                _strike_ok = (
+                    (_opt_type == "call" and _diag_short["strike"] >= _diag_long["strike"]) or
+                    (_opt_type == "put"  and _diag_short["strike"] <= _diag_long["strike"])
+                )
+                if not _strike_ok:
                     candidates.append({
                         "structure": "Diagonal Spread", "recommended": False,
-                        "details": (f"Net debit ≤ 0 (${_diag_debit:.2f}) — "
-                                    f"short leg bid too wide to offset long leg cost"),
+                        "details": f"Strike mismatch for {_diag_direction} diagonal — cannot build valid spread",
                         "pop": None, "ev": None, "max_profit": None, "meets_min_profit": None,
                     })
                 else:
-                    # Max profit approx: if front-month expires worthless, back-month intrinsic
-                    # value vs cost basis. Use width × (long_delta - short_delta) as proxy.
-                    _diag_width = abs(_diag_short["strike"] - _diag_long["strike"])
-                    _diag_max_profit_est = round(
-                        max(0.0, _diag_width * abs(_diag_long["delta"] - _diag_short["delta"])), 3
-                    )
-                    _diag_max_loss = _diag_debit  # max loss = net debit paid
-                    meets_profit, profit_msg = profit_note(_diag_max_profit_est, min_profit_amount)
-                    meets_loss, loss_msg = loss_note(_diag_max_loss, width_target)
-                    # Greeks: long back-month, short front-month (different strikes)
-                    _diag_nd, _diag_nth, _diag_ngm, _diag_nvg = _net_greeks(
-                        spot, T_diag_back, _diag_long, _diag_short, _opt_type, short_T=T
-                    )
-                    # Approx POP: probability long delta finishes ITM
-                    _diag_pop = round(abs(_diag_long["delta"]) * 100, 1)
-                    iv_edge_msg = ""
-                    if iv_ts:
-                        iv_edge_msg = f" | {iv_ts['shape']}: {iv_ts['note']}"
-                    _leg_label = "C" if _opt_type == "call" else "P"
-                    candidates.append({
-                        "structure": "Diagonal Spread",
-                        "recommended": (
-                            trend in ("Uptrend", "Downtrend") and
-                            recommended_structure in ("Call Debit Spread", "Put Debit Spread",
-                                                      "No Trade", "Call Credit Spread", "Put Credit Spread")
-                        ),
-                        "details": (
-                            f"{'Bullish' if _diag_direction == 'bullish' else 'Bearish'} diagonal: "
-                            f"BUY {_diag_long['strike']}{_leg_label} ({diag_back_expiry}, {diag_back_dte}d, "
-                            f"delta {_diag_long['delta']:.2f}) / "
-                            f"SELL {_diag_short['strike']}{_leg_label} ({expiry}, {dte}d, "
-                            f"delta {_diag_short['delta']:.2f}) — "
-                            f"net debit ~${_diag_debit:.2f}, est. max profit ~${_diag_max_profit_est:.2f}, "
-                            f"{profit_msg}, {loss_msg}{iv_edge_msg}"
-                        ),
-                        "pop": _diag_pop,
-                        "ev": None,
-                        "max_profit": _diag_max_profit_est,
-                        "meets_min_profit": meets_profit,
-                        "max_loss": round(_diag_max_loss, 3),
-                        "meets_max_loss": meets_loss,
-                        "net_delta": _diag_nd,
-                        "net_theta": _diag_nth,
-                        "net_gamma": _diag_ngm,
-                        "net_vega": _diag_nvg,
-                        "is_credit": False,
-                        "long_strike":  _diag_long["strike"],
-                        "short_strike": _diag_short["strike"],
-                    })
+                    _diag_debit = _diag_long["ask"] - _diag_short["bid"]
+                    if _diag_debit <= 0:
+                        candidates.append({
+                            "structure": "Diagonal Spread", "recommended": False,
+                            "details": (f"Net debit ≤ 0 (${_diag_debit:.2f}) — "
+                                        f"short leg bid too wide to offset long leg cost"),
+                            "pop": None, "ev": None, "max_profit": None, "meets_min_profit": None,
+                        })
+                    else:
+                        # Max profit approx: if front-month expires worthless, back-month intrinsic
+                        # value vs cost basis. Use width × (long_delta - short_delta) as proxy.
+                        _diag_width = abs(_diag_short["strike"] - _diag_long["strike"])
+                        _diag_max_profit_est = round(
+                            max(0.0, _diag_width * abs(_diag_long["delta"] - _diag_short["delta"])), 3
+                        )
+                        _diag_max_loss = _diag_debit  # max loss = net debit paid
+                        meets_profit, profit_msg = profit_note(_diag_max_profit_est, min_profit_amount)
+                        meets_loss, loss_msg = loss_note(_diag_max_loss, width_target)
+                        # Greeks: long back-month, short front-month (different strikes)
+                        _diag_nd, _diag_nth, _diag_ngm, _diag_nvg = _net_greeks(
+                            spot, T_diag_back, _diag_long, _diag_short, _opt_type, short_T=T
+                        )
+                        # Approx POP: probability long delta finishes ITM
+                        _diag_pop = round(abs(_diag_long["delta"]) * 100, 1)
+                        iv_edge_msg = ""
+                        if iv_ts:
+                            iv_edge_msg = f" | {iv_ts['shape']}: {iv_ts['note']}"
+                        _leg_label = "C" if _opt_type == "call" else "P"
+                        candidates.append({
+                            "structure": "Diagonal Spread",
+                            "recommended": (
+                                trend in ("Uptrend", "Downtrend") and
+                                recommended_structure in ("Call Debit Spread", "Put Debit Spread",
+                                                          "No Trade", "Call Credit Spread", "Put Credit Spread")
+                            ),
+                            "details": (
+                                f"{'Bullish' if _diag_direction == 'bullish' else 'Bearish'} diagonal: "
+                                f"BUY {_diag_long['strike']}{_leg_label} ({diag_back_expiry}, {diag_back_dte}d, "
+                                f"delta {_diag_long['delta']:.2f}) / "
+                                f"SELL {_diag_short['strike']}{_leg_label} ({expiry}, {dte}d, "
+                                f"delta {_diag_short['delta']:.2f}) — "
+                                f"net debit ~${_diag_debit:.2f}, est. max profit ~${_diag_max_profit_est:.2f}, "
+                                f"{profit_msg}, {loss_msg}{iv_edge_msg}"
+                            ),
+                            "pop": _diag_pop,
+                            "ev": None,
+                            "max_profit": _diag_max_profit_est,
+                            "meets_min_profit": meets_profit,
+                            "max_loss": round(_diag_max_loss, 3),
+                            "meets_max_loss": meets_loss,
+                            "net_delta": _diag_nd,
+                            "net_theta": _diag_nth,
+                            "net_gamma": _diag_ngm,
+                            "net_vega": _diag_nvg,
+                            "is_credit": False,
+                            "long_strike":  _diag_long["strike"],
+                            "short_strike": _diag_short["strike"],
+                        })
 
     # --- For the rulebook-recommended structure, search for the best-EV version ---
     # of that trade across a wider strike/width grid, and use it in place of the
@@ -2574,10 +3565,10 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
             _cd, _cth, _cgm, _cvg = _net_greeks(spot, T, opt_c["long"], opt_c["short"], "call")
             # OI check — skip IC if any leg is below the minimum threshold
             ic_legs_oi = [
-                int(opt_p["short"].get("openInterest") or 0),
-                int(opt_p["long"].get("openInterest")  or 0),
-                int(opt_c["short"].get("openInterest") or 0),
-                int(opt_c["long"].get("openInterest")  or 0),
+                _safe_int(opt_p["short"].get("openInterest")),
+                _safe_int(opt_p["long"].get("openInterest")),
+                _safe_int(opt_c["short"].get("openInterest")),
+                _safe_int(opt_c["long"].get("openInterest")),
             ]
             ic_min_oi_actual = min(ic_legs_oi)
             if ic_min_oi_actual < min_oi:
@@ -2671,6 +3662,12 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
                     c["net_gamma"] = _ngm; c["net_vega"] = _nvg
                     c["long_strike"] = opt["long"]["strike"]; c["short_strike"] = opt["short"]["strike"]
                     c["spot_at_entry"] = round(spot, 2)
+
+    # Stamp DTE and expiry onto every candidate so downstream consumers
+    # (paper_trade_engine, candidate_ranker) don't need to look them up from the row.
+    for c in candidates:
+        c.setdefault("dte",    dte)
+        c.setdefault("expiry", expiry)
 
     # Take-profit target: close once this fraction of max profit is captured
     profit_target_pct = p["profit_target_pct"]
@@ -2849,8 +3846,8 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
         if rows.empty:
             return None, None, None
         r   = rows.iloc[0]
-        oi  = int(r.get("openInterest") or 0) or None
-        vol = int(r.get("volume") or 0) or None
+        oi  = _safe_int(r.get("openInterest")) or None
+        vol = _safe_int(r.get("volume")) or None
         bid = float(r.get("bid") or 0)
         ask = float(r.get("ask") or 0)
         mid = (bid + ask) / 2

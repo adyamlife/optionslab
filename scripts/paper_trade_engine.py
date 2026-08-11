@@ -398,7 +398,7 @@ def _current_mark(trade):
         if st.strike_schema == StrikeSchema.SINGLE_LEG:
             sh = _fetch_leg(ticker, expiry, strikes.get("short"), st.option_type)
             if not sh: return None
-            return max(0.0, round(sh["ask"], 4))   # cost to buy back the naked short
+            return max(0.0, round(sh["mid"], 4))
 
         if st.strike_schema == StrikeSchema.IRON_CONDOR:
             ps = _fetch_leg(ticker, expiry, strikes.get("put_short"),  "put")
@@ -406,7 +406,7 @@ def _current_mark(trade):
             cs = _fetch_leg(ticker, expiry, strikes.get("call_short"), "call")
             cl = _fetch_leg(ticker, expiry, strikes.get("call_long"),  "call")
             if not all([ps, pl, cs, cl]): return None
-            return max(0.0, round((ps["ask"] - pl["bid"]) + (cs["ask"] - cl["bid"]), 4))
+            return max(0.0, round((ps["mid"] - pl["mid"]) + (cs["mid"] - cl["mid"]), 4))
 
         if st.strike_schema == StrikeSchema.TWO_LEG:
             opt = st.option_type
@@ -414,15 +414,15 @@ def _current_mark(trade):
             lo  = _fetch_leg(ticker, expiry, strikes.get("long"),  opt)
             if not sh or not lo: return None
             if st.is_credit:
-                return max(0.0, round(sh["ask"] - lo["bid"], 4))
+                return max(0.0, round(sh["mid"] - lo["mid"], 4))
             else:
-                return max(0.0, round(lo["bid"] - sh["ask"], 4))
+                return max(0.0, round(lo["mid"] - sh["mid"], 4))
 
         if trade["structure"] == "Long Strangle":
             put_leg  = _fetch_leg(ticker, expiry, strikes.get("short"), "put")
             call_leg = _fetch_leg(ticker, expiry, strikes.get("long"),  "call")
             if not put_leg or not call_leg: return None
-            return max(0.0, round(put_leg["bid"] + call_leg["bid"], 4))
+            return max(0.0, round(put_leg["mid"] + call_leg["mid"], 4))
 
     except Exception as e:
         log.warning(f"_current_mark failed for {ticker}: {e}")
@@ -482,6 +482,16 @@ def _expiry_pnl(trade, ul_price):
         val      = round(put_val + call_val, 4)
         entry_debit = trade.get("max_loss") or ec
         return val, round(val - entry_debit, 4)
+
+    # Short Strangle / Short Straddle — sell put + sell call, both defined by strikes dict
+    if trade["structure"] in ("Short Strangle", "Short Straddle"):
+        put_k  = strikes.get("put_short") or strikes.get("short")
+        call_k = strikes.get("call_short") or strikes.get("long")
+        if put_k is None or call_k is None: return None, None
+        put_val  = max(0.0, put_k  - ul_price)
+        call_val = max(0.0, ul_price - call_k)
+        val      = round(put_val + call_val, 4)
+        return val, round(ec - val, 4)
 
     return None, None   # Calendar, Diagonal, Jade Lizard — path-dependent
 
@@ -718,23 +728,51 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
 
     short_p   = {**p, "min_dte": 7, "max_dte": 10}   # weekly expiry pass
 
+    from scripts.data_fetch import warmup_data_sources, clear_scan_cache
+    warmup_data_sources(log)
+
+    # Fetch ML predictions BEFORE analyze_ticker() workers so each ticker gets
+    # the correct ML regime rather than the DEFAULT_PARAMS fallback ("chop").
+    # Uses ml_cache when warm; falls back to a fresh predict_all when cold.
+    _ml_snapshot: dict = {}
+    try:
+        from scripts.ml_cache import ml_cache as _mlc
+        _cache_stale = not _mlc.is_warm()
+        if _cache_stale:
+            _age = _mlc.age_seconds()
+            log.warning(
+                "ML cache stale (age: %ds) — forcing fresh predict_all before scan",
+                int(_age) if _age is not None else -1,
+            )
+        _ml_snapshot = _mlc.get_all()
+        if not _ml_snapshot or _cache_stale:
+            from scripts.regime_predictor import predict_all as _pa
+            _pr = _pa(list(PAPER_WATCHLIST))
+            _ml_snapshot = {_pred["ticker"]: _pred for _pred in _pr.get("predictions", []) if _pred.get("ok")}
+            if _ml_snapshot:
+                _mlc.set_from_snapshot(_ml_snapshot)
+    except Exception as _mle:
+        log.warning(f"ML snapshot unavailable — regime defaults to 'chop': {_mle}")
+
+    _ml_regime_by_ticker = {
+        t: (snap.get("regime") or "chop") for t, snap in _ml_snapshot.items()
+    }
+
     def _fetch_ticker_rows(ticker):
+        _regime = _ml_regime_by_ticker.get(ticker, "chop")
         results = []
         try:
-            results.append(analyze_ticker(ticker, p))
+            results.append(analyze_ticker(ticker, p, regime=_regime))
         except Exception as e:
             log.warning(f"analyze_ticker({ticker}) failed: {e}")
         try:
-            short_row = analyze_ticker(ticker, short_p)
+            short_row = analyze_ticker(ticker, short_p, regime=_regime)
             if short_row.get("dte") and short_row["dte"] <= 10:
                 short_row["_short_dte_pass"] = True
                 results.append(short_row)
         except Exception as e:
             log.warning(f"analyze_ticker({ticker}, short_dte) failed: {e}")
         return results
-
-    from scripts.data_fetch import warmup_data_sources, clear_scan_cache
-    warmup_data_sources(log)
 
     # Phase 1 — serial I/O prefetch (main thread, before any workers start).
     # Batch-downloads price history, then fetches expirations + chains one ticker
@@ -758,23 +796,6 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
     clear_scan_cache()  # release prefetch memory after workers finish
 
     row_by_ticker = {r["ticker"]: r for r in rows}
-
-    # Fetch ML predictions so the confidence gate and Kelly sizing work.
-    # Uses ml_cache when warm (already populated by the scheduler); falls back
-    # to a fresh synchronous predict_all when cold (e.g. first boot).
-    _ml_snapshot: dict = {}
-    try:
-        from scripts.ml_cache import ml_cache as _mlc
-        _ml_snapshot = _mlc.get_all()
-        if not _ml_snapshot:
-            from scripts.regime_predictor import predict_all as _pa
-            _pr = _pa(list(row_by_ticker.keys()))
-            _ml_snapshot = {p["ticker"]: p for p in _pr.get("predictions", []) if p.get("ok")}
-            # Persist so Flask process and other consumers see these predictions
-            if _ml_snapshot:
-                _mlc.set_from_snapshot(_ml_snapshot)
-    except Exception as _mle:
-        log.warning(f"ML snapshot unavailable — confidence gate bypassed: {_mle}")
 
     trades      = load_trades()
     open_trades = [t for t in trades if t.get("status") == "open"]
@@ -819,10 +840,10 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
             continue
 
         ep = _entry_price(c)
-        if ep is None or ep["credit_bid"] <= 0:
+        if ep is None or ep["credit_mid"] <= 0:
             ep = {"credit_bid": c["max_profit"] or 0, "credit_mid": c["max_profit"] or 0, "legs": {}}
 
-        ec    = ep["credit_bid"]
+        ec    = ep["credit_mid"]   # mid-price entry for realistic P&L
         width = (c.get("max_profit") or 0) + (c.get("max_loss") or 0)
         _s    = _load_settings()  # reload so runtime settings.toml changes take effect
 
@@ -870,7 +891,9 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
 
         # Buying power check — enforced against circuit breaker's computed figure.
         from scripts.candidate_provider import compute_capital_required as _cap_req
-        _cap_needed = _cap_req(c) or 0  # already per-contract (×100 done inside compute_capital_required)
+        # Prefer capital_required pre-computed by analyze.py (structure-specific formula);
+        # fall back to generic compute_capital_required only when not already set.
+        _cap_needed = (c.get("capital_required") or _cap_req(c)) or 0
         if _cap_needed > 0 and _cap_needed > cb["buying_power"]:
             log.warning(
                 "[capital] Skipping %s %s — needs $%.2f but only $%.2f buying power available.",
@@ -931,6 +954,9 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
             "position_size_factor":    c.get("position_size_factor"),
             "suggested_allocation_pct": c.get("suggested_allocation_pct"),
             "ml_scores_at_entry":      _ml_scores_at_entry(c, _ml_snapshot),
+            # Full optimizer candidate preserved for auditability and ML feature recovery.
+            # selected_candidate ⊇ rejected_candidate at the candidate JSON level.
+            "optimizer_candidate":     c,
         }
         trades.append(trade)
         new.append(trade)
@@ -1000,12 +1026,31 @@ def run_evening_check(force=False):
         market_closed_today = now.hour >= MARKET_CLOSE_HOUR
         if exp_date < today or (exp_date == today and market_closed_today):
             # ── Expired ──────────────────────────────────────────────────────
-            if ul_price is None:
-                log.warning(f"Cannot fetch {ticker} price for expiry check, skipping")
-                continue
-            spread_val, pnl_ps = _expiry_pnl(trade, ul_price)
+            spread_val, pnl_ps = None, None
+            if ul_price is not None:
+                spread_val, pnl_ps = _expiry_pnl(trade, ul_price)
+
             if pnl_ps is None:
+                # P&L unknown (path-dependent structure, missing strikes, or
+                # price fetch failed).  Still mark closed so the trade doesn't
+                # accumulate as a ghost position in portfolio risk checks.
+                days_past = (today - exp_date).days
+                if days_past >= 1:
+                    trade["status"] = "expired_unknown"
+                    trade["exit"] = {
+                        "ts":            now.isoformat(),
+                        "reason":        "expired_unknown",
+                        "ul_price":      ul_price,
+                        "pnl_per_share": None,
+                        "pnl_total":     None,
+                        "win":           None,
+                    }
+                    newly_labeled += 1
+                    log.info(f"EXPIRED(unknown P&L) {trade['id']}: ul={ul_price}  structure={trade['structure']}")
+                else:
+                    log.warning(f"Cannot compute P&L for {trade['id']} on expiry day — will retry tonight")
                 continue
+
             win = pnl_ps > 0
             trade["status"] = "expired_profit" if win else "expired_loss"
             _snaps = trade.get("snapshots") or []
@@ -1098,17 +1143,9 @@ def run_evening_check(force=False):
                     log.debug(f"[eval] outcome record failed: {_e}")
 
             elif pnl_pct_of_max is not None and pnl_pct_of_max <= _stop_pct:
-                # Stop-loss triggered
-                trade["status"] = "closed_stop"
-                trade["exit"]   = _exit_common("stop_loss", hit_tp=False, hit_sl=True)
-                newly_labeled += 1
-                log.info(f"CLOSED (stop loss) {trade['id']}: mark={mark}  "
-                         f"P&L=${trade['exit']['pnl_total']:.2f} ({pnl_pct_of_max}% of max)")
-                try:
-                    from scripts.offline_eval import update_trade_outcome as _uto
-                    _uto(trade["id"], float(pnl_pct_of_max or 0), "loss")
-                except Exception as _e:
-                    log.debug(f"[eval] outcome record failed: {_e}")
+                # Stop-loss skipped for paper trades — let positions run to expiry
+                log.info(f"STOP-LOSS SKIPPED (paper trade) {trade['id']}: "
+                         f"mark={mark}  pnl={pnl_pct_of_max}% (threshold {_stop_pct}%)")
             else:
                 # Check if short strike is now expensive vs vol surface (take-profit signal)
                 iv_flag = None
@@ -1273,7 +1310,7 @@ def get_live_marks():
             if st.strike_schema == StrikeSchema.SINGLE_LEG:
                 sh = _fetch_leg(ticker, expiry, strikes.get("short"), st.option_type)
                 if sh:
-                    mark = max(0.0, round(sh["ask"], 4))
+                    mark = max(0.0, round(sh["mid"], 4))
                     result[tid] = {
                         "mark":       mark,
                         "unrealized": round(trade["entry_credit"] - mark, 4),
@@ -1287,7 +1324,7 @@ def get_live_marks():
                 cl = _fetch_leg(ticker, expiry, strikes.get("call_long"),  "call")
                 if all([ps, pl, cs, cl]):
                     mark = max(0.0, round(
-                        (ps["ask"] - pl["bid"]) + (cs["ask"] - cl["bid"]), 4
+                        (ps["mid"] - pl["mid"]) + (cs["mid"] - cl["mid"]), 4
                     ))
                     result[tid] = {
                         "mark":       mark,
@@ -1301,15 +1338,15 @@ def get_live_marks():
                 lo = _fetch_leg(ticker, expiry, strikes.get("long"),  opt)
                 if sh and lo:
                     if st.is_credit:
-                        mark = max(0.0, round(sh["ask"] - lo["bid"], 4))
+                        mark = max(0.0, round(sh["mid"] - lo["mid"], 4))
                         result[tid] = {
                             "mark":       mark,
                             "unrealized": round(trade["entry_credit"] - mark, 4),
                             "legs":       {"short": sh, "long": lo},
                         }
                     else:
-                        spread_val = max(0.0, round(lo["bid"] - sh["ask"], 4))
-                        entry_debit = trade.get("max_loss") or 0
+                        spread_val = max(0.0, round(lo["mid"] - sh["mid"], 4))
+                        entry_debit = trade.get("entry_credit") or 0
                         result[tid] = {
                             "mark":         spread_val,
                             "unrealized":   round(spread_val - entry_debit, 4),
@@ -1347,7 +1384,7 @@ def get_live_marks_iter():
             if st.strike_schema == StrikeSchema.SINGLE_LEG:
                 sh = _fetch_leg(ticker, expiry, strikes.get("short"), st.option_type)
                 if sh:
-                    mark = max(0.0, round(sh["ask"], 4))
+                    mark = max(0.0, round(sh["mid"], 4))
                     mark_data = {"mark": mark, "unrealized": round(trade["entry_credit"] - mark, 4),
                                  "legs": {"short": sh}}
 
@@ -1357,7 +1394,7 @@ def get_live_marks_iter():
                 cs = _fetch_leg(ticker, expiry, strikes.get("call_short"), "call")
                 cl = _fetch_leg(ticker, expiry, strikes.get("call_long"),  "call")
                 if all([ps, pl, cs, cl]):
-                    mark = max(0.0, round((ps["ask"] - pl["bid"]) + (cs["ask"] - cl["bid"]), 4))
+                    mark = max(0.0, round((ps["mid"] - pl["mid"]) + (cs["mid"] - cl["mid"]), 4))
                     mark_data = {"mark": mark, "unrealized": round(trade["entry_credit"] - mark, 4),
                                  "legs": {"put_short": ps, "put_long": pl, "call_short": cs, "call_long": cl}}
 
@@ -1367,12 +1404,12 @@ def get_live_marks_iter():
                 lo = _fetch_leg(ticker, expiry, strikes.get("long"),  opt)
                 if sh and lo:
                     if st.is_credit:
-                        mark = max(0.0, round(sh["ask"] - lo["bid"], 4))
+                        mark = max(0.0, round(sh["mid"] - lo["mid"], 4))
                         mark_data = {"mark": mark, "unrealized": round(trade["entry_credit"] - mark, 4),
                                      "legs": {"short": sh, "long": lo}}
                     else:
-                        spread_val  = max(0.0, round(lo["bid"] - sh["ask"], 4))
-                        entry_debit = trade.get("max_loss") or 0
+                        spread_val  = max(0.0, round(lo["mid"] - sh["mid"], 4))
+                        entry_debit = trade.get("entry_credit") or 0
                         mark_data   = {"mark": spread_val, "unrealized": round(spread_val - entry_debit, 4),
                                        "debit_spread": True, "legs": {"long": lo, "short": sh}}
 

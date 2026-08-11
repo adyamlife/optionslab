@@ -54,6 +54,7 @@ sudo systemctl restart optionlab
 sudo systemctl restart optionlab
 
 --------------------------
+source /opt/optionlab/venv/bin/activate
 
 
 python -m scripts.train_regime_classifier
@@ -126,4 +127,4 @@ python -m scripts.calibrate_optimizer --history
 python -m scripts.calibrate_models
 -------------------------
 
-scp admin@192.168.1.199:/opt/optionlab/data/ml_training.duckdb C:\Project Y\ml_training_live.duckdb
+scp admin@192.168.1.199:/opt/optionlab/data/ml_training.duckdb "C:\Project Y\ml_training_live.duckdb"

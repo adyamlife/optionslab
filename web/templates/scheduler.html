@@ -19,6 +19,8 @@
       <div class="sched-stat"><span class="sched-label">Snapshots</span><span id="db-snaps" class="sched-val">…</span></div>
       <div class="sched-stat"><span class="sched-label">Labeled</span><span id="db-labeled" class="sched-val">…</span></div>
       <div class="sched-stat"><span class="sched-label">Chain snaps</span><span id="db-chain" class="sched-val">…</span></div>
+      <div class="sched-stat"><span class="sched-label">Last collect</span><span id="cq-summary" class="sched-val">…</span></div>
+      <div class="sched-stat" id="cq-error-row" style="display:none"><span class="sched-label">Collect error</span><span id="cq-first-error" class="sched-val" style="color:var(--danger,#e55)"></span></div>
     </div>
   </section>
 
@@ -30,6 +32,21 @@
       <div class="sched-stat"><span class="sched-label">VIX Term Struct</span><span id="arc-vix" class="sched-val">…</span></div>
       <div class="sched-stat"><span class="sched-label">OI Snapshots</span><span id="arc-oi" class="sched-val">…</span></div>
       <div class="sched-stat"><span class="sched-label">Earnings IV</span><span id="arc-earn" class="sched-val">…</span></div>
+    </div>
+  </section>
+
+  <!-- Layer B — Historical Reality -->
+  <section class="card" style="margin-bottom:1.2rem">
+    <h3>Database — Layer B: Historical Reality
+      <span class="muted" style="font-size:.8rem;font-weight:400;margin-left:.5rem">Weekly calibration pipeline · Phase 3 in <span id="lb-phase3-inline">…</span> weeks</span>
+    </h3>
+    <div class="sched-grid" id="layerb-stats">
+      <div class="sched-stat"><span class="sched-label">IV History rows</span><span id="lb-iv-rows" class="sched-val">…</span></div>
+      <div class="sched-stat"><span class="sched-label">IV Tickers</span><span id="lb-iv-tickers" class="sched-val">…</span></div>
+      <div class="sched-stat"><span class="sched-label">IV Last Date</span><span id="lb-iv-date" class="sched-val">…</span></div>
+      <div class="sched-stat"><span class="sched-label">Ticker Profiles</span><span id="lb-profiles" class="sched-val">…</span></div>
+      <div class="sched-stat"><span class="sched-label">Profile Date</span><span id="lb-profile-date" class="sched-val">…</span></div>
+      <div class="sched-stat"><span class="sched-label">Calib Weeks</span><span id="lb-calib-weeks" class="sched-val">…</span></div>
     </div>
   </section>
 
@@ -67,13 +84,13 @@
         <span id="audit-modal-title"></span>
         <button id="audit-modal-close" title="Close">&times;</button>
       </div>
-      <div id="audit-modal-svg-wrap"></div>
+      <div id="audit-modal-plot-wrap"><div id="audit-modal-plot"></div></div>
     </div>
   </div>
 
   <!-- Scheduled Jobs -->
   <section class="card" style="margin-bottom:1.2rem">
-    <h3>APScheduler Jobs <span id="sched-cfg-info" class="muted" style="font-size:.8rem;font-weight:400;margin-left:.6rem"></span></h3>
+    <h3>Scheduled Jobs <span id="sched-cfg-info" class="muted" style="font-size:.8rem;font-weight:400;margin-left:.6rem"></span></h3>
     <table class="sched-table">
       <thead><tr><th>Job</th><th>Next Run (ET)</th><th>Last State</th><th>Last Run</th><th>Actions</th></tr></thead>
       <tbody id="sched-jobs-body">
@@ -96,6 +113,7 @@
       <h3 style="margin:0">Run History</h3>
       <select id="log-filter" class="btn-sm" style="padding:.2rem .5rem">
         <option value="">All jobs</option>
+        <option value="__trading__" selected>Trading (scan + check)</option>
         <optgroup label="Trading">
           <option value="morning_scan">Morning Scan</option>
           <option value="afternoon_scan">Afternoon Scan</option>
@@ -110,6 +128,11 @@
         <optgroup label="ML">
           <option value="regime_backfill">Regime Backfill</option>
           <option value="train_models">Train ML Models</option>
+        </optgroup>
+        <optgroup label="Layer B">
+          <option value="daily_iv_collect">Daily IV Collect</option>
+          <option value="weekly_profile_build">Weekly Profile Build</option>
+          <option value="weekly_calibration">Weekly Calibration Check</option>
         </optgroup>
       </select>
       <button class="btn-sm" id="log-refresh-btn">Refresh</button>
@@ -126,5 +149,6 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
 <script src="/static/js/scheduler.js?v={{ asset_v }}"></script>
 {% endblock %}

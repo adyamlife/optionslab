@@ -46,7 +46,7 @@ log = logging.getLogger(__name__)
 
 NUMERIC_COLS = [
     "spot", "rsi", "adx", "atm_iv", "iv_rank_proxy", "hv20", "pcr", "vix",
-    "earnings_days_away", "signal_score",
+    "earnings_days_away",
     # Tier 1 additions
     "vol_oi_ratio",   # total volume / total OI — unusual activity signal
     "iv_skew",        # OTM put IV minus OTM call IV (%) — fear/skew direction
@@ -90,6 +90,30 @@ CATEGORICAL_COLS = ["iv_env", "trend", "weekly_trend", "regime", "macd_trend",
 CANDIDATE_CATEGORICAL_COLS = ["structure", "is_credit"]
 
 MIN_LABELED_ROWS = 100  # below this, a train/test split is statistically meaningless
+MIN_FAMILY_ROWS  = 50   # per-structure-family minimum before a family model is trained
+
+# Structure families grouped by shared win condition.
+# "credit_spread"  wins when stock stays still / IV contracts
+# "debit_spread"   wins when stock moves directionally
+# "iron_condor"    wins when stock stays in a range
+# "calendar_diag"  wins on IV run-up / term-structure divergence
+# "other"          catch-all for uncategorised structures
+STRUCTURE_FAMILIES: dict[str, list[str]] = {
+    "credit_spread":  ["Put Credit Spread", "Call Credit Spread", "Naked Put", "Covered Call"],
+    "debit_spread":   ["Put Debit Spread", "Call Debit Spread", "Long Straddle", "Long Strangle",
+                       "Financed Long Put", "Financed Long Call"],
+    "iron_condor":    ["Iron Condor", "Bear Combo"],
+    "calendar_diag":  ["Calendar Spread", "Double Calendar", "Diagonal Spread"],
+}
+
+def _family_for_structure(structure: str) -> str:
+    for family, members in STRUCTURE_FAMILIES.items():
+        if structure in members:
+            return family
+    return "other"
+
+def _family_model_path(family: str) -> Path:
+    return _ROOT / "data" / "models" / f"pop_{family}.joblib"
 
 
 def load_labeled_dataframe(extra_data_path: Path | None = None) -> pd.DataFrame:
@@ -107,8 +131,8 @@ def load_labeled_dataframe(extra_data_path: Path | None = None) -> pd.DataFrame:
         if not r.get("labeled"):
             continue
         outcome = r.get("outcome") or {}
-        if "win" not in outcome:
-            continue  # unlabelable structure (Calendar/Diagonal/etc.)
+        if "win" not in outcome or outcome["win"] is None:
+            continue  # unlabelable structure (Calendar/Diagonal/etc.) or expired_unknown
         # Substitute chain-snapshot Greeks when available — more accurate than
         # the candidate's rulebook estimates which are re-priced at collection time.
         r = enrich_candidate_greeks(r, chain_index)
@@ -382,6 +406,153 @@ def train(out_path=_MODEL_PATH, extra_data_path=None, exclude_before: str = None
     }
 
 
+def train_family(family: str, out_path: Path | None = None,
+                 extra_data_path: Path | None = None) -> dict:
+    """
+    Train a structure-family-specific POP classifier.
+
+    Uses the same feature set as the pooled model but filters to candidates
+    whose structure belongs to `family` (see STRUCTURE_FAMILIES).  Returns
+    {"ok": False, "error": ...} when fewer than MIN_FAMILY_ROWS labeled rows
+    are available for this family — check back when more outcomes have accrued.
+
+    Output: data/models/pop_{family}.joblib  (+ _calibrated variant)
+    """
+    if family not in STRUCTURE_FAMILIES and family != "other":
+        return {"ok": False, "error": f"Unknown family '{family}'. "
+                f"Valid: {sorted(STRUCTURE_FAMILIES)} + 'other'"}
+
+    df = load_labeled_dataframe(extra_data_path=extra_data_path)
+    if df.empty:
+        return {"ok": False, "error": "No labeled data available."}
+
+    # Filter to this family
+    if "structure" not in df.columns:
+        return {"ok": False, "error": "No 'structure' column in labeled data."}
+    df["_family"] = df["structure"].apply(
+        lambda s: _family_for_structure(str(s)) if s is not None else "other"
+    )
+    df_family = df[df["_family"] == family].drop(columns=["_family"])
+
+    if len(df_family) < MIN_FAMILY_ROWS:
+        counts = df.groupby("_family").size().to_dict()
+        return {
+            "ok": False,
+            "error": (
+                f"Only {len(df_family)} labeled row(s) for family '{family}' "
+                f"(need >={MIN_FAMILY_ROWS}). "
+                f"All family counts: {counts}. "
+                "Check back once more outcomes have expired and been labeled."
+            ),
+            "family_counts": counts,
+            "family_rows": len(df_family),
+        }
+
+    out_path = out_path or _family_model_path(family)
+    train_df, val_df, test_df = _three_way_time_split(df_family)
+    if train_df.empty or val_df.empty or test_df.empty:
+        return {"ok": False, "error": f"Three-way split produced an empty fold for family '{family}'."}
+
+    y_train = train_df["win"].astype(int).values
+    y_val   = val_df["win"].astype(int).values
+    y_test  = test_df["win"].astype(int).values
+
+    # XGBoost requires both classes in train and val folds
+    for fold_name, y_fold in [("train", y_train), ("val", y_val)]:
+        if len(set(y_fold)) < 2:
+            win_ct  = int(y_fold.sum())
+            loss_ct = len(y_fold) - win_ct
+            return {
+                "ok": False,
+                "error": (
+                    f"Family '{family}' {fold_name} fold has only one class "
+                    f"(wins={win_ct}, losses={loss_ct}). "
+                    f"Need more outcome diversity — let more trades expire and try again."
+                ),
+                "family_rows": len(df_family),
+            }
+
+    X_train, encoders = build_feature_matrix(train_df, fit=True)
+    X_val,   _        = build_feature_matrix(val_df,   encoders=encoders, fit=False)
+    X_test,  _        = build_feature_matrix(test_df,  encoders=encoders, fit=False)
+
+    null_mask   = X_train.isnull().all()
+    dropped_cols = X_train.columns[null_mask].tolist()
+    X_train = X_train.loc[:, ~null_mask]
+    X_val   = X_val.loc[:,   ~null_mask]
+    X_test  = X_test.loc[:,  ~null_mask]
+
+    n_neg = int((y_train == 0).sum())
+    n_pos = int((y_train == 1).sum())
+    spw   = n_neg / n_pos if n_pos > 0 else 1.0
+
+    model = XGBClassifier(
+        n_estimators=300, max_depth=4, learning_rate=0.05,
+        subsample=0.8, colsample_bytree=0.8,
+        scale_pos_weight=spw,
+        objective="binary:logistic", eval_metric="logloss",
+        early_stopping_rounds=20,
+        random_state=42, n_jobs=-1,
+    )
+    model.fit(X_train, y_train, eval_set=[(X_val, y_val)], verbose=False)
+
+    y_prob = model.predict_proba(X_test)[:, 1]
+    auc    = float(roc_auc_score(y_test, y_prob)) if len(set(y_test)) > 1 else None
+    brier_before = float(brier_score_loss(y_test, y_prob))
+
+    artifact = {
+        "model":             model,
+        "feature_encoders":  encoders,
+        "numeric_cols":      NUMERIC_COLS + CANDIDATE_NUMERIC_COLS,
+        "categorical_cols":  CATEGORICAL_COLS + CANDIDATE_CATEGORICAL_COLS,
+        "family":            family,
+        "structures":        STRUCTURE_FAMILIES.get(family, []),
+        "trained_on_rows":   len(train_df),
+        "val_rows":          len(val_df),
+        "test_rows":         len(test_df),
+        "total_family_rows": len(df_family),
+        "dropped_cols":      dropped_cols,
+        "auc":               round(auc, 4) if auc is not None else None,
+        "brier_before":      round(brier_before, 4),
+        "trained_at":        datetime.now(timezone.utc).isoformat(),
+    }
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    joblib.dump(artifact, out_path)
+
+    # Calibrate on val fold
+    brier_after = None
+    try:
+        from scripts.calibrate_models import IsotonicCalibrator
+        cal = IsotonicCalibrator(model)
+        cal.fit(X_val, y_val)
+        brier_after = float(brier_score_loss(y_test, cal.predict_proba(X_test)[:, 1]))
+        joblib.dump({**artifact, "model": cal, "calibrated": True,
+                     "brier_after": round(brier_after, 4)},
+                    out_path.with_name(out_path.stem + "_calibrated.joblib"))
+    except Exception as e:
+        log.warning("Calibration failed for family %s: %s", family, e)
+
+    return {
+        "ok":           True,
+        "family":       family,
+        "train_rows":   len(train_df),
+        "val_rows":     len(val_df),
+        "test_rows":    len(test_df),
+        "auc":          round(auc, 4) if auc is not None else None,
+        "brier_before": round(brier_before, 4),
+        "brier_after":  round(brier_after, 4) if brier_after is not None else None,
+        "model_path":   str(out_path),
+    }
+
+
+def train_all_families(extra_data_path: Path | None = None) -> dict:
+    """Train all families that have ≥ MIN_FAMILY_ROWS labeled outcomes."""
+    results = {}
+    for family in list(STRUCTURE_FAMILIES) + ["other"]:
+        results[family] = train_family(family, extra_data_path=extra_data_path)
+    return results
+
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     parser = argparse.ArgumentParser()
@@ -392,7 +563,29 @@ if __name__ == "__main__":
     parser.add_argument("--etrade-only", action="store_true", default=False,
                         help="Train only on E*TRADE history rows (source=etrade_history), "
                              "ignoring live DuckDB paper trades.")
+    parser.add_argument("--family", type=str, default=None,
+                        help=f"Train a family-specific model. One of: "
+                             f"{sorted(STRUCTURE_FAMILIES)} or 'other' or 'all'.")
     args = parser.parse_args()
+
+    if args.family:
+        if args.family == "all":
+            results = train_all_families(extra_data_path=args.extra_data)
+            for fam, r in results.items():
+                if r.get("ok"):
+                    print(f"  {fam}: train={r['train_rows']} test={r['test_rows']} "
+                          f"auc={r.get('auc')} brier={r.get('brier_before')} → {r['model_path']}")
+                else:
+                    print(f"  {fam}: NOT READY — {r.get('error', '')[:120]}")
+        else:
+            r = train_family(args.family, extra_data_path=args.extra_data)
+            if not r.get("ok"):
+                print("NOT READY:", r.get("error"))
+                sys.exit(0)
+            print(f"Family '{r['family']}': train={r['train_rows']} test={r['test_rows']} "
+                  f"auc={r.get('auc')} brier={r.get('brier_before')} → {r['model_path']}")
+        sys.exit(0)
+
     result = train(extra_data_path=args.extra_data, exclude_before=args.exclude_before,
                    etrade_only=args.etrade_only)
     if not result.get("ok"):

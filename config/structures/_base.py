@@ -27,8 +27,8 @@ class StructureConstraints:
                                          #   credit structures: earnings too close → event risk
     earnings_dte_max:     int   = 0      # hard-reject if earnings DTE > this value
                                          #   vol structures: earnings too far → no catalyst
-    min_iv_rank:          float = 0.0    # minimum iv_rank_52w required [0.0–1.0]
-    max_iv_rank:          float = 1.0    # maximum iv_rank_52w allowed   [0.0–1.0]
+    min_iv_rank:          float =   0.0   # minimum iv_rank_52w required [0–100 scale]
+    max_iv_rank:          float = 100.0  # maximum iv_rank_52w allowed   [0–100 scale]
     allowed_trends:       tuple[str, ...] = ()  # empty = all trends pass
 
 

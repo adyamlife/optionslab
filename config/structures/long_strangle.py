@@ -15,6 +15,8 @@ LONG_STRANGLE = OptionStructure(
     short_delta_hi = 0.35,
     capital_type    = "debit",
     requires_margin = False,
+    dte_min = 21,
+    dte_max = 60,
     # Gate: earnings must be within 25 days — wider strikes buy more time but
     # the catalyst must still be imminent. Absent earnings data → rejection.
     constraints = StructureConstraints(earnings_dte_max=25),

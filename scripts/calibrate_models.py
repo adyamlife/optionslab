@@ -224,11 +224,12 @@ def _val_test_from_artifact(
          second half evaluates.
     """
     df = df.copy()
-    df["date"] = pd.to_datetime(df["date"])
+    date_col = "date" if "date" in df.columns else "collected_at"
+    df["date"] = pd.to_datetime(df[date_col], format="mixed", utc=True)
 
     if "val_cutoff" in art and "test_cutoff" in art:
-        val_cutoff  = pd.Timestamp(str(art["val_cutoff"]))
-        test_cutoff = pd.Timestamp(str(art["test_cutoff"]))
+        val_cutoff  = pd.Timestamp(str(art["val_cutoff"])).tz_localize("UTC") if pd.Timestamp(str(art["val_cutoff"])).tzinfo is None else pd.Timestamp(str(art["val_cutoff"])).tz_convert("UTC")
+        test_cutoff = pd.Timestamp(str(art["test_cutoff"])).tz_localize("UTC") if pd.Timestamp(str(art["test_cutoff"])).tzinfo is None else pd.Timestamp(str(art["test_cutoff"])).tz_convert("UTC")
         val_df  = df[(df["date"] >= val_cutoff) & (df["date"] < test_cutoff)]
         test_df = df[df["date"] >= test_cutoff]
         return val_df, test_df
