@@ -1,4 +1,6 @@
 import json
+import logging
+import shutil
 import time
 import threading
 from datetime import datetime
@@ -9,6 +11,8 @@ from scipy.optimize import brentq
 from scipy.stats import norm
 import yfinance as yf
 
+log = logging.getLogger(__name__)
+
 # Cap concurrent yfinance HTTP calls to avoid 429/rate-limit responses when
 # 10 scanner threads all hit Yahoo Finance simultaneously.
 _YF_CONCURRENCY = threading.Semaphore(5)
@@ -17,6 +21,33 @@ _EARNINGS_CACHE_PATH = Path(__file__).parent.parent / "data" / "earnings_cache.j
 _OI_CACHE_PATH       = Path(__file__).parent.parent / "data" / "oi_cache.json"
 _OI_CACHE_LOCK       = threading.Lock()
 _SECRETS_PATH        = Path(__file__).parent.parent / "config" / "secrets.toml"
+
+# ── yfinance crumb refresh ─────────────────────────────────────────────────────
+_YF_CACHE_DIR = Path.home() / ".cache" / "py-yfinance"
+_crumb_lock   = threading.Lock()
+_last_crumb_refresh: float = 0.0
+_CRUMB_COOLDOWN = 60.0  # minimum seconds between refreshes
+
+
+def _refresh_yf_crumb() -> None:
+    """Clear the yfinance disk cache and seed a fresh session/crumb.
+
+    Rate-limited to once per _CRUMB_COOLDOWN seconds — concurrent callers
+    that arrive while a refresh is already in progress will skip rather than
+    pile on.  Called automatically on 401 'Invalid Crumb' errors.
+    """
+    global _last_crumb_refresh
+    with _crumb_lock:
+        now = time.time()
+        if now - _last_crumb_refresh < _CRUMB_COOLDOWN:
+            return
+        _last_crumb_refresh = now
+    shutil.rmtree(_YF_CACHE_DIR, ignore_errors=True)
+    try:
+        yf.Ticker("SPY").fast_info  # seeds a fresh crumb
+    except Exception:
+        pass
+    log.info("[crumb] yfinance session refreshed")
 
 # ── FRED API ──────────────────────────────────────────────────────────────────
 
@@ -164,8 +195,18 @@ def _get_expirations(ticker_obj) -> list[str]:
         cached = _sc_get(f"exps:{ticker_str}")
         if cached is not None:
             return cached
-    with _YF_CONCURRENCY:
-        yf_exps = list(ticker_obj.options)      # always fetch; cheap + cached
+    for _attempt in range(2):
+        try:
+            with _YF_CONCURRENCY:
+                yf_exps = list(ticker_obj.options)
+            break
+        except Exception as _exc:
+            if _attempt == 0:
+                _refresh_yf_crumb()
+                if ticker_str:
+                    ticker_obj = yf.Ticker(ticker_str)
+            else:
+                yf_exps = []
     if ticker_str and _use_etrade("expirations"):
         try:
             et = _et_module()
@@ -393,9 +434,19 @@ def get_option_chain(ticker_obj, expiry, spot=None, dte=None):
         et_calls, et_puts = _try_et_chain(ticker_str, expiry, spot, dte)
         if et_calls is not None:
             return et_calls, et_puts
-    # Fallback: yfinance (15–20 min delayed)
-    with _YF_CONCURRENCY:
-        chain = ticker_obj.option_chain(expiry)
+    # Fallback: yfinance (15–20 min delayed) — retry once on crumb expiry
+    for _attempt in range(2):
+        try:
+            with _YF_CONCURRENCY:
+                chain = ticker_obj.option_chain(expiry)
+            break
+        except Exception:
+            if _attempt == 0:
+                _refresh_yf_crumb()
+                if ticker_str:
+                    ticker_obj = yf.Ticker(ticker_str)
+            else:
+                raise
     calls, puts = chain.calls, chain.puts
     if spot is not None and dte is not None:
         calls = _fill_bid_ask(calls, spot, dte, "call")

@@ -42,7 +42,7 @@ from scripts.analyze import analyze_ticker, days_to_earnings
 from scripts.black_scholes import bs_price
 from scripts.candidate_provider import _payoff_per_share
 from scripts.data_fetch import (
-    pick_expiry,
+    pick_expiry, _refresh_yf_crumb,
     get_otm_pcr, get_beta, get_atr_pct, get_iv_rank_52w,
     get_sector_context, get_index_trends, get_vix_context, get_macro_context,
     get_news_sentiment_score, get_analyst_rec_change,
@@ -548,9 +548,9 @@ def _fetch_chain_yfinance(ticker: str, expiry: str, spot: float) -> list[dict]:
     """
     Fetch ±RADIUS strikes around ATM from yfinance for one expiry.
     yfinance does not provide per-strike Greeks — those fields are None.
-    Returns [] on any failure.
+    Returns [] on any failure.  Retries once after crumb refresh on error.
     """
-    try:
+    def _do_fetch() -> list[dict]:
         tkr = yf.Ticker(ticker)
         chain = tkr.option_chain(expiry)
         rows = []
@@ -583,8 +583,15 @@ def _fetch_chain_yfinance(ticker: str, expiry: str, spot: float) -> list[dict]:
                     "open_interest": int(row.get("openInterest") or 0),
                 })
         return rows
+
+    try:
+        return _do_fetch()
     except Exception:
-        return []
+        _refresh_yf_crumb()
+        try:
+            return _do_fetch()
+        except Exception:
+            return []
 
 
 def _fetch_chain_etrade(ticker: str, expiry: str, spot: float) -> list[dict]:
