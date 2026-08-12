@@ -218,22 +218,47 @@ def add_deltas(df, spot, T, option_type, fallback_vol=None):
     return df
 
 
-def find_short_strike(df, option_type, delta_range, min_oi=0):
+def find_short_strike(df, option_type, delta_range, min_oi=0, strict_oi=True):
+    """Find a strike in delta_range.
+
+    strict_oi=True (default): hard OI filter — returns None if no strike survives.
+      Use for short/income legs where liquidity is required to close the position.
+    strict_oi=False: tiered fallback — relaxes OI requirement for long/hedge legs
+      where any tradable strike at the right delta is acceptable.
+    """
     lo, hi = delta_range
-    cand = df[df["delta"].abs().between(lo, hi)]
-    if min_oi > 0:
-        cand = cand[cand["openInterest"].fillna(0) >= min_oi]
-    # Prefer liquid legs; fall back to all if none pass the bid-ask gate
-    if "ba_ok" in cand.columns:
-        liquid = cand[cand["ba_ok"] == True]
-        if not liquid.empty:
-            cand = liquid
-    if cand.empty:
+    all_cand = df[df["delta"].abs().between(lo, hi)]
+    if all_cand.empty:
         return None
-    mid = (lo + hi) / 2
-    cand = cand.copy()
-    cand["dist"] = (cand["delta"].abs() - mid).abs()
-    return cand.sort_values("dist").iloc[0]
+
+    def _pick(pool):
+        mid = (lo + hi) / 2
+        pool = pool.copy()
+        pool["dist"] = (pool["delta"].abs() - mid).abs()
+        return pool.sort_values("dist").iloc[0]
+
+    oi_pool = all_cand[all_cand["openInterest"].fillna(0) >= min_oi] if min_oi > 0 else all_cand
+
+    if strict_oi:
+        cand = oi_pool
+        if "ba_ok" in cand.columns:
+            liquid = cand[cand["ba_ok"] == True]
+            if not liquid.empty:
+                cand = liquid
+        return _pick(cand) if not cand.empty else None
+
+    # Tiered fallback for long/hedge legs:
+    if "ba_ok" in oi_pool.columns and not oi_pool.empty:
+        t1 = oi_pool[oi_pool["ba_ok"] == True]
+        if not t1.empty:
+            return _pick(t1)
+    if not oi_pool.empty:
+        return _pick(oi_pool)
+    if "bid" in all_cand.columns:
+        t3 = all_cand[all_cand["bid"].fillna(0) > 0]
+        if not t3.empty:
+            return _pick(t3)
+    return _pick(all_cand)
 
 
 def _build_ibf_candidate(
@@ -1671,7 +1696,7 @@ def optimize_debit_spread(df, option_type, min_oi=0, min_profit_amount=0, max_lo
     best_capped = None
     best_overall = None
     for ld in DEBIT_LONG_DELTA_GRID:
-        long_row = find_short_strike(df, option_type, (max(ld - 0.03, 0.01), ld + 0.03), min_oi)
+        long_row = find_short_strike(df, option_type, (max(ld - 0.03, 0.01), ld + 0.03), min_oi, strict_oi=False)
         if long_row is None or not _valid_price(long_row["ask"]):
             continue
         for sd in DEBIT_SHORT_DELTA_GRID:
@@ -2348,8 +2373,8 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
     # so it is only shown when the chain is liquid enough to price all four legs.
     _ibf_short_put  = find_short_strike(puts,  "put",  (p["ibf_short_delta_lo"], p["ibf_short_delta_hi"]), min_oi)
     _ibf_short_call = find_short_strike(calls, "call", (p["ibf_short_delta_lo"], p["ibf_short_delta_hi"]), min_oi)
-    _ibf_long_put   = find_short_strike(puts,  "put",  (p["ibf_long_delta_lo"],  p["ibf_long_delta_hi"]),  min_oi)
-    _ibf_long_call  = find_short_strike(calls, "call", (p["ibf_long_delta_lo"],  p["ibf_long_delta_hi"]),  min_oi)
+    _ibf_long_put   = find_short_strike(puts,  "put",  (p["ibf_long_delta_lo"],  p["ibf_long_delta_hi"]),  min_oi, strict_oi=False)
+    _ibf_long_call  = find_short_strike(calls, "call", (p["ibf_long_delta_lo"],  p["ibf_long_delta_hi"]),  min_oi, strict_oi=False)
     _ibf_legs_ok = (
         _ibf_short_put is not None and _ibf_short_call is not None
         and _ibf_long_put is not None and _ibf_long_call is not None
@@ -2796,8 +2821,8 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
     # Max profit  = put_width − net_cost  (stock falls below OTM put at expiry)
     # Max loss    = call_width + net_cost  (stock rises above far-OTM call)
     # No naked exposure — all four legs are defined.
-    _bc_long_put  = find_short_strike(puts,  "put",  (p["bc_put_long_delta_lo"],  p["bc_put_long_delta_hi"]),  min_oi)
-    _bc_long_call = find_short_strike(calls, "call", (p["bc_call_long_delta_lo"], p["bc_call_long_delta_hi"]), min_oi)
+    _bc_long_put  = find_short_strike(puts,  "put",  (p["bc_put_long_delta_lo"],  p["bc_put_long_delta_hi"]),  min_oi, strict_oi=False)
+    _bc_long_call = find_short_strike(calls, "call", (p["bc_call_long_delta_lo"], p["bc_call_long_delta_hi"]), min_oi, strict_oi=False)
     # short_put and short_call (OTM, δ 0.15-0.25) are reused from the PCS / CCS sections
     _bc_legs_ok = (
         _bc_long_put  is not None and short_put     is not None
@@ -2908,7 +2933,7 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
     # Max profit = unlimited (the long call has no cap)
     _flc_short_put  = find_short_strike(puts,  "put",  (p["flc_put_short_delta_lo"],  p["flc_put_short_delta_hi"]),  min_oi)
     _flc_long_put   = find_long_strike_for_credit_spread(puts, _flc_short_put, "put", width_target, min_oi) if _flc_short_put is not None else None
-    _flc_long_call  = find_short_strike(calls, "call", (p["flc_call_long_delta_lo"],  p["flc_call_long_delta_hi"]),  min_oi)
+    _flc_long_call  = find_short_strike(calls, "call", (p["flc_call_long_delta_lo"],  p["flc_call_long_delta_hi"]),  min_oi, strict_oi=False)
     _flc_legs_ok = (
         _flc_short_put is not None and _flc_long_put is not None and _flc_long_call is not None
         and _valid_price(_flc_short_put["bid"]) and _valid_price(_flc_long_put["ask"])
@@ -2999,7 +3024,7 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
     # Max profit = unlimited downside (the long put has no floor above $0)
     _flp_short_call = find_short_strike(calls, "call", (p["flp_call_short_delta_lo"], p["flp_call_short_delta_hi"]), min_oi)
     _flp_long_call  = find_long_strike_for_credit_spread(calls, _flp_short_call, "call", width_target, min_oi) if _flp_short_call is not None else None
-    _flp_long_put   = find_short_strike(puts,  "put",  (p["flp_put_long_delta_lo"],  p["flp_put_long_delta_hi"]),  min_oi)
+    _flp_long_put   = find_short_strike(puts,  "put",  (p["flp_put_long_delta_lo"],  p["flp_put_long_delta_hi"]),  min_oi, strict_oi=False)
     _flp_legs_ok = (
         _flp_short_call is not None and _flp_long_call is not None and _flp_long_put is not None
         and _valid_price(_flp_short_call["bid"]) and _valid_price(_flp_long_call["ask"])
@@ -3083,7 +3108,7 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
     # Max loss: dead zone at expiry = short_k < stock < long_k; loss = long_k − short_k − net_credit
     # Below short_k: net credit kept (all expire worthless) — secondary profit zone
     _rb_short_call = find_short_strike(calls, "call", (p["rb_short_delta_lo"], p["rb_short_delta_hi"]), min_oi)
-    _rb_long_call  = find_short_strike(calls, "call", (p["rb_long_delta_lo"],  p["rb_long_delta_hi"]),  min_oi)
+    _rb_long_call  = find_short_strike(calls, "call", (p["rb_long_delta_lo"],  p["rb_long_delta_hi"]),  min_oi, strict_oi=False)
     _rb_call_ok = (
         _rb_short_call is not None and _rb_long_call is not None
         and _valid_price(_rb_short_call["bid"]) and _valid_price(_rb_long_call["ask"])
@@ -3169,7 +3194,7 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
     # Max profit: unlimited downside (2× long put exposure below the dead zone)
     # Max loss: dead zone = long_k < stock < short_k; loss = short_k − long_k − net_credit
     _rb_short_put = find_short_strike(puts, "put", (p["rb_short_delta_lo"], p["rb_short_delta_hi"]), min_oi)
-    _rb_long_put2 = find_short_strike(puts, "put", (p["rb_long_delta_lo"],  p["rb_long_delta_hi"]),  min_oi)
+    _rb_long_put2 = find_short_strike(puts, "put", (p["rb_long_delta_lo"],  p["rb_long_delta_hi"]),  min_oi, strict_oi=False)
     _rb_put_ok = (
         _rb_short_put is not None and _rb_long_put2 is not None
         and _valid_price(_rb_short_put["bid"]) and _valid_price(_rb_long_put2["ask"])
@@ -3415,7 +3440,7 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
             _back_chain = add_deltas(_back_chain, spot, T_diag_back, _opt_type, fallback_vol=_hv_fallback)
             # Back-month long leg: higher delta (closer to ATM), deeper in-the-money
             _diag_long = find_short_strike(_back_chain, _opt_type,
-                                            (p["diagonal_long_delta_lo"], p["diagonal_long_delta_hi"]), min_oi)
+                                            (p["diagonal_long_delta_lo"], p["diagonal_long_delta_hi"]), min_oi, strict_oi=False)
             # Front-month short leg: lower delta (further OTM), decays faster
             _diag_short = find_short_strike(_front_chain, _opt_type,
                                              (p["diagonal_short_delta_lo"], p["diagonal_short_delta_hi"]), min_oi)
