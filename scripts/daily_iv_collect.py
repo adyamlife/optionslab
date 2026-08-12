@@ -31,10 +31,13 @@ def _load_watchlist() -> list[str]:
     return cfg.get("watchlist", [])
 
 
+_HV_WINDOWS = [5, 10, 15, 20, 25, 30, 60]
+
+
 def _fetch_atm_iv(ticker: str) -> dict | None:
     """
-    Use yfinance to fetch spot and the nearest-expiry ATM call/put mid-IV.
-    Returns dict with atm_iv, hv20, iv_rank_52w, spot — or None on failure.
+    Fetch spot, ATM IV, and realized-vol for all HV windows (5–60 days).
+    Returns dict with atm_iv, hv5/hv10/.../hv60, iv_rank_52w, spot — or None.
     """
     try:
         import yfinance as yf
@@ -42,19 +45,22 @@ def _fetch_atm_iv(ticker: str) -> dict | None:
 
         tk = yf.Ticker(ticker)
 
-        # Spot price
-        hist = tk.history(period="1d")
-        if hist.empty:
+        # Fetch enough history for the widest window (HV60 needs 61+ returns)
+        # "6mo" gives ~125 trading days — sufficient for all windows
+        hist = tk.history(period="6mo")
+        if hist.empty or len(hist) < _HV_WINDOWS[-1] + 1:
             return None
         spot = float(hist["Close"].iloc[-1])
 
-        # HV20: 20-day realised vol annualised
-        hist_60 = tk.history(period="60d")
-        if len(hist_60) >= 21:
-            rets = hist_60["Close"].pct_change().dropna()
-            hv20 = float(rets.iloc[-20:].std() * (252 ** 0.5))
-        else:
-            hv20 = None
+        # Realized vol for each window (annualised)
+        rets = hist["Close"].pct_change().dropna()
+        hv = {}
+        for w in _HV_WINDOWS:
+            if len(rets) >= w:
+                hv[w] = round(float(rets.iloc[-w:].std() * (252 ** 0.5)), 6)
+            else:
+                hv[w] = None
+        hv20 = hv.get(20)
 
         # Nearest expiry options chain
         expiries = tk.options
@@ -83,26 +89,31 @@ def _fetch_atm_iv(ticker: str) -> dict | None:
             return None
         atm_iv = float(np.mean(ivs))
 
-        # IV rank 52-week: where does today's IV sit vs past year
+        # IV rank 52-week proxy: where does today's ATM IV sit vs rolling HV20
+        # over the past year. True IV rank requires 252 days of stored atm_iv rows;
+        # once that data accumulates, switch to querying iv_history directly.
         hist_1y = tk.history(period="1y")
         iv_rank_52w = None
         if hv20 is not None and len(hist_1y) >= 50:
-            # Proxy: use HV-based rolling realised vol percentile as IV rank proxy
-            # (true IV rank requires a year of daily IV snapshots we don't have yet)
             rets_1y = hist_1y["Close"].pct_change().dropna()
             rolling_hv = [
                 float(rets_1y.iloc[max(0, i - 20):i].std() * (252 ** 0.5))
                 for i in range(20, len(rets_1y) + 1)
             ]
             if rolling_hv:
-                lo = min(rolling_hv)
-                hi = max(rolling_hv)
+                lo, hi = min(rolling_hv), max(rolling_hv)
                 if hi > lo:
                     iv_rank_52w = round((hv20 - lo) / (hi - lo) * 100, 1)
 
         return {
             "atm_iv":      round(atm_iv, 6),
-            "hv20":        round(hv20, 6) if hv20 is not None else None,
+            "hv5":         hv.get(5),
+            "hv10":        hv.get(10),
+            "hv15":        hv.get(15),
+            "hv20":        hv20,
+            "hv25":        hv.get(25),
+            "hv30":        hv.get(30),
+            "hv60":        hv.get(60),
             "iv_rank_52w": iv_rank_52w,
             "spot":        round(spot, 4),
         }
@@ -134,10 +145,15 @@ def run() -> None:
             try:
                 con.execute(
                     "INSERT OR REPLACE INTO iv_history "
-                    "(ticker, collected_date, atm_iv, hv20, iv_rank_52w, spot) "
-                    "VALUES (?, ?, ?, ?, ?, ?)",
+                    "(ticker, collected_date, atm_iv, "
+                    " hv5, hv10, hv15, hv20, hv25, hv30, hv60, "
+                    " iv_rank_52w, spot) "
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     [ticker, today.isoformat(),
-                     row["atm_iv"], row["hv20"], row["iv_rank_52w"], row["spot"]],
+                     row["atm_iv"],
+                     row["hv5"], row["hv10"], row["hv15"], row["hv20"],
+                     row["hv25"], row["hv30"], row["hv60"],
+                     row["iv_rank_52w"], row["spot"]],
                 )
                 collected += 1
             except Exception as exc:

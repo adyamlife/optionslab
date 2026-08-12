@@ -1067,7 +1067,14 @@ CREATE TABLE IF NOT EXISTS iv_history (
     ticker          VARCHAR NOT NULL,
     collected_date  DATE    NOT NULL,
     atm_iv          DOUBLE,
+    -- realized vol windows (annualised): 1w, 2w, 3w, 1m, 5w, 6w, 3m
+    hv5             DOUBLE,
+    hv10            DOUBLE,
+    hv15            DOUBLE,
     hv20            DOUBLE,
+    hv25            DOUBLE,
+    hv30            DOUBLE,
+    hv60            DOUBLE,
     iv_rank_52w     DOUBLE,
     spot            DOUBLE,
     PRIMARY KEY (ticker, collected_date)
@@ -1164,6 +1171,17 @@ def ensure_iv_history_table() -> None:
             "CREATE INDEX IF NOT EXISTS idx_iv_history_ticker "
             "ON iv_history (ticker, collected_date)"
         )
+        # Migrate: add HV columns that may not exist in older table versions
+        existing = {
+            row[0]
+            for row in con.execute(
+                "SELECT column_name FROM information_schema.columns "
+                "WHERE table_name = 'iv_history'"
+            ).fetchall()
+        }
+        for col in ("hv5", "hv10", "hv15", "hv25", "hv30", "hv60"):
+            if col not in existing:
+                con.execute(f"ALTER TABLE iv_history ADD COLUMN {col} DOUBLE")
         con.commit()
     _iv_history_ready = True
 
