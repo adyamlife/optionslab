@@ -564,6 +564,22 @@ def _composite_score(row, c, ev, ev_is_proxy: bool = False) -> float:
         elif net_vega < 0:
             score -= iv_expand_prob * iv_wt
 
+    # ── CVaR tail-risk penalty (Phase 2) ─────────────────────────────────────
+    # Only applied when MC EV is available (ev_is_proxy=False) — the proxy path
+    # has no reliable tail metric to penalize. cvar_loss is negative (a loss),
+    # so abs() gives the magnitude; w_cvar scales it into composite-score points.
+    # Default w_cvar=0 keeps Phase 1 behaviour until explicitly enabled in
+    # ranking.toml after the A/B backtest confirms MC EV adds value.
+    _w_cvar   = _g("mc", "cvar_penalty_weight", 0.0)
+    _cvar_cap = _g("mc", "cvar_penalty_cap",   20.0)  # max pts deducted
+    if _w_cvar > 0:
+        _cvar = c.get("mc_cvar_loss")
+        if _cvar is not None and _cvar < 0:
+            # Normalize: abs(cvar_loss) / max_loss gives severity in [0,1]
+            _max_loss = c.get("max_loss") or 1.0
+            _cvar_severity = min(abs(_cvar) / _max_loss, 1.0)
+            score -= min(_w_cvar * _cvar_severity * 100, _cvar_cap)
+
     # ── Calibration multiplier (empirical win-rate feedback) ──────────────────
     # Applies the observed avg_return from closed trades in this score bucket as
     # a final multiplier. Returns 1.0 (neutral) until ≥5 closed trades exist in
@@ -747,10 +763,12 @@ def filter_candidates(rows, paper_trade: bool = False, buying_power: float | Non
                 _reject(_t, struct, "iv_edge", IV_EDGE_SKIP_VP, round(iv_edge_vp, 2))
                 continue
 
-            # Gate 4: EV computable
-            ev = c.get("ev")
-            ev_is_proxy = False
-            if ev is None:
+            # Gate 4: EV computable — compute delta-proxy as fallback baseline.
+            # MC EV (expected_pnl from simulation) is computed after all gates pass
+            # and replaces this proxy when available. Proxy is retained as ev_delta_proxy
+            # for diagnostic comparison and as the fallback for unsupported structures.
+            _ev_raw = c.get("ev")
+            if _ev_raw is None:
                 pop = c.get("pop")
                 if pop is None:
                     _reject(_t, struct, "no_ev_or_pop", "ev or pop required", None)
@@ -761,10 +779,10 @@ def filter_candidates(rows, paper_trade: bool = False, buying_power: float | Non
                     # Using MAX_LOSS_PER_TRADE here inflated ev_ratio to 20-40x for cheap
                     # debits, clipping s_ev to 100 and dominating the composite score.
                     from config.rules import MAX_LOSS_PER_TRADE as _MLPT
-                    ev = pop / 100 * (c.get("max_loss") or _MLPT)
+                    _ev_raw = pop / 100 * (c.get("max_loss") or _MLPT)
                 else:
-                    ev = pop / 100 * c["max_profit"]
-                ev_is_proxy = True
+                    _ev_raw = pop / 100 * c["max_profit"]
+            ev_delta_proxy = round(_ev_raw, 4)
 
             # Gate 5: minimum ML confidence
             if gate_enabled and confidence is not None and confidence < min_conf:
@@ -839,10 +857,19 @@ def filter_candidates(rows, paper_trade: bool = False, buying_power: float | Non
 
                     if _roi < _roi_thresh:
                         _reject(_t, struct, "expected_roi", round(_roi_thresh, 3), round(_roi, 3))
-                        log.debug(
-                            "[gate:roi] %s %s — roi=%.3f < thresh=%.3f regime=%s",
-                            _t, struct, _roi, _roi_thresh, _regime_lbl,
-                        )
+                        if struct == "Iron Condor":
+                            log.info(
+                                "[gate:roi] %s Iron Condor — put_credit=$%.2f call_credit=$%.2f "
+                                "total=$%.2f capital=$%.2f roi=%.1f%% thresh=%.1f%% regime=%s",
+                                _t,
+                                c.get("ic_put_credit", 0), c.get("ic_call_credit", 0),
+                                _mp, _cap / 100.0, _roi * 100, _roi_thresh * 100, _regime_lbl,
+                            )
+                        else:
+                            log.debug(
+                                "[gate:roi] %s %s — roi=%.3f < thresh=%.3f regime=%s",
+                                _t, struct, _roi, _roi_thresh, _regime_lbl,
+                            )
                         _rr = attempt_repairs(c, _repair_context)
                         if _rr.status == "PASS":
                             log.info(
@@ -1005,10 +1032,36 @@ def filter_candidates(rows, paper_trade: bool = False, buying_power: float | Non
                             f"Profile quality: {_pq:.2f}."
                         )
 
+            # MC EV — run after all gates pass to avoid wasting simulation time
+            # on rejected candidates. Use 2,000 sims for batch ranking (rank
+            # stability test confirmed identical ordering vs 5,000 sims).
+            # ev_mc replaces the delta-proxy as the primary EV when available.
+            try:
+                from scripts.candidate_provider import monte_carlo_outcome as _run_mc
+                _mc = _run_mc(row, c, n_sims=2000, ticker=_t)
+            except Exception:
+                _mc = None
+
+            ev_mc       = round(_mc["expected_pnl"], 4) if _mc else None
+            ev          = ev_mc if ev_mc is not None else ev_delta_proxy
+            ev_is_proxy = ev_mc is None
+
+            # Store MC metrics on candidate dict for downstream use (CVaR penalty,
+            # prob_of_touch display, trade record snapshotting in Task #4).
+            if _mc:
+                c["mc_expected_pnl"]    = ev_mc
+                c["mc_cvar_loss"]       = _mc.get("cvar_loss")
+                c["mc_prob_profit_sim"] = _mc.get("prob_profit_sim")
+                c["mc_prob_of_touch"]   = _mc.get("prob_of_touch")
+                c["mc_worst_loss_95"]   = _mc.get("worst_loss_95")
+                c["mc_vol_source"]      = _mc.get("vol_source")
+
             result.append({
                 "row":             row,
                 "candidate":       c,
                 "ev":              round(ev, 4),
+                "ev_delta_proxy":  ev_delta_proxy,
+                "ev_mc":           ev_mc,
                 "ev_is_proxy":     ev_is_proxy,
                 "meets_both":      (
                     bool(c.get("meets_min_profit"))
@@ -1272,16 +1325,44 @@ def rank_candidates(rows, n=3, score_fn=None, quality_floor=None, open_positions
     if not items:
         return []
 
-    # Step 3a: Percentile-rank EV across all surviving candidates (#3)
-    # Inject _ev_pct_rank into each candidate dict so _composite_score can use it.
-    _ev_vals = [item["ev"] for item in items]
-    _n_ev    = len(_ev_vals)
-    _sorted_ev = sorted(range(_n_ev), key=lambda i: _ev_vals[i])
-    _ev_pct_ranks = [0.0] * _n_ev
-    for _rank_pos, _orig_idx in enumerate(_sorted_ev):
-        _ev_pct_ranks[_orig_idx] = round(_rank_pos / max(_n_ev - 1, 1) * 100, 1)
-    for item, pct in zip(items, _ev_pct_ranks):
-        item["candidate"]["_ev_pct_rank"] = pct
+    # Step 3a: Percentile-rank EV (capital-normalized) across surviving candidates.
+    #
+    # Unit: EVROC = ev / capital_required (EV return on capital).
+    # Ranking raw per-share EV favours high-spot tickers regardless of capital
+    # efficiency. EVROC makes a $0.42 EV on a $500 IC comparable to a $0.42 EV
+    # on a $50 IC (the latter has higher EVROC and should rank higher).
+    # Falls back to raw ev when capital_required is None.
+    #
+    # Source-aware grouping: MC EV and delta-proxy EV are not interchangeable
+    # estimators. Group by ev_is_proxy, rank each group independently, then merge.
+    # Fall back to combined ranking when either group has fewer than 5 candidates.
+    _MIN_GROUP = 5
+    _mc_idx    = [i for i, it in enumerate(items) if not it.get("ev_is_proxy")]
+    _prx_idx   = [i for i, it in enumerate(items) if it.get("ev_is_proxy")]
+    _use_split = len(_mc_idx) >= _MIN_GROUP and len(_prx_idx) >= _MIN_GROUP
+
+    def _evroc(item):
+        """EV / capital_required (EVROC). Falls back to raw ev when cap is None."""
+        ev  = item["ev"]
+        cap = item["candidate"].get("capital_required")
+        return ev / cap if cap else ev
+
+    def _pct_rank_group(indices):
+        """Return {orig_idx: pct_rank} ranked by EVROC within the group."""
+        vals = [(_evroc(items[i]), i) for i in indices]
+        vals.sort(key=lambda x: x[0])
+        n = len(vals)
+        return {orig: round(pos / max(n - 1, 1) * 100, 1)
+                for pos, (_, orig) in enumerate(vals)}
+
+    if _use_split:
+        _ranks = {**_pct_rank_group(_mc_idx), **_pct_rank_group(_prx_idx)}
+    else:
+        _all_idx   = list(range(len(items)))
+        _ranks     = _pct_rank_group(_all_idx)
+
+    for i, item in enumerate(items):
+        item["candidate"]["_ev_pct_rank"] = _ranks[i]
 
     # Step 3a2: Percentile-rank bid-ask spread across surviving candidates.
     # Lower short_leg_ba_pct = tighter spread = better liquidity = higher rank.

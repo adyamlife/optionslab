@@ -34,8 +34,9 @@ def connect(read_only: bool = False, retries: int = 8, delay: float = 0.5) -> du
     for attempt in range(max(1, retries)):
         try:
             return duckdb.connect(str(_DB_PATH), read_only=read_only)
-        except duckdb.IOException as exc:
-            if "lock" not in str(exc).lower():
+        except (duckdb.IOException, duckdb.BinderException) as exc:
+            msg = str(exc).lower()
+            if "lock" not in msg and "file handle conflict" not in msg and "already attached" not in msg:
                 raise
             last_exc = exc
             if attempt < retries - 1:

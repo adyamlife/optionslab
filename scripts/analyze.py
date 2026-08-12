@@ -969,27 +969,51 @@ def enumerate_ds_repair_variants(
 
 
 def find_long_strike_for_credit_spread(df, short_row, option_type, width_target, min_oi=0):
-    """Pick the strike further OTM than short_row by approx width_target."""
+    """Pick the strike further OTM than short_row by approx width_target.
+
+    The long leg is a hedge — it must be available/tradable but does not need
+    the same OI depth as the short leg (which must be closeable independently).
+    Tier 1: OI >= min_oi AND liquid (ba_ok)
+    Tier 2: OI >= min_oi (any)
+    Tier 3: valid bid > 0 (tradable, thin OI)
+    Tier 4: any available strike (last resort)
+    Returns None only when no OTM strike exists at all.
+    """
     if option_type == "put":
-        cand = df[df["strike"] < short_row["strike"]]
-        cand = cand.copy()
+        cand = df[df["strike"] < short_row["strike"]].copy()
         cand["width"] = short_row["strike"] - cand["strike"]
     else:
-        cand = df[df["strike"] > short_row["strike"]]
-        cand = cand.copy()
+        cand = df[df["strike"] > short_row["strike"]].copy()
         cand["width"] = cand["strike"] - short_row["strike"]
     cand = cand[cand["width"] > 0]
-    if min_oi > 0:
-        cand = cand[cand["openInterest"].fillna(0) >= min_oi]
-    # Prefer liquid legs; fall back to all if none pass the bid-ask gate
-    if "ba_ok" in cand.columns:
-        liquid = cand[cand["ba_ok"] == True]
-        if not liquid.empty:
-            cand = liquid
     if cand.empty:
         return None
-    cand["dist"] = (cand["width"] - width_target).abs()
-    return cand.sort_values("dist").iloc[0]
+
+    def _pick_closest(pool):
+        pool = pool.copy()
+        pool["dist"] = (pool["width"] - width_target).abs()
+        return pool.sort_values("dist").iloc[0]
+
+    oi_pool = cand[cand["openInterest"].fillna(0) >= min_oi] if min_oi > 0 else cand
+
+    # Tier 1: OI ok + liquid
+    if "ba_ok" in oi_pool.columns and not oi_pool.empty:
+        t1 = oi_pool[oi_pool["ba_ok"] == True]
+        if not t1.empty:
+            return _pick_closest(t1)
+
+    # Tier 2: OI ok (any ba_ok)
+    if not oi_pool.empty:
+        return _pick_closest(oi_pool)
+
+    # Tier 3: tradable market, thin OI
+    if "bid" in cand.columns:
+        t3 = cand[cand["bid"].fillna(0) > 0]
+        if not t3.empty:
+            return _pick_closest(t3)
+
+    # Tier 4: any available strike
+    return _pick_closest(cand)
 
 
 def pop_ev_credit(short_delta, credit, width):
@@ -2298,6 +2322,10 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
             "max_loss": round(max_loss_ic, 3), "meets_max_loss": meets_loss,
             "net_delta": _ic_nd, "net_theta": _ic_nth, "net_gamma": _ic_ngm, "net_vega": _ic_nvg,
             "is_credit": True,
+            "ic_put_credit":  round(credit_put, 4),
+            "ic_call_credit": round(credit_call, 4),
+            "ic_put_width":   round(width_put, 2),
+            "ic_call_width":  round(width_call, 2),
             "put_long_strike": long_put["strike"], "put_short_strike": short_put["strike"],
             "call_short_strike": short_call["strike"], "call_long_strike": long_call_c["strike"],
             "short_strike": short_put["strike"],   # primary short leg alias for repair

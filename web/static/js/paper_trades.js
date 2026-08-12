@@ -245,12 +245,20 @@ function buildTradeCard(trade, liveData) {
   const progressBar = (mark != null && trade.profit_target != null && trade.stop_loss != null)
     ? buildProgressBar(maxProfit, mark, trade.profit_target, trade.stop_loss, isDebit) : "";
 
-  // strikes display
+  // strikes display — B=buy (long), S=sell (short)
   const stk = trade.strikes ?? {};
   let strikesStr = "—";
-  if (stk.put_long != null)  strikesStr = `${stk.put_long}/${stk.put_short} · ${stk.call_short}/${stk.call_long}`;
-  else if (stk.short != null && stk.long != null) strikesStr = `${stk.long}/${stk.short}`;
-  else if (stk.short != null) strikesStr = `${stk.short}`;
+  if (stk.put_long != null) {
+    // Iron Condor / 4-leg: show each side with role labels
+    strikesStr = `Put B${stk.put_long}/S${stk.put_short} · Call S${stk.call_short}/B${stk.call_long}`;
+  } else if (stk.short != null && stk.long != null) {
+    // 2-leg spread: debit = bought leg is primary; credit = sold leg is primary
+    strikesStr = isDebit
+      ? `B${stk.long} / S${stk.short}`
+      : `S${stk.short} / B${stk.long}`;
+  } else if (stk.short != null) {
+    strikesStr = `S${stk.short}`;
+  }
 
   // preserve expanded state across re-renders
   const wasExpanded = (() => {
