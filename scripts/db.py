@@ -1062,6 +1062,31 @@ def load_ml_predictions_count() -> int:
 
 # ── Layer B: Historical Reality tables ───────────────────────────────────────
 
+_OI_DAILY_SUMMARY_DDL = """
+CREATE TABLE IF NOT EXISTS oi_daily_summary (
+    ticker          VARCHAR NOT NULL,
+    summary_date    DATE    NOT NULL,
+    -- front expiry used for this summary
+    front_expiry    VARCHAR,
+    front_dte       INTEGER,
+    -- absolute OI at close
+    call_oi         BIGINT,
+    put_oi          BIGINT,
+    total_oi        BIGINT,
+    -- sentiment ratio
+    pcr             DOUBLE,
+    -- ATM concentration: fraction of total OI within ±2 strikes of spot
+    atm_oi_conc     DOUBLE,
+    -- OI change windows vs prior close snapshots (NULL until enough history)
+    oi_chg_1d       BIGINT,
+    oi_chg_5d       BIGINT,
+    oi_chg_10d      BIGINT,
+    oi_chg_21d      BIGINT,
+    spot            DOUBLE,
+    PRIMARY KEY (ticker, summary_date)
+)
+"""
+
 _IV_HISTORY_DDL = """
 CREATE TABLE IF NOT EXISTS iv_history (
     ticker          VARCHAR NOT NULL,
@@ -1184,6 +1209,23 @@ def ensure_iv_history_table() -> None:
                 con.execute(f"ALTER TABLE iv_history ADD COLUMN {col} DOUBLE")
         con.commit()
     _iv_history_ready = True
+
+
+_oi_daily_summary_ready = False
+
+
+def ensure_oi_daily_summary_table() -> None:
+    global _oi_daily_summary_ready
+    if _oi_daily_summary_ready:
+        return
+    with connect() as con:
+        con.execute(_OI_DAILY_SUMMARY_DDL)
+        con.execute(
+            "CREATE INDEX IF NOT EXISTS idx_oi_daily_summary "
+            "ON oi_daily_summary (ticker, summary_date)"
+        )
+        con.commit()
+    _oi_daily_summary_ready = True
 
 
 def ensure_ticker_profile_snapshots_table() -> None:

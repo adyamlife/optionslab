@@ -162,9 +162,16 @@ def run() -> None:
         con.commit()
 
     log.info(
-        "Done — collected=%d skipped=%d date=%s",
+        "IV done — collected=%d skipped=%d date=%s",
         collected, skipped, today,
     )
+
+    # OI daily summary — requires today's close OI snapshot to already be in oi_changes
+    try:
+        from scripts.data_archive import compute_oi_daily_summary
+        compute_oi_daily_summary(tickers=tickers)
+    except Exception as exc:
+        log.warning("OI daily summary failed: %s", exc)
 
 
 if __name__ == "__main__":

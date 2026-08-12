@@ -402,6 +402,147 @@ def label_earnings_outcomes() -> dict:
 
 # ── Orchestrator ───────────────────────────────────────────────────────────────
 
+def compute_oi_daily_summary(
+    tickers: list[str] | None = None,
+    summary_date: str | None = None,
+) -> dict:
+    """
+    Aggregate today's close OI snapshot (oi_changes) into one summary row per ticker.
+
+    Computed metrics:
+      call_oi / put_oi / total_oi  — absolute OI at close for front expiry
+      pcr                          — put/call OI ratio
+      atm_oi_conc                  — fraction of total OI within ±2 strikes of spot
+      oi_chg_1d/5d/10d/21d         — total_oi vs close snapshot N trading days ago
+                                     (NULL when history is too short)
+
+    Called from daily_iv_collect.run() at 4:15 PM, after the close OI snapshot.
+    """
+    from scripts.db import ensure_oi_daily_summary_table, connect
+
+    ensure_oi_daily_summary_table()
+
+    today      = summary_date or date.today().isoformat()
+    targets    = tickers or WATCHLIST_ALL
+    collected  = 0
+    skipped    = 0
+
+    with connect() as con:
+        for ticker in targets:
+            try:
+                # ── Front expiry: the nearest expiry present in today's close snapshot ──
+                row = con.execute("""
+                    SELECT expiry, MIN(CAST(JULIANDAY(expiry) - JULIANDAY(?) AS INTEGER)) AS dte
+                    FROM oi_changes
+                    WHERE ticker = ? AND date = ? AND time_of_day = 'close'
+                      AND expiry >= ?
+                    GROUP BY expiry
+                    ORDER BY dte ASC
+                    LIMIT 1
+                """, [today, ticker, today, today]).fetchone()
+
+                if not row or not row[0]:
+                    skipped += 1
+                    continue
+
+                front_expiry = row[0]
+                front_dte    = int(row[1]) if row[1] is not None else None
+
+                # ── OI totals for front expiry ──
+                totals = con.execute("""
+                    SELECT
+                        SUM(CASE WHEN option_type = 'call' THEN oi ELSE 0 END) AS call_oi,
+                        SUM(CASE WHEN option_type = 'put'  THEN oi ELSE 0 END) AS put_oi,
+                        SUM(oi)                                                 AS total_oi
+                    FROM oi_changes
+                    WHERE ticker = ? AND date = ? AND time_of_day = 'close'
+                      AND expiry = ?
+                """, [ticker, today, front_expiry]).fetchone()
+
+                if not totals or totals[2] is None or totals[2] == 0:
+                    skipped += 1
+                    continue
+
+                call_oi, put_oi, total_oi = int(totals[0] or 0), int(totals[1] or 0), int(totals[2])
+                pcr = round(put_oi / call_oi, 4) if call_oi > 0 else None
+
+                # ── Spot from iv_history (today's row) or latest available ──
+                spot_row = con.execute("""
+                    SELECT spot FROM iv_history
+                    WHERE ticker = ? AND collected_date <= ?
+                    ORDER BY collected_date DESC LIMIT 1
+                """, [ticker, today]).fetchone()
+                spot = float(spot_row[0]) if spot_row and spot_row[0] else None
+
+                # ── ATM OI concentration ──
+                atm_oi_conc = None
+                if spot is not None:
+                    atm_row = con.execute("""
+                        SELECT SUM(oi) AS atm_oi
+                        FROM oi_changes
+                        WHERE ticker = ? AND date = ? AND time_of_day = 'close'
+                          AND expiry = ?
+                          AND ABS(strike - ?) <= (
+                              SELECT 2 * MIN(ABS(s2.strike - s1.strike))
+                              FROM oi_changes s1
+                              JOIN oi_changes s2
+                                ON s1.ticker = s2.ticker AND s1.date = s2.date
+                                   AND s1.expiry = s2.expiry AND s1.option_type = s2.option_type
+                                   AND s1.strike < s2.strike
+                              WHERE s1.ticker = ? AND s1.date = ? AND s1.expiry = ?
+                              LIMIT 1
+                          )
+                    """, [ticker, today, front_expiry, spot,
+                          ticker, today, front_expiry]).fetchone()
+                    if atm_row and atm_row[0] and total_oi > 0:
+                        atm_oi_conc = round(float(atm_row[0]) / total_oi, 4)
+
+                # ── OI change windows: compare today's total_oi vs N days prior ──
+                def _prior_total_oi(n_days: int) -> int | None:
+                    r = con.execute("""
+                        SELECT SUM(oi)
+                        FROM oi_changes
+                        WHERE ticker = ? AND time_of_day = 'close' AND expiry = ?
+                          AND date = (
+                              SELECT MAX(date) FROM oi_changes
+                              WHERE ticker = ? AND time_of_day = 'close'
+                                AND date < ?
+                                AND CAST(JULIANDAY(?) - JULIANDAY(date) AS INTEGER)
+                                    BETWEEN ? AND ?
+                          )
+                    """, [ticker, front_expiry,
+                          ticker, today,
+                          today, n_days - 1, n_days + 2]).fetchone()
+                    return int(r[0]) if r and r[0] is not None else None
+
+                def _chg(n: int) -> int | None:
+                    prior = _prior_total_oi(n)
+                    return (total_oi - prior) if prior is not None else None
+
+                con.execute("""
+                    INSERT OR REPLACE INTO oi_daily_summary
+                    (ticker, summary_date, front_expiry, front_dte,
+                     call_oi, put_oi, total_oi, pcr, atm_oi_conc,
+                     oi_chg_1d, oi_chg_5d, oi_chg_10d, oi_chg_21d, spot)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, [
+                    ticker, today, front_expiry, front_dte,
+                    call_oi, put_oi, total_oi, pcr, atm_oi_conc,
+                    _chg(1), _chg(5), _chg(10), _chg(21),
+                    spot,
+                ])
+                collected += 1
+
+            except Exception as exc:
+                log.warning("OI daily summary failed for %s: %s", ticker, exc)
+                skipped += 1
+
+        con.commit()
+
+    log.info("OI daily summary: collected=%d skipped=%d date=%s", collected, skipped, today)
+    return {"collected": collected, "skipped": skipped, "date": today}
+
+
 def run_daily_archive() -> dict:
     """
     Runs T0-A + T0-B + T0-D + earnings labeling.
