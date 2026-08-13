@@ -361,7 +361,7 @@ bonus_scale = 0.15
 #   regardless of margin setting (e.g. strategies you are not yet comfortable with).
 [paper_trades]
 margin_account     = true
-exclude_structures  = ["Covered Call"]  # requires owning 100 shares — not paper-tradeable without shares
+exclude_structures  = ["Covered Call", "Naked Call", "Naked Put"]  # require share ownership or unbounded risk — not paper-tradeable
 min_profit_amount   = 0.50    # paper-trade override: lower gate vs live ($0.50/sh)
 min_confidence      = 0.50    # paper-trade override: all outcomes are training data, 0.70 is too strict
 min_open_interest   = 50      # paper-trade override: allow thinner strikes (live uses 200)

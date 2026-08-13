@@ -841,7 +841,9 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
     rank      = 0  # incremented only when a trade is actually recorded
 
     _s_for_struct = _load_settings()
-    _max_per_struct = int((_s_for_struct.get("paper_trades") or {}).get("max_trades_per_structure", 99))
+    _pt_cfg_s = (_s_for_struct.get("paper_trades") or {})
+    _max_per_struct = int(_pt_cfg_s.get("max_trades_per_structure", 99))
+    _excluded_s = set(_pt_cfg_s.get("exclude_structures", []))
     _struct_counts: dict[str, int] = {}
 
     for c in candidates:
@@ -854,6 +856,14 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
             continue
 
         _struct_key = c["structure"]
+        if _struct_key in _excluded_s:
+            log.info(
+                "[paper_trade] Skipping %s %s — in exclude_structures (repair-path bypass guard)",
+                c["ticker"], _struct_key,
+            )
+            rank -= 1
+            continue
+
         if _struct_counts.get(_struct_key, 0) >= _max_per_struct:
             log.info(
                 "[paper_trade] Skipping %s %s — structure cap reached (%d/%d)",

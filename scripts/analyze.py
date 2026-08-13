@@ -522,8 +522,9 @@ def enumerate_ss_repair_variants(
             "ev":                None,
             "max_profit":        total_credit,
             "meets_min_profit":  meets_profit,
-            "max_loss":          None,
+            "max_loss":          round(max(sp_iv, sc_iv) * spot * (T ** 0.5) * 3, 2),
             "meets_max_loss":    None,
+            "max_loss_is_stress": True,   # 3σ IV-scaled move; not a hard bound
             "capital_req":       margin_req,
             "net_delta":         _nd,
             "net_theta":         _nth,
@@ -604,8 +605,9 @@ def enumerate_jl_repair_variants(
             "ev":                    None,
             "max_profit":            total_credit,
             "meets_min_profit":      meets_profit,
-            "max_loss":              None,
+            "max_loss":              round(put_k - total_credit, 2),   # stock → 0: lose (put_strike - total_credit)
             "meets_max_loss":        None,
+            "max_loss_is_stress":    False,
             "capital_required":      margin_req,
             "net_delta":             _nd,
             "net_theta":             _nth,
@@ -2221,8 +2223,10 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
             "ev":              None,   # path-dependent on assignment — EV not straightforward
             "max_profit":      round(cc_max_profit, 3),
             "meets_min_profit": meets_profit,
-            "max_loss":        None,   # unlimited above strike — no fixed max loss
+            "max_loss":        round(spot - cc_credit, 3),   # stock → 0: lose (spot - premium) per share
             "meets_max_loss":  None,
+            "capital_required": round(spot * 100, 2),          # 100 shares at current spot
+            "max_loss_is_stress": False,
             "net_delta":       _cc_nd,
             "net_theta":       _cc_th,
             "net_gamma":       _cc_gm,
@@ -2450,8 +2454,9 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
             "ev":           None,   # undefined downside — EV not meaningful
             "max_profit":   _ssg_total_credit,
             "meets_min_profit": _ssg_meets_profit,
-            "max_loss":     None,   # unlimited
+            "max_loss":     round(max(_ssg_put_iv, _ssg_call_iv) * spot * (T ** 0.5) * 3, 2),
             "meets_max_loss": None,
+            "max_loss_is_stress": True,   # 3σ IV-scaled move; not a hard bound
             "capital_req":  _ssg_margin_req,
             "net_delta":    _ssg_nd,
             "net_theta":    _ssg_nth,
@@ -2522,8 +2527,9 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
             "ev":           None,   # undefined downside
             "max_profit":   _sstr_total_credit,
             "meets_min_profit": _sstr_meets_profit,
-            "max_loss":     None,   # unlimited
+            "max_loss":     round(max(_sstr_put_iv, _sstr_call_iv) * spot * (T ** 0.5) * 3, 2),
             "meets_max_loss": None,
+            "max_loss_is_stress": True,   # 3σ IV-scaled move; not a hard bound
             "capital_req":  _sstr_margin_req,
             "net_delta":    _sstr_nd,
             "net_theta":    _sstr_nth,
