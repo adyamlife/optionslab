@@ -371,6 +371,7 @@ roi_high_iv         = 0.14    # paper-trade high-IV override (lower than live 18
 roi_normal_iv       = 0.09    # paper-trade normal-IV override
 roi_low_iv          = 0.06    # paper-trade low-IV override
 min_liquidity_score = 0.30    # paper-trade override: collect diverse structures (live uses 0.60)
+max_trades_per_structure = 2  # cap any single structure from filling all slots; promotes diversity in training data
 
 [ai]
 primary_provider  = "groq"

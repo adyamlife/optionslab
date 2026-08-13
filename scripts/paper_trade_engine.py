@@ -600,11 +600,12 @@ def _select_top3(rows, ml_snapshot: dict | None = None, open_positions: list | N
             )
             continue
 
-        # Kelly sizing: use candidate POP as p_profit (MC not available here),
-        # scaled by pred_dist.confidence
+        # Kelly sizing: prefer MC prob_profit_sim as p_profit when available.
         pred_dist = item.get("pred_dist") or (row.get("ml") or {}).get("pred_dist")
         pop_pct   = c.get("pop")
-        p_profit  = (pop_pct / 100.0) if pop_pct is not None else None
+        _mc_pps   = c.get("mc_prob_profit_sim")
+        p_profit  = (_mc_pps / 100.0) if _mc_pps is not None else (
+                    (pop_pct / 100.0) if pop_pct is not None else None)
         kelly = kelly_from_pred_dist(pred_dist, c.get("max_profit"), c.get("max_loss"),
                                      p_profit=p_profit)
 
@@ -616,6 +617,15 @@ def _select_top3(rows, ml_snapshot: dict | None = None, open_positions: list | N
             "max_profit":       c.get("max_profit"),
             "max_loss":         c.get("max_loss"),
             "ev":               item["ev"],
+            # EV calibration fields — snapshotted at entry so post-hoc analysis
+            # can compare predicted EV against realized P&L per trade.
+            "entry_ev_mc":           item.get("ev_mc"),
+            "entry_ev_delta_proxy":  item.get("ev_delta_proxy"),
+            "entry_ev_is_proxy":     item.get("ev_is_proxy"),
+            "entry_prob_profit_sim": c.get("mc_prob_profit_sim"),
+            "entry_cvar_loss":       c.get("mc_cvar_loss"),
+            "entry_prob_of_touch":   c.get("mc_prob_of_touch"),
+            "entry_mc_vol_source":   c.get("mc_vol_source"),
             "meets_both":       item["meets_both"],
             "signal_score":     row.get("signal_score", 0) or 0,
             "signal_rating":    row.get("signal_rating", "Neutral"),
@@ -830,6 +840,10 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
     new       = []
     rank      = 0  # incremented only when a trade is actually recorded
 
+    _s_for_struct = _load_settings()
+    _max_per_struct = int((_s_for_struct.get("paper_trades") or {}).get("max_trades_per_structure", 99))
+    _struct_counts: dict[str, int] = {}
+
     for c in candidates:
         if len(new) >= 3:
             break
@@ -837,6 +851,15 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
         tid = f"{today_str}{scan_tag}_{c['ticker']}_{_struct_abbr(c['structure'])}_{rank}"
         if tid in seen:
             rank -= 1  # slot not consumed
+            continue
+
+        _struct_key = c["structure"]
+        if _struct_counts.get(_struct_key, 0) >= _max_per_struct:
+            log.info(
+                "[paper_trade] Skipping %s %s — structure cap reached (%d/%d)",
+                c["ticker"], _struct_key, _struct_counts[_struct_key], _max_per_struct,
+            )
+            rank -= 1
             continue
 
         ep = _entry_price(c)
@@ -960,6 +983,7 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
         }
         trades.append(trade)
         new.append(trade)
+        _struct_counts[_struct_key] = _struct_counts.get(_struct_key, 0) + 1
         log.info(f"Paper trade #{rank}: {tid}  credit={ec:.3f}  expiry={c['expiry']}")
 
         # Write a training snapshot at entry so managed-exit outcomes feed POP model
