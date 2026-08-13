@@ -13,6 +13,34 @@ function esc(s) {
   return String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
 
+// Derive option type suffix ("C", "P", or "") from structure name.
+// Used to annotate strikes so B200C/S227.5C is unambiguous.
+function _optSuffix(structure) {
+  const s = (structure ?? "").toLowerCase();
+  if (s.includes("call")) return "C";
+  if (s.includes("put"))  return "P";
+  return "";
+}
+
+// Format strikes with Buy/Sell role labels and C/P suffix.
+// Returns e.g. "B200C / S227.5C", "B260P / S240P", "S22C",
+// "BPut40 / SPut45 · SCall50 / BCall55" for 4-leg structures.
+function formatStrikes(stk, structure, isDebit) {
+  if (!stk) return "—";
+  const opt = _optSuffix(structure);
+  if (stk.put_long != null) {
+    // 4-leg (IC / IBF): show each leg with role and type
+    return `B${stk.put_long}P / S${stk.put_short}P · S${stk.call_short}C / B${stk.call_long}C`;
+  }
+  if (stk.short != null && stk.long != null) {
+    return isDebit
+      ? `B${stk.long}${opt} / S${stk.short}${opt}`
+      : `S${stk.short}${opt} / B${stk.long}${opt}`;
+  }
+  if (stk.short != null) return `S${stk.short}${opt}`;
+  return "—";
+}
+
 function fmt$(v, dec=2) {
   if (v == null) return "—";
   const n = parseFloat(v);
@@ -245,20 +273,9 @@ function buildTradeCard(trade, liveData) {
   const progressBar = (mark != null && trade.profit_target != null && trade.stop_loss != null)
     ? buildProgressBar(maxProfit, mark, trade.profit_target, trade.stop_loss, isDebit) : "";
 
-  // strikes display — B=buy (long), S=sell (short)
+  // strikes display — B=buy (long), S=sell (short), with C/P suffix
   const stk = trade.strikes ?? {};
-  let strikesStr = "—";
-  if (stk.put_long != null) {
-    // Iron Condor / 4-leg: show each side with role labels
-    strikesStr = `Put B${stk.put_long}/S${stk.put_short} · Call S${stk.call_short}/B${stk.call_long}`;
-  } else if (stk.short != null && stk.long != null) {
-    // 2-leg spread: debit = bought leg is primary; credit = sold leg is primary
-    strikesStr = isDebit
-      ? `B${stk.long} / S${stk.short}`
-      : `S${stk.short} / B${stk.long}`;
-  } else if (stk.short != null) {
-    strikesStr = `S${stk.short}`;
-  }
+  const strikesStr = formatStrikes(stk, trade.structure, isDebit);
 
   // preserve expanded state across re-renders
   const wasExpanded = (() => {
@@ -479,10 +496,7 @@ function renderOpenTradesTable(trades) {
     const unrTotal = unr != null ? parseFloat(unr) * 100 : null;
     const unrCls   = unr == null ? "na" : parseFloat(unr) >= 0 ? "pass" : "fail";
     const stk      = t.strikes ?? {};
-    let strikesStr = "—";
-    if (stk.put_long  != null) strikesStr = `${stk.put_long}/${stk.put_short} · ${stk.call_short}/${stk.call_long}`;
-    else if (stk.short != null && stk.long != null) strikesStr = `${stk.long}/${stk.short}`;
-    else if (stk.short != null) strikesStr = `${stk.short}`;
+    const strikesStr = formatStrikes(stk, t.structure, isDebit);
 
     return `
       <tr data-trade-id="${esc(t.id)}">
@@ -1063,10 +1077,7 @@ function renderDayWiseLog(allTrades, marksMap) {
         : esc(t.structure);
 
       const stk = t.strikes ?? {};
-      let strikesStr = "—";
-      if (stk.put_long  != null) strikesStr = `${stk.put_long}/${stk.put_short} · ${stk.call_short}/${stk.call_long}`;
-      else if (stk.short != null && stk.long != null) strikesStr = `${stk.long}/${stk.short}`;
-      else if (stk.short != null) strikesStr = `${stk.short}`;
+      const strikesStr = formatStrikes(stk, t.structure, isDebit);
 
       return [`
         <tr class="${rowCls}">
