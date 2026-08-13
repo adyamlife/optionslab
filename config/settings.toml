@@ -153,6 +153,12 @@ iv_high_threshold    = 60     # IV rank at or above this = high-IV regime
 # stronger ROI case before a short-premium trade is worth taking.
 trending_roi_multiplier = 1.5
 
+# Structures whose |net_delta| is at or below this value are considered delta-neutral
+# (e.g. Iron Condor, Iron Butterfly). The trending_roi_multiplier is NOT applied to
+# them: they are already market-neutral by construction and their POP is already
+# reduced in trending markets via the delta-based formula.
+neutral_delta_threshold = 0.10
+
 # The thresholds below are strategy-level metrics — meaningful only over 50+ closed trades.
 # They are stored here for future use by the performance analytics module,
 # NOT as per-trade entry filters (a single trade has no win rate or Sharpe).

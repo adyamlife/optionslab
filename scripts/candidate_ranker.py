@@ -849,9 +849,14 @@ def filter_candidates(rows, paper_trade: bool = False, buying_power: float | Non
                     # Trending regime multiplier: 17.1% 5-day containment on Ubuntu backfill
                     # means directional tickers are far more likely to breach than the
                     # IV-rank-based threshold assumes. Raise the bar before granting entry.
+                    # Skip for delta-neutral structures: their POP already degrades in trending
+                    # markets via the delta formula — applying the multiplier double-penalizes them.
                     _ml_regime = (row.get("ml") or {}).get("regime", "")
                     _trending_mult = float(_mt.get("trending_roi_multiplier", 1.0))
-                    if _ml_regime == "Trending" and _trending_mult > 1.0:
+                    _neutral_thresh = float(_mt.get("neutral_delta_threshold", 0.10))
+                    _cand_net_delta = abs(c.get("net_delta") or 0.0)
+                    _is_neutral = _cand_net_delta <= _neutral_thresh
+                    if _ml_regime == "Trending" and _trending_mult > 1.0 and not _is_neutral:
                         _roi_thresh = round(_roi_thresh * _trending_mult, 3)
                         _regime_lbl = f"{_regime_lbl}+trending(×{_trending_mult})"
 
