@@ -59,6 +59,8 @@ def record_scan(ranked_items: list, scan_ts: Optional[str] = None) -> None:
             "structure":      c.get("structure"),
             "composite":      round(item.get("composite", 0), 2),
             "ev":             round(item.get("ev", 0), 4),
+            "ev_mc":          item.get("ev_mc"),
+            "ev_delta_proxy": item.get("ev_delta_proxy"),
             "ev_is_proxy":    item.get("ev_is_proxy", False),
             "pop":            c.get("pop"),
             "signal_score":   c.get("signal_score"),

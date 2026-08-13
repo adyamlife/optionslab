@@ -470,8 +470,7 @@ def _expiry_pnl(trade, ul_price):
             return val, round(ec - val, 4)
         else:
             val = round(max(0.0, itm(lo_k) - itm(sh_k)), 4)
-            entry_debit = trade.get("max_loss") or 0
-            return val, round(val - entry_debit, 4)
+            return val, round(val - ec, 4)  # ec = entry_credit = debit paid
 
     if st.name == "Long Strangle":
         put_k  = strikes.get("short")   # put leg (lower strike)
@@ -480,8 +479,7 @@ def _expiry_pnl(trade, ul_price):
         put_val  = max(0.0, put_k  - ul_price)
         call_val = max(0.0, ul_price - call_k)
         val      = round(put_val + call_val, 4)
-        entry_debit = trade.get("max_loss") or ec
-        return val, round(val - entry_debit, 4)
+        return val, round(val - ec, 4)  # ec = entry_credit = total debit paid
 
     # Short Strangle / Short Straddle — sell put + sell call, both defined by strikes dict
     if trade["structure"] in ("Short Strangle", "Short Straddle"):
@@ -944,6 +942,13 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
             if _entry_mid and _entry_mid > 0 and ec != _entry_mid
             else 0.0
         )
+        # Debit spreads (CDS/PDS) with a real live-quoted price: ec = debit paid.
+        # max_profit = width - debit, max_loss = debit.
+        # Guards: is_credit=False + live_quote (Calendar/Diagonal fall back to max_profit as ec,
+        # so they use the original formula) + max_profit≠None (Long Strangle has None).
+        _debit_live = (c.get("is_credit") is False
+                       and ep.get("fill_source") == "live_quote"
+                       and c.get("max_profit") is not None)
         trade = {
             "id":           tid,
             "rank":         rank,
@@ -959,8 +964,8 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
             "scan_credit":  round(float(c.get("max_profit") or 0), 4),
             "slippage_pct": _slippage_pct,
             "fill_source":  ep.get("fill_source", "fallback_scan"),
-            "max_profit":   ec,
-            "max_loss":     ec if c["structure"] == "Long Strangle" else (round(width - ec, 4) if width > ec else c.get("max_loss")),
+            "max_profit":   (round(width - ec, 4) if width > ec else 0) if _debit_live else ec,
+            "max_loss":     ec if _debit_live else (ec if c["structure"] == "Long Strangle" else (round(width - ec, 4) if width > ec else c.get("max_loss"))),
             "dte_at_entry": c["dte"],
             "spot_at_entry":c["spot_at_entry"],
             "signal_rating":c["signal_rating"],
@@ -1126,12 +1131,18 @@ def run_evening_check(force=False):
             mark = _current_mark(trade)
             if mark is None:
                 continue
-            is_debit   = trade.get("structure", "") in ("Call Debit Spread", "Put Debit Spread", "Long Strangle")
-            entry_cost = ec if trade.get("structure") == "Long Strangle" else (trade.get("max_loss") or 0 if is_debit else ec)
+            is_debit   = trade.get("structure", "") in ("Call Debit Spread", "Put Debit Spread",
+                                                          "Long Strangle", "Calendar Spread", "Diagonal Spread")
+            # entry_credit always stores the actual entry price (debit paid or credit received),
+            # so use it as entry_cost for both debit and credit structures.
+            # (Old trades had max_loss swapped with max_profit for CDS/PDS, so don't use max_loss here.)
+            entry_cost = ec
             unrealized = round(mark - entry_cost, 4) if is_debit else round(ec - mark, 4)
-            # For debit spreads, pnl_pct_of_max must use max_profit (spread width - debit)
-            # not ec (debit paid) — otherwise the 100% target never triggers correctly.
-            _max_profit_base = (trade.get("max_profit") or ec) if is_debit else ec
+            # max_profit base: for debit spreads = width - debit; for Long Strangle use debit as proxy.
+            # trade["width"] is always correct (stored as candidate max_profit + max_loss = spread width).
+            _max_profit_base = (ec if trade.get("structure") == "Long Strangle"
+                                else (trade.get("width", 0) - ec) if is_debit
+                                else ec)
             pnl_pct_of_max = round(unrealized / _max_profit_base * 100, 1) if _max_profit_base else None
 
             _s = _load_settings()

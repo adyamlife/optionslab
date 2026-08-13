@@ -1,0 +1,31 @@
+2026-08-12 11:06:53,821 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-08-12 11:07:00,871 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-12 11:07:01,661 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-12 11:07:01,756 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-12 11:07:02,976 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-12 11:07:03,140 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-12 11:07:03,943 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-12 11:07:19,550 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-12 11:07:21,892 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-12 11:07:27,270 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-12 11:07:29,333 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-12 11:07:29,641 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-12 11:07:31,863 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-12 11:07:36,133 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-12 11:07:38,933 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-12 11:08:16,371 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-12 11:08:27,998 WARNING persist_feature_snapshot failed for ADBE: ConnectionException: Connection Error: Can't open a connection to same database file with a different configuration than existing connections
+2026-08-12 11:08:28,025 WARNING persist_feature_snapshot failed for INTU: ConnectionException: Connection Error: Can't open a connection to same database file with a different configuration than existing connections
+2026-08-12 11:08:31,630 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-08-12 11:08:39,460 WARNING persist_feature_snapshot failed for SPOT: ConnectionException: Connection Error: Can't open a connection to same database file with a different configuration than existing connections
+2026-08-12 11:08:56,305 WARNING persist_feature_snapshot failed for UBER: ConnectionException: Connection Error: Can't open a connection to same database file with a different configuration than existing connections
+2026-08-12 11:08:56,407 WARNING persist_feature_snapshot failed for APP: ConnectionException: Connection Error: Can't open a connection to same database file with a different configuration than existing connections
+2026-08-12 11:08:56,745 WARNING persist_feature_snapshot failed for MELI: ConnectionException: Connection Error: Can't open a connection to same database file with a different configuration than existing connections
+2026-08-12 11:09:01,835 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-08-12 11:09:33,055 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-12 11:09:33,060 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-12 11:09:51,955 WARNING persist_feature_snapshot failed for MS: ConnectionException: Connection Error: Can't open a connection to same database file with a different configuration than existing connections
+2026-08-12 11:09:52,100 WARNING persist_feature_snapshot failed for BAC: ConnectionException: Connection Error: Can't open a connection to same database file with a different configuration than existing connections
+2026-08-12 11:09:59,070 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-12 11:09:59,085 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-12 11:10:01,799 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}

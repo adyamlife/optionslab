@@ -33,8 +33,8 @@
         "oi": 785
       }
     },
-    "max_profit": 2.66,
-    "max_loss": 0.84,
+    "max_profit": 0.84,
+    "max_loss": 2.66,
     "dte_at_entry": 16,
     "spot_at_entry": 10.86,
     "signal_rating": "Moderate",
@@ -127,8 +127,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 9.06,
-      "pnl_per_share": -0.84,
-      "pnl_total": -84.0,
+      "pnl_per_share": -2.66,
+      "pnl_total": -266.0,
       "pnl_pct_of_max": -31.6,
       "win": false
     },
@@ -170,8 +170,8 @@
         "oi": 175
       }
     },
-    "max_profit": 1.52,
-    "max_loss": 0.98,
+    "max_profit": 0.98,
+    "max_loss": 1.52,
     "dte_at_entry": 16,
     "spot_at_entry": 9.94,
     "signal_rating": "Moderate",
@@ -264,8 +264,8 @@
       "reason": "expired",
       "spread_val": 0.74,
       "ul_price": 9.76,
-      "pnl_per_share": -0.24,
-      "pnl_total": -24.0,
+      "pnl_per_share": -0.78,
+      "pnl_total": -78.0,
       "pnl_pct_of_max": -15.8,
       "win": false
     },
@@ -307,8 +307,8 @@
         "oi": 349
       }
     },
-    "max_profit": 1.5,
-    "max_loss": 1.0,
+    "max_profit": 1.0,
+    "max_loss": 1.5,
     "dte_at_entry": 2,
     "spot_at_entry": 20.35,
     "signal_rating": "Moderate",
@@ -322,8 +322,8 @@
       "reason": "expired",
       "spread_val": 2.5,
       "ul_price": 24.315000534057617,
-      "pnl_per_share": 1.5,
-      "pnl_total": 150.0,
+      "pnl_per_share": 1.0,
+      "pnl_total": 100.0,
       "pnl_pct_of_max": 100.0,
       "win": true
     },
@@ -365,8 +365,8 @@
         "oi": 130
       }
     },
-    "max_profit": 4.15,
-    "max_loss": 0.85,
+    "max_profit": 0.85,
+    "max_loss": 4.15,
     "dte_at_entry": 30,
     "spot_at_entry": 22.45,
     "signal_rating": "Strong",
@@ -537,8 +537,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 17.399999618530273,
-      "pnl_per_share": -0.85,
-      "pnl_total": -85.0,
+      "pnl_per_share": -4.15,
+      "pnl_total": -415.0,
       "pnl_pct_of_max": -20.5,
       "win": false,
       "hit_tp": false,
@@ -585,8 +585,8 @@
         "oi": 551
       }
     },
-    "max_profit": 1.85,
-    "max_loss": 1.15,
+    "max_profit": 1.15,
+    "max_loss": 1.85,
     "dte_at_entry": 15,
     "spot_at_entry": 133.91,
     "signal_rating": "Moderate",
@@ -679,8 +679,8 @@
       "reason": "expired",
       "spread_val": 2.7,
       "ul_price": 129.3,
-      "pnl_per_share": 1.55,
-      "pnl_total": 155.0,
+      "pnl_per_share": 0.85,
+      "pnl_total": 85.0,
       "pnl_pct_of_max": 83.8,
       "win": true
     },
@@ -722,8 +722,8 @@
         "oi": 85
       }
     },
-    "max_profit": 0.3,
-    "max_loss": 0.7,
+    "max_profit": 0.7,
+    "max_loss": 0.3,
     "dte_at_entry": 15,
     "spot_at_entry": 6.7,
     "signal_rating": "Moderate",
@@ -816,10 +816,10 @@
       "reason": "expired",
       "spread_val": 0.69,
       "ul_price": 6.31,
-      "pnl_per_share": -0.01,
-      "pnl_total": -1.0,
+      "pnl_per_share": 0.39,
+      "pnl_total": 39.0,
       "pnl_pct_of_max": -3.3,
-      "win": false
+      "win": true
     },
     "exit_date": "2026-07-02",
     "exit_price": 0.3,
@@ -859,8 +859,8 @@
         "oi": 139
       }
     },
-    "max_profit": 1.08,
-    "max_loss": 0.92,
+    "max_profit": 0.92,
+    "max_loss": 1.08,
     "dte_at_entry": 14,
     "spot_at_entry": 65.82,
     "signal_rating": "Moderate",
@@ -953,8 +953,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 68.6,
-      "pnl_per_share": -0.92,
-      "pnl_total": -92.0,
+      "pnl_per_share": -1.08,
+      "pnl_total": -108.0,
       "pnl_pct_of_max": -85.2,
       "win": false
     },
@@ -996,8 +996,8 @@
         "oi": 270
       }
     },
-    "max_profit": 2.21,
-    "max_loss": 0.79,
+    "max_profit": 0.79,
+    "max_loss": 2.21,
     "dte_at_entry": 29,
     "spot_at_entry": 28.24,
     "signal_rating": "Moderate",
@@ -1169,8 +1169,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 28.350000381469727,
-      "pnl_per_share": -0.79,
-      "pnl_total": -79.0,
+      "pnl_per_share": -2.21,
+      "pnl_total": -221.0,
       "pnl_pct_of_max": -35.7,
       "win": false,
       "hit_tp": false,
@@ -1217,8 +1217,8 @@
         "oi": 111
       }
     },
-    "max_profit": 0.9,
-    "max_loss": 1.1,
+    "max_profit": 1.1,
+    "max_loss": 0.9,
     "dte_at_entry": 13,
     "spot_at_entry": 133.99,
     "signal_rating": "Strong",
@@ -1305,8 +1305,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 120.35,
-      "pnl_per_share": -1.1,
-      "pnl_total": -110.0,
+      "pnl_per_share": -0.9,
+      "pnl_total": -90.0,
       "pnl_pct_of_max": -122.2,
       "win": false
     },
@@ -1348,8 +1348,8 @@
         "oi": 487
       }
     },
-    "max_profit": 4.0,
-    "max_loss": 1.0,
+    "max_profit": 1.0,
+    "max_loss": 4.0,
     "dte_at_entry": 28,
     "spot_at_entry": 24.38,
     "signal_rating": "Moderate",
@@ -1514,8 +1514,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 17.399999618530273,
-      "pnl_per_share": -1.0,
-      "pnl_total": -100.0,
+      "pnl_per_share": -4.0,
+      "pnl_total": -400.0,
       "pnl_pct_of_max": -25.0,
       "win": false,
       "hit_tp": false,
@@ -1562,8 +1562,8 @@
         "oi": 201
       }
     },
-    "max_profit": 0.94,
-    "max_loss": 1.06,
+    "max_profit": 1.06,
+    "max_loss": 0.94,
     "dte_at_entry": 13,
     "spot_at_entry": 66.56,
     "signal_rating": "Moderate",
@@ -1650,8 +1650,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 68.6,
-      "pnl_per_share": -1.06,
-      "pnl_total": -106.0,
+      "pnl_per_share": -0.94,
+      "pnl_total": -94.0,
       "pnl_pct_of_max": -112.8,
       "win": false
     },
@@ -1693,8 +1693,8 @@
         "oi": 297
       }
     },
-    "max_profit": 1.85,
-    "max_loss": 1.15,
+    "max_profit": 1.15,
+    "max_loss": 1.85,
     "dte_at_entry": 25,
     "spot_at_entry": 28.72,
     "signal_rating": "Moderate",
@@ -1854,8 +1854,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 28.350000381469727,
-      "pnl_per_share": -1.15,
-      "pnl_total": -115.0,
+      "pnl_per_share": -1.85,
+      "pnl_total": -185.0,
       "pnl_pct_of_max": -62.2,
       "win": false,
       "hit_tp": false,
@@ -1902,8 +1902,8 @@
         "oi": 338
       }
     },
-    "max_profit": 0.79,
-    "max_loss": 0.71,
+    "max_profit": 0.71,
+    "max_loss": 0.79,
     "dte_at_entry": 18,
     "spot_at_entry": 5.48,
     "signal_rating": "Moderate",
@@ -2032,8 +2032,8 @@
       "reason": "expired",
       "spread_val": 1.26,
       "ul_price": 4.739999771118164,
-      "pnl_per_share": 0.55,
-      "pnl_total": 55.0,
+      "pnl_per_share": 0.47,
+      "pnl_total": 47.0,
       "pnl_pct_of_max": 69.6,
       "win": true
     },
@@ -2075,8 +2075,8 @@
         "oi": 2473
       }
     },
-    "max_profit": 1.18,
-    "max_loss": 0.82,
+    "max_profit": 0.82,
+    "max_loss": 1.18,
     "dte_at_entry": 18,
     "spot_at_entry": 124.45,
     "signal_rating": "Moderate",
@@ -2205,8 +2205,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 126.77999877929688,
-      "pnl_per_share": -0.82,
-      "pnl_total": -82.0,
+      "pnl_per_share": -1.18,
+      "pnl_total": -118.0,
       "pnl_pct_of_max": -69.5,
       "win": false
     },
@@ -2248,8 +2248,8 @@
         "oi": 612
       }
     },
-    "max_profit": 0.78,
-    "max_loss": 0.72,
+    "max_profit": 0.72,
+    "max_loss": 0.78,
     "dte_at_entry": 17,
     "spot_at_entry": 5.5,
     "signal_rating": "Moderate",
@@ -2372,8 +2372,8 @@
       "reason": "expired",
       "spread_val": 1.26,
       "ul_price": 4.739999771118164,
-      "pnl_per_share": 0.54,
-      "pnl_total": 54.0,
+      "pnl_per_share": 0.48,
+      "pnl_total": 48.0,
       "pnl_pct_of_max": 69.2,
       "win": true
     },
@@ -2582,8 +2582,8 @@
         "oi": 162
       }
     },
-    "max_profit": 0.6,
-    "max_loss": 0.4,
+    "max_profit": 0.4,
+    "max_loss": 0.6,
     "dte_at_entry": 24,
     "spot_at_entry": 27.6,
     "signal_rating": "Moderate",
@@ -2737,8 +2737,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 28.350000381469727,
-      "pnl_per_share": -0.4,
-      "pnl_total": -40.0,
+      "pnl_per_share": -0.6,
+      "pnl_total": -60.0,
       "pnl_pct_of_max": -66.7,
       "win": false,
       "hit_tp": false,
@@ -2785,8 +2785,8 @@
         "oi": 602
       }
     },
-    "max_profit": 0.35,
-    "max_loss": 0.65,
+    "max_profit": 0.65,
+    "max_loss": 0.35,
     "dte_at_entry": 16,
     "spot_at_entry": 5.06,
     "signal_rating": "Moderate",
@@ -2903,8 +2903,8 @@
       "reason": "expired",
       "spread_val": 0.76,
       "ul_price": 4.739999771118164,
-      "pnl_per_share": 0.11,
-      "pnl_total": 11.0,
+      "pnl_per_share": 0.41,
+      "pnl_total": 41.0,
       "pnl_pct_of_max": 31.4,
       "win": true
     },
@@ -2946,8 +2946,8 @@
         "oi": 1819
       }
     },
-    "max_profit": 1.87,
-    "max_loss": 1.13,
+    "max_profit": 1.13,
+    "max_loss": 1.87,
     "dte_at_entry": 16,
     "spot_at_entry": 116.75,
     "signal_rating": "Moderate",
@@ -2986,8 +2986,8 @@
       "reason": "max_profit",
       "spread_val": 3.0,
       "ul_price": 107.30999755859375,
-      "pnl_per_share": 1.87,
-      "pnl_total": 187.0,
+      "pnl_per_share": 1.13,
+      "pnl_total": 113.0,
       "pnl_pct_of_max": 100.0,
       "win": true
     },
@@ -3029,8 +3029,8 @@
         "oi": 1014
       }
     },
-    "max_profit": 1.34,
-    "max_loss": 1.16,
+    "max_profit": 1.16,
+    "max_loss": 1.34,
     "dte_at_entry": 16,
     "spot_at_entry": 10.27,
     "signal_rating": "Moderate",
@@ -3147,8 +3147,8 @@
       "reason": "expired",
       "spread_val": 1.975,
       "ul_price": 9.024999618530273,
-      "pnl_per_share": 0.815,
-      "pnl_total": 81.5,
+      "pnl_per_share": 0.635,
+      "pnl_total": 63.5,
       "pnl_pct_of_max": 60.8,
       "win": true
     },
@@ -3190,8 +3190,8 @@
         "oi": 770
       }
     },
-    "max_profit": 0.23,
-    "max_loss": 0.27,
+    "max_profit": 0.27,
+    "max_loss": 0.23,
     "dte_at_entry": 15,
     "spot_at_entry": 4.92,
     "signal_rating": "Moderate",
@@ -3296,10 +3296,10 @@
       "reason": "expired",
       "spread_val": 0.26,
       "ul_price": 4.739999771118164,
-      "pnl_per_share": -0.01,
-      "pnl_total": -1.0,
+      "pnl_per_share": 0.03,
+      "pnl_total": 3.0,
       "pnl_pct_of_max": -4.3,
-      "win": false
+      "win": true
     },
     "exit_date": "2026-07-10",
     "exit_price": 0.23,
@@ -3339,8 +3339,8 @@
         "oi": 659
       }
     },
-    "max_profit": 1.07,
-    "max_loss": 0.93,
+    "max_profit": 0.93,
+    "max_loss": 1.07,
     "dte_at_entry": 15,
     "spot_at_entry": 10.09,
     "signal_rating": "Moderate",
@@ -3445,8 +3445,8 @@
       "reason": "expired",
       "spread_val": 1.475,
       "ul_price": 9.024999618530273,
-      "pnl_per_share": 0.545,
-      "pnl_total": 54.5,
+      "pnl_per_share": 0.405,
+      "pnl_total": 40.5,
       "pnl_pct_of_max": 50.9,
       "win": true
     },
@@ -3488,8 +3488,8 @@
         "oi": 71
       }
     },
-    "max_profit": 3.95,
-    "max_loss": 1.05,
+    "max_profit": 1.05,
+    "max_loss": 3.95,
     "dte_at_entry": 22,
     "spot_at_entry": 27.38,
     "signal_rating": "Moderate",
@@ -3624,8 +3624,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 17.399999618530273,
-      "pnl_per_share": -1.05,
-      "pnl_total": -105.0,
+      "pnl_per_share": -3.95,
+      "pnl_total": -395.0,
       "pnl_pct_of_max": -26.6,
       "win": false,
       "hit_tp": false,
@@ -3674,8 +3674,8 @@
         "oi": 1854
       }
     },
-    "max_profit": 2.59,
-    "max_loss": 0.91,
+    "max_profit": 0.91,
+    "max_loss": 2.59,
     "dte_at_entry": 14,
     "spot_at_entry": 17.38,
     "signal_rating": "Moderate",
@@ -3762,10 +3762,10 @@
       "reason": "expired",
       "spread_val": 1.795,
       "ul_price": 18.795000076293945,
-      "pnl_per_share": 0.885,
-      "pnl_total": 88.5,
+      "pnl_per_share": -0.795,
+      "pnl_total": -79.5,
       "pnl_pct_of_max": 34.2,
-      "win": true
+      "win": false
     },
     "exit_date": "2026-07-10",
     "exit_price": 2.59,
@@ -3962,8 +3962,8 @@
         "oi": 23234
       }
     },
-    "max_profit": 1.6,
-    "max_loss": 0.9,
+    "max_profit": 0.9,
+    "max_loss": 1.6,
     "dte_at_entry": 18,
     "spot_at_entry": 193.26,
     "signal_rating": "Neutral",
@@ -4074,8 +4074,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 202.63999938964844,
-      "pnl_per_share": -0.9,
-      "pnl_total": -90.0,
+      "pnl_per_share": -1.6,
+      "pnl_total": -160.0,
       "pnl_pct_of_max": -56.2,
       "win": false,
       "hit_tp": false,
@@ -4308,8 +4308,8 @@
         "oi": 3285
       }
     },
-    "max_profit": 0.69,
-    "max_loss": 0.31,
+    "max_profit": 0.31,
+    "max_loss": 0.69,
     "dte_at_entry": 15,
     "spot_at_entry": 5.0,
     "signal_rating": "Moderate",
@@ -4390,10 +4390,10 @@
       "reason": "expired",
       "spread_val": 0.54,
       "ul_price": 4.460000038146973,
-      "pnl_per_share": 0.23,
-      "pnl_total": 23.0,
+      "pnl_per_share": -0.15,
+      "pnl_total": -15.0,
       "pnl_pct_of_max": 33.3,
-      "win": true,
+      "win": false,
       "hit_tp": true,
       "hit_sl": false,
       "mae_pct": -29.0,
@@ -4440,8 +4440,8 @@
         "oi": 1578
       }
     },
-    "max_profit": 3.85,
-    "max_loss": 1.15,
+    "max_profit": 1.15,
+    "max_loss": 3.85,
     "dte_at_entry": 15,
     "spot_at_entry": 25.48,
     "signal_rating": "Moderate",
@@ -4522,8 +4522,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 17.399999618530273,
-      "pnl_per_share": -1.15,
-      "pnl_total": -115.0,
+      "pnl_per_share": -3.85,
+      "pnl_total": -385.0,
       "pnl_pct_of_max": -29.9,
       "win": false,
       "hit_tp": false,
@@ -4572,8 +4572,8 @@
         "oi": 3861
       }
     },
-    "max_profit": 1.22,
-    "max_loss": 0.78,
+    "max_profit": 0.78,
+    "max_loss": 1.22,
     "dte_at_entry": 15,
     "spot_at_entry": 747.15,
     "signal_rating": "Moderate",
@@ -4654,8 +4654,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 743.155029296875,
-      "pnl_per_share": -0.78,
-      "pnl_total": -78.0,
+      "pnl_per_share": -1.22,
+      "pnl_total": -122.0,
       "pnl_pct_of_max": -63.9,
       "win": false,
       "hit_tp": false,
@@ -4858,8 +4858,8 @@
         "oi": 88
       }
     },
-    "max_profit": 1.1,
-    "max_loss": 0.9,
+    "max_profit": 0.9,
+    "max_loss": 1.1,
     "dte_at_entry": 18,
     "spot_at_entry": 9.35,
     "signal_rating": "Moderate",
@@ -4974,8 +4974,8 @@
       "reason": "expired",
       "spread_val": 2.0,
       "ul_price": 7.440000057220459,
-      "pnl_per_share": 1.1,
-      "pnl_total": 110.0,
+      "pnl_per_share": 0.9,
+      "pnl_total": 90.0,
       "pnl_pct_of_max": 100.0,
       "win": true,
       "hit_tp": true,
@@ -5024,8 +5024,8 @@
         "oi": 59
       }
     },
-    "max_profit": 0.9,
-    "max_loss": 1.1,
+    "max_profit": 1.1,
+    "max_loss": 0.9,
     "dte_at_entry": 18,
     "spot_at_entry": 141.91,
     "signal_rating": "Moderate",
@@ -5128,8 +5128,8 @@
       "reason": "expired",
       "spread_val": 2.0,
       "ul_price": 114.98999786376953,
-      "pnl_per_share": 0.9,
-      "pnl_total": 90.0,
+      "pnl_per_share": 1.1,
+      "pnl_total": 110.0,
       "pnl_pct_of_max": 100.0,
       "win": true,
       "hit_tp": true,
@@ -5178,8 +5178,8 @@
         "oi": 646
       }
     },
-    "max_profit": 1.56,
-    "max_loss": 0.94,
+    "max_profit": 0.94,
+    "max_loss": 1.56,
     "dte_at_entry": 18,
     "spot_at_entry": 9.77,
     "signal_rating": "Moderate",
@@ -5295,8 +5295,8 @@
       "reason": "expired",
       "spread_val": 1.9,
       "ul_price": 8.100000381469727,
-      "pnl_per_share": 0.96,
-      "pnl_total": 96.0,
+      "pnl_per_share": 0.34,
+      "pnl_total": 34.0,
       "pnl_pct_of_max": 61.5,
       "win": true,
       "hit_tp": true,
@@ -5345,8 +5345,8 @@
         "oi": 396
       }
     },
-    "max_profit": 2.87,
-    "max_loss": 1.13,
+    "max_profit": 1.13,
+    "max_loss": 2.87,
     "dte_at_entry": 18,
     "spot_at_entry": 49.02,
     "signal_rating": "Moderate",
@@ -5449,8 +5449,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 48.790000915527344,
-      "pnl_per_share": -1.13,
-      "pnl_total": -113.0,
+      "pnl_per_share": -2.87,
+      "pnl_total": -287.0,
       "pnl_pct_of_max": -39.4,
       "win": false,
       "hit_tp": false,
@@ -5499,8 +5499,8 @@
         "oi": 7553
       }
     },
-    "max_profit": 1.81,
-    "max_loss": 1.19,
+    "max_profit": 1.19,
+    "max_loss": 1.81,
     "dte_at_entry": 17,
     "spot_at_entry": 748.75,
     "signal_rating": "Moderate",
@@ -5597,8 +5597,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 738.8599853515625,
-      "pnl_per_share": -1.19,
-      "pnl_total": -119.0,
+      "pnl_per_share": -1.81,
+      "pnl_total": -181.0,
       "pnl_pct_of_max": -65.7,
       "win": false,
       "hit_tp": false,
@@ -5647,8 +5647,8 @@
         "oi": 455
       }
     },
-    "max_profit": 1.87,
-    "max_loss": 1.13,
+    "max_profit": 1.13,
+    "max_loss": 1.87,
     "dte_at_entry": 17,
     "spot_at_entry": 105.39,
     "signal_rating": "Moderate",
@@ -5745,8 +5745,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 120.2699966430664,
-      "pnl_per_share": -1.13,
-      "pnl_total": -113.0,
+      "pnl_per_share": -1.87,
+      "pnl_total": -187.0,
       "pnl_pct_of_max": -60.4,
       "win": false,
       "hit_tp": false,
@@ -5795,8 +5795,8 @@
         "oi": 90
       }
     },
-    "max_profit": 0.87,
-    "max_loss": 1.13,
+    "max_profit": 1.13,
+    "max_loss": 0.87,
     "dte_at_entry": 17,
     "spot_at_entry": 8.77,
     "signal_rating": "Moderate",
@@ -5905,8 +5905,8 @@
       "reason": "expired",
       "spread_val": 2.0,
       "ul_price": 7.440000057220459,
-      "pnl_per_share": 0.87,
-      "pnl_total": 87.0,
+      "pnl_per_share": 1.13,
+      "pnl_total": 113.0,
       "pnl_pct_of_max": 100.0,
       "win": true,
       "hit_tp": true,
@@ -5955,8 +5955,8 @@
         "oi": 499
       }
     },
-    "max_profit": 0.88,
-    "max_loss": 1.12,
+    "max_profit": 1.12,
+    "max_loss": 0.88,
     "dte_at_entry": 16,
     "spot_at_entry": 8.92,
     "signal_rating": "Strong",
@@ -6058,8 +6058,8 @@
       "reason": "expired",
       "spread_val": 1.9,
       "ul_price": 8.100000381469727,
-      "pnl_per_share": 0.78,
-      "pnl_total": 78.0,
+      "pnl_per_share": 1.02,
+      "pnl_total": 102.0,
       "pnl_pct_of_max": 88.6,
       "win": true,
       "hit_tp": true,
@@ -6110,8 +6110,8 @@
         "oi": 208
       }
     },
-    "max_profit": 0.35,
-    "max_loss": 0.65,
+    "max_profit": 0.65,
+    "max_loss": 0.35,
     "dte_at_entry": 16,
     "spot_at_entry": 5.97,
     "signal_rating": "Moderate",
@@ -6213,8 +6213,8 @@
       "reason": "expired",
       "spread_val": 1.0,
       "ul_price": 4.809999942779541,
-      "pnl_per_share": 0.35,
-      "pnl_total": 35.0,
+      "pnl_per_share": 0.65,
+      "pnl_total": 65.0,
       "pnl_pct_of_max": 100.0,
       "win": true,
       "hit_tp": true,
@@ -6265,8 +6265,8 @@
         "oi": 60
       }
     },
-    "max_profit": 17.85,
-    "max_loss": 12.15,
+    "max_profit": 12.15,
+    "max_loss": 17.85,
     "dte_at_entry": 16,
     "spot_at_entry": 156.64,
     "signal_rating": "Strong",
@@ -6357,8 +6357,8 @@
       "reason": "expired",
       "spread_val": 2.35,
       "ul_price": 152.35000610351562,
-      "pnl_per_share": -9.8,
-      "pnl_total": -980.0,
+      "pnl_per_share": -15.5,
+      "pnl_total": -1550.0,
       "pnl_pct_of_max": -54.9,
       "win": false,
       "hit_tp": false,
@@ -6409,8 +6409,8 @@
         "oi": 1089
       }
     },
-    "max_profit": 1.15,
-    "max_loss": 0.85,
+    "max_profit": 0.85,
+    "max_loss": 1.15,
     "dte_at_entry": 15,
     "spot_at_entry": 748.08,
     "signal_rating": "Strong",
@@ -6495,8 +6495,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 738.8599853515625,
-      "pnl_per_share": -0.85,
-      "pnl_total": -85.0,
+      "pnl_per_share": -1.15,
+      "pnl_total": -115.0,
       "pnl_pct_of_max": -73.9,
       "win": false,
       "hit_tp": false,
@@ -6547,8 +6547,8 @@
         "oi": 517
       }
     },
-    "max_profit": 1.09,
-    "max_loss": 0.91,
+    "max_profit": 0.91,
+    "max_loss": 1.09,
     "dte_at_entry": 15,
     "spot_at_entry": 44.83,
     "signal_rating": "Moderate",
@@ -6633,8 +6633,8 @@
       "reason": "expired",
       "spread_val": 2.0,
       "ul_price": 32.84000015258789,
-      "pnl_per_share": 1.09,
-      "pnl_total": 109.0,
+      "pnl_per_share": 0.91,
+      "pnl_total": 91.0,
       "pnl_pct_of_max": 100.0,
       "win": true,
       "hit_tp": true,
@@ -6823,8 +6823,8 @@
         "oi": 888
       }
     },
-    "max_profit": 1.22,
-    "max_loss": 0.78,
+    "max_profit": 0.78,
+    "max_loss": 1.22,
     "dte_at_entry": 14,
     "spot_at_entry": 752.92,
     "signal_rating": "Strong",
@@ -6903,8 +6903,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 738.8599853515625,
-      "pnl_per_share": -0.78,
-      "pnl_total": -78.0,
+      "pnl_per_share": -1.22,
+      "pnl_total": -122.0,
       "pnl_pct_of_max": -63.9,
       "win": false,
       "hit_tp": false,
@@ -6955,8 +6955,8 @@
         "oi": 319
       }
     },
-    "max_profit": 1.58,
-    "max_loss": 0.92,
+    "max_profit": 0.92,
+    "max_loss": 1.58,
     "dte_at_entry": 14,
     "spot_at_entry": 314.26,
     "signal_rating": "Moderate",
@@ -7035,8 +7035,8 @@
       "reason": "expired",
       "spread_val": 2.5,
       "ul_price": 333.07000732421875,
-      "pnl_per_share": 1.58,
-      "pnl_total": 158.0,
+      "pnl_per_share": 0.92,
+      "pnl_total": 92.0,
       "pnl_pct_of_max": 100.0,
       "win": true,
       "hit_tp": true,
@@ -7087,8 +7087,8 @@
         "oi": 73
       }
     },
-    "max_profit": 1.9,
-    "max_loss": 1.1,
+    "max_profit": 1.1,
+    "max_loss": 1.9,
     "dte_at_entry": 14,
     "spot_at_entry": 20.45,
     "signal_rating": "Moderate",
@@ -7167,8 +7167,8 @@
       "reason": "expired",
       "spread_val": 3.0,
       "ul_price": 16.229999542236328,
-      "pnl_per_share": 1.9,
-      "pnl_total": 190.0,
+      "pnl_per_share": 1.1,
+      "pnl_total": 110.0,
       "pnl_pct_of_max": 100.0,
       "win": true,
       "hit_tp": true,
@@ -8420,7 +8420,7 @@
         "net_vega": -0.0004
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 0.005,
         "ul_price": 17.985000610351562,
         "unrealized": 0.355,
@@ -8428,6 +8428,16 @@
         "net_theta": 0.0023,
         "net_gamma": -0.007982,
         "net_vega": -0.0002
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 0.005,
+        "ul_price": 17.940000534057617,
+        "unrealized": 0.355,
+        "net_delta": -0.0019,
+        "net_theta": 0.0018,
+        "net_gamma": -0.004752,
+        "net_vega": -0.0001
       }
     ],
     "exit": null,
@@ -9597,8 +9607,8 @@
         "oi": 71
       }
     },
-    "max_profit": 13.74,
-    "max_loss": 8.76,
+    "max_profit": 8.76,
+    "max_loss": 13.74,
     "dte_at_entry": 7,
     "spot_at_entry": 357.57,
     "signal_rating": "Neutral",
@@ -9647,8 +9657,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 326.1099853515625,
-      "pnl_per_share": -8.76,
-      "pnl_total": -876.0,
+      "pnl_per_share": -13.74,
+      "pnl_total": -1374.0,
       "pnl_pct_of_max": -63.8,
       "win": false,
       "hit_tp": false,
@@ -9712,8 +9722,8 @@
         "oi": 102
       }
     },
-    "max_profit": 7.05,
-    "max_loss": 2.95,
+    "max_profit": 2.95,
+    "max_loss": 7.05,
     "dte_at_entry": 7,
     "spot_at_entry": 214.97,
     "signal_rating": "Moderate",
@@ -9762,8 +9772,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 207.63999938964844,
-      "pnl_per_share": -2.95,
-      "pnl_total": -295.0,
+      "pnl_per_share": -7.05,
+      "pnl_total": -705.0,
       "pnl_pct_of_max": -41.8,
       "win": false,
       "hit_tp": false,
@@ -9827,8 +9837,8 @@
         "oi": 1205
       }
     },
-    "max_profit": 6.05,
-    "max_loss": 3.95,
+    "max_profit": 3.95,
+    "max_loss": 6.05,
     "dte_at_entry": 7,
     "spot_at_entry": 254.11,
     "signal_rating": "Moderate",
@@ -9877,8 +9887,8 @@
       "reason": "expired",
       "spread_val": 10.0,
       "ul_price": 263.4200134277344,
-      "pnl_per_share": 6.05,
-      "pnl_total": 605.0,
+      "pnl_per_share": 3.95,
+      "pnl_total": 395.0,
       "pnl_pct_of_max": 100.0,
       "win": true,
       "hit_tp": true,
@@ -9942,8 +9952,8 @@
         "oi": 306
       }
     },
-    "max_profit": 8.56,
-    "max_loss": 6.44,
+    "max_profit": 6.44,
+    "max_loss": 8.56,
     "dte_at_entry": 11,
     "spot_at_entry": 251.09,
     "signal_rating": "Weak",
@@ -10072,8 +10082,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 256.4100036621094,
-      "pnl_per_share": -6.44,
-      "pnl_total": -644.0,
+      "pnl_per_share": -8.56,
+      "pnl_total": -856.0,
       "pnl_pct_of_max": -75.2,
       "win": false,
       "hit_tp": false,
@@ -10173,8 +10183,8 @@
         "oi": 390
       }
     },
-    "max_profit": 6.77,
-    "max_loss": 3.23,
+    "max_profit": 3.23,
+    "max_loss": 6.77,
     "dte_at_entry": 11,
     "spot_at_entry": 140.65,
     "signal_rating": "Moderate",
@@ -10303,10 +10313,10 @@
       "reason": "expired",
       "spread_val": 4.49,
       "ul_price": 144.49000549316406,
-      "pnl_per_share": 1.26,
-      "pnl_total": 126.0,
+      "pnl_per_share": -2.28,
+      "pnl_total": -228.0,
       "pnl_pct_of_max": 18.6,
-      "win": true,
+      "win": false,
       "hit_tp": true,
       "hit_sl": false,
       "mae_pct": -41.1,
@@ -10404,8 +10414,8 @@
         "oi": 5108
       }
     },
-    "max_profit": 0.79,
-    "max_loss": 0.21,
+    "max_profit": 0.21,
+    "max_loss": 0.79,
     "dte_at_entry": 11,
     "spot_at_entry": 24.91,
     "signal_rating": "Neutral",
@@ -10534,8 +10544,8 @@
       "reason": "expired",
       "spread_val": 0.03,
       "ul_price": 25.030000686645508,
-      "pnl_per_share": -0.18,
-      "pnl_total": -18.0,
+      "pnl_per_share": -0.76,
+      "pnl_total": -76.0,
       "pnl_pct_of_max": -22.8,
       "win": false,
       "hit_tp": false,
@@ -10635,8 +10645,8 @@
         "oi": 55
       }
     },
-    "max_profit": 6.97,
-    "max_loss": 4.03,
+    "max_profit": 4.03,
+    "max_loss": 6.97,
     "dte_at_entry": 11,
     "spot_at_entry": 113.72,
     "signal_rating": "Neutral",
@@ -10765,8 +10775,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 104.2300033569336,
-      "pnl_per_share": -4.03,
-      "pnl_total": -403.0,
+      "pnl_per_share": -6.97,
+      "pnl_total": -697.0,
       "pnl_pct_of_max": -57.8,
       "win": false,
       "hit_tp": false,
@@ -10866,8 +10876,8 @@
         "oi": 306
       }
     },
-    "max_profit": 7.53,
-    "max_loss": 4.97,
+    "max_profit": 4.97,
+    "max_loss": 7.53,
     "dte_at_entry": 11,
     "spot_at_entry": 249.84,
     "signal_rating": "Weak",
@@ -10996,8 +11006,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 256.4100036621094,
-      "pnl_per_share": -4.97,
-      "pnl_total": -497.0,
+      "pnl_per_share": -7.53,
+      "pnl_total": -753.0,
       "pnl_pct_of_max": -66.0,
       "win": false,
       "hit_tp": false,
@@ -11317,8 +11327,8 @@
         "oi": 391
       }
     },
-    "max_profit": 6.81,
-    "max_loss": 4.19,
+    "max_profit": 4.19,
+    "max_loss": 6.81,
     "dte_at_entry": 10,
     "spot_at_entry": 114.86,
     "signal_rating": "Strong",
@@ -11441,8 +11451,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 104.2300033569336,
-      "pnl_per_share": -4.19,
-      "pnl_total": -419.0,
+      "pnl_per_share": -6.81,
+      "pnl_total": -681.0,
       "pnl_pct_of_max": -61.5,
       "win": false,
       "hit_tp": false,
@@ -11542,8 +11552,8 @@
         "oi": 114
       }
     },
-    "max_profit": 6.4,
-    "max_loss": 3.6,
+    "max_profit": 3.6,
+    "max_loss": 6.4,
     "dte_at_entry": 17,
     "spot_at_entry": 133.19,
     "signal_rating": "Moderate",
@@ -11720,8 +11730,8 @@
       "reason": "expired",
       "spread_val": 2.985,
       "ul_price": 134.98500061035156,
-      "pnl_per_share": -0.615,
-      "pnl_total": -61.5,
+      "pnl_per_share": -3.415,
+      "pnl_total": -341.5,
       "pnl_pct_of_max": -9.6,
       "win": false,
       "hit_tp": false,
@@ -11821,8 +11831,8 @@
         "oi": 95
       }
     },
-    "max_profit": 2.66,
-    "max_loss": 1.34,
+    "max_profit": 1.34,
+    "max_loss": 2.66,
     "dte_at_entry": 17,
     "spot_at_entry": 58.27,
     "signal_rating": null,
@@ -11999,8 +12009,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 57.47999954223633,
-      "pnl_per_share": -1.34,
-      "pnl_total": -134.0,
+      "pnl_per_share": -2.66,
+      "pnl_total": -266.0,
       "pnl_pct_of_max": -50.4,
       "win": false,
       "hit_tp": false,
@@ -12100,8 +12110,8 @@
         "oi": 340
       }
     },
-    "max_profit": 6.34,
-    "max_loss": 3.66,
+    "max_profit": 3.66,
+    "max_loss": 6.34,
     "dte_at_entry": 17,
     "spot_at_entry": 138.93,
     "signal_rating": "Strong",
@@ -12278,8 +12288,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 149.69000244140625,
-      "pnl_per_share": -3.66,
-      "pnl_total": -366.0,
+      "pnl_per_share": -6.34,
+      "pnl_total": -634.0,
       "pnl_pct_of_max": -57.7,
       "win": false,
       "hit_tp": false,
@@ -12379,8 +12389,8 @@
         "oi": 199
       }
     },
-    "max_profit": 6.93,
-    "max_loss": 3.07,
+    "max_profit": 3.07,
+    "max_loss": 6.93,
     "dte_at_entry": 10,
     "spot_at_entry": 249.23,
     "signal_rating": "Moderate",
@@ -12503,10 +12513,10 @@
       "reason": "expired",
       "spread_val": 6.41,
       "ul_price": 256.4100036621094,
-      "pnl_per_share": 3.34,
-      "pnl_total": 334.0,
+      "pnl_per_share": -0.52,
+      "pnl_total": -52.0,
       "pnl_pct_of_max": 48.2,
-      "win": true,
+      "win": false,
       "hit_tp": true,
       "hit_sl": false,
       "mae_pct": -2.3,
@@ -12604,8 +12614,8 @@
         "oi": 421
       }
     },
-    "max_profit": 10.7,
-    "max_loss": 4.3,
+    "max_profit": 4.3,
+    "max_loss": 10.7,
     "dte_at_entry": 17,
     "spot_at_entry": 203.68,
     "signal_rating": "Moderate",
@@ -12782,8 +12792,8 @@
       "reason": "expired",
       "spread_val": 15.0,
       "ul_price": 223.32000732421875,
-      "pnl_per_share": 10.7,
-      "pnl_total": 1070.0,
+      "pnl_per_share": 4.3,
+      "pnl_total": 430.0,
       "pnl_pct_of_max": 100.0,
       "win": true,
       "hit_tp": true,
@@ -12883,8 +12893,8 @@
         "oi": 117
       }
     },
-    "max_profit": 6.41,
-    "max_loss": 3.59,
+    "max_profit": 3.59,
+    "max_loss": 6.41,
     "dte_at_entry": 17,
     "spot_at_entry": 125.48,
     "signal_rating": "Moderate",
@@ -13061,8 +13071,8 @@
       "reason": "expired",
       "spread_val": 3.57,
       "ul_price": 128.57000732421875,
-      "pnl_per_share": -0.02,
-      "pnl_total": -2.0,
+      "pnl_per_share": -2.84,
+      "pnl_total": -284.0,
       "pnl_pct_of_max": -0.3,
       "win": false,
       "hit_tp": false,
@@ -13162,8 +13172,8 @@
         "oi": 67
       }
     },
-    "max_profit": 16.95,
-    "max_loss": 10.55,
+    "max_profit": 10.55,
+    "max_loss": 16.95,
     "dte_at_entry": 30,
     "spot_at_entry": 204.61,
     "signal_rating": "Moderate",
@@ -13349,7 +13359,7 @@
         "net_vega": -0.0798
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 17.6,
         "ul_price": 221.24000549316406,
         "unrealized": 7.05,
@@ -13357,6 +13367,16 @@
         "net_theta": 0.0977,
         "net_gamma": -0.009419,
         "net_vega": -0.0548
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 15.25,
+        "ul_price": 215.99000549316406,
+        "unrealized": 4.7,
+        "net_delta": 0.5643,
+        "net_theta": 0.0894,
+        "net_gamma": -0.005242,
+        "net_vega": -0.0331
       }
     ],
     "exit": null,
@@ -13448,8 +13468,8 @@
         "oi": 236
       }
     },
-    "max_profit": 4.43,
-    "max_loss": 3.57,
+    "max_profit": 3.57,
+    "max_loss": 4.43,
     "dte_at_entry": 9,
     "spot_at_entry": 138.75,
     "signal_rating": "Strong",
@@ -13566,8 +13586,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 144.49000549316406,
-      "pnl_per_share": -3.57,
-      "pnl_total": -357.0,
+      "pnl_per_share": -4.43,
+      "pnl_total": -443.0,
       "pnl_pct_of_max": -80.6,
       "win": false,
       "hit_tp": false,
@@ -13667,8 +13687,8 @@
         "oi": 16846
       }
     },
-    "max_profit": 1.51,
-    "max_loss": 0.49,
+    "max_profit": 0.49,
+    "max_loss": 1.51,
     "dte_at_entry": 30,
     "spot_at_entry": 25.11,
     "signal_rating": "Moderate",
@@ -13854,7 +13874,7 @@
         "net_vega": -0.0142
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 1.445,
         "ul_price": 26.604999542236328,
         "unrealized": 0.955,
@@ -13862,6 +13882,16 @@
         "net_theta": 0.0022,
         "net_gamma": -0.298632,
         "net_vega": -0.0083
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 1.26,
+        "ul_price": 26.309999465942383,
+        "unrealized": 0.77,
+        "net_delta": 0.6613,
+        "net_theta": -0.0033,
+        "net_gamma": -0.190111,
+        "net_vega": -0.0032
       }
     ],
     "exit": null,
@@ -13953,8 +13983,8 @@
         "oi": 1386
       }
     },
-    "max_profit": 11.7,
-    "max_loss": 8.3,
+    "max_profit": 8.3,
+    "max_loss": 11.7,
     "dte_at_entry": 30,
     "spot_at_entry": 254.2,
     "signal_rating": "Moderate",
@@ -14140,7 +14170,7 @@
         "net_vega": -0.1377
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 3.835,
         "ul_price": 259.739990234375,
         "unrealized": -4.465,
@@ -14148,6 +14178,16 @@
         "net_theta": -0.0006,
         "net_gamma": -0.029234,
         "net_vega": -0.0835
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 3.075,
+        "ul_price": 260.8900146484375,
+        "unrealized": -5.225,
+        "net_delta": 0.3273,
+        "net_theta": -0.0101,
+        "net_gamma": -0.031631,
+        "net_vega": -0.081
       }
     ],
     "exit": null,
@@ -14239,8 +14279,8 @@
         "oi": 236
       }
     },
-    "max_profit": 4.38,
-    "max_loss": 2.62,
+    "max_profit": 2.62,
+    "max_loss": 4.38,
     "dte_at_entry": 9,
     "spot_at_entry": 138.26,
     "signal_rating": "Strong",
@@ -14357,8 +14397,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 144.49000549316406,
-      "pnl_per_share": -2.62,
-      "pnl_total": -262.0,
+      "pnl_per_share": -4.38,
+      "pnl_total": -438.0,
       "pnl_pct_of_max": -59.8,
       "win": false,
       "hit_tp": false,
@@ -14458,8 +14498,8 @@
         "oi": 2999
       }
     },
-    "max_profit": 4.78,
-    "max_loss": 3.22,
+    "max_profit": 3.22,
+    "max_loss": 4.78,
     "dte_at_entry": 9,
     "spot_at_entry": 294.31,
     "signal_rating": "Moderate",
@@ -14576,8 +14616,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 291.1499938964844,
-      "pnl_per_share": -3.22,
-      "pnl_total": -322.0,
+      "pnl_per_share": -4.78,
+      "pnl_total": -478.0,
       "pnl_pct_of_max": -67.4,
       "win": false,
       "hit_tp": false,
@@ -14677,8 +14717,8 @@
         "oi": 22106
       }
     },
-    "max_profit": 5.14,
-    "max_loss": 3.86,
+    "max_profit": 3.86,
+    "max_loss": 5.14,
     "dte_at_entry": 8,
     "spot_at_entry": 292.15,
     "signal_rating": "Strong",
@@ -14789,8 +14829,8 @@
       "reason": "expired",
       "spread_val": 0.15,
       "ul_price": 291.1499938964844,
-      "pnl_per_share": -3.71,
-      "pnl_total": -371.0,
+      "pnl_per_share": -4.99,
+      "pnl_total": -499.0,
       "pnl_pct_of_max": -72.2,
       "win": false,
       "hit_tp": false,
@@ -14890,8 +14930,8 @@
         "oi": 130
       }
     },
-    "max_profit": 5.0,
-    "max_loss": 3.0,
+    "max_profit": 3.0,
+    "max_loss": 5.0,
     "dte_at_entry": 15,
     "spot_at_entry": 131.61,
     "signal_rating": null,
@@ -15056,10 +15096,10 @@
       "reason": "expired",
       "spread_val": 3.985,
       "ul_price": 134.98500061035156,
-      "pnl_per_share": 0.985,
-      "pnl_total": 98.5,
+      "pnl_per_share": -1.015,
+      "pnl_total": -101.5,
       "pnl_pct_of_max": 19.7,
-      "win": true,
+      "win": false,
       "hit_tp": true,
       "hit_sl": false,
       "mae_pct": -41.5,
@@ -15416,8 +15456,8 @@
     "scan_credit": 5.12,
     "slippage_pct": -0.0105,
     "fill_source": "live_quote",
-    "max_profit": 3.86,
-    "max_loss": 5.14,
+    "max_profit": 5.14,
+    "max_loss": 3.86,
     "dte_at_entry": 8,
     "spot_at_entry": 290.89,
     "signal_rating": "Moderate",
@@ -15528,8 +15568,8 @@
       "reason": "expired",
       "spread_val": 1.15,
       "ul_price": 291.1499938964844,
-      "pnl_per_share": -3.99,
-      "pnl_total": -399.0,
+      "pnl_per_share": -2.71,
+      "pnl_total": -271.0,
       "pnl_pct_of_max": -103.4,
       "win": false,
       "hit_tp": false,
@@ -15632,8 +15672,8 @@
     "scan_credit": 7.75,
     "slippage_pct": -0.0838,
     "fill_source": "live_quote",
-    "max_profit": 4.85,
-    "max_loss": 7.65,
+    "max_profit": 7.65,
+    "max_loss": 4.85,
     "dte_at_entry": 8,
     "spot_at_entry": 200.05,
     "signal_rating": null,
@@ -15744,8 +15784,8 @@
       "reason": "expired",
       "spread_val": 10.39,
       "ul_price": 207.88999938964844,
-      "pnl_per_share": 2.74,
-      "pnl_total": 274.0,
+      "pnl_per_share": 5.54,
+      "pnl_total": 554.0,
       "pnl_pct_of_max": 56.5,
       "win": true,
       "hit_tp": true,
@@ -15848,8 +15888,8 @@
     "scan_credit": 3.09,
     "slippage_pct": -0.0609,
     "fill_source": "live_quote",
-    "max_profit": 1.83,
-    "max_loss": 3.17,
+    "max_profit": 3.17,
+    "max_loss": 1.83,
     "dte_at_entry": 8,
     "spot_at_entry": 101.73,
     "signal_rating": null,
@@ -15960,8 +16000,8 @@
       "reason": "expired",
       "spread_val": 4.27,
       "ul_price": 105.2699966430664,
-      "pnl_per_share": 1.1,
-      "pnl_total": 110.0,
+      "pnl_per_share": 2.44,
+      "pnl_total": 244.0,
       "pnl_pct_of_max": 60.1,
       "win": true,
       "hit_tp": true,
@@ -16064,8 +16104,8 @@
     "scan_credit": 4.62,
     "slippage_pct": -0.0244,
     "fill_source": "live_quote",
-    "max_profit": 3.36,
-    "max_loss": 4.64,
+    "max_profit": 4.64,
+    "max_loss": 3.36,
     "dte_at_entry": 10,
     "spot_at_entry": 291.33,
     "signal_rating": "Moderate",
@@ -16180,8 +16220,8 @@
       "reason": "expired",
       "spread_val": 5.23,
       "ul_price": 296.2300109863281,
-      "pnl_per_share": 0.59,
-      "pnl_total": 59.0,
+      "pnl_per_share": 1.87,
+      "pnl_total": 187.0,
       "pnl_pct_of_max": 17.6,
       "win": true,
       "hit_tp": true,
@@ -16284,8 +16324,8 @@
     "scan_credit": 3.13,
     "slippage_pct": -0.0747,
     "fill_source": "live_quote",
-    "max_profit": 1.87,
-    "max_loss": 3.13,
+    "max_profit": 3.13,
+    "max_loss": 1.87,
     "dte_at_entry": 7,
     "spot_at_entry": 131.42,
     "signal_rating": "Strong",
@@ -16386,8 +16426,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 130.22500610351562,
-      "pnl_per_share": -3.13,
-      "pnl_total": -313.0,
+      "pnl_per_share": -1.87,
+      "pnl_total": -187.0,
       "pnl_pct_of_max": -167.4,
       "win": false,
       "hit_tp": false,
@@ -16490,8 +16530,8 @@
     "scan_credit": 5.1,
     "slippage_pct": -0.0681,
     "fill_source": "live_quote",
-    "max_profit": 2.9,
-    "max_loss": 5.1,
+    "max_profit": 5.1,
+    "max_loss": 2.9,
     "dte_at_entry": 14,
     "spot_at_entry": 131.66,
     "signal_rating": null,
@@ -16646,10 +16686,10 @@
       "reason": "expired",
       "spread_val": 3.985,
       "ul_price": 134.98500061035156,
-      "pnl_per_share": -1.115,
-      "pnl_total": -111.5,
+      "pnl_per_share": 1.085,
+      "pnl_total": 108.5,
       "pnl_pct_of_max": -38.4,
-      "win": false,
+      "win": true,
       "hit_tp": false,
       "hit_sl": true,
       "mae_pct": -144.0,
@@ -16750,8 +16790,8 @@
     "scan_credit": 5.4,
     "slippage_pct": -0.0146,
     "fill_source": "live_quote",
-    "max_profit": 4.17,
-    "max_loss": 5.33,
+    "max_profit": 5.33,
+    "max_loss": 4.17,
     "dte_at_entry": 11,
     "spot_at_entry": 293.88,
     "signal_rating": "Moderate",
@@ -16896,8 +16936,8 @@
       "reason": "expired",
       "spread_val": 8.5,
       "ul_price": 301.5,
-      "pnl_per_share": 3.17,
-      "pnl_total": 317.0,
+      "pnl_per_share": 4.33,
+      "pnl_total": 433.0,
       "pnl_pct_of_max": 76.0,
       "win": true,
       "hit_tp": true,
@@ -17000,8 +17040,8 @@
     "scan_credit": 4.95,
     "slippage_pct": -0.1207,
     "fill_source": "live_quote",
-    "max_profit": 3.25,
-    "max_loss": 4.75,
+    "max_profit": 4.75,
+    "max_loss": 3.25,
     "dte_at_entry": 11,
     "spot_at_entry": 133.85,
     "signal_rating": null,
@@ -17146,8 +17186,8 @@
       "reason": "expired",
       "spread_val": 0.015,
       "ul_price": 134.98500061035156,
-      "pnl_per_share": -4.735,
-      "pnl_total": -473.5,
+      "pnl_per_share": -3.235,
+      "pnl_total": -323.5,
       "pnl_pct_of_max": -145.7,
       "win": false,
       "hit_tp": false,
@@ -17250,8 +17290,8 @@
     "scan_credit": 0.96,
     "slippage_pct": -0.068,
     "fill_source": "live_quote",
-    "max_profit": 0.55,
-    "max_loss": 0.95,
+    "max_profit": 0.95,
+    "max_loss": 0.55,
     "dte_at_entry": 11,
     "spot_at_entry": 24.68,
     "signal_rating": null,
@@ -17396,8 +17436,8 @@
       "reason": "expired",
       "spread_val": 1.5,
       "ul_price": 26.75,
-      "pnl_per_share": 0.55,
-      "pnl_total": 55.0,
+      "pnl_per_share": 0.95,
+      "pnl_total": 95.0,
       "pnl_pct_of_max": 100.0,
       "win": true,
       "hit_tp": true,
@@ -17500,8 +17540,8 @@
     "scan_credit": 18.0,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 11.34,
-    "max_loss": 18.66,
+    "max_profit": 18.66,
+    "max_loss": 11.34,
     "dte_at_entry": 25,
     "spot_at_entry": 336.19,
     "signal_rating": "Moderate",
@@ -17661,7 +17701,7 @@
         "net_vega": 0.049
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 12.06,
         "ul_price": 340.8599853515625,
         "unrealized": -6.6,
@@ -17669,6 +17709,16 @@
         "net_theta": -0.1433,
         "net_gamma": 0.006745,
         "net_vega": 0.0742
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 14.755,
+        "ul_price": 344.1300048828125,
+        "unrealized": -3.905,
+        "net_delta": 0.703,
+        "net_theta": -0.1276,
+        "net_gamma": 0.000247,
+        "net_vega": 0.0359
       }
     ],
     "exit": null,
@@ -17763,8 +17813,8 @@
     "scan_credit": 4.81,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 2.5,
-    "max_loss": 5.0,
+    "max_profit": 5.0,
+    "max_loss": 2.5,
     "dte_at_entry": 25,
     "spot_at_entry": 104.08,
     "signal_rating": "Moderate",
@@ -17924,7 +17974,7 @@
         "net_vega": -0.0497
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 0.505,
         "ul_price": 107.68000030517578,
         "unrealized": -4.495,
@@ -17932,6 +17982,16 @@
         "net_theta": -0.1343,
         "net_gamma": -0.057753,
         "net_vega": -0.004
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 0.17,
+        "ul_price": 109.33999633789062,
+        "unrealized": -4.83,
+        "net_delta": 0.0949,
+        "net_theta": -0.0007,
+        "net_gamma": -0.036901,
+        "net_vega": -0.0195
       }
     ],
     "exit": null,
@@ -18026,8 +18086,8 @@
     "scan_credit": 12.69,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 6.69,
-    "max_loss": 13.31,
+    "max_profit": 13.31,
+    "max_loss": 6.69,
     "dte_at_entry": 25,
     "spot_at_entry": 266.9,
     "signal_rating": "Strong",
@@ -18187,7 +18247,7 @@
         "net_vega": 0.1107
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 1.705,
         "ul_price": 259.739990234375,
         "unrealized": -11.605,
@@ -18195,6 +18255,16 @@
         "net_theta": -0.1378,
         "net_gamma": 0.030136,
         "net_vega": 0.1218
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 1.86,
+        "ul_price": 260.8900146484375,
+        "unrealized": -11.45,
+        "net_delta": 0.3077,
+        "net_theta": -0.139,
+        "net_gamma": 0.032978,
+        "net_vega": 0.1166
       }
     ],
     "exit": null,
@@ -18289,8 +18359,8 @@
     "scan_credit": 7.24,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 5.28,
-    "max_loss": 7.72,
+    "max_profit": 7.72,
+    "max_loss": 5.28,
     "dte_at_entry": 25,
     "spot_at_entry": 131.13,
     "signal_rating": "Moderate",
@@ -18450,7 +18520,7 @@
         "net_vega": -0.0242
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 5.03,
         "ul_price": 130.4499969482422,
         "unrealized": -2.69,
@@ -18458,6 +18528,16 @@
         "net_theta": -0.0636,
         "net_gamma": -0.027556,
         "net_vega": -0.0071
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 3.095,
+        "ul_price": 132.9199981689453,
+        "unrealized": -4.625,
+        "net_delta": 0.4618,
+        "net_theta": -0.0581,
+        "net_gamma": -0.047242,
+        "net_vega": -0.0272
       }
     ],
     "exit": null,
@@ -18552,8 +18632,8 @@
     "scan_credit": 3.36,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 1.58,
-    "max_loss": 3.42,
+    "max_profit": 3.42,
+    "max_loss": 1.58,
     "dte_at_entry": 25,
     "spot_at_entry": 58.42,
     "signal_rating": null,
@@ -18713,7 +18793,7 @@
         "net_vega": -0.0054
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 2.785,
         "ul_price": 60.91999816894531,
         "unrealized": -0.635,
@@ -18721,6 +18801,16 @@
         "net_theta": 0.0017,
         "net_gamma": -0.036167,
         "net_vega": -0.0071
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 2.9,
+        "ul_price": 61.0099983215332,
+        "unrealized": -0.52,
+        "net_delta": 0.6533,
+        "net_theta": -0.0063,
+        "net_gamma": -0.051127,
+        "net_vega": -0.0055
       }
     ],
     "exit": null,
@@ -18815,8 +18905,8 @@
     "scan_credit": 12.2,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 6.85,
-    "max_loss": 13.15,
+    "max_profit": 13.15,
+    "max_loss": 6.85,
     "dte_at_entry": 24,
     "spot_at_entry": 218.11,
     "signal_rating": "Moderate",
@@ -18956,7 +19046,7 @@
         "net_vega": -0.0771
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 4.975,
         "ul_price": 221.24000549316406,
         "unrealized": -8.175,
@@ -18964,6 +19054,16 @@
         "net_theta": 0.0651,
         "net_gamma": -0.012583,
         "net_vega": -0.0585
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 7.15,
+        "ul_price": 215.99000549316406,
+        "unrealized": -6.0,
+        "net_delta": 0.4209,
+        "net_theta": 0.1175,
+        "net_gamma": -0.010156,
+        "net_vega": -0.0517
       }
     ],
     "exit": null,
@@ -19058,8 +19158,8 @@
     "scan_credit": 4.5,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 2.36,
-    "max_loss": 4.64,
+    "max_profit": 4.64,
+    "max_loss": 2.36,
     "dte_at_entry": 24,
     "spot_at_entry": 105.15,
     "signal_rating": "Moderate",
@@ -19189,7 +19289,7 @@
         "net_vega": -0.0518
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 0.935,
         "ul_price": 107.68000030517578,
         "unrealized": -3.705,
@@ -19197,6 +19297,16 @@
         "net_theta": -0.0637,
         "net_gamma": -0.066657,
         "net_vega": -0.0175
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 0.34,
+        "ul_price": 109.33999633789062,
+        "unrealized": -4.3,
+        "net_delta": 0.0094,
+        "net_theta": -0.1145,
+        "net_gamma": -0.046739,
+        "net_vega": -0.0015
       }
     ],
     "exit": null,
@@ -19291,8 +19401,8 @@
     "scan_credit": 4.71,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 2.885,
-    "max_loss": 5.115,
+    "max_profit": 5.115,
+    "max_loss": 2.885,
     "dte_at_entry": 10,
     "spot_at_entry": 132.11,
     "signal_rating": null,
@@ -19407,8 +19517,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 134.98500061035156,
-      "pnl_per_share": -5.115,
-      "pnl_total": -511.5,
+      "pnl_per_share": -2.885,
+      "pnl_total": -288.5,
       "pnl_pct_of_max": -177.3,
       "win": false,
       "hit_tp": false,
@@ -19511,8 +19621,8 @@
     "scan_credit": 2.8,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 1.965,
-    "max_loss": 3.035,
+    "max_profit": 3.035,
+    "max_loss": 1.965,
     "dte_at_entry": 10,
     "spot_at_entry": 87.03,
     "signal_rating": null,
@@ -19627,8 +19737,8 @@
       "reason": "expired",
       "spread_val": 0.765,
       "ul_price": 87.23500061035156,
-      "pnl_per_share": -2.27,
-      "pnl_total": -227.0,
+      "pnl_per_share": -1.2,
+      "pnl_total": -120.0,
       "pnl_pct_of_max": -115.5,
       "win": false,
       "hit_tp": false,
@@ -19731,8 +19841,8 @@
     "scan_credit": 4.64,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 2.3,
-    "max_loss": 4.7,
+    "max_profit": 4.7,
+    "max_loss": 2.3,
     "dte_at_entry": 10,
     "spot_at_entry": 69.13,
     "signal_rating": "Moderate",
@@ -19847,8 +19957,8 @@
       "reason": "expired",
       "spread_val": 6.01,
       "ul_price": 75.01000213623047,
-      "pnl_per_share": 1.31,
-      "pnl_total": 131.0,
+      "pnl_per_share": 3.71,
+      "pnl_total": 371.0,
       "pnl_pct_of_max": 57.0,
       "win": true,
       "hit_tp": true,
@@ -19951,8 +20061,8 @@
     "scan_credit": 2.09,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 1.555,
-    "max_loss": 2.445,
+    "max_profit": 2.445,
+    "max_loss": 1.555,
     "dte_at_entry": 10,
     "spot_at_entry": 55.28,
     "signal_rating": null,
@@ -20067,8 +20177,8 @@
       "reason": "expired",
       "spread_val": 0.085,
       "ul_price": 55.915000915527344,
-      "pnl_per_share": -2.36,
-      "pnl_total": -236.0,
+      "pnl_per_share": -1.47,
+      "pnl_total": -147.0,
       "pnl_pct_of_max": -151.8,
       "win": false,
       "hit_tp": false,
@@ -20171,8 +20281,8 @@
     "scan_credit": 16.68,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 7.795,
-    "max_loss": 17.205,
+    "max_profit": 17.205,
+    "max_loss": 7.795,
     "dte_at_entry": 24,
     "spot_at_entry": 334.83,
     "signal_rating": "Moderate",
@@ -20302,7 +20412,7 @@
         "net_vega": 0.0961
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 8.385,
         "ul_price": 340.8599853515625,
         "unrealized": -8.82,
@@ -20310,6 +20420,16 @@
         "net_theta": -0.1637,
         "net_gamma": 0.012307,
         "net_vega": 0.1067
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 10.48,
+        "ul_price": 344.1300048828125,
+        "unrealized": -6.725,
+        "net_delta": 0.6319,
+        "net_theta": -0.145,
+        "net_gamma": 0.006,
+        "net_vega": 0.0662
       }
     ],
     "exit": null,
@@ -20404,8 +20524,8 @@
     "scan_credit": 3.12,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 1.865,
-    "max_loss": 3.135,
+    "max_profit": 3.135,
+    "max_loss": 1.865,
     "dte_at_entry": 10,
     "spot_at_entry": 105.71,
     "signal_rating": "Moderate",
@@ -20520,10 +20640,10 @@
       "reason": "expired",
       "spread_val": 2.59,
       "ul_price": 107.58999633789062,
-      "pnl_per_share": -0.545,
-      "pnl_total": -54.5,
+      "pnl_per_share": 0.725,
+      "pnl_total": 72.5,
       "pnl_pct_of_max": -29.2,
-      "win": false,
+      "win": true,
       "hit_tp": false,
       "hit_sl": true,
       "mae_pct": -110.2,
@@ -20624,8 +20744,8 @@
     "scan_credit": 3.38,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 1.575,
-    "max_loss": 3.425,
+    "max_profit": 3.425,
+    "max_loss": 1.575,
     "dte_at_entry": 24,
     "spot_at_entry": 50.38,
     "signal_rating": "Moderate",
@@ -20755,7 +20875,7 @@
         "net_vega": -0.0162
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 3.17,
         "ul_price": 53.689998626708984,
         "unrealized": -0.255,
@@ -20763,6 +20883,16 @@
         "net_theta": 0.0024,
         "net_gamma": -0.065022,
         "net_vega": -0.0111
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 2.72,
+        "ul_price": 52.61000061035156,
+        "unrealized": -0.705,
+        "net_delta": 0.5584,
+        "net_theta": -0.0326,
+        "net_gamma": -0.030047,
+        "net_vega": 0.0026
       }
     ],
     "exit": null,
@@ -21079,8 +21209,8 @@
     "scan_credit": 0.89,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 0.55,
-    "max_loss": 0.95,
+    "max_profit": 0.95,
+    "max_loss": 0.55,
     "dte_at_entry": 9,
     "spot_at_entry": 25.24,
     "signal_rating": null,
@@ -21185,8 +21315,8 @@
       "reason": "expired",
       "spread_val": 1.5,
       "ul_price": 26.75,
-      "pnl_per_share": 0.55,
-      "pnl_total": 55.0,
+      "pnl_per_share": 0.95,
+      "pnl_total": 95.0,
       "pnl_pct_of_max": 100.0,
       "win": true,
       "hit_tp": true,
@@ -21312,8 +21442,8 @@
     "scan_credit": 0.62,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 0.33,
-    "max_loss": 0.67,
+    "max_profit": 0.67,
+    "max_loss": 0.33,
     "dte_at_entry": 9,
     "spot_at_entry": 24.41,
     "signal_rating": null,
@@ -21398,8 +21528,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 23.795000076293945,
-      "pnl_per_share": -0.67,
-      "pnl_total": -67.0,
+      "pnl_per_share": -0.33,
+      "pnl_total": -33.0,
       "pnl_pct_of_max": -203.0,
       "win": false,
       "hit_tp": false,
@@ -21525,8 +21655,8 @@
     "scan_credit": 0.89,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 0.555,
-    "max_loss": 0.945,
+    "max_profit": 0.945,
+    "max_loss": 0.555,
     "dte_at_entry": 9,
     "spot_at_entry": 25.25,
     "signal_rating": null,
@@ -21631,8 +21761,8 @@
       "reason": "expired",
       "spread_val": 1.5,
       "ul_price": 26.75,
-      "pnl_per_share": 0.555,
-      "pnl_total": 55.5,
+      "pnl_per_share": 0.945,
+      "pnl_total": 94.5,
       "pnl_pct_of_max": 100.0,
       "win": true,
       "hit_tp": true,
@@ -21758,8 +21888,8 @@
     "scan_credit": 0.62,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 0.395,
-    "max_loss": 0.605,
+    "max_profit": 0.605,
+    "max_loss": 0.395,
     "dte_at_entry": 9,
     "spot_at_entry": 24.43,
     "signal_rating": null,
@@ -21864,8 +21994,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 23.795000076293945,
-      "pnl_per_share": -0.605,
-      "pnl_total": -60.5,
+      "pnl_per_share": -0.395,
+      "pnl_total": -39.5,
       "pnl_pct_of_max": -153.2,
       "win": false,
       "hit_tp": false,
@@ -21991,8 +22121,8 @@
     "scan_credit": 3.39,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 2.3,
-    "max_loss": 3.7,
+    "max_profit": 3.7,
+    "max_loss": 2.3,
     "dte_at_entry": 23,
     "spot_at_entry": 84.94,
     "signal_rating": "Moderate",
@@ -22112,7 +22242,7 @@
         "net_vega": -0.0425
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 0.62,
         "ul_price": 87.44999694824219,
         "unrealized": -3.08,
@@ -22120,6 +22250,16 @@
         "net_theta": -0.0238,
         "net_gamma": -0.065658,
         "net_vega": -0.019
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 0.24,
+        "ul_price": 88.95500183105469,
+        "unrealized": -3.46,
+        "net_delta": 0.1369,
+        "net_theta": 0.0045,
+        "net_gamma": -0.048633,
+        "net_vega": -0.0194
       }
     ],
     "exit": null,
@@ -22237,8 +22377,8 @@
     "scan_credit": 3.64,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 2.005,
-    "max_loss": 3.995,
+    "max_profit": 3.995,
+    "max_loss": 2.005,
     "dte_at_entry": 23,
     "spot_at_entry": 105.81,
     "signal_rating": "Moderate",
@@ -22358,7 +22498,7 @@
         "net_vega": -0.0463
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 0.9,
         "ul_price": 107.68000030517578,
         "unrealized": -3.095,
@@ -22366,6 +22506,16 @@
         "net_theta": -0.1095,
         "net_gamma": -0.065858,
         "net_vega": -0.0093
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 0.355,
+        "ul_price": 109.33999633789062,
+        "unrealized": -3.64,
+        "net_delta": 0.0095,
+        "net_theta": -0.0963,
+        "net_gamma": -0.044275,
+        "net_vega": -0.0015
       }
     ],
     "exit": null,
@@ -22483,8 +22633,8 @@
     "scan_credit": 13.06,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 7.05,
-    "max_loss": 12.95,
+    "max_profit": 12.95,
+    "max_loss": 7.05,
     "dte_at_entry": 23,
     "spot_at_entry": 193.31,
     "signal_rating": "Moderate",
@@ -22604,7 +22754,7 @@
         "net_vega": -0.1006
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 17.05,
         "ul_price": 217.47999572753906,
         "unrealized": 4.1,
@@ -22612,6 +22762,16 @@
         "net_theta": 0.0882,
         "net_gamma": -0.020922,
         "net_vega": -0.0785
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 18.55,
+        "ul_price": 224.1300048828125,
+        "unrealized": 5.6,
+        "net_delta": 0.0887,
+        "net_theta": -0.0346,
+        "net_gamma": -0.013275,
+        "net_vega": -0.0356
       }
     ],
     "exit": null,
@@ -22752,8 +22912,8 @@
     "scan_credit": 2.96,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 1.825,
-    "max_loss": 3.175,
+    "max_profit": 3.175,
+    "max_loss": 1.825,
     "dte_at_entry": 15,
     "spot_at_entry": 84.46,
     "signal_rating": "Moderate",
@@ -22863,7 +23023,7 @@
         "net_vega": -0.0096
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 0.05,
         "ul_price": 87.44999694824219,
         "unrealized": -3.125,
@@ -22871,6 +23031,16 @@
         "net_theta": -0.0287,
         "net_gamma": -0.069537,
         "net_vega": -0.0066
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 0.0,
+        "ul_price": 88.95500183105469,
+        "unrealized": -3.175,
+        "net_delta": 0.1213,
+        "net_theta": 0.175,
+        "net_gamma": -0.054416,
+        "net_vega": -0.0129
       }
     ],
     "exit": null,
@@ -22988,8 +23158,8 @@
     "scan_credit": 13.16,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 6.725,
-    "max_loss": 13.275,
+    "max_profit": 13.275,
+    "max_loss": 6.725,
     "dte_at_entry": 22,
     "spot_at_entry": 195.82,
     "signal_rating": "Moderate",
@@ -23099,7 +23269,7 @@
         "net_vega": -0.1035
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 16.625,
         "ul_price": 217.47999572753906,
         "unrealized": 3.35,
@@ -23107,6 +23277,16 @@
         "net_theta": 0.0989,
         "net_gamma": -0.022668,
         "net_vega": -0.0845
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 18.75,
+        "ul_price": 224.1300048828125,
+        "unrealized": 5.475,
+        "net_delta": 0.1677,
+        "net_theta": 0.0942,
+        "net_gamma": -0.0181,
+        "net_vega": -0.0677
       }
     ],
     "exit": null,
@@ -23247,8 +23427,8 @@
     "scan_credit": 4.38,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 1.74,
-    "max_loss": 4.26,
+    "max_profit": 4.26,
+    "max_loss": 1.74,
     "dte_at_entry": 15,
     "spot_at_entry": 71.11,
     "signal_rating": "Moderate",
@@ -23358,7 +23538,7 @@
         "net_vega": -0.0215
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 3.705,
         "ul_price": 74.7750015258789,
         "unrealized": -0.555,
@@ -23366,6 +23546,16 @@
         "net_theta": -0.0458,
         "net_gamma": -0.053189,
         "net_vega": -0.0018
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 3.2,
+        "ul_price": 74.19999694824219,
+        "unrealized": -1.06,
+        "net_delta": 0.8874,
+        "net_theta": -0.0349,
+        "net_gamma": -0.003402,
+        "net_vega": 0.0015
       }
     ],
     "exit": null,
@@ -23506,8 +23696,8 @@
     "scan_credit": 9.21,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 5.22,
-    "max_loss": 9.78,
+    "max_profit": 9.78,
+    "max_loss": 5.22,
     "dte_at_entry": 8,
     "spot_at_entry": 336.64,
     "signal_rating": null,
@@ -23602,10 +23792,10 @@
       "reason": "expired",
       "spread_val": 6.0,
       "ul_price": 341.0,
-      "pnl_per_share": -3.78,
-      "pnl_total": -378.0,
+      "pnl_per_share": 0.78,
+      "pnl_total": 78.0,
       "pnl_pct_of_max": -72.4,
-      "win": false,
+      "win": true,
       "hit_tp": false,
       "hit_sl": true,
       "mae_pct": -94.6,
@@ -23729,8 +23919,8 @@
     "scan_credit": 2.39,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 1.575,
-    "max_loss": 2.425,
+    "max_profit": 2.425,
+    "max_loss": 1.575,
     "dte_at_entry": 8,
     "spot_at_entry": 85.23,
     "signal_rating": "Moderate",
@@ -23825,8 +24015,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 87.23500061035156,
-      "pnl_per_share": -2.425,
-      "pnl_total": -242.5,
+      "pnl_per_share": -1.575,
+      "pnl_total": -157.5,
       "pnl_pct_of_max": -154.0,
       "win": false,
       "hit_tp": false,
@@ -23952,8 +24142,8 @@
     "scan_credit": 1.59,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 0.845,
-    "max_loss": 1.655,
+    "max_profit": 1.655,
+    "max_loss": 0.845,
     "dte_at_entry": 8,
     "spot_at_entry": 58.7,
     "signal_rating": "Moderate",
@@ -24048,8 +24238,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 57.47999954223633,
-      "pnl_per_share": -1.655,
-      "pnl_total": -165.5,
+      "pnl_per_share": -0.845,
+      "pnl_total": -84.5,
       "pnl_pct_of_max": -195.9,
       "win": false,
       "hit_tp": false,
@@ -24175,8 +24365,8 @@
     "scan_credit": 6.87,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 3.88,
-    "max_loss": 7.12,
+    "max_profit": 7.12,
+    "max_loss": 3.88,
     "dte_at_entry": 7,
     "spot_at_entry": 369.56,
     "signal_rating": null,
@@ -24241,8 +24431,8 @@
       "reason": "expired",
       "spread_val": 11.0,
       "ul_price": 398.510009765625,
-      "pnl_per_share": 3.88,
-      "pnl_total": 388.0,
+      "pnl_per_share": 7.12,
+      "pnl_total": 712.0,
       "pnl_pct_of_max": 100.0,
       "win": true,
       "hit_tp": true,
@@ -24368,8 +24558,8 @@
     "scan_credit": 3.94,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 2.075,
-    "max_loss": 3.925,
+    "max_profit": 3.925,
+    "max_loss": 2.075,
     "dte_at_entry": 14,
     "spot_at_entry": 111.39,
     "signal_rating": null,
@@ -24449,7 +24639,7 @@
         "net_vega": 0.0185
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 2.41,
         "ul_price": 113.26000213623047,
         "unrealized": -1.515,
@@ -24457,6 +24647,16 @@
         "net_theta": -0.0695,
         "net_gamma": 0.049153,
         "net_vega": 0.0138
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 4.245,
+        "ul_price": 116.03500366210938,
+        "unrealized": 0.32,
+        "net_delta": 0.6371,
+        "net_theta": 0.0993,
+        "net_gamma": -0.151632,
+        "net_vega": -0.0229
       }
     ],
     "exit": null,
@@ -24597,8 +24797,8 @@
     "scan_credit": 12.97,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 6.84,
-    "max_loss": 13.16,
+    "max_profit": 13.16,
+    "max_loss": 6.84,
     "dte_at_entry": 21,
     "spot_at_entry": 196.95,
     "signal_rating": "Moderate",
@@ -24678,7 +24878,7 @@
         "net_vega": -0.1034
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 16.625,
         "ul_price": 217.47999572753906,
         "unrealized": 3.465,
@@ -24686,6 +24886,16 @@
         "net_theta": 0.0989,
         "net_gamma": -0.022668,
         "net_vega": -0.0845
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 18.75,
+        "ul_price": 224.1300048828125,
+        "unrealized": 5.59,
+        "net_delta": 0.1677,
+        "net_theta": 0.0942,
+        "net_gamma": -0.0181,
+        "net_vega": -0.0677
       }
     ],
     "exit": null,
@@ -24826,8 +25036,8 @@
     "scan_credit": 3.93,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 2.05,
-    "max_loss": 3.95,
+    "max_profit": 3.95,
+    "max_loss": 2.05,
     "dte_at_entry": 14,
     "spot_at_entry": 111.32,
     "signal_rating": null,
@@ -24907,7 +25117,7 @@
         "net_vega": 0.0185
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 2.41,
         "ul_price": 113.26000213623047,
         "unrealized": -1.54,
@@ -24915,6 +25125,16 @@
         "net_theta": -0.0695,
         "net_gamma": 0.049153,
         "net_vega": 0.0138
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 4.245,
+        "ul_price": 116.03500366210938,
+        "unrealized": 0.295,
+        "net_delta": 0.6371,
+        "net_theta": 0.0993,
+        "net_gamma": -0.151632,
+        "net_vega": -0.0229
       }
     ],
     "exit": null,
@@ -25055,8 +25275,8 @@
     "scan_credit": 12.9,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 6.73,
-    "max_loss": 13.27,
+    "max_profit": 13.27,
+    "max_loss": 6.73,
     "dte_at_entry": 21,
     "spot_at_entry": 196.99,
     "signal_rating": "Moderate",
@@ -25136,7 +25356,7 @@
         "net_vega": -0.1034
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 16.625,
         "ul_price": 217.47999572753906,
         "unrealized": 3.355,
@@ -25144,6 +25364,16 @@
         "net_theta": 0.0989,
         "net_gamma": -0.022668,
         "net_vega": -0.0845
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 18.75,
+        "ul_price": 224.1300048828125,
+        "unrealized": 5.48,
+        "net_delta": 0.1677,
+        "net_theta": 0.0942,
+        "net_gamma": -0.0181,
+        "net_vega": -0.0677
       }
     ],
     "exit": null,
@@ -25284,8 +25514,8 @@
     "scan_credit": 1.31,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 0.575,
-    "max_loss": 1.425,
+    "max_profit": 1.425,
+    "max_loss": 0.575,
     "dte_at_entry": 7,
     "spot_at_entry": 41.96,
     "signal_rating": "Moderate",
@@ -25350,8 +25580,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 41.70000076293945,
-      "pnl_per_share": -1.425,
-      "pnl_total": -142.5,
+      "pnl_per_share": -0.575,
+      "pnl_total": -57.5,
       "pnl_pct_of_max": -247.8,
       "win": false,
       "hit_tp": false,
@@ -25500,8 +25730,8 @@
     "scan_credit": 7.09,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 3.69,
-    "max_loss": 7.31,
+    "max_profit": 7.31,
+    "max_loss": 3.69,
     "dte_at_entry": 7,
     "spot_at_entry": 371.73,
     "signal_rating": null,
@@ -25566,8 +25796,8 @@
       "reason": "expired",
       "spread_val": 11.0,
       "ul_price": 398.510009765625,
-      "pnl_per_share": 3.69,
-      "pnl_total": 369.0,
+      "pnl_per_share": 7.31,
+      "pnl_total": 731.0,
       "pnl_pct_of_max": 100.0,
       "win": true,
       "hit_tp": true,
@@ -25693,8 +25923,8 @@
     "scan_credit": 1.82,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 1.055,
-    "max_loss": 1.945,
+    "max_profit": 1.945,
+    "max_loss": 1.055,
     "dte_at_entry": 7,
     "spot_at_entry": 86.38,
     "signal_rating": "Moderate",
@@ -25759,10 +25989,10 @@
       "reason": "expired",
       "spread_val": 1.235,
       "ul_price": 87.23500061035156,
-      "pnl_per_share": -0.71,
-      "pnl_total": -71.0,
+      "pnl_per_share": 0.18,
+      "pnl_total": 18.0,
       "pnl_pct_of_max": -67.3,
-      "win": false,
+      "win": true,
       "hit_tp": false,
       "hit_sl": true,
       "mae_pct": -83.4,
@@ -25886,8 +26116,8 @@
     "scan_credit": 0.59,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 0.375,
-    "max_loss": 0.625,
+    "max_profit": 0.625,
+    "max_loss": 0.375,
     "dte_at_entry": 7,
     "spot_at_entry": 23.17,
     "signal_rating": null,
@@ -25952,8 +26182,8 @@
       "reason": "expired",
       "spread_val": 0.795,
       "ul_price": 23.795000076293945,
-      "pnl_per_share": 0.17,
-      "pnl_total": 17.0,
+      "pnl_per_share": 0.42,
+      "pnl_total": 42.0,
       "pnl_pct_of_max": 45.3,
       "win": true,
       "hit_tp": true,
@@ -26079,8 +26309,8 @@
     "scan_credit": 6.62,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 3.23,
-    "max_loss": 6.77,
+    "max_profit": 6.77,
+    "max_loss": 3.23,
     "dte_at_entry": 7,
     "spot_at_entry": 369.65,
     "signal_rating": "Moderate",
@@ -26135,8 +26365,8 @@
       "reason": "expired",
       "spread_val": 10.0,
       "ul_price": 402.54,
-      "pnl_per_share": 3.23,
-      "pnl_total": 323.0,
+      "pnl_per_share": 6.77,
+      "pnl_total": 677.0,
       "pnl_pct_of_max": 100.0,
       "win": true,
       "hit_tp": true,
@@ -26262,8 +26492,8 @@
     "scan_credit": 6.11,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 2.69,
-    "max_loss": 6.31,
+    "max_profit": 6.31,
+    "max_loss": 2.69,
     "dte_at_entry": 7,
     "spot_at_entry": 294.96,
     "signal_rating": null,
@@ -26372,8 +26602,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 299.98,
-      "pnl_per_share": -6.31,
-      "pnl_total": -631.0,
+      "pnl_per_share": -2.69,
+      "pnl_total": -269.0,
       "pnl_pct_of_max": -234.6,
       "win": false,
       "hit_tp": false,
@@ -26433,6 +26663,16 @@
         "net_theta": 0.2416,
         "net_gamma": -0.023879,
         "net_vega": -0.0929
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 4.05,
+        "ul_price": 163.05999755859375,
+        "unrealized": -2.61,
+        "net_delta": -0.7444,
+        "net_theta": 0.4027,
+        "net_gamma": -0.066119,
+        "net_vega": -0.0388
       }
     ],
     "iv_edge_vp": 0.26,
@@ -26564,8 +26804,8 @@
     "scan_credit": 4.94,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 2.025,
-    "max_loss": 4.975,
+    "max_profit": 4.975,
+    "max_loss": 2.025,
     "dte_at_entry": 7,
     "spot_at_entry": 296.06,
     "signal_rating": "Moderate",
@@ -26674,8 +26914,8 @@
       "reason": "expired",
       "spread_val": 0.0,
       "ul_price": 299.98,
-      "pnl_per_share": -4.975,
-      "pnl_total": -497.5,
+      "pnl_per_share": -2.025,
+      "pnl_total": -202.5,
       "pnl_pct_of_max": -245.7,
       "win": false,
       "hit_tp": false,
@@ -26727,8 +26967,8 @@
     "scan_credit": 9.69,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 4.85,
-    "max_loss": 10.15,
+    "max_profit": 10.15,
+    "max_loss": 4.85,
     "dte_at_entry": 11,
     "spot_at_entry": 343.65,
     "signal_rating": "Moderate",
@@ -26798,7 +27038,7 @@
         "net_vega": -0.0698
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 5.095,
         "ul_price": 340.8599853515625,
         "unrealized": -5.055,
@@ -26806,6 +27046,16 @@
         "net_theta": 0.1165,
         "net_gamma": -0.027027,
         "net_vega": -0.0492
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 2.53,
+        "ul_price": 344.1300048828125,
+        "unrealized": -7.62,
+        "net_delta": 0.4612,
+        "net_theta": -0.008,
+        "net_gamma": -0.062483,
+        "net_vega": -0.0563
       }
     ],
     "exit": null,
@@ -26923,8 +27173,8 @@
     "scan_credit": 6.03,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 3.29,
-    "max_loss": 6.21,
+    "max_profit": 6.21,
+    "max_loss": 3.29,
     "dte_at_entry": 11,
     "spot_at_entry": 149.65,
     "signal_rating": "Moderate",
@@ -26994,7 +27244,7 @@
         "net_vega": -0.0218
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 4.125,
         "ul_price": 152.33999633789062,
         "unrealized": -2.085,
@@ -27002,6 +27252,16 @@
         "net_theta": -0.0303,
         "net_gamma": 0.008413,
         "net_vega": 0.0042
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 5.855,
+        "ul_price": 154.02000427246094,
+        "unrealized": -0.355,
+        "net_delta": 0.7513,
+        "net_theta": -0.1213,
+        "net_gamma": -0.032835,
+        "net_vega": -0.0011
       }
     ],
     "exit": null,
@@ -27119,8 +27379,8 @@
     "scan_credit": 5.71,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 3.72,
-    "max_loss": 6.28,
+    "max_profit": 6.28,
+    "max_loss": 3.72,
     "dte_at_entry": 10,
     "spot_at_entry": 147.57,
     "signal_rating": "Strong",
@@ -27180,7 +27440,7 @@
         "net_vega": -0.0461
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 6.91,
         "ul_price": 152.33999633789062,
         "unrealized": 0.63,
@@ -27188,6 +27448,16 @@
         "net_theta": -0.0338,
         "net_gamma": -0.060454,
         "net_vega": -0.0156
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 8.03,
+        "ul_price": 154.02000427246094,
+        "unrealized": 1.75,
+        "net_delta": 0.5518,
+        "net_theta": 0.0918,
+        "net_gamma": -0.10315,
+        "net_vega": -0.0292
       }
     ],
     "exit": null,
@@ -27305,8 +27575,8 @@
     "scan_credit": 6.77,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 4.175,
-    "max_loss": 6.825,
+    "max_profit": 6.825,
+    "max_loss": 4.175,
     "dte_at_entry": 17,
     "spot_at_entry": 298.78,
     "signal_rating": "Moderate",
@@ -27366,7 +27636,7 @@
         "net_vega": 0.0472
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 4.69,
         "ul_price": 300.989990234375,
         "unrealized": -2.135,
@@ -27374,6 +27644,16 @@
         "net_theta": -0.0875,
         "net_gamma": 0.00895,
         "net_vega": 0.0622
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 5.605,
+        "ul_price": 302.7049865722656,
+        "unrealized": -1.22,
+        "net_delta": 0.5523,
+        "net_theta": -0.0777,
+        "net_gamma": -0.001359,
+        "net_vega": 0.0332
       }
     ],
     "exit": null,
@@ -27491,8 +27771,8 @@
     "scan_credit": 2.41,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 1.505,
-    "max_loss": 2.495,
+    "max_profit": 2.495,
+    "max_loss": 1.505,
     "dte_at_entry": 17,
     "spot_at_entry": 58.01,
     "signal_rating": "Moderate",
@@ -27552,7 +27832,7 @@
         "net_vega": -0.0272
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 0.295,
         "ul_price": 60.91999816894531,
         "unrealized": -2.2,
@@ -27560,6 +27840,16 @@
         "net_theta": 0.0083,
         "net_gamma": -0.074267,
         "net_vega": -0.0157
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 0.185,
+        "ul_price": 61.0099983215332,
+        "unrealized": -2.31,
+        "net_delta": 0.1428,
+        "net_theta": 0.0079,
+        "net_gamma": -0.073078,
+        "net_vega": -0.0143
       }
     ],
     "exit": null,
@@ -27677,8 +27967,8 @@
     "scan_credit": 6.83,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 4.125,
-    "max_loss": 6.875,
+    "max_profit": 6.875,
+    "max_loss": 4.125,
     "dte_at_entry": 17,
     "spot_at_entry": 298.64,
     "signal_rating": "Moderate",
@@ -27738,7 +28028,7 @@
         "net_vega": 0.0475
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 4.69,
         "ul_price": 300.989990234375,
         "unrealized": -2.185,
@@ -27746,6 +28036,16 @@
         "net_theta": -0.0875,
         "net_gamma": 0.00895,
         "net_vega": 0.0622
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 5.605,
+        "ul_price": 302.7049865722656,
+        "unrealized": -1.27,
+        "net_delta": 0.5523,
+        "net_theta": -0.0777,
+        "net_gamma": -0.001359,
+        "net_vega": 0.0332
       }
     ],
     "exit": null,
@@ -27924,7 +28224,7 @@
         "net_vega": 0.013
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 0.15,
         "ul_price": 162.72000122070312,
         "unrealized": 0.87,
@@ -27932,6 +28232,16 @@
         "net_theta": -0.0265,
         "net_gamma": 0.003683,
         "net_vega": 0.0127
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 0.115,
+        "ul_price": 163.05999755859375,
+        "unrealized": 0.905,
+        "net_delta": -0.0346,
+        "net_theta": -0.029,
+        "net_gamma": 0.003665,
+        "net_vega": 0.0119
       }
     ],
     "exit": null,
@@ -28064,8 +28374,8 @@
     "scan_credit": 5.89,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 2.935,
-    "max_loss": 6.065,
+    "max_profit": 6.065,
+    "max_loss": 2.935,
     "dte_at_entry": 17,
     "spot_at_entry": 109.56,
     "signal_rating": "Moderate",
@@ -28125,7 +28435,7 @@
         "net_vega": 0.0033
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 4.345,
         "ul_price": 113.26000213623047,
         "unrealized": -1.72,
@@ -28133,6 +28443,16 @@
         "net_theta": -0.0249,
         "net_gamma": -0.005585,
         "net_vega": 0.0007
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 5.425,
+        "ul_price": 116.03500366210938,
+        "unrealized": -0.64,
+        "net_delta": 0.4099,
+        "net_theta": 0.0402,
+        "net_gamma": -0.020717,
+        "net_vega": -0.0241
       }
     ],
     "exit": null,
@@ -28273,8 +28593,8 @@
     "scan_credit": 11.58,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 5.39,
-    "max_loss": 12.11,
+    "max_profit": 12.11,
+    "max_loss": 5.39,
     "dte_at_entry": 17,
     "spot_at_entry": 253.95,
     "signal_rating": "Moderate",
@@ -28334,7 +28654,7 @@
         "net_vega": 0.0215
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 7.995,
         "ul_price": 259.739990234375,
         "unrealized": -4.115,
@@ -28342,6 +28662,16 @@
         "net_theta": -0.1163,
         "net_gamma": -9.9e-05,
         "net_vega": 0.0379
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 8.62,
+        "ul_price": 260.8900146484375,
+        "unrealized": -3.49,
+        "net_delta": 0.5814,
+        "net_theta": -0.1064,
+        "net_gamma": -0.004078,
+        "net_vega": 0.0216
       }
     ],
     "exit": null,
@@ -28459,8 +28789,8 @@
     "scan_credit": 14.95,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 6.775,
-    "max_loss": 15.725,
+    "max_profit": 15.725,
+    "max_loss": 6.775,
     "dte_at_entry": 17,
     "spot_at_entry": 217.77,
     "signal_rating": "Moderate",
@@ -28520,7 +28850,7 @@
         "net_vega": 0.0404
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 7.3,
         "ul_price": 221.24000549316406,
         "unrealized": -8.425,
@@ -28528,6 +28858,16 @@
         "net_theta": -0.0706,
         "net_gamma": 0.00611,
         "net_vega": 0.0341
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 5.1,
+        "ul_price": 215.99000549316406,
+        "unrealized": -10.625,
+        "net_delta": 0.36,
+        "net_theta": -0.1784,
+        "net_gamma": 0.011685,
+        "net_vega": 0.0647
       }
     ],
     "exit": null,
@@ -28645,8 +28985,8 @@
     "scan_credit": 2.17,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 1.21,
-    "max_loss": 2.29,
+    "max_profit": 2.29,
+    "max_loss": 1.21,
     "dte_at_entry": 17,
     "spot_at_entry": 50.66,
     "signal_rating": "Moderate",
@@ -28706,7 +29046,7 @@
         "net_vega": -0.0153
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 0.2,
         "ul_price": 53.689998626708984,
         "unrealized": -2.09,
@@ -28714,6 +29054,16 @@
         "net_theta": -0.0174,
         "net_gamma": -0.047623,
         "net_vega": -0.0058
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 0.315,
+        "ul_price": 52.61000061035156,
+        "unrealized": -1.975,
+        "net_delta": 0.1661,
+        "net_theta": 0.0034,
+        "net_gamma": -0.054415,
+        "net_vega": -0.0104
       }
     ],
     "exit": null,
@@ -28831,8 +29181,8 @@
     "scan_credit": 26.22,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 11.5,
-    "max_loss": 26.0,
+    "max_profit": 26.0,
+    "max_loss": 11.5,
     "dte_at_entry": 16,
     "spot_at_entry": 325.08,
     "signal_rating": "Strong",
@@ -28882,7 +29232,7 @@
         "net_vega": 0.0428
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 13.055,
         "ul_price": 332.7699890136719,
         "unrealized": -12.945,
@@ -28890,6 +29240,16 @@
         "net_theta": -0.1508,
         "net_gamma": 0.006859,
         "net_vega": 0.0746
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 9.595,
+        "ul_price": 327.45001220703125,
+        "unrealized": -16.405,
+        "net_delta": 0.5476,
+        "net_theta": -0.2432,
+        "net_gamma": 0.013692,
+        "net_vega": 0.1222
       }
     ],
     "exit": null,
@@ -29030,8 +29390,8 @@
     "scan_credit": 2.05,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 0.895,
-    "max_loss": 2.105,
+    "max_profit": 2.105,
+    "max_loss": 0.895,
     "dte_at_entry": 16,
     "spot_at_entry": 41.72,
     "signal_rating": "Moderate",
@@ -29081,11 +29441,10 @@
         "net_vega": 0.0157
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 0.535,
         "ul_price": 41.29499816894531,
         "unrealized": -1.57,
-        "iv_flag": "short strike 45.0 now +3.3vp expensive \u2014 consider closing",
         "net_delta": 0.3184,
         "net_theta": -0.0272,
         "net_gamma": 0.110672,
@@ -29270,7 +29629,7 @@
         "net_vega": -0.0611
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 0.735,
         "ul_price": 162.72000122070312,
         "unrealized": 1.48,
@@ -29278,6 +29637,16 @@
         "net_theta": 0.132,
         "net_gamma": -0.014884,
         "net_vega": -0.053
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 0.655,
+        "ul_price": 163.05999755859375,
+        "unrealized": 1.56,
+        "net_delta": -0.1018,
+        "net_theta": 0.1222,
+        "net_gamma": -0.014575,
+        "net_vega": -0.0455
       }
     ],
     "exit": null,
@@ -29410,8 +29779,8 @@
     "scan_credit": 7.72,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 6.035,
-    "max_loss": 8.965,
+    "max_profit": 8.965,
+    "max_loss": 6.035,
     "dte_at_entry": 16,
     "spot_at_entry": 256.92,
     "signal_rating": "Moderate",
@@ -29461,7 +29830,7 @@
         "net_vega": -0.1104
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 3.705,
         "ul_price": 259.739990234375,
         "unrealized": -5.26,
@@ -29469,6 +29838,16 @@
         "net_theta": -0.0443,
         "net_gamma": -0.025315,
         "net_vega": -0.0576
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 2.955,
+        "ul_price": 260.8900146484375,
+        "unrealized": -6.01,
+        "net_delta": 0.3057,
+        "net_theta": 0.0052,
+        "net_gamma": -0.027894,
+        "net_vega": -0.0709
       }
     ],
     "exit": null,
@@ -29586,8 +29965,8 @@
     "scan_credit": 3.37,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 2.915,
-    "max_loss": 4.085,
+    "max_profit": 4.085,
+    "max_loss": 2.915,
     "dte_at_entry": 16,
     "spot_at_entry": 107.78,
     "signal_rating": "Moderate",
@@ -29637,7 +30016,7 @@
         "net_vega": 0.0109
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 5.095,
         "ul_price": 104.43000030517578,
         "unrealized": 1.01,
@@ -29645,6 +30024,16 @@
         "net_theta": -0.0069,
         "net_gamma": 0.02694,
         "net_vega": 0.0098
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 5.505,
+        "ul_price": 103.9000015258789,
+        "unrealized": 1.42,
+        "net_delta": 0.565,
+        "net_theta": -0.0257,
+        "net_gamma": 0.038756,
+        "net_vega": 0.0202
       }
     ],
     "exit": null,
@@ -29762,8 +30151,8 @@
     "scan_credit": 0.54,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 0.37,
-    "max_loss": 0.63,
+    "max_profit": 0.63,
+    "max_loss": 0.37,
     "dte_at_entry": 16,
     "spot_at_entry": 25.48,
     "signal_rating": "Moderate",
@@ -29813,7 +30202,7 @@
         "net_vega": -0.0025
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 0.02,
         "ul_price": 26.604999542236328,
         "unrealized": -0.61,
@@ -29821,6 +30210,16 @@
         "net_theta": 0.0031,
         "net_gamma": -0.091799,
         "net_vega": -0.0042
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 0.045,
+        "ul_price": 26.309999465942383,
+        "unrealized": -0.585,
+        "net_delta": 0.0344,
+        "net_theta": -0.0122,
+        "net_gamma": -0.149364,
+        "net_vega": -0.0013
       }
     ],
     "exit": null,
@@ -29938,8 +30337,8 @@
     "scan_credit": 11.89,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 7.45,
-    "max_loss": 12.55,
+    "max_profit": 12.55,
+    "max_loss": 7.45,
     "dte_at_entry": 16,
     "spot_at_entry": 347.97,
     "signal_rating": "Moderate",
@@ -29989,7 +30388,7 @@
         "net_vega": 0.0041
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 10.825,
         "ul_price": 340.8599853515625,
         "unrealized": -1.725,
@@ -29997,6 +30396,16 @@
         "net_theta": -0.0772,
         "net_gamma": 0.000412,
         "net_vega": 0.0254
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 8.805,
+        "ul_price": 344.1300048828125,
+        "unrealized": -3.745,
+        "net_delta": 0.5362,
+        "net_theta": -0.0289,
+        "net_gamma": -0.007879,
+        "net_vega": -0.0245
       }
     ],
     "exit": null,
@@ -30114,8 +30523,8 @@
     "scan_credit": 5.3,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 2.52,
-    "max_loss": 5.48,
+    "max_profit": 5.48,
+    "max_loss": 2.52,
     "dte_at_entry": 9,
     "spot_at_entry": 148.03,
     "signal_rating": "Strong",
@@ -30165,7 +30574,7 @@
         "net_vega": -0.0378
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 4.785,
         "ul_price": 152.33999633789062,
         "unrealized": -0.695,
@@ -30173,6 +30582,16 @@
         "net_theta": 0.051,
         "net_gamma": -0.052185,
         "net_vega": -0.0199
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 6.13,
+        "ul_price": 154.02000427246094,
+        "unrealized": 0.65,
+        "net_delta": 0.5154,
+        "net_theta": 0.0351,
+        "net_gamma": -0.092602,
+        "net_vega": -0.0234
       }
     ],
     "exit": null,
@@ -30290,8 +30709,8 @@
     "scan_credit": 2.66,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 1.295,
-    "max_loss": 2.705,
+    "max_profit": 2.705,
+    "max_loss": 1.295,
     "dte_at_entry": 16,
     "spot_at_entry": 50.37,
     "signal_rating": "Moderate",
@@ -30341,7 +30760,7 @@
         "net_vega": -0.0185
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 2.795,
         "ul_price": 53.689998626708984,
         "unrealized": 0.09,
@@ -30349,6 +30768,16 @@
         "net_theta": 0.0066,
         "net_gamma": -0.076563,
         "net_vega": -0.0137
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 2.515,
+        "ul_price": 52.61000061035156,
+        "unrealized": -0.19,
+        "net_delta": 0.4444,
+        "net_theta": -0.0218,
+        "net_gamma": -0.06032,
+        "net_vega": -0.0036
       }
     ],
     "exit": null,
@@ -30496,7 +30925,7 @@
         "net_vega": -0.1189
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 1.725,
         "ul_price": 221.24000549316406,
         "unrealized": 0.4,
@@ -30504,6 +30933,16 @@
         "net_theta": 0.2357,
         "net_gamma": -0.018391,
         "net_vega": -0.1068
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 0.925,
+        "ul_price": 215.99000549316406,
+        "unrealized": 1.2,
+        "net_delta": -0.1563,
+        "net_theta": 0.2319,
+        "net_gamma": -0.013954,
+        "net_vega": -0.0813
       }
     ],
     "exit": null,
@@ -30621,8 +31060,8 @@
     "scan_credit": 4.26,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 1.58,
-    "max_loss": 4.42,
+    "max_profit": 4.42,
+    "max_loss": 1.58,
     "dte_at_entry": 15,
     "spot_at_entry": 103.92,
     "signal_rating": null,
@@ -30652,7 +31091,7 @@
         "net_vega": 0.0281
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 1.4,
         "ul_price": 104.43000030517578,
         "unrealized": -3.02,
@@ -30881,8 +31320,8 @@
     "scan_credit": 9.71,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 7.26,
-    "max_loss": 10.24,
+    "max_profit": 10.24,
+    "max_loss": 7.26,
     "dte_at_entry": 15,
     "spot_at_entry": 256.75,
     "signal_rating": "Moderate",
@@ -30922,7 +31361,7 @@
         "net_vega": -0.1053
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 4.83,
         "ul_price": 259.739990234375,
         "unrealized": -5.41,
@@ -30930,6 +31369,16 @@
         "net_theta": -0.0472,
         "net_gamma": -0.023422,
         "net_vega": -0.0533
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 4.58,
+        "ul_price": 260.8900146484375,
+        "unrealized": -5.66,
+        "net_delta": 0.4112,
+        "net_theta": 0.0024,
+        "net_gamma": -0.028043,
+        "net_vega": -0.0712
       }
     ],
     "exit": null,
@@ -31047,8 +31496,8 @@
     "scan_credit": 3.01,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 1.865,
-    "max_loss": 3.135,
+    "max_profit": 3.135,
+    "max_loss": 1.865,
     "dte_at_entry": 8,
     "spot_at_entry": 103.72,
     "signal_rating": null,
@@ -31088,7 +31537,7 @@
         "net_vega": -0.0283
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 1.245,
         "ul_price": 104.43000030517578,
         "unrealized": -1.89,
@@ -31096,6 +31545,16 @@
         "net_theta": 0.0525,
         "net_gamma": -0.112685,
         "net_vega": -0.0208
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 1.35,
+        "ul_price": 103.9000015258789,
+        "unrealized": -1.785,
+        "net_delta": 0.5485,
+        "net_theta": -0.1109,
+        "net_gamma": -0.123382,
+        "net_vega": -0.0069
       }
     ],
     "exit": null,
@@ -31213,8 +31672,8 @@
     "scan_credit": 4.81,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 2.955,
-    "max_loss": 5.045,
+    "max_profit": 5.045,
+    "max_loss": 2.955,
     "dte_at_entry": 15,
     "spot_at_entry": 128.41,
     "signal_rating": "Moderate",
@@ -31254,7 +31713,7 @@
         "net_vega": -0.0453
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 1.92,
         "ul_price": 130.4499969482422,
         "unrealized": -3.125,
@@ -31262,6 +31721,16 @@
         "net_theta": -0.0283,
         "net_gamma": -0.040693,
         "net_vega": -0.0269
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 0.805,
+        "ul_price": 132.9199981689453,
+        "unrealized": -4.24,
+        "net_delta": 0.1369,
+        "net_theta": -0.0522,
+        "net_gamma": -0.036199,
+        "net_vega": -0.021
       }
     ],
     "exit": null,
@@ -31410,7 +31879,7 @@
         "net_vega": 0.0227
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 1.4,
         "ul_price": 152.33999633789062,
         "unrealized": 0.825,
@@ -31418,6 +31887,16 @@
         "net_theta": -0.0778,
         "net_gamma": 0.006915,
         "net_vega": 0.0267
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 1.055,
+        "ul_price": 154.02000427246094,
+        "unrealized": 1.17,
+        "net_delta": -0.0943,
+        "net_theta": -0.0576,
+        "net_gamma": 0.006997,
+        "net_vega": 0.0209
       }
     ],
     "exit": null,
@@ -31535,8 +32014,8 @@
     "scan_credit": 3.15,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 1.615,
-    "max_loss": 4.385,
+    "max_profit": 4.385,
+    "max_loss": 1.615,
     "dte_at_entry": 7,
     "spot_at_entry": 127.64,
     "signal_rating": null,
@@ -31566,7 +32045,7 @@
         "net_vega": -0.002
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 3.21,
         "ul_price": 130.4499969482422,
         "unrealized": -1.175,
@@ -31574,6 +32053,16 @@
         "net_theta": -0.0779,
         "net_gamma": -0.028384,
         "net_vega": -0.0008
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 5.405,
+        "ul_price": 132.9199981689453,
+        "unrealized": 1.02,
+        "net_delta": 0.3801,
+        "net_theta": 0.0297,
+        "net_gamma": -0.09286,
+        "net_vega": -0.0193
       }
     ],
     "exit": null,
@@ -31691,8 +32180,8 @@
     "scan_credit": 5.96,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 2.92,
-    "max_loss": 6.08,
+    "max_profit": 6.08,
+    "max_loss": 2.92,
     "dte_at_entry": 14,
     "spot_at_entry": 111.67,
     "signal_rating": "Moderate",
@@ -31722,7 +32211,7 @@
         "net_vega": 0.0216
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 3.4,
         "ul_price": 113.26000213623047,
         "unrealized": -2.68,
@@ -31730,6 +32219,16 @@
         "net_theta": -0.0444,
         "net_gamma": 0.012031,
         "net_vega": 0.0184
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 4.465,
+        "ul_price": 116.03500366210938,
+        "unrealized": -1.615,
+        "net_delta": 0.4447,
+        "net_theta": 0.0092,
+        "net_gamma": -0.007825,
+        "net_vega": -0.0084
       }
     ],
     "exit": null,
@@ -31870,8 +32369,8 @@
     "scan_credit": 8.91,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 4.1,
-    "max_loss": 9.4,
+    "max_profit": 9.4,
+    "max_loss": 4.1,
     "dte_at_entry": 11,
     "spot_at_entry": 148.63,
     "signal_rating": "Moderate",
@@ -31901,7 +32400,7 @@
         "net_vega": 0.0031
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 4.965,
         "ul_price": 152.33999633789062,
         "unrealized": -4.435,
@@ -31909,6 +32408,16 @@
         "net_theta": -0.0542,
         "net_gamma": 0.004827,
         "net_vega": 0.0174
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 5.855,
+        "ul_price": 154.02000427246094,
+        "unrealized": -3.545,
+        "net_delta": 0.3809,
+        "net_theta": -0.0194,
+        "net_gamma": 0.001816,
+        "net_vega": 0.0052
       }
     ],
     "exit": null,
@@ -32026,8 +32535,8 @@
     "scan_credit": 4.13,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 1.81,
-    "max_loss": 4.19,
+    "max_profit": 4.19,
+    "max_loss": 1.81,
     "dte_at_entry": 7,
     "spot_at_entry": 300.59,
     "signal_rating": "Moderate",
@@ -32057,7 +32566,7 @@
         "net_vega": -0.0641
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 1.63,
         "ul_price": 300.989990234375,
         "unrealized": -2.56,
@@ -32065,6 +32574,16 @@
         "net_theta": 0.0244,
         "net_gamma": -0.02961,
         "net_vega": -0.0488
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 0.76,
+        "ul_price": 302.7049865722656,
+        "unrealized": -3.43,
+        "net_delta": 0.2166,
+        "net_theta": 0.0209,
+        "net_gamma": -0.045444,
+        "net_vega": -0.055
       }
     ],
     "exit": null,
@@ -32182,8 +32701,8 @@
     "scan_credit": 1.97,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 0.98,
-    "max_loss": 2.02,
+    "max_profit": 2.02,
+    "max_loss": 0.98,
     "dte_at_entry": 11,
     "spot_at_entry": 59.23,
     "signal_rating": "Moderate",
@@ -32213,7 +32732,7 @@
         "net_vega": -0.003
       },
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 1.73,
         "ul_price": 60.91999816894531,
         "unrealized": -0.29,
@@ -32221,6 +32740,16 @@
         "net_theta": 0.003,
         "net_gamma": -0.034792,
         "net_vega": -0.0068
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 1.82,
+        "ul_price": 61.0099983215332,
+        "unrealized": -0.2,
+        "net_delta": 0.4328,
+        "net_theta": -0.0045,
+        "net_gamma": -0.061733,
+        "net_vega": -0.0067
       }
     ],
     "exit": null,
@@ -32338,8 +32867,8 @@
     "scan_credit": 4.24,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 2.63,
-    "max_loss": 4.37,
+    "max_profit": 4.37,
+    "max_loss": 2.63,
     "dte_at_entry": 10,
     "spot_at_entry": 136.03,
     "signal_rating": null,
@@ -32349,7 +32878,7 @@
     "status": "open",
     "snapshots": [
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 2.545,
         "ul_price": 135.77999877929688,
         "unrealized": -1.825,
@@ -32357,6 +32886,16 @@
         "net_theta": -0.0568,
         "net_gamma": 0.017201,
         "net_vega": 0.0304
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 3.19,
+        "ul_price": 137.5749969482422,
+        "unrealized": -1.18,
+        "net_delta": 0.4442,
+        "net_theta": -0.0404,
+        "net_gamma": 0.001839,
+        "net_vega": 0.0124
       }
     ],
     "exit": null,
@@ -32474,8 +33013,8 @@
     "scan_credit": 1.27,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 0.68,
-    "max_loss": 1.32,
+    "max_profit": 1.32,
+    "max_loss": 0.68,
     "dte_at_entry": 10,
     "spot_at_entry": 47.12,
     "signal_rating": "Moderate",
@@ -32485,7 +33024,7 @@
     "status": "open",
     "snapshots": [
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 0.68,
         "ul_price": 47.275001525878906,
         "unrealized": -0.64,
@@ -32493,6 +33032,16 @@
         "net_theta": -0.015,
         "net_gamma": 0.058915,
         "net_vega": 0.0099
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 0.555,
+        "ul_price": 46.97999954223633,
+        "unrealized": -0.765,
+        "net_delta": 0.3843,
+        "net_theta": -0.0196,
+        "net_gamma": 0.111689,
+        "net_vega": 0.014
       }
     ],
     "exit": null,
@@ -32610,8 +33159,8 @@
     "scan_credit": 6.97,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 2.215,
-    "max_loss": 7.785,
+    "max_profit": 7.785,
+    "max_loss": 2.215,
     "dte_at_entry": 17,
     "spot_at_entry": 59.66,
     "signal_rating": null,
@@ -32619,7 +33168,18 @@
     "profit_target": 1.9935,
     "stop_loss": 6.645,
     "status": "open",
-    "snapshots": [],
+    "snapshots": [
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 4.055,
+        "ul_price": 63.68000030517578,
+        "unrealized": -3.73,
+        "net_delta": 0.4315,
+        "net_theta": -0.0018,
+        "net_gamma": 0.00367,
+        "net_vega": 0.0019
+      }
+    ],
     "exit": null,
     "iv_edge_vp": 0.03,
     "iv_edge_label": "fair",
@@ -32735,8 +33295,8 @@
     "scan_credit": 8.76,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 4.29,
-    "max_loss": 9.21,
+    "max_profit": 9.21,
+    "max_loss": 4.29,
     "dte_at_entry": 10,
     "spot_at_entry": 145.12,
     "signal_rating": "Strong",
@@ -32746,7 +33306,7 @@
     "status": "open",
     "snapshots": [
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 4.17,
         "ul_price": 144.91000366210938,
         "unrealized": -5.04,
@@ -32754,6 +33314,16 @@
         "net_theta": -0.0941,
         "net_gamma": 0.011372,
         "net_vega": 0.0341
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 4.61,
+        "ul_price": 146.7100067138672,
+        "unrealized": -4.6,
+        "net_delta": 0.4477,
+        "net_theta": -0.0785,
+        "net_gamma": 0.011813,
+        "net_vega": 0.0286
       }
     ],
     "exit": null,
@@ -32894,7 +33464,7 @@
     "status": "open",
     "snapshots": [
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 0.72,
         "ul_price": 85.73999786376953,
         "unrealized": -0.165,
@@ -32902,6 +33472,16 @@
         "net_theta": 0.047,
         "net_gamma": -0.084778,
         "net_vega": -0.0661
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 0.62,
+        "ul_price": 85.7750015258789,
+        "unrealized": -0.065,
+        "net_delta": -0.3135,
+        "net_theta": 0.0474,
+        "net_gamma": -0.087791,
+        "net_vega": -0.0637
       }
     ],
     "exit": null,
@@ -33034,8 +33614,8 @@
     "scan_credit": 1.55,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 0.84,
-    "max_loss": 1.66,
+    "max_profit": 1.66,
+    "max_loss": 0.84,
     "dte_at_entry": 10,
     "spot_at_entry": 41.28,
     "signal_rating": "Moderate",
@@ -33045,7 +33625,7 @@
     "status": "open",
     "snapshots": [
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 0.835,
         "ul_price": 41.29499816894531,
         "unrealized": -0.825,
@@ -33053,6 +33633,16 @@
         "net_theta": -0.0143,
         "net_gamma": 0.055497,
         "net_vega": 0.0082
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 0.575,
+        "ul_price": 40.51499938964844,
+        "unrealized": -1.085,
+        "net_delta": 0.3305,
+        "net_theta": -0.0305,
+        "net_gamma": 0.083261,
+        "net_vega": 0.0134
       }
     ],
     "exit": null,
@@ -33193,8 +33783,8 @@
     "scan_credit": 23.3,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 13.1,
-    "max_loss": 24.4,
+    "max_profit": 24.4,
+    "max_loss": 13.1,
     "dte_at_entry": 17,
     "spot_at_entry": 326.25,
     "signal_rating": "Strong",
@@ -33204,7 +33794,7 @@
     "status": "open",
     "snapshots": [
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 14.8,
         "ul_price": 318.6199951171875,
         "unrealized": -9.6,
@@ -33212,6 +33802,16 @@
         "net_theta": 0.107,
         "net_gamma": -0.003402,
         "net_vega": -0.0803
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 20.4,
+        "ul_price": 303.7699890136719,
+        "unrealized": -4.0,
+        "net_delta": 0.4016,
+        "net_theta": -0.0147,
+        "net_gamma": 0.000831,
+        "net_vega": 0.0103
       }
     ],
     "exit": null,
@@ -33352,7 +33952,7 @@
     "status": "open",
     "snapshots": [
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 4.625,
         "ul_price": 281.82000732421875,
         "unrealized": -0.95,
@@ -33360,6 +33960,16 @@
         "net_theta": 0.483,
         "net_gamma": -0.010546,
         "net_vega": -0.1479
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 4.9,
+        "ul_price": 288.3699951171875,
+        "unrealized": -1.225,
+        "net_delta": -0.2872,
+        "net_theta": 0.5039,
+        "net_gamma": -0.013005,
+        "net_vega": -0.1543
       }
     ],
     "exit": null,
@@ -33492,7 +34102,7 @@
     "status": "open",
     "snapshots": [
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 2.85,
         "ul_price": 336.45001220703125,
         "unrealized": 0.1,
@@ -33500,6 +34110,16 @@
         "net_theta": 0.3775,
         "net_gamma": -0.010925,
         "net_vega": -0.1585
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 2.275,
+        "ul_price": 334.67999267578125,
+        "unrealized": 0.675,
+        "net_delta": -0.1781,
+        "net_theta": 0.3693,
+        "net_gamma": -0.010383,
+        "net_vega": -0.137
       }
     ],
     "exit": null,
@@ -33632,8 +34252,8 @@
     "scan_credit": 4.27,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 2.54,
-    "max_loss": 4.46,
+    "max_profit": 4.46,
+    "max_loss": 2.54,
     "dte_at_entry": 10,
     "spot_at_entry": 135.92,
     "signal_rating": "Moderate",
@@ -33643,7 +34263,7 @@
     "status": "open",
     "snapshots": [
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 2.545,
         "ul_price": 135.77999877929688,
         "unrealized": -1.915,
@@ -33651,6 +34271,16 @@
         "net_theta": -0.0568,
         "net_gamma": 0.017201,
         "net_vega": 0.0304
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 3.19,
+        "ul_price": 137.5749969482422,
+        "unrealized": -1.27,
+        "net_delta": 0.4442,
+        "net_theta": -0.0404,
+        "net_gamma": 0.001839,
+        "net_vega": 0.0124
       }
     ],
     "exit": null,
@@ -33768,8 +34398,8 @@
     "scan_credit": 6.93,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 2.745,
-    "max_loss": 7.255,
+    "max_profit": 7.255,
+    "max_loss": 2.745,
     "dte_at_entry": 17,
     "spot_at_entry": 59.92,
     "signal_rating": null,
@@ -33779,7 +34409,7 @@
     "status": "open",
     "snapshots": [
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 3.02,
         "ul_price": 60.54999923706055,
         "unrealized": -4.235,
@@ -33787,6 +34417,16 @@
         "net_theta": -0.0376,
         "net_gamma": 0.015728,
         "net_vega": 0.018
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 4.055,
+        "ul_price": 63.68000030517578,
+        "unrealized": -3.2,
+        "net_delta": 0.4315,
+        "net_theta": -0.0018,
+        "net_gamma": 0.00367,
+        "net_vega": 0.0019
       }
     ],
     "exit": null,
@@ -33904,8 +34544,8 @@
     "scan_credit": 0.61,
     "slippage_pct": 0.0,
     "fill_source": "live_quote",
-    "max_profit": 0.35,
-    "max_loss": 0.65,
+    "max_profit": 0.65,
+    "max_loss": 0.35,
     "dte_at_entry": 10,
     "spot_at_entry": 24.35,
     "signal_rating": "Strong",
@@ -33915,7 +34555,7 @@
     "status": "open",
     "snapshots": [
       {
-        "ts": "2026-08-11T17:00:34.250508-04:00",
+        "ts": "2026-08-11T17:00:02.097850-04:00",
         "mark": 0.32,
         "ul_price": 24.4950008392334,
         "unrealized": -0.33,
@@ -33923,6 +34563,16 @@
         "net_theta": 0.0039,
         "net_gamma": -0.155843,
         "net_vega": -0.0052
+      },
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 0.37,
+        "ul_price": 24.274999618530273,
+        "unrealized": -0.28,
+        "net_delta": 0.3309,
+        "net_theta": -0.0022,
+        "net_gamma": -0.163897,
+        "net_vega": -0.0029
       }
     ],
     "exit": null,
@@ -33999,6 +34649,2200 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
+    }
+  },
+  {
+    "id": "20260812AM_GLD_CDS_1",
+    "rank": 1,
+    "entered_at": "2026-08-12T10:08:07.685954-04:00",
+    "ticker": "GLD",
+    "structure": "Call Debit Spread",
+    "expiry": "2026-08-19",
+    "strikes": {
+      "short": 415.0,
+      "long": 405.0
+    },
+    "width": 10.0,
+    "entry_credit": 3.7,
+    "entry_mid": 3.7,
+    "entry_legs": {
+      "long": {
+        "strike": 405.0,
+        "bid": 5.85,
+        "ask": 6.05,
+        "mid": 5.95,
+        "iv": 22.5,
+        "iv_raw": 0.22474,
+        "volume": 45,
+        "oi": 509
+      },
+      "short": {
+        "strike": 415.0,
+        "bid": 2.2,
+        "ask": 2.3,
+        "mid": 2.25,
+        "iv": 23.7,
+        "iv_raw": 0.23707,
+        "volume": 53,
+        "oi": 77
+      }
+    },
+    "scan_credit": 6.17,
+    "slippage_pct": 0.0,
+    "fill_source": "live_quote",
+    "max_profit": 6.3,
+    "max_loss": 3.7,
+    "dte_at_entry": 7,
+    "spot_at_entry": 406.26,
+    "signal_rating": null,
+    "signal_score": 0,
+    "profit_target": 3.33,
+    "stop_loss": 11.1,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 3.025,
+        "ul_price": 404.8800048828125,
+        "unrealized": -3.275,
+        "net_delta": 0.3076,
+        "net_theta": -0.0856,
+        "net_gamma": 0.012497,
+        "net_vega": 0.0648
+      }
+    ],
+    "exit": null,
+    "iv_edge_vp": 0.12,
+    "iv_edge_label": "fair",
+    "kelly_fraction": null,
+    "kelly_pct": null,
+    "kelly_contracts": null,
+    "kelly_capital": null,
+    "ml_p_win": null,
+    "ml_confidence": null,
+    "capital_required": 383.0,
+    "capital_type": "debit",
+    "requires_margin": false,
+    "scan_time": "morning",
+    "ranker_score": null,
+    "position_size_factor": null,
+    "suggested_allocation_pct": null,
+    "ml_scores_at_entry": {
+      "regime": null,
+      "regime_prob": null,
+      "expected_return": null,
+      "expected_vol": null,
+      "expected_move_pct": null,
+      "iv_direction": null,
+      "iv_expanding_prob": null,
+      "pop_score": null,
+      "pop_threshold": null,
+      "meta_score": null,
+      "is_anomaly": null,
+      "anomaly_score": null,
+      "model_versions": {
+        "pop": {
+          "trained_at": "2026-08-11T20:26:30.213758+00:00",
+          "git_sha": "unknown"
+        },
+        "regime": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "return": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "vol": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "meta": {
+          "trained_at": null,
+          "git_sha": null
+        }
+      }
+    },
+    "optimizer_candidate": {
+      "ticker": "GLD",
+      "structure": "Call Debit Spread",
+      "expiry": "2026-08-19",
+      "dte": 7,
+      "max_profit": 6.17,
+      "max_loss": 3.83,
+      "ev": 1.733,
+      "meets_both": false,
+      "signal_score": 0,
+      "signal_rating": null,
+      "spot_at_entry": 406.26,
+      "short_strike": 415.0,
+      "long_strike": 405.0,
+      "put_short_strike": null,
+      "put_long_strike": null,
+      "call_short_strike": null,
+      "call_long_strike": null,
+      "iv_edge_vp": 0.12,
+      "iv_edge_label": "fair",
+      "pred_dist": null,
+      "kelly": null
+    }
+  },
+  {
+    "id": "20260812AM_TSLA_CDS_2",
+    "rank": 2,
+    "entered_at": "2026-08-12T10:08:09.274518-04:00",
+    "ticker": "TSLA",
+    "structure": "Call Debit Spread",
+    "expiry": "2026-08-28",
+    "strikes": {
+      "short": 342.5,
+      "long": 325.0
+    },
+    "width": 17.5,
+    "entry_credit": 6.875,
+    "entry_mid": 6.875,
+    "entry_legs": {
+      "long": {
+        "strike": 325.0,
+        "bid": 11.9,
+        "ask": 12.05,
+        "mid": 11.975,
+        "iv": 37.4,
+        "iv_raw": 0.37434,
+        "volume": 37,
+        "oi": 1239
+      },
+      "short": {
+        "strike": 342.5,
+        "bid": 5.05,
+        "ask": 5.15,
+        "mid": 5.1,
+        "iv": 38.3,
+        "iv_raw": 0.38261,
+        "volume": 66,
+        "oi": 216
+      }
+    },
+    "scan_credit": 10.5,
+    "slippage_pct": 0.0,
+    "fill_source": "live_quote",
+    "max_profit": 10.625,
+    "max_loss": 6.875,
+    "dte_at_entry": 16,
+    "spot_at_entry": 327.38,
+    "signal_rating": "Moderate",
+    "signal_score": 77.925,
+    "profit_target": 6.1875,
+    "stop_loss": 20.625,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 7.375,
+        "ul_price": 327.45001220703125,
+        "unrealized": -3.25,
+        "net_delta": 0.2547,
+        "net_theta": -0.0387,
+        "net_gamma": 0.001832,
+        "net_vega": 0.0294
+      }
+    ],
+    "exit": null,
+    "iv_edge_vp": 0.11,
+    "iv_edge_label": "fair",
+    "kelly_fraction": 0.0898,
+    "kelly_pct": 0.05,
+    "kelly_contracts": 1,
+    "kelly_capital": 75.0,
+    "ml_p_win": 0.562,
+    "ml_confidence": 0.665,
+    "capital_required": 700.0,
+    "capital_type": "debit",
+    "requires_margin": false,
+    "scan_time": "morning",
+    "ranker_score": null,
+    "position_size_factor": null,
+    "suggested_allocation_pct": null,
+    "ml_scores_at_entry": {
+      "regime": "Trending",
+      "regime_prob": null,
+      "expected_return": null,
+      "expected_vol": 0.4415,
+      "expected_move_pct": 0.0879,
+      "iv_direction": "Expanding",
+      "iv_expanding_prob": 0.1667,
+      "pop_score": 0.8884,
+      "pop_threshold": 0.2,
+      "meta_score": 52.0,
+      "is_anomaly": false,
+      "anomaly_score": 22.1,
+      "model_versions": {
+        "pop": {
+          "trained_at": "2026-08-11T20:26:30.213758+00:00",
+          "git_sha": "unknown"
+        },
+        "regime": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "return": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "vol": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "meta": {
+          "trained_at": null,
+          "git_sha": null
+        }
+      }
+    },
+    "optimizer_candidate": {
+      "ticker": "TSLA",
+      "structure": "Call Debit Spread",
+      "expiry": "2026-08-28",
+      "dte": 16,
+      "max_profit": 10.5,
+      "max_loss": 7.0,
+      "ev": 2.837,
+      "meets_both": false,
+      "signal_score": 77.925,
+      "signal_rating": "Moderate",
+      "spot_at_entry": 327.38,
+      "short_strike": 342.5,
+      "long_strike": 325.0,
+      "put_short_strike": null,
+      "put_long_strike": null,
+      "call_short_strike": null,
+      "call_long_strike": null,
+      "iv_edge_vp": 0.11,
+      "iv_edge_label": "fair",
+      "pred_dist": {
+        "p_win": 0.652,
+        "ev_std": 0.167,
+        "confidence": 0.665,
+        "model_agreement": "Medium",
+        "n_signals": 3,
+        "signals": {
+          "meta": 0.52,
+          "pop": 0.888,
+          "regime_up": 0.548
+        },
+        "p10_pnl": null,
+        "p90_pnl": null,
+        "ev_per_share": null,
+        "vol_source": null
+      },
+      "kelly": {
+        "kelly_f": 0.0898,
+        "kelly_pct": 0.05,
+        "kelly_capital": 75.0,
+        "kelly_contracts": 1,
+        "confidence_scalar": 0.665,
+        "p_profit": 0.562,
+        "confidence": 0.665
+      }
+    }
+  },
+  {
+    "id": "20260812AM_NVO_CDS_3",
+    "rank": 3,
+    "entered_at": "2026-08-12T10:08:19.002873-04:00",
+    "ticker": "NVO",
+    "structure": "Call Debit Spread",
+    "expiry": "2026-08-21",
+    "strikes": {
+      "short": 48.0,
+      "long": 46.0
+    },
+    "width": 2.0,
+    "entry_credit": 0.62,
+    "entry_mid": 0.62,
+    "entry_legs": {
+      "long": {
+        "strike": 46.0,
+        "bid": 0.88,
+        "ask": 0.92,
+        "mid": 0.9,
+        "iv": 31.3,
+        "iv_raw": 0.31342,
+        "volume": 38,
+        "oi": 2897
+      },
+      "short": {
+        "strike": 48.0,
+        "bid": 0.27,
+        "ask": 0.29,
+        "mid": 0.28,
+        "iv": 34.0,
+        "iv_raw": 0.33971,
+        "volume": 263,
+        "oi": 1284
+      }
+    },
+    "scan_credit": 1.4,
+    "slippage_pct": 0.0,
+    "fill_source": "live_quote",
+    "max_profit": 1.38,
+    "max_loss": 0.62,
+    "dte_at_entry": 9,
+    "spot_at_entry": 46.2,
+    "signal_rating": null,
+    "signal_score": 0,
+    "profit_target": 0.558,
+    "stop_loss": 1.86,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 0.715,
+        "ul_price": 46.3849983215332,
+        "unrealized": -0.665,
+        "net_delta": 0.3576,
+        "net_theta": -0.0116,
+        "net_gamma": 0.038067,
+        "net_vega": 0.006
+      }
+    ],
+    "exit": null,
+    "iv_edge_vp": 0.47,
+    "iv_edge_label": "fair",
+    "kelly_fraction": 0.1101,
+    "kelly_pct": 0.05,
+    "kelly_contracts": 1,
+    "kelly_capital": 75.0,
+    "ml_p_win": 0.553,
+    "ml_confidence": 0.609,
+    "capital_required": 60.0,
+    "capital_type": "debit",
+    "requires_margin": false,
+    "scan_time": "morning",
+    "ranker_score": null,
+    "position_size_factor": null,
+    "suggested_allocation_pct": null,
+    "ml_scores_at_entry": {
+      "regime": "Trending",
+      "regime_prob": null,
+      "expected_return": null,
+      "expected_vol": 0.3292,
+      "expected_move_pct": 0.0656,
+      "iv_direction": "Expanding",
+      "iv_expanding_prob": 0.4558,
+      "pop_score": 0.9002,
+      "pop_threshold": 0.2,
+      "meta_score": 52.0,
+      "is_anomaly": false,
+      "anomaly_score": 43.3,
+      "model_versions": {
+        "pop": {
+          "trained_at": "2026-08-11T20:26:30.213758+00:00",
+          "git_sha": "unknown"
+        },
+        "regime": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "return": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "vol": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "meta": {
+          "trained_at": null,
+          "git_sha": null
+        }
+      }
+    },
+    "optimizer_candidate": {
+      "ticker": "NVO",
+      "structure": "Call Debit Spread",
+      "expiry": "2026-08-21",
+      "dte": 9,
+      "max_profit": 1.4,
+      "max_loss": 0.6,
+      "ev": 0.505,
+      "meets_both": true,
+      "signal_score": 0,
+      "signal_rating": null,
+      "spot_at_entry": 46.2,
+      "short_strike": 48.0,
+      "long_strike": 46.0,
+      "put_short_strike": null,
+      "put_long_strike": null,
+      "call_short_strike": null,
+      "call_long_strike": null,
+      "iv_edge_vp": 0.47,
+      "iv_edge_label": "fair",
+      "pred_dist": {
+        "p_win": 0.626,
+        "ev_std": 0.195,
+        "confidence": 0.609,
+        "model_agreement": "Medium",
+        "n_signals": 3,
+        "signals": {
+          "meta": 0.52,
+          "pop": 0.9,
+          "regime_up": 0.458
+        },
+        "p10_pnl": null,
+        "p90_pnl": null,
+        "ev_per_share": null,
+        "vol_source": null
+      },
+      "kelly": {
+        "kelly_f": 0.1101,
+        "kelly_pct": 0.05,
+        "kelly_capital": 75.0,
+        "kelly_contracts": 1,
+        "confidence_scalar": 0.609,
+        "p_profit": 0.553,
+        "confidence": 0.609
+      }
+    }
+  },
+  {
+    "id": "20260812PM_GLD_PDS_1",
+    "rank": 1,
+    "entered_at": "2026-08-12T14:07:06.484891-04:00",
+    "ticker": "GLD",
+    "structure": "Put Debit Spread",
+    "expiry": "2026-08-28",
+    "strikes": {
+      "short": 395.0,
+      "long": 405.0
+    },
+    "width": 10.0,
+    "entry_credit": 4.25,
+    "entry_mid": 4.25,
+    "entry_legs": {
+      "long": {
+        "strike": 405.0,
+        "bid": 8.15,
+        "ask": 8.35,
+        "mid": 8.25,
+        "iv": 23.4,
+        "iv_raw": 0.23395,
+        "volume": 85,
+        "oi": 100
+      },
+      "short": {
+        "strike": 395.0,
+        "bid": 3.9,
+        "ask": 4.1,
+        "mid": 4.0,
+        "iv": 23.3,
+        "iv_raw": 0.23338,
+        "volume": 149,
+        "oi": 122
+      }
+    },
+    "scan_credit": 5.5,
+    "slippage_pct": 0.0,
+    "fill_source": "live_quote",
+    "max_profit": 5.75,
+    "max_loss": 4.25,
+    "dte_at_entry": 16,
+    "spot_at_entry": 403.44,
+    "signal_rating": "Moderate",
+    "signal_score": 26.7692,
+    "profit_target": 3.825,
+    "stop_loss": 12.75,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 4.05,
+        "ul_price": 404.8800048828125,
+        "unrealized": -1.7,
+        "net_delta": 0.1928,
+        "net_theta": 0.0211,
+        "net_gamma": -0.003563,
+        "net_vega": -0.0492
+      }
+    ],
+    "exit": null,
+    "iv_edge_vp": 0.04,
+    "iv_edge_label": "fair",
+    "kelly_fraction": null,
+    "kelly_pct": null,
+    "kelly_contracts": null,
+    "kelly_capital": null,
+    "ml_p_win": null,
+    "ml_confidence": null,
+    "capital_required": 450.0,
+    "capital_type": "debit",
+    "requires_margin": false,
+    "scan_time": "afternoon",
+    "ranker_score": null,
+    "position_size_factor": null,
+    "suggested_allocation_pct": null,
+    "ml_scores_at_entry": {
+      "regime": null,
+      "regime_prob": null,
+      "expected_return": null,
+      "expected_vol": null,
+      "expected_move_pct": null,
+      "iv_direction": null,
+      "iv_expanding_prob": null,
+      "pop_score": null,
+      "pop_threshold": null,
+      "meta_score": null,
+      "is_anomaly": null,
+      "anomaly_score": null,
+      "model_versions": {
+        "pop": {
+          "trained_at": "2026-08-11T20:26:30.213758+00:00",
+          "git_sha": "unknown"
+        },
+        "regime": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "return": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "vol": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "meta": {
+          "trained_at": null,
+          "git_sha": null
+        }
+      }
+    },
+    "optimizer_candidate": {
+      "ticker": "GLD",
+      "structure": "Put Debit Spread",
+      "expiry": "2026-08-28",
+      "dte": 16,
+      "max_profit": 5.5,
+      "max_loss": 4.5,
+      "ev": -0.165,
+      "entry_ev_mc": -0.165,
+      "entry_ev_delta_proxy": 0.584,
+      "entry_ev_is_proxy": false,
+      "entry_prob_profit_sim": 43.6,
+      "entry_cvar_loss": -4.5,
+      "entry_prob_of_touch": 56.2,
+      "entry_mc_vol_source": "gbm",
+      "meets_both": false,
+      "signal_score": 26.7692,
+      "signal_rating": "Moderate",
+      "spot_at_entry": 403.44,
+      "short_strike": 395.0,
+      "long_strike": 405.0,
+      "put_short_strike": null,
+      "put_long_strike": null,
+      "call_short_strike": null,
+      "call_long_strike": null,
+      "iv_edge_vp": 0.04,
+      "iv_edge_label": "fair",
+      "pred_dist": null,
+      "kelly": null
+    }
+  },
+  {
+    "id": "20260812PM_T_PDS_2",
+    "rank": 2,
+    "entered_at": "2026-08-12T14:07:08.019984-04:00",
+    "ticker": "T",
+    "structure": "Put Debit Spread",
+    "expiry": "2026-08-28",
+    "strikes": {
+      "short": 23.5,
+      "long": 24.5
+    },
+    "width": 1.0,
+    "entry_credit": 0.415,
+    "entry_mid": 0.415,
+    "entry_legs": {
+      "long": {
+        "strike": 24.5,
+        "bid": 0.58,
+        "ask": 0.64,
+        "mid": 0.61,
+        "iv": 23.7,
+        "iv_raw": 0.23678,
+        "volume": 60,
+        "oi": 83
+      },
+      "short": {
+        "strike": 23.5,
+        "bid": 0.18,
+        "ask": 0.21,
+        "mid": 0.195,
+        "iv": 24.0,
+        "iv_raw": 0.24035,
+        "volume": 108,
+        "oi": 465
+      }
+    },
+    "scan_credit": 0.54,
+    "slippage_pct": 0.0,
+    "fill_source": "live_quote",
+    "max_profit": 0.585,
+    "max_loss": 0.415,
+    "dte_at_entry": 16,
+    "spot_at_entry": 24.22,
+    "signal_rating": "Moderate",
+    "signal_score": 71.788,
+    "profit_target": 0.3735,
+    "stop_loss": 1.245,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 0.325,
+        "ul_price": 24.274999618530273,
+        "unrealized": -0.26,
+        "net_delta": 0.2538,
+        "net_theta": -0.0013,
+        "net_gamma": -0.085728,
+        "net_vega": -0.0027
+      }
+    ],
+    "exit": null,
+    "iv_edge_vp": -0.51,
+    "iv_edge_label": "fair",
+    "kelly_fraction": null,
+    "kelly_pct": null,
+    "kelly_contracts": null,
+    "kelly_capital": null,
+    "ml_p_win": null,
+    "ml_confidence": null,
+    "capital_required": 46.0,
+    "capital_type": "debit",
+    "requires_margin": false,
+    "scan_time": "afternoon",
+    "ranker_score": null,
+    "position_size_factor": null,
+    "suggested_allocation_pct": null,
+    "ml_scores_at_entry": {
+      "regime": null,
+      "regime_prob": null,
+      "expected_return": null,
+      "expected_vol": null,
+      "expected_move_pct": null,
+      "iv_direction": null,
+      "iv_expanding_prob": null,
+      "pop_score": null,
+      "pop_threshold": null,
+      "meta_score": null,
+      "is_anomaly": null,
+      "anomaly_score": null,
+      "model_versions": {
+        "pop": {
+          "trained_at": "2026-08-11T20:26:30.213758+00:00",
+          "git_sha": "unknown"
+        },
+        "regime": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "return": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "vol": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "meta": {
+          "trained_at": null,
+          "git_sha": null
+        }
+      }
+    },
+    "optimizer_candidate": {
+      "ticker": "T",
+      "structure": "Put Debit Spread",
+      "expiry": "2026-08-28",
+      "dte": 16,
+      "max_profit": 0.54,
+      "max_loss": 0.46,
+      "ev": -0.046,
+      "entry_ev_mc": -0.046,
+      "entry_ev_delta_proxy": 0.109,
+      "entry_ev_is_proxy": false,
+      "entry_prob_profit_sim": 41.9,
+      "entry_cvar_loss": -0.46,
+      "entry_prob_of_touch": 45.8,
+      "entry_mc_vol_source": "gbm",
+      "meets_both": false,
+      "signal_score": 71.788,
+      "signal_rating": "Moderate",
+      "spot_at_entry": 24.22,
+      "short_strike": 23.5,
+      "long_strike": 24.5,
+      "put_short_strike": null,
+      "put_long_strike": null,
+      "call_short_strike": null,
+      "call_long_strike": null,
+      "iv_edge_vp": -0.51,
+      "iv_edge_label": "fair",
+      "pred_dist": null,
+      "kelly": null
+    }
+  },
+  {
+    "id": "20260812PM_APP_COV_3",
+    "rank": 3,
+    "entered_at": "2026-08-12T14:07:08.942681-04:00",
+    "ticker": "APP",
+    "structure": "Covered Call",
+    "expiry": "2026-08-28",
+    "strikes": {
+      "short": 340.0
+    },
+    "width": 35.24,
+    "entry_credit": 4.75,
+    "entry_mid": 4.75,
+    "entry_legs": {
+      "short": {
+        "strike": 340.0,
+        "bid": 4.5,
+        "ask": 5.0,
+        "mid": 4.75,
+        "iv": 56.4,
+        "iv_raw": 0.56375,
+        "volume": 154,
+        "oi": 189
+      }
+    },
+    "scan_credit": 35.24,
+    "slippage_pct": 0.0,
+    "fill_source": "live_quote",
+    "max_profit": 4.75,
+    "max_loss": 30.49,
+    "dte_at_entry": 16,
+    "spot_at_entry": 309.26,
+    "signal_rating": "Moderate",
+    "signal_score": 87.025,
+    "profit_target": 4.275,
+    "stop_loss": 14.25,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-08-12T17:00:02.258041-04:00",
+        "mark": 3.5,
+        "ul_price": 303.7699890136719,
+        "unrealized": 1.25,
+        "net_delta": -0.1825,
+        "net_theta": 0.2948,
+        "net_gamma": -0.00756,
+        "net_vega": -0.1683
+      }
+    ],
+    "exit": null,
+    "iv_edge_vp": -0.16,
+    "iv_edge_label": "fair",
+    "kelly_fraction": null,
+    "kelly_pct": null,
+    "kelly_contracts": null,
+    "kelly_capital": null,
+    "ml_p_win": null,
+    "ml_confidence": null,
+    "capital_required": null,
+    "capital_type": "shares",
+    "requires_margin": false,
+    "scan_time": "afternoon",
+    "ranker_score": null,
+    "position_size_factor": null,
+    "suggested_allocation_pct": null,
+    "ml_scores_at_entry": {
+      "regime": "Trending",
+      "regime_prob": null,
+      "expected_return": null,
+      "expected_vol": 0.8241,
+      "expected_move_pct": 0.1642,
+      "iv_direction": "Expanding",
+      "iv_expanding_prob": 0.5712,
+      "pop_score": 0.9349,
+      "pop_threshold": 0.2,
+      "meta_score": 52.0,
+      "is_anomaly": false,
+      "anomaly_score": 15.0,
+      "model_versions": {
+        "pop": {
+          "trained_at": "2026-08-11T20:26:30.213758+00:00",
+          "git_sha": "unknown"
+        },
+        "regime": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "return": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "vol": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "meta": {
+          "trained_at": null,
+          "git_sha": null
+        }
+      }
+    },
+    "optimizer_candidate": {
+      "ticker": "APP",
+      "structure": "Covered Call",
+      "expiry": "2026-08-28",
+      "dte": 16,
+      "max_profit": 35.24,
+      "max_loss": null,
+      "ev": 27.0996,
+      "entry_ev_mc": null,
+      "entry_ev_delta_proxy": 27.0996,
+      "entry_ev_is_proxy": true,
+      "entry_prob_profit_sim": null,
+      "entry_cvar_loss": null,
+      "entry_prob_of_touch": null,
+      "entry_mc_vol_source": null,
+      "meets_both": true,
+      "signal_score": 87.025,
+      "signal_rating": "Moderate",
+      "spot_at_entry": 309.26,
+      "short_strike": 340.0,
+      "long_strike": null,
+      "put_short_strike": null,
+      "put_long_strike": null,
+      "call_short_strike": null,
+      "call_long_strike": null,
+      "iv_edge_vp": -0.16,
+      "iv_edge_label": "fair",
+      "pred_dist": {
+        "p_win": 0.679,
+        "ev_std": 0.183,
+        "confidence": 0.635,
+        "model_agreement": "Medium",
+        "n_signals": 3,
+        "signals": {
+          "meta": 0.52,
+          "pop": 0.935,
+          "regime_up": 0.583
+        },
+        "p10_pnl": null,
+        "p90_pnl": null,
+        "ev_per_share": null,
+        "vol_source": null
+      },
+      "kelly": null
+    }
+  },
+  {
+    "id": "20260813AM_AMD_CDS_1",
+    "rank": 1,
+    "entered_at": "2026-08-13T10:08:02.253743-04:00",
+    "ticker": "AMD",
+    "structure": "Call Debit Spread",
+    "expiry": "2026-09-04",
+    "strikes": {
+      "short": 530.0,
+      "long": 505.0
+    },
+    "width": 25.0,
+    "entry_credit": 8.5,
+    "entry_mid": 8.5,
+    "entry_legs": {
+      "long": {
+        "strike": 505.0,
+        "bid": 22.5,
+        "ask": 24.3,
+        "mid": 23.4,
+        "iv": 57.2,
+        "iv_raw": 0.57152,
+        "volume": 4,
+        "oi": 83
+      },
+      "short": {
+        "strike": 530.0,
+        "bid": 14.1,
+        "ask": 15.7,
+        "mid": 14.9,
+        "iv": 57.8,
+        "iv_raw": 0.57774,
+        "volume": 16,
+        "oi": 176
+      }
+    },
+    "scan_credit": 15.25,
+    "slippage_pct": 0.0,
+    "fill_source": "live_quote",
+    "max_profit": 16.5,
+    "max_loss": 8.5,
+    "dte_at_entry": 22,
+    "spot_at_entry": 494.34,
+    "signal_rating": "Moderate",
+    "signal_score": 29.885,
+    "profit_target": 7.65,
+    "stop_loss": 25.5,
+    "status": "open",
+    "snapshots": [],
+    "exit": null,
+    "iv_edge_vp": null,
+    "iv_edge_label": "fair",
+    "kelly_fraction": null,
+    "kelly_pct": null,
+    "kelly_contracts": null,
+    "kelly_capital": null,
+    "ml_p_win": null,
+    "ml_confidence": null,
+    "capital_required": 975.0,
+    "capital_type": "debit",
+    "requires_margin": false,
+    "scan_time": "morning",
+    "ranker_score": null,
+    "position_size_factor": null,
+    "suggested_allocation_pct": null,
+    "ml_scores_at_entry": {
+      "regime": "Trending",
+      "regime_prob": null,
+      "expected_return": null,
+      "expected_vol": 0.7873,
+      "expected_move_pct": 0.1568,
+      "iv_direction": "Expanding",
+      "iv_expanding_prob": 0.5712,
+      "pop_score": 0.9142,
+      "pop_threshold": 0.2,
+      "meta_score": 52.0,
+      "is_anomaly": false,
+      "anomaly_score": 21.5,
+      "model_versions": {
+        "pop": {
+          "trained_at": "2026-08-11T20:26:30.213758+00:00",
+          "git_sha": "unknown"
+        },
+        "regime": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "return": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "vol": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "meta": {
+          "trained_at": null,
+          "git_sha": null
+        }
+      }
+    },
+    "optimizer_candidate": {
+      "ticker": "AMD",
+      "structure": "Call Debit Spread",
+      "expiry": "2026-09-04",
+      "dte": 22,
+      "max_profit": 15.25,
+      "max_loss": 9.75,
+      "ev": -0.59,
+      "entry_ev_mc": -0.59,
+      "entry_ev_delta_proxy": 2.073,
+      "entry_ev_is_proxy": false,
+      "entry_prob_profit_sim": 38.0,
+      "entry_cvar_loss": -9.75,
+      "entry_prob_of_touch": 52.3,
+      "entry_mc_vol_source": "garch",
+      "meets_both": true,
+      "signal_score": 29.885,
+      "signal_rating": "Moderate",
+      "spot_at_entry": 494.34,
+      "short_strike": 530.0,
+      "long_strike": 505.0,
+      "put_short_strike": null,
+      "put_long_strike": null,
+      "call_short_strike": null,
+      "call_long_strike": null,
+      "iv_edge_vp": null,
+      "iv_edge_label": "fair",
+      "pred_dist": {
+        "p_win": 0.685,
+        "ev_std": 0.167,
+        "confidence": 0.666,
+        "model_agreement": "Medium",
+        "n_signals": 3,
+        "signals": {
+          "meta": 0.52,
+          "pop": 0.914,
+          "regime_up": 0.621
+        },
+        "p10_pnl": null,
+        "p90_pnl": null,
+        "ev_per_share": null,
+        "vol_source": null
+      },
+      "kelly": null
+    }
+  },
+  {
+    "id": "20260813AM_NEE_CDS_2",
+    "rank": 2,
+    "entered_at": "2026-08-13T10:43:03.910804-04:00",
+    "ticker": "NEE",
+    "structure": "Call Debit Spread",
+    "expiry": "2026-08-21",
+    "strikes": {
+      "short": 88.0,
+      "long": 86.0
+    },
+    "width": 2.0,
+    "entry_credit": 0.77,
+    "entry_mid": 0.77,
+    "entry_legs": {
+      "long": {
+        "strike": 86.0,
+        "bid": 1.09,
+        "ask": 1.22,
+        "mid": 1.155,
+        "iv": 21.2,
+        "iv_raw": 0.21222,
+        "volume": 102,
+        "oi": 1071
+      },
+      "short": {
+        "strike": 88.0,
+        "bid": 0.34,
+        "ask": 0.43,
+        "mid": 0.385,
+        "iv": 20.6,
+        "iv_raw": 0.20624,
+        "volume": 25,
+        "oi": 2022
+      }
+    },
+    "scan_credit": 1.09,
+    "slippage_pct": 0.0,
+    "fill_source": "live_quote",
+    "max_profit": 1.23,
+    "max_loss": 0.77,
+    "dte_at_entry": 8,
+    "spot_at_entry": 86.13,
+    "signal_rating": "Moderate",
+    "signal_score": 66.14,
+    "profit_target": 0.693,
+    "stop_loss": 2.31,
+    "status": "open",
+    "snapshots": [],
+    "exit": null,
+    "iv_edge_vp": -1.59,
+    "iv_edge_label": "fair",
+    "kelly_fraction": null,
+    "kelly_pct": null,
+    "kelly_contracts": null,
+    "kelly_capital": null,
+    "ml_p_win": null,
+    "ml_confidence": null,
+    "capital_required": 91.0,
+    "capital_type": "debit",
+    "requires_margin": false,
+    "scan_time": "morning",
+    "ranker_score": null,
+    "position_size_factor": null,
+    "suggested_allocation_pct": null,
+    "ml_scores_at_entry": {
+      "regime": "Trending",
+      "regime_prob": null,
+      "expected_return": null,
+      "expected_vol": 0.2775,
+      "expected_move_pct": 0.0553,
+      "iv_direction": "Expanding",
+      "iv_expanding_prob": 1.0,
+      "pop_score": 0.5895,
+      "pop_threshold": 0.2,
+      "meta_score": 52.0,
+      "is_anomaly": false,
+      "anomaly_score": 14.0,
+      "model_versions": {
+        "pop": {
+          "trained_at": "2026-08-11T20:26:30.213758+00:00",
+          "git_sha": "unknown"
+        },
+        "regime": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "return": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "vol": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "meta": {
+          "trained_at": null,
+          "git_sha": null
+        }
+      }
+    },
+    "optimizer_candidate": {
+      "ticker": "NEE",
+      "structure": "Call Debit Spread",
+      "expiry": "2026-08-21",
+      "dte": 8,
+      "max_profit": 1.09,
+      "max_loss": 0.91,
+      "ev": -0.095,
+      "entry_ev_mc": -0.095,
+      "entry_ev_delta_proxy": 0.165,
+      "entry_ev_is_proxy": false,
+      "entry_prob_profit_sim": 41.9,
+      "entry_cvar_loss": -0.91,
+      "entry_prob_of_touch": 43.7,
+      "entry_mc_vol_source": "garch",
+      "meets_both": true,
+      "signal_score": 66.14,
+      "signal_rating": "Moderate",
+      "spot_at_entry": 86.13,
+      "short_strike": 88.0,
+      "long_strike": 86.0,
+      "put_short_strike": null,
+      "put_long_strike": null,
+      "call_short_strike": null,
+      "call_long_strike": null,
+      "iv_edge_vp": -1.59,
+      "iv_edge_label": "fair",
+      "pred_dist": {
+        "p_win": 0.506,
+        "ev_std": 0.075,
+        "confidence": 0.85,
+        "model_agreement": "High",
+        "n_signals": 3,
+        "signals": {
+          "meta": 0.52,
+          "pop": 0.59,
+          "regime_up": 0.407
+        },
+        "p10_pnl": null,
+        "p90_pnl": null,
+        "ev_per_share": null,
+        "vol_source": null
+      },
+      "kelly": null
+    }
+  },
+  {
+    "id": "20260813AM_PG_CDS_3",
+    "rank": 3,
+    "entered_at": "2026-08-13T10:43:04.946097-04:00",
+    "ticker": "PG",
+    "structure": "Call Debit Spread",
+    "expiry": "2026-08-21",
+    "strikes": {
+      "short": 147.0,
+      "long": 145.0
+    },
+    "width": 2.0,
+    "entry_credit": 0.85,
+    "entry_mid": 0.85,
+    "entry_legs": {
+      "long": {
+        "strike": 145.0,
+        "bid": 1.63,
+        "ask": 1.84,
+        "mid": 1.735,
+        "iv": 18.6,
+        "iv_raw": 0.186,
+        "volume": 38,
+        "oi": 2594
+      },
+      "short": {
+        "strike": 147.0,
+        "bid": 0.83,
+        "ask": 0.94,
+        "mid": 0.885,
+        "iv": 18.5,
+        "iv_raw": 0.18464,
+        "volume": 14,
+        "oi": 1345
+      }
+    },
+    "scan_credit": 1.02,
+    "slippage_pct": 0.0,
+    "fill_source": "live_quote",
+    "max_profit": 1.15,
+    "max_loss": 0.85,
+    "dte_at_entry": 8,
+    "spot_at_entry": 145.1,
+    "signal_rating": null,
+    "signal_score": 0,
+    "profit_target": 0.765,
+    "stop_loss": 2.55,
+    "status": "open",
+    "snapshots": [],
+    "exit": null,
+    "iv_edge_vp": -0.82,
+    "iv_edge_label": "fair",
+    "kelly_fraction": null,
+    "kelly_pct": null,
+    "kelly_contracts": null,
+    "kelly_capital": null,
+    "ml_p_win": null,
+    "ml_confidence": null,
+    "capital_required": 98.0,
+    "capital_type": "debit",
+    "requires_margin": false,
+    "scan_time": "morning",
+    "ranker_score": null,
+    "position_size_factor": null,
+    "suggested_allocation_pct": null,
+    "ml_scores_at_entry": {
+      "regime": "Trending",
+      "regime_prob": null,
+      "expected_return": null,
+      "expected_vol": 0.2591,
+      "expected_move_pct": 0.0516,
+      "iv_direction": "Expanding",
+      "iv_expanding_prob": 0.9667,
+      "pop_score": 0.8821,
+      "pop_threshold": 0.2,
+      "meta_score": 52.0,
+      "is_anomaly": false,
+      "anomaly_score": 30.5,
+      "model_versions": {
+        "pop": {
+          "trained_at": "2026-08-11T20:26:30.213758+00:00",
+          "git_sha": "unknown"
+        },
+        "regime": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "return": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "vol": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "meta": {
+          "trained_at": null,
+          "git_sha": null
+        }
+      }
+    },
+    "optimizer_candidate": {
+      "ticker": "PG",
+      "structure": "Call Debit Spread",
+      "expiry": "2026-08-21",
+      "dte": 8,
+      "max_profit": 1.02,
+      "max_loss": 0.98,
+      "ev": -0.067,
+      "entry_ev_mc": -0.067,
+      "entry_ev_delta_proxy": 0.078,
+      "entry_ev_is_proxy": false,
+      "entry_prob_profit_sim": 46.1,
+      "entry_cvar_loss": -0.98,
+      "entry_prob_of_touch": 56.7,
+      "entry_mc_vol_source": "garch",
+      "meets_both": true,
+      "signal_score": 0,
+      "signal_rating": null,
+      "spot_at_entry": 145.1,
+      "short_strike": 147.0,
+      "long_strike": 145.0,
+      "put_short_strike": null,
+      "put_long_strike": null,
+      "call_short_strike": null,
+      "call_long_strike": null,
+      "iv_edge_vp": -0.82,
+      "iv_edge_label": "fair",
+      "pred_dist": {
+        "p_win": 0.619,
+        "ev_std": 0.188,
+        "confidence": 0.624,
+        "model_agreement": "Medium",
+        "n_signals": 3,
+        "signals": {
+          "meta": 0.52,
+          "pop": 0.882,
+          "regime_up": 0.455
+        },
+        "p10_pnl": null,
+        "p90_pnl": null,
+        "ev_per_share": null,
+        "vol_source": null
+      },
+      "kelly": null
+    }
+  },
+  {
+    "id": "20260813AM_VST_DGS_1",
+    "rank": 1,
+    "entered_at": "2026-08-13T11:24:18.287902-04:00",
+    "ticker": "VST",
+    "structure": "Diagonal Spread",
+    "expiry": "2026-08-28",
+    "strikes": {
+      "short": 140.0,
+      "long": 150.0
+    },
+    "width": 12.143,
+    "entry_credit": 2.333,
+    "entry_mid": 2.333,
+    "entry_legs": {},
+    "scan_credit": 2.333,
+    "slippage_pct": 0.0,
+    "fill_source": "fallback_scan",
+    "max_profit": 2.333,
+    "max_loss": 9.81,
+    "dte_at_entry": 15,
+    "spot_at_entry": 145.91,
+    "signal_rating": "Moderate",
+    "signal_score": 81.995,
+    "profit_target": 2.0997,
+    "stop_loss": 6.999,
+    "status": "open",
+    "snapshots": [],
+    "exit": null,
+    "iv_edge_vp": -0.11,
+    "iv_edge_label": "fair",
+    "kelly_fraction": null,
+    "kelly_pct": null,
+    "kelly_contracts": null,
+    "kelly_capital": null,
+    "ml_p_win": null,
+    "ml_confidence": null,
+    "capital_required": 981.0,
+    "capital_type": "debit",
+    "requires_margin": false,
+    "scan_time": "morning",
+    "ranker_score": null,
+    "position_size_factor": null,
+    "suggested_allocation_pct": null,
+    "ml_scores_at_entry": {
+      "regime": "Trending",
+      "regime_prob": null,
+      "expected_return": null,
+      "expected_vol": 0.4862,
+      "expected_move_pct": 0.0969,
+      "iv_direction": "Expanding",
+      "iv_expanding_prob": 0.4558,
+      "pop_score": 0.828,
+      "pop_threshold": 0.2,
+      "meta_score": 52.0,
+      "is_anomaly": false,
+      "anomaly_score": 25.1,
+      "model_versions": {
+        "pop": {
+          "trained_at": "2026-08-11T20:26:30.213758+00:00",
+          "git_sha": "unknown"
+        },
+        "regime": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "return": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "vol": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "meta": {
+          "trained_at": null,
+          "git_sha": null
+        }
+      }
+    },
+    "optimizer_candidate": {
+      "ticker": "VST",
+      "structure": "Diagonal Spread",
+      "expiry": "2026-08-28",
+      "dte": 15,
+      "max_profit": 2.333,
+      "max_loss": 9.81,
+      "ev": 1.2318,
+      "entry_ev_mc": null,
+      "entry_ev_delta_proxy": 1.2318,
+      "entry_ev_is_proxy": true,
+      "entry_prob_profit_sim": null,
+      "entry_cvar_loss": null,
+      "entry_prob_of_touch": null,
+      "entry_mc_vol_source": null,
+      "meets_both": false,
+      "signal_score": 81.995,
+      "signal_rating": "Moderate",
+      "spot_at_entry": 145.91,
+      "short_strike": 140.0,
+      "long_strike": 150.0,
+      "put_short_strike": null,
+      "put_long_strike": null,
+      "call_short_strike": null,
+      "call_long_strike": null,
+      "iv_edge_vp": -0.11,
+      "iv_edge_label": "fair",
+      "pred_dist": {
+        "p_win": 0.616,
+        "ev_std": 0.15,
+        "confidence": 0.699,
+        "model_agreement": "Medium",
+        "n_signals": 3,
+        "signals": {
+          "meta": 0.52,
+          "pop": 0.828,
+          "regime_up": 0.499
+        },
+        "p10_pnl": null,
+        "p90_pnl": null,
+        "ev_per_share": null,
+        "vol_source": null
+      },
+      "kelly": null
+    }
+  },
+  {
+    "id": "20260813AM_AAPL_CDS_2",
+    "rank": 2,
+    "entered_at": "2026-08-13T11:24:22.043458-04:00",
+    "ticker": "AAPL",
+    "structure": "Call Debit Spread",
+    "expiry": "2026-08-28",
+    "strikes": {
+      "short": 312.5,
+      "long": 302.5
+    },
+    "width": 10.0,
+    "entry_credit": 4.165,
+    "entry_mid": 4.165,
+    "entry_legs": {
+      "long": {
+        "strike": 302.5,
+        "bid": 6.55,
+        "ask": 6.85,
+        "mid": 6.7,
+        "iv": 22.3,
+        "iv_raw": 0.22313,
+        "volume": 150,
+        "oi": 614
+      },
+      "short": {
+        "strike": 312.5,
+        "bid": 2.48,
+        "ask": 2.59,
+        "mid": 2.535,
+        "iv": 22.4,
+        "iv_raw": 0.22353,
+        "volume": 296,
+        "oi": 198
+      }
+    },
+    "scan_credit": 5.63,
+    "slippage_pct": 0.0,
+    "fill_source": "live_quote",
+    "max_profit": 5.835,
+    "max_loss": 4.165,
+    "dte_at_entry": 15,
+    "spot_at_entry": 304.18,
+    "signal_rating": null,
+    "signal_score": 0,
+    "profit_target": 3.7485,
+    "stop_loss": 12.495,
+    "status": "open",
+    "snapshots": [],
+    "exit": null,
+    "iv_edge_vp": -0.33,
+    "iv_edge_label": "fair",
+    "kelly_fraction": null,
+    "kelly_pct": null,
+    "kelly_contracts": null,
+    "kelly_capital": null,
+    "ml_p_win": null,
+    "ml_confidence": null,
+    "capital_required": 437.0,
+    "capital_type": "debit",
+    "requires_margin": false,
+    "scan_time": "morning",
+    "ranker_score": null,
+    "position_size_factor": null,
+    "suggested_allocation_pct": null,
+    "ml_scores_at_entry": {
+      "regime": "Trending",
+      "regime_prob": null,
+      "expected_return": null,
+      "expected_vol": 0.2631,
+      "expected_move_pct": 0.0524,
+      "iv_direction": "Expanding",
+      "iv_expanding_prob": 0.4558,
+      "pop_score": 0.8695,
+      "pop_threshold": 0.2,
+      "meta_score": 52.0,
+      "is_anomaly": false,
+      "anomaly_score": 45.7,
+      "model_versions": {
+        "pop": {
+          "trained_at": "2026-08-11T20:26:30.213758+00:00",
+          "git_sha": "unknown"
+        },
+        "regime": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "return": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "vol": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "meta": {
+          "trained_at": null,
+          "git_sha": null
+        }
+      }
+    },
+    "optimizer_candidate": {
+      "ticker": "AAPL",
+      "structure": "Call Debit Spread",
+      "expiry": "2026-08-28",
+      "dte": 15,
+      "max_profit": 5.63,
+      "max_loss": 4.37,
+      "ev": -0.111,
+      "entry_ev_mc": -0.111,
+      "entry_ev_delta_proxy": 1.338,
+      "entry_ev_is_proxy": false,
+      "entry_prob_profit_sim": 43.5,
+      "entry_cvar_loss": -4.37,
+      "entry_prob_of_touch": 54.1,
+      "entry_mc_vol_source": "garch",
+      "meets_both": false,
+      "signal_score": 0,
+      "signal_rating": null,
+      "spot_at_entry": 304.18,
+      "short_strike": 312.5,
+      "long_strike": 302.5,
+      "put_short_strike": null,
+      "put_long_strike": null,
+      "call_short_strike": null,
+      "call_long_strike": null,
+      "iv_edge_vp": -0.33,
+      "iv_edge_label": "fair",
+      "pred_dist": {
+        "p_win": 0.618,
+        "ev_std": 0.179,
+        "confidence": 0.641,
+        "model_agreement": "Medium",
+        "n_signals": 3,
+        "signals": {
+          "meta": 0.52,
+          "pop": 0.87,
+          "regime_up": 0.464
+        },
+        "p10_pnl": null,
+        "p90_pnl": null,
+        "ev_per_share": null,
+        "vol_source": null
+      },
+      "kelly": null
+    }
+  },
+  {
+    "id": "20260813AM_LRCX_COV_3",
+    "rank": 3,
+    "entered_at": "2026-08-13T11:24:25.442217-04:00",
+    "ticker": "LRCX",
+    "structure": "Covered Call",
+    "expiry": "2026-08-21",
+    "strikes": {
+      "short": 370.0
+    },
+    "width": 34.0,
+    "entry_credit": 3.825,
+    "entry_mid": 3.825,
+    "entry_legs": {
+      "short": {
+        "strike": 370.0,
+        "bid": 3.35,
+        "ask": 4.3,
+        "mid": 3.825,
+        "iv": 66.0,
+        "iv_raw": 0.65972,
+        "volume": 43,
+        "oi": 2257
+      }
+    },
+    "scan_credit": 34.0,
+    "slippage_pct": 0.0,
+    "fill_source": "live_quote",
+    "max_profit": 3.825,
+    "max_loss": 30.175,
+    "dte_at_entry": 8,
+    "spot_at_entry": 339.0,
+    "signal_rating": null,
+    "signal_score": 0,
+    "profit_target": 3.4425,
+    "stop_loss": 11.475,
+    "status": "open",
+    "snapshots": [],
+    "exit": null,
+    "iv_edge_vp": -0.04,
+    "iv_edge_label": "fair",
+    "kelly_fraction": null,
+    "kelly_pct": null,
+    "kelly_contracts": null,
+    "kelly_capital": null,
+    "ml_p_win": null,
+    "ml_confidence": null,
+    "capital_required": null,
+    "capital_type": "shares",
+    "requires_margin": false,
+    "scan_time": "morning",
+    "ranker_score": null,
+    "position_size_factor": null,
+    "suggested_allocation_pct": null,
+    "ml_scores_at_entry": {
+      "regime": "Trending",
+      "regime_prob": null,
+      "expected_return": null,
+      "expected_vol": 0.7797,
+      "expected_move_pct": 0.1553,
+      "iv_direction": "Expanding",
+      "iv_expanding_prob": 0.2872,
+      "pop_score": 0.9142,
+      "pop_threshold": 0.2,
+      "meta_score": 52.0,
+      "is_anomaly": false,
+      "anomaly_score": 21.7,
+      "model_versions": {
+        "pop": {
+          "trained_at": "2026-08-11T20:26:30.213758+00:00",
+          "git_sha": "unknown"
+        },
+        "regime": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "return": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "vol": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "meta": {
+          "trained_at": null,
+          "git_sha": null
+        }
+      }
+    },
+    "optimizer_candidate": {
+      "ticker": "LRCX",
+      "structure": "Covered Call",
+      "expiry": "2026-08-21",
+      "dte": 8,
+      "max_profit": 34.0,
+      "max_loss": null,
+      "ev": 27.098,
+      "entry_ev_mc": null,
+      "entry_ev_delta_proxy": 27.098,
+      "entry_ev_is_proxy": true,
+      "entry_prob_profit_sim": null,
+      "entry_cvar_loss": null,
+      "entry_prob_of_touch": null,
+      "entry_mc_vol_source": null,
+      "meets_both": true,
+      "signal_score": 0,
+      "signal_rating": null,
+      "spot_at_entry": 339.0,
+      "short_strike": 370.0,
+      "long_strike": null,
+      "put_short_strike": null,
+      "put_long_strike": null,
+      "call_short_strike": null,
+      "call_long_strike": null,
+      "iv_edge_vp": -0.04,
+      "iv_edge_label": "fair",
+      "pred_dist": {
+        "p_win": 0.665,
+        "ev_std": 0.177,
+        "confidence": 0.646,
+        "model_agreement": "Medium",
+        "n_signals": 3,
+        "signals": {
+          "meta": 0.52,
+          "pop": 0.914,
+          "regime_up": 0.562
+        },
+        "p10_pnl": null,
+        "p90_pnl": null,
+        "ev_per_share": null,
+        "vol_source": null
+      },
+      "kelly": null
+    }
+  },
+  {
+    "id": "20260813AM_ABBV_PDS_1",
+    "rank": 1,
+    "entered_at": "2026-08-13T12:06:40.239995-04:00",
+    "ticker": "ABBV",
+    "structure": "Put Debit Spread",
+    "expiry": "2026-08-21",
+    "strikes": {
+      "short": 245.0,
+      "long": 252.5
+    },
+    "width": 7.5,
+    "entry_credit": 3.33,
+    "entry_mid": 3.33,
+    "entry_legs": {
+      "long": {
+        "strike": 252.5,
+        "bid": 4.65,
+        "ask": 5.05,
+        "mid": 4.85,
+        "iv": 25.1,
+        "iv_raw": 0.25067,
+        "volume": 3,
+        "oi": 130
+      },
+      "short": {
+        "strike": 245.0,
+        "bid": 1.41,
+        "ask": 1.63,
+        "mid": 1.52,
+        "iv": 24.5,
+        "iv_raw": 0.24483,
+        "volume": 23,
+        "oi": 538
+      }
+    },
+    "scan_credit": 3.86,
+    "slippage_pct": 0.0,
+    "fill_source": "live_quote",
+    "max_profit": 4.17,
+    "max_loss": 3.33,
+    "dte_at_entry": 8,
+    "spot_at_entry": 250.3,
+    "signal_rating": null,
+    "signal_score": 0,
+    "profit_target": 2.997,
+    "stop_loss": 9.99,
+    "status": "open",
+    "snapshots": [],
+    "exit": null,
+    "iv_edge_vp": 0.24,
+    "iv_edge_label": "fair",
+    "kelly_fraction": null,
+    "kelly_pct": null,
+    "kelly_contracts": null,
+    "kelly_capital": null,
+    "ml_p_win": null,
+    "ml_confidence": null,
+    "capital_required": 364.0,
+    "capital_type": "debit",
+    "requires_margin": false,
+    "scan_time": "morning",
+    "ranker_score": null,
+    "position_size_factor": null,
+    "suggested_allocation_pct": null,
+    "ml_scores_at_entry": {
+      "regime": "Trending",
+      "regime_prob": null,
+      "expected_return": null,
+      "expected_vol": 0.3209,
+      "expected_move_pct": 0.0639,
+      "iv_direction": "Expanding",
+      "iv_expanding_prob": 0.8207,
+      "pop_score": 0.9497,
+      "pop_threshold": 0.2,
+      "meta_score": 52.0,
+      "is_anomaly": false,
+      "anomaly_score": 59.7,
+      "model_versions": {
+        "pop": {
+          "trained_at": "2026-08-11T20:26:30.213758+00:00",
+          "git_sha": "unknown"
+        },
+        "regime": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "return": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "vol": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "meta": {
+          "trained_at": null,
+          "git_sha": null
+        }
+      }
+    },
+    "optimizer_candidate": {
+      "ticker": "ABBV",
+      "structure": "Put Debit Spread",
+      "expiry": "2026-08-21",
+      "dte": 8,
+      "max_profit": 3.86,
+      "max_loss": 3.64,
+      "ev": -0.323,
+      "entry_ev_mc": -0.323,
+      "entry_ev_delta_proxy": 0.703,
+      "entry_ev_is_proxy": false,
+      "entry_prob_profit_sim": 44.5,
+      "entry_cvar_loss": -3.64,
+      "entry_prob_of_touch": 47.6,
+      "entry_mc_vol_source": "garch",
+      "meets_both": false,
+      "signal_score": 0,
+      "signal_rating": null,
+      "spot_at_entry": 250.3,
+      "short_strike": 245.0,
+      "long_strike": 252.5,
+      "put_short_strike": null,
+      "put_long_strike": null,
+      "call_short_strike": null,
+      "call_long_strike": null,
+      "iv_edge_vp": 0.24,
+      "iv_edge_label": "fair",
+      "pred_dist": {
+        "p_win": 0.628,
+        "ev_std": 0.232,
+        "confidence": 0.536,
+        "model_agreement": "Medium",
+        "n_signals": 3,
+        "signals": {
+          "meta": 0.52,
+          "pop": 0.95,
+          "regime_up": 0.413
+        },
+        "p10_pnl": null,
+        "p90_pnl": null,
+        "ev_per_share": null,
+        "vol_source": null
+      },
+      "kelly": null
+    }
+  },
+  {
+    "id": "20260813AM_PG_CDS_2",
+    "rank": 2,
+    "entered_at": "2026-08-13T12:06:41.614107-04:00",
+    "ticker": "PG",
+    "structure": "Call Debit Spread",
+    "expiry": "2026-08-28",
+    "strikes": {
+      "short": 148.0,
+      "long": 144.0
+    },
+    "width": 4.0,
+    "entry_credit": 1.565,
+    "entry_mid": 1.565,
+    "entry_legs": {
+      "long": {
+        "strike": 144.0,
+        "bid": 2.35,
+        "ask": 2.51,
+        "mid": 2.43,
+        "iv": 18.6,
+        "iv_raw": 0.18622,
+        "volume": 10,
+        "oi": 244
+      },
+      "short": {
+        "strike": 148.0,
+        "bid": 0.81,
+        "ask": 0.92,
+        "mid": 0.865,
+        "iv": 18.5,
+        "iv_raw": 0.18486,
+        "volume": 10,
+        "oi": 278
+      }
+    },
+    "scan_credit": 2.24,
+    "slippage_pct": 0.0,
+    "fill_source": "live_quote",
+    "max_profit": 2.435,
+    "max_loss": 1.565,
+    "dte_at_entry": 15,
+    "spot_at_entry": 144.26,
+    "signal_rating": "Moderate",
+    "signal_score": 53.2082,
+    "profit_target": 1.4085,
+    "stop_loss": 4.695,
+    "status": "open",
+    "snapshots": [],
+    "exit": null,
+    "iv_edge_vp": -1.51,
+    "iv_edge_label": "fair",
+    "kelly_fraction": 0.0006,
+    "kelly_pct": 0.01,
+    "kelly_contracts": 1,
+    "kelly_capital": 15.0,
+    "ml_p_win": 0.441,
+    "ml_confidence": 0.624,
+    "capital_required": 176.0,
+    "capital_type": "debit",
+    "requires_margin": false,
+    "scan_time": "morning",
+    "ranker_score": null,
+    "position_size_factor": null,
+    "suggested_allocation_pct": null,
+    "ml_scores_at_entry": {
+      "regime": "Trending",
+      "regime_prob": null,
+      "expected_return": null,
+      "expected_vol": 0.2591,
+      "expected_move_pct": 0.0516,
+      "iv_direction": "Expanding",
+      "iv_expanding_prob": 0.9667,
+      "pop_score": 0.8821,
+      "pop_threshold": 0.2,
+      "meta_score": 52.0,
+      "is_anomaly": false,
+      "anomaly_score": 30.5,
+      "model_versions": {
+        "pop": {
+          "trained_at": "2026-08-11T20:26:30.213758+00:00",
+          "git_sha": "unknown"
+        },
+        "regime": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "return": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "vol": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "meta": {
+          "trained_at": null,
+          "git_sha": null
+        }
+      }
+    },
+    "optimizer_candidate": {
+      "ticker": "PG",
+      "structure": "Call Debit Spread",
+      "expiry": "2026-08-28",
+      "dte": 15,
+      "max_profit": 2.24,
+      "max_loss": 1.76,
+      "ev": -0.041,
+      "entry_ev_mc": -0.041,
+      "entry_ev_delta_proxy": 0.411,
+      "entry_ev_is_proxy": false,
+      "entry_prob_profit_sim": 44.1,
+      "entry_cvar_loss": -1.76,
+      "entry_prob_of_touch": 49.4,
+      "entry_mc_vol_source": "garch",
+      "meets_both": true,
+      "signal_score": 53.2082,
+      "signal_rating": "Moderate",
+      "spot_at_entry": 144.26,
+      "short_strike": 148.0,
+      "long_strike": 144.0,
+      "put_short_strike": null,
+      "put_long_strike": null,
+      "call_short_strike": null,
+      "call_long_strike": null,
+      "iv_edge_vp": -1.51,
+      "iv_edge_label": "fair",
+      "pred_dist": {
+        "p_win": 0.619,
+        "ev_std": 0.188,
+        "confidence": 0.624,
+        "model_agreement": "Medium",
+        "n_signals": 3,
+        "signals": {
+          "meta": 0.52,
+          "pop": 0.882,
+          "regime_up": 0.455
+        },
+        "p10_pnl": null,
+        "p90_pnl": null,
+        "ev_per_share": null,
+        "vol_source": null
+      },
+      "kelly": {
+        "kelly_f": 0.0006,
+        "kelly_pct": 0.01,
+        "kelly_capital": 15.0,
+        "kelly_contracts": 1,
+        "confidence_scalar": 0.624,
+        "p_profit": 0.441,
+        "confidence": 0.624
+      }
+    }
+  },
+  {
+    "id": "20260813AM_UNH_PDS_3",
+    "rank": 3,
+    "entered_at": "2026-08-13T12:06:43.061451-04:00",
+    "ticker": "UNH",
+    "structure": "Put Debit Spread",
+    "expiry": "2026-08-28",
+    "strikes": {
+      "short": 390.0,
+      "long": 405.0
+    },
+    "width": 15.0,
+    "entry_credit": 6.025,
+    "entry_mid": 6.025,
+    "entry_legs": {
+      "long": {
+        "strike": 405.0,
+        "bid": 9.1,
+        "ask": 9.8,
+        "mid": 9.45,
+        "iv": 25.6,
+        "iv_raw": 0.2564,
+        "volume": 0,
+        "oi": 395
+      },
+      "short": {
+        "strike": 390.0,
+        "bid": 3.15,
+        "ask": 3.7,
+        "mid": 3.425,
+        "iv": 25.8,
+        "iv_raw": 0.25849,
+        "volume": 18,
+        "oi": 240
+      }
+    },
+    "scan_credit": 8.55,
+    "slippage_pct": 0.0,
+    "fill_source": "live_quote",
+    "max_profit": 8.975,
+    "max_loss": 6.025,
+    "dte_at_entry": 15,
+    "spot_at_entry": 402.13,
+    "signal_rating": "Moderate",
+    "signal_score": 27.501,
+    "profit_target": 5.4225,
+    "stop_loss": 18.075,
+    "status": "open",
+    "snapshots": [],
+    "exit": null,
+    "iv_edge_vp": -0.06,
+    "iv_edge_label": "fair",
+    "kelly_fraction": 0.0227,
+    "kelly_pct": 0.0227,
+    "kelly_contracts": 1,
+    "kelly_capital": 34.05,
+    "ml_p_win": 0.475,
+    "ml_confidence": 0.575,
+    "capital_required": 645.0,
+    "capital_type": "debit",
+    "requires_margin": false,
+    "scan_time": "morning",
+    "ranker_score": null,
+    "position_size_factor": null,
+    "suggested_allocation_pct": null,
+    "ml_scores_at_entry": {
+      "regime": "Trending",
+      "regime_prob": null,
+      "expected_return": null,
+      "expected_vol": 0.3136,
+      "expected_move_pct": 0.0625,
+      "iv_direction": "Expanding",
+      "iv_expanding_prob": 0.8571,
+      "pop_score": 0.9243,
+      "pop_threshold": 0.2,
+      "meta_score": 52.0,
+      "is_anomaly": false,
+      "anomaly_score": 53.5,
+      "model_versions": {
+        "pop": {
+          "trained_at": "2026-08-11T20:26:30.213758+00:00",
+          "git_sha": "unknown"
+        },
+        "regime": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "return": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "vol": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "meta": {
+          "trained_at": null,
+          "git_sha": null
+        }
+      }
+    },
+    "optimizer_candidate": {
+      "ticker": "UNH",
+      "structure": "Put Debit Spread",
+      "expiry": "2026-08-28",
+      "dte": 15,
+      "max_profit": 8.55,
+      "max_loss": 6.45,
+      "ev": 0.487,
+      "entry_ev_mc": 0.487,
+      "entry_ev_delta_proxy": 1.539,
+      "entry_ev_is_proxy": false,
+      "entry_prob_profit_sim": 47.5,
+      "entry_cvar_loss": -6.45,
+      "entry_prob_of_touch": 61.4,
+      "entry_mc_vol_source": "garch",
+      "meets_both": false,
+      "signal_score": 27.501,
+      "signal_rating": "Moderate",
+      "spot_at_entry": 402.13,
+      "short_strike": 390.0,
+      "long_strike": 405.0,
+      "put_short_strike": null,
+      "put_long_strike": null,
+      "call_short_strike": null,
+      "call_long_strike": null,
+      "iv_edge_vp": -0.06,
+      "iv_edge_label": "fair",
+      "pred_dist": {
+        "p_win": 0.627,
+        "ev_std": 0.213,
+        "confidence": 0.575,
+        "model_agreement": "Medium",
+        "n_signals": 3,
+        "signals": {
+          "meta": 0.52,
+          "pop": 0.924,
+          "regime_up": 0.438
+        },
+        "p10_pnl": null,
+        "p90_pnl": null,
+        "ev_per_share": null,
+        "vol_source": null
+      },
+      "kelly": {
+        "kelly_f": 0.0227,
+        "kelly_pct": 0.0227,
+        "kelly_capital": 34.05,
+        "kelly_contracts": 1,
+        "confidence_scalar": 0.575,
+        "p_profit": 0.475,
+        "confidence": 0.575
+      }
     }
   }
 ]

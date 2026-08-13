@@ -130,6 +130,38 @@ Models retrained on 2026-08-11 incorporate current distributions.
 ### calibrate_models.py timezone bug (fixed 2026-08-11)
 `_val_test_from_artifact()` did `df["date"] = pd.to_datetime(df["date"])` — crashed for POP (uses `collected_at`) and failed tz comparison for others. Fixed to use `format="mixed", utc=True` and tz-aware Timestamp comparisons.
 
+### MC EV wired into ranking pipeline (2026-08-12)
+
+**What changed**: `candidate_ranker.py` now calls `monte_carlo_outcome()` (2,000 sims, GBM engine — no GARCH models fitted yet) after all gates pass for each surviving candidate. MC `expected_pnl` replaces the delta-proxy (`POP × max_profit`) as the primary EV fed into the composite score.
+
+**Four-field EV schema** on every ranked item:
+- `ev` — the value used in scoring (MC when available, proxy as fallback)
+- `ev_mc` — MC `expected_pnl` (None for Calendar/Diagonal — `_payoff()` unsupported)
+- `ev_delta_proxy` — `POP × max_profit` retained as diagnostic baseline
+- `ev_is_proxy` — True only when MC unavailable (Calendar/Diagonal)
+
+**Percentile rank** (`_ev_pct_rank`) now:
+1. Uses **EVROC** (`ev / capital_required`) instead of raw per-share EV — fixes high-spot ticker bias
+2. Groups by `ev_is_proxy` before ranking — MC and proxy EVs ranked separately (falls back to combined when either group < 5)
+
+**CVaR penalty** added to `_composite_score()`, **defaulted to 0.0** (disabled). Enable in `config/ranking.toml [mc] cvar_penalty_weight` after A/B backtest confirms MC EV improves selection.
+
+**Trade records** now snapshot 7 `entry_*` fields at paper trade entry for EV calibration analysis.
+
+**Key profiling findings**:
+- GARCH coverage: 0% — all MC calls use GBM fallback (fully vectorized, ~3–6ms/call)
+- Batch scan cost: ~0.7s for 249 calls at 2,000 sims — acceptable
+- Rank stability: 2,000 vs 5,000 sims gives r=0.9917, 100% top-5 overlap → 2,000 sims is sufficient for batch
+
+**What does NOT change**: ML models (POP, regime, meta, iv_direction), training data, grid settings, gates.
+
+**Scripts added**:
+- `scripts/profile_mc_latency.py` — rerun after GARCH models are fitted
+- `scripts/backtest_mc_ab.py` — A/B comparison, run after Ubuntu deployment accumulates data
+- `scripts/ev_calibration.py` — predicted EV vs realized P&L analysis, run once trades close
+
+**Next trigger**: run `scripts/backtest_mc_ab.py` after 20+ closed trades with `entry_ev_mc` populated. If MC EV shows better P&L correlation than proxy, enable CVaR penalty (`cvar_penalty_weight = 0.10`).
+
 ---
 
 ## Grid Calibration History

@@ -123,3 +123,12 @@ clip_hi =  0.30
 # Minimum composite score for a ticker to appear in top_trades.
 # Tickers whose best candidate scores below this are excluded even if they win their slot.
 min_composite = 55
+
+[mc]
+# Phase 2 — CVaR tail-risk penalty.
+# Set cvar_penalty_weight = 0.0 to disable (Phase 1 default).
+# Enable after A/B backtest (scripts/backtest_mc_ab.py) confirms MC EV improves selection.
+# cvar_severity = abs(cvar_loss) / max_loss, clamped to [0,1]
+# penalty_points = min(cvar_penalty_weight * cvar_severity * 100, cvar_penalty_cap)
+cvar_penalty_weight = 0.0    # 0 = disabled; try 0.10 after A/B confirms improvement
+cvar_penalty_cap    = 20.0   # max points deducted regardless of severity

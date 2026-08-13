@@ -128,63 +128,76 @@ function renderEquityCurve(points) {
   }
   document.getElementById("pt-equity-section").style.display = "";
 
-  const W = 760, H = 180, PAD = { t: 16, r: 20, b: 36, l: 60 };
-  const iW = W - PAD.l - PAD.r;
-  const iH = H - PAD.t - PAD.b;
+  const vals      = points.map(p => p.cumulative);
+  const lastVal   = vals[vals.length - 1];
+  const lineColor = lastVal >= 0 ? "#4caf50" : "#e53935";
+  const fillColor = lastVal >= 0 ? "rgba(76,175,80,0.12)" : "rgba(229,57,53,0.12)";
 
-  const vals  = points.map(p => p.cumulative);
-  const minV  = Math.min(0, ...vals);
-  const maxV  = Math.max(0, ...vals);
-  const range = maxV - minV || 1;
+  const winDots  = points.filter(p => p.win);
+  const lossDots = points.filter(p => !p.win);
 
-  const xOf = (i)  => PAD.l + (i / (points.length - 1)) * iW;
-  const yOf = (v)  => PAD.t + iH - ((v - minV) / range) * iH;
-  const y0  = yOf(0);
+  const dotTrace = (pts, color, name) => ({
+    x: pts.map(p => p.date),
+    y: pts.map(p => p.cumulative),
+    mode: "markers",
+    type: "scatter",
+    name,
+    marker: { color, size: 7, opacity: 0.85 },
+    customdata: pts.map(p => [p.ticker, p.structure, p.pnl]),
+    hovertemplate: "%{customdata[0]} %{customdata[1]}<br>Trade P&L: %{customdata[2]:+$.2f}<br>Cumulative: %{y:+$.2f}<extra></extra>",
+  });
 
-  const pts = points.map((p, i) => `${xOf(i).toFixed(1)},${yOf(p.cumulative).toFixed(1)}`).join(" ");
+  const traces = [
+    {
+      x: points.map(p => p.date),
+      y: vals,
+      mode: "lines",
+      type: "scatter",
+      name: "Cumulative P&L",
+      line: { color: lineColor, width: 2 },
+      fill: "tozeroy",
+      fillcolor: fillColor,
+      hoverinfo: "skip",
+    },
+    dotTrace(winDots,  "#4caf50", "Win"),
+    dotTrace(lossDots, "#e53935", "Loss"),
+  ];
 
-  const tickCount = 4;
-  const tickLines = Array.from({length: tickCount + 1}, (_, i) => {
-    const v = minV + (range / tickCount) * i;
-    const y = yOf(v).toFixed(1);
-    const color = v === 0 ? "rgba(255,255,255,0.3)" : "rgba(255,255,255,0.06)";
-    return `
-      <line x1="${PAD.l}" y1="${y}" x2="${W - PAD.r}" y2="${y}" stroke="${color}" stroke-width="1"/>
-      <text x="${PAD.l - 6}" y="${y}" dy="0.35em" text-anchor="end" font-size="10" fill="#888">${v >= 0 ? "+" : ""}$${v.toFixed(0)}</text>`;
-  }).join("");
+  const isDark = document.documentElement.dataset.theme === "dark"
+              || (document.documentElement.dataset.theme == null
+                  && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  const axisColor  = isDark ? "#666" : "#aaa";
+  const labelColor = isDark ? "#aaa" : "#555";
 
-  const step = Math.max(1, Math.floor(points.length / 6));
-  const xLabels = points
-    .filter((_, i) => i % step === 0 || i === points.length - 1)
-    .map((p) => {
-      const i = points.indexOf(p);
-      return `<text x="${xOf(i).toFixed(1)}" y="${H - 6}" text-anchor="middle" font-size="10" fill="#888">${p.date.slice(5)}</text>`;
-    }).join("");
+  const layout = {
+    paper_bgcolor: "transparent",
+    plot_bgcolor:  "transparent",
+    margin: { t: 12, b: 48, l: 64, r: 16 },
+    height: 220,
+    showlegend: false,
+    xaxis: {
+      type: "category",
+      tickfont: { size: 11, color: labelColor },
+      gridcolor: "transparent",
+      linecolor: axisColor,
+      tickcolor: axisColor,
+      nticks: 8,
+    },
+    yaxis: {
+      tickprefix: "$",
+      tickfont: { size: 11, color: labelColor },
+      gridcolor: isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)",
+      zerolinecolor: isDark ? "rgba(255,255,255,0.25)" : "rgba(0,0,0,0.25)",
+      zerolinewidth: 1,
+      linecolor: axisColor,
+    },
+    hovermode: "closest",
+  };
 
-  const dots = points.map((p, i) => {
-    const fill = p.win ? "#4caf50" : "#e53935";
-    const tip  = `${p.date} ${p.ticker} ${p.structure}: ${p.pnl >= 0 ? "+" : ""}$${p.pnl.toFixed(2)}`;
-    return `<circle cx="${xOf(i).toFixed(1)}" cy="${yOf(p.cumulative).toFixed(1)}" r="4" fill="${fill}" opacity="0.85"><title>${esc(tip)}</title></circle>`;
-  }).join("");
-
-  const zeroLine = minV < 0 && maxV > 0
-    ? `<line x1="${PAD.l}" y1="${y0.toFixed(1)}" x2="${W - PAD.r}" y2="${y0.toFixed(1)}" stroke="rgba(255,255,255,0.25)" stroke-width="1" stroke-dasharray="4,3"/>`
-    : "";
-
-  const lastX = xOf(points.length - 1).toFixed(1);
-  const areaPath = `M${PAD.l},${y0.toFixed(1)} ${points.map((p,i)=>`L${xOf(i).toFixed(1)},${yOf(p.cumulative).toFixed(1)}`).join(" ")} L${lastX},${y0.toFixed(1)} Z`;
-  const areaColor = vals[vals.length-1] >= 0 ? "rgba(76,175,80,0.12)" : "rgba(229,57,53,0.12)";
-  const lineColor = vals[vals.length-1] >= 0 ? "#4caf50" : "#e53935";
-
-  document.getElementById("pt-equity-chart").innerHTML = `
-    <svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:${W}px;display:block;overflow:visible">
-      ${tickLines}
-      ${zeroLine}
-      <path d="${areaPath}" fill="${areaColor}"/>
-      <polyline points="${pts}" fill="none" stroke="${lineColor}" stroke-width="2"/>
-      ${dots}
-      ${xLabels}
-    </svg>`;
+  Plotly.react("pt-equity-chart", traces, layout, {
+    responsive: true,
+    displayModeBar: false,
+  });
 }
 
 // ── Breakdown table ───────────────────────────────────────────────────────────
@@ -491,7 +504,8 @@ function renderOpenTradesTable(trades) {
   }
 
   const rows = sorted.map(t => {
-    const isDebit  = (t.structure ?? "").includes("Debit") || t.structure === "Long Strangle";
+    const isDebit  = (t.structure ?? "").includes("Debit") || t.structure === "Long Strangle"
+                  || t.structure === "Calendar Spread" || t.structure === "Diagonal Spread";
     const unr      = t.latest_unrealized;
     const unrTotal = unr != null ? parseFloat(unr) * 100 : null;
     const unrCls   = unr == null ? "na" : parseFloat(unr) >= 0 ? "pass" : "fail";
@@ -507,7 +521,7 @@ function renderOpenTradesTable(trades) {
         <td>${dteLabel(t.expiry)}</td>
         <td class="muted" style="font-size:0.8rem">${esc(strikesStr)}</td>
         <td class="spot-price muted" data-ticker="${esc(t.ticker)}">…</td>
-        <td class="na">$${(t.entry_credit ?? 0).toFixed(3)}</td>
+        <td class="na">$${((isDebit ? t.max_profit : t.entry_credit) ?? t.entry_credit ?? 0).toFixed(3)}</td>
         <td class="muted" style="font-size:0.78rem">${isDebit ? "Debit" : "Max loss"}: $${(t.max_loss ?? 0).toFixed(3)}</td>
         <td class="pt-pnl-total ${unrCls}">${unrTotal != null ? fmt$(unrTotal) : "—"}</td>
         <td>
@@ -1058,7 +1072,8 @@ function renderDayWiseLog(allTrades, marksMap) {
       _renderedIds.add(t.id);
       const x       = t.exit ?? {};
       const isOpen  = t.status === "open";
-      const isDebit = (t.structure ?? "").includes("Debit") || t.structure === "Calendar Spread";
+      const isDebit = (t.structure ?? "").includes("Debit") || t.structure === "Calendar Spread"
+                  || t.structure === "Long Strangle" || t.structure === "Diagonal Spread";
       const win     = x.win;
       const rowCls  = isOpen ? "" : (win ? "pt-row-win" : "pt-row-loss");
 
@@ -1087,7 +1102,7 @@ function renderDayWiseLog(allTrades, marksMap) {
           <td>${dteLabel(t.expiry)}</td>
           <td class="muted" style="font-size:0.8rem">${esc(strikesStr)}</td>
           <td class="spot-price muted" data-ticker="${esc(t.ticker)}">…</td>
-          <td class="na">$${(t.entry_credit ?? 0).toFixed(3)}</td>
+          <td class="na">$${((isDebit ? t.max_profit : t.entry_credit) ?? t.entry_credit ?? 0).toFixed(3)}</td>
           <td class="muted" style="font-size:0.78rem">${isDebit ? "Debit" : "Max loss"}: $${(t.max_loss ?? 0).toFixed(3)}</td>
           <td>${statusLabel(t.status)}</td>
           <td class="muted" style="font-size:0.75rem">${exitTxt}</td>

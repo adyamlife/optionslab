@@ -5647,3 +5647,734 @@ C:\Python312\python\python.exe (PID 9432)
 2026-08-11 10:11:48,709 INFO [risk] Skip XLE — already have 3 open position(s)
 2026-08-11 10:11:48,711 INFO Ranking: composite score (XGBRanker not trained)
 2026-08-11 10:11:48,766 INFO [capital_rejected] 1062 entries persisted to capital_rejected.jsonl
+2026-08-12 10:01:07,276 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-08-12 10:01:07,293 INFO ml_cache disk file is stale (245044s) — trying DuckDB
+2026-08-12 10:01:07,968 INFO ml_cache loaded from DuckDB fallback: 83 tickers
+2026-08-12 10:01:08,008 INFO [prefetch] step 1 — batch daily history for 102 tickers
+2026-08-12 10:01:22,788 INFO [prefetch] daily history done: 102 ok, 0 fail  (14.8s)
+2026-08-12 10:01:22,788 INFO [prefetch] step 2 — batch weekly history for 101 tickers
+2026-08-12 10:01:37,998 INFO [prefetch] weekly history done: 101 ok, 0 fail  (30.0s)
+2026-08-12 10:01:37,998 INFO [prefetch] step 3+4 — expirations + chains for 101 tickers (serial)
+2026-08-12 10:03:58,868 INFO [prefetch] done in 171s — hist 102/102, weekly 101/101, exps 101/101, chains 486 (fail 0)
+2026-08-12 10:03:58,868 INFO [scan] cache ready — 790 total keys, 486 chain keys
+2026-08-12 10:04:00,523 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-12 10:04:00,528 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-12 10:04:00,848 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-12 10:04:00,993 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-12 10:04:01,418 WARNING analyze_ticker(TQQQ) failed: [WinError 5] Access is denied: 'C:\\Project Y\\data\\oi_cache.json.tmp' -> 'C:\\Project Y\\data\\oi_cache.json'
+2026-08-12 10:04:02,058 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-12 10:04:02,163 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-12 10:04:03,098 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-12 10:04:03,109 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-12 10:04:03,123 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-08-12 10:04:03,158 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-12 10:04:03,619 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-12 10:04:03,887 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-08-12 10:04:09,508 WARNING persist_feature_snapshot failed for SPY: ConnectionException: Connection Error: Can't open a connection to same database file with a different configuration than existing connections
+2026-08-12 10:04:13,938 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-12 10:04:14,382 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-12 10:04:16,710 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-12 10:04:17,048 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-12 10:05:02,898 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-08-12 10:05:27,634 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-12 10:06:41,130 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-12 10:06:41,139 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-12 10:06:53,527 WARNING persist_feature_snapshot failed for ORCL: IOException: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 3028)
+2026-08-12 10:06:53,958 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-12 10:06:54,037 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-12 10:08:23,513 ERROR $^VIX: possibly delisted; no price data found  (period=2d)
+2026-08-12 10:08:23,523 ERROR 
+1 Failed download:
+2026-08-12 10:08:23,523 ERROR ['^VIX']: possibly delisted; no price data found  (period=2d)
+2026-08-12 10:08:25,179 ERROR $^VIX3M: possibly delisted; no price data found  (period=2d)
+2026-08-12 10:08:25,180 ERROR $^VVIX: possibly delisted; no price data found  (period=2d)
+2026-08-12 10:08:25,192 ERROR 
+2 Failed downloads:
+2026-08-12 10:08:25,192 ERROR ['^VIX3M', '^VVIX']: possibly delisted; no price data found  (period=2d)
+2026-08-12 10:08:26,197 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-12 10:09:07,627 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-12 10:09:07,637 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-12 10:09:17,971 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-12 10:09:38,957 WARNING analyze_ticker(BAC) failed: 'NoneType' object has no attribute 'copy'
+2026-08-12 10:10:25,807 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-12 10:10:27,741 WARNING persist_feature_snapshot failed for COP: IOException: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 3028)
+2026-08-12 10:10:57,032 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-08-12 10:10:57,380 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-08-12 10:11:06,237 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-08-12 10:11:06,620 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-08-12 10:11:11,143 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-08-12 10:11:11,587 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-08-12 10:11:22,497 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-08-12 10:11:22,976 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-08-12 10:11:27,577 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-08-12 10:11:28,058 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-08-12 10:11:30,047 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-08-12 10:11:30,397 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-08-12 10:11:44,028 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-12 10:11:44,034 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-12 10:12:04,680 WARNING analyze_ticker(FDX) failed: 'NoneType' object has no attribute 'copy'
+2026-08-12 10:12:41,356 INFO [repair] AMD Cash Secured Put — roi gate failed; injecting 47 variant(s) for full gate re-evaluation
+2026-08-12 10:12:41,387 INFO [repair] AMD Iron Butterfly — roi gate failed; injecting 9 variant(s) for full gate re-evaluation
+2026-08-12 10:12:41,387 INFO [gate:capital] AMD Short Strangle rejected — required $7095.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,397 INFO [repair] AMD Short Strangle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:41,417 INFO [repair] AMD Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:41,417 INFO [gate:capital] AMD Call Debit Spread rejected — required $2170.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,437 INFO [repair] AMD Call Debit Spread — capital gate failed; injecting 10 variant(s) for full gate re-evaluation
+2026-08-12 10:12:41,437 INFO [gate:capital] AMD Bear Combo rejected — required $6190.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,437 INFO [gate:capital] AMD Diagonal Spread rejected — required $4020.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,437 INFO [gate:capital] AMD Short Strangle rejected — required $6485.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,437 INFO [gate:capital] AMD Short Strangle rejected — required $5890.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,437 INFO [gate:capital] AMD Short Strangle rejected — required $5290.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,437 INFO [gate:capital] AMD Short Strangle rejected — required $4700.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,437 INFO [gate:capital] AMD Short Strangle rejected — required $4102.50 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,447 INFO [gate:capital] AMD Short Strangle rejected — required $9220.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,449 INFO [gate:capital] AMD Short Strangle rejected — required $8525.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,449 INFO [gate:capital] AMD Call Debit Spread rejected — required $2025.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,449 INFO [gate:capital] AMD Call Debit Spread rejected — required $1695.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,503 INFO [repair] AMD Iron Butterfly — roi gate failed; injecting 11 variant(s) for full gate re-evaluation
+2026-08-12 10:12:41,503 INFO [gate:capital] AMD Short Strangle rejected — required $7695.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,517 INFO [repair] AMD Short Strangle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:41,527 INFO [repair] AMD Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:41,527 INFO [gate:capital] AMD Bear Combo rejected — required $3081.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,537 INFO [gate:capital] AMD Diagonal Spread rejected — required $3395.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,537 INFO [gate:capital] AMD Short Strangle rejected — required $7090.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,537 INFO [gate:capital] AMD Short Strangle rejected — required $6500.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,537 INFO [gate:capital] AMD Short Strangle rejected — required $5900.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,537 INFO [gate:capital] AMD Short Strangle rejected — required $5330.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,537 INFO [gate:capital] AMD Short Strangle rejected — required $4787.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,537 INFO [gate:capital] AVGO Call Debit Spread rejected — required $1820.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,559 INFO [repair] AVGO Call Debit Spread — capital gate failed; injecting 8 variant(s) for full gate re-evaluation
+2026-08-12 10:12:41,563 INFO [gate:capital] AVGO Diagonal Spread rejected — required $1985.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,565 INFO [gate:capital] AVGO Call Debit Spread rejected — required $1510.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,570 INFO [gate:capital] MSFT Call Debit Spread rejected — required $1983.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,582 INFO [repair] MSFT Call Debit Spread — capital gate failed; injecting 7 variant(s) for full gate re-evaluation
+2026-08-12 10:12:41,587 INFO [gate:capital] MSFT Call Debit Spread rejected — required $1528.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,617 INFO [gate:capital] KLAC Short Straddle rejected — required $4963.40 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,627 INFO [repair] KLAC Short Straddle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:41,627 INFO [gate:capital] KLAC Bear Combo rejected — required $1780.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,720 INFO [repair] MU Cash Secured Put — roi gate failed; injecting 76 variant(s) for full gate re-evaluation
+2026-08-12 10:12:41,721 INFO [gate:capital] MU Iron Condor rejected — required $4285.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,727 INFO [gate:capital] MU Iron Butterfly rejected — required $4985.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,787 INFO [repair] MU Iron Butterfly — capital gate failed; injecting 19 variant(s) for full gate re-evaluation
+2026-08-12 10:12:41,787 INFO [gate:capital] MU Short Strangle rejected — required $13584.50 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,815 INFO [repair] MU Short Strangle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:41,817 INFO [gate:capital] MU Short Straddle rejected — required $23689.50 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,830 INFO [repair] MU Short Straddle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:41,832 INFO [gate:capital] MU Call Debit Spread rejected — required $4655.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,869 INFO [repair] MU Call Debit Spread — capital gate failed; injecting 22 variant(s) for full gate re-evaluation
+2026-08-12 10:12:41,869 INFO [gate:capital] MU Put Debit Spread rejected — required $4190.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,897 INFO [repair] MU Put Debit Spread — capital gate failed; injecting 16 variant(s) for full gate re-evaluation
+2026-08-12 10:12:41,897 INFO [gate:capital] MU Bear Combo rejected — required $10810.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,908 INFO [gate:capital] MU Iron Butterfly rejected — required $4785.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,908 INFO [gate:capital] MU Iron Butterfly rejected — required $4465.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,909 INFO [gate:capital] MU Iron Butterfly rejected — required $4120.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,913 INFO [gate:capital] MU Iron Butterfly rejected — required $3935.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,916 INFO [gate:capital] MU Iron Butterfly rejected — required $3745.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,917 INFO [gate:capital] MU Iron Butterfly rejected — required $3485.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,918 INFO [gate:capital] MU Iron Butterfly rejected — required $3260.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,920 INFO [gate:capital] MU Iron Butterfly rejected — required $3125.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,921 INFO [gate:capital] MU Iron Butterfly rejected — required $2875.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,922 INFO [gate:capital] MU Iron Butterfly rejected — required $2635.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,926 INFO [gate:capital] MU Iron Butterfly rejected — required $2590.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,927 INFO [gate:capital] MU Iron Butterfly rejected — required $2380.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,928 INFO [gate:capital] MU Iron Butterfly rejected — required $2360.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,929 INFO [gate:capital] MU Iron Butterfly rejected — required $2045.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,930 INFO [gate:capital] MU Iron Butterfly rejected — required $1970.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,931 INFO [gate:capital] MU Iron Butterfly rejected — required $1675.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,932 INFO [gate:capital] MU Iron Butterfly rejected — required $1805.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,933 INFO [gate:capital] MU Iron Butterfly rejected — required $2000.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,934 INFO [gate:capital] MU Iron Butterfly rejected — required $1645.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,934 INFO [gate:capital] MU Short Strangle rejected — required $12934.50 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,935 INFO [gate:capital] MU Short Strangle rejected — required $12284.50 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,936 INFO [gate:capital] MU Short Strangle rejected — required $11662.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,936 INFO [gate:capital] MU Short Strangle rejected — required $11134.50 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,937 INFO [gate:capital] MU Short Strangle rejected — required $10482.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,938 INFO [gate:capital] MU Call Debit Spread rejected — required $4505.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,942 INFO [gate:capital] MU Call Debit Spread rejected — required $4120.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,942 INFO [gate:capital] MU Call Debit Spread rejected — required $3930.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,943 INFO [gate:capital] MU Call Debit Spread rejected — required $3545.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,943 INFO [gate:capital] MU Call Debit Spread rejected — required $3445.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,943 INFO [gate:capital] MU Call Debit Spread rejected — required $3190.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,943 INFO [gate:capital] MU Call Debit Spread rejected — required $2965.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,943 INFO [gate:capital] MU Call Debit Spread rejected — required $2705.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,943 INFO [gate:capital] MU Call Debit Spread rejected — required $2445.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,947 INFO [gate:capital] MU Call Debit Spread rejected — required $2205.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,947 INFO [gate:capital] MU Call Debit Spread rejected — required $2050.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,947 INFO [gate:capital] MU Call Debit Spread rejected — required $2120.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,947 INFO [gate:capital] MU Call Debit Spread rejected — required $1660.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,947 INFO [gate:capital] MU Put Debit Spread rejected — required $3710.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,947 INFO [gate:capital] MU Put Debit Spread rejected — required $3405.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,947 INFO [gate:capital] MU Put Debit Spread rejected — required $3110.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,947 INFO [gate:capital] MU Put Debit Spread rejected — required $2765.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,947 INFO [gate:capital] MU Put Debit Spread rejected — required $2550.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,947 INFO [gate:capital] MU Put Debit Spread rejected — required $2315.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,955 INFO [gate:capital] MU Put Debit Spread rejected — required $2015.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,957 INFO [gate:capital] MU Put Debit Spread rejected — required $1795.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,957 INFO [gate:capital] MU Put Debit Spread rejected — required $1560.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:41,967 INFO [repair] MU Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:41,967 INFO [gate:capital] MU Call Debit Spread rejected — required $2545.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,002 INFO [repair] MU Call Debit Spread — capital gate failed; injecting 14 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,002 INFO [gate:capital] MU Bear Combo rejected — required $7775.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,012 INFO [gate:capital] MU Call Debit Spread rejected — required $2345.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,013 INFO [gate:capital] MU Call Debit Spread rejected — required $2065.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,016 INFO [gate:capital] MU Call Debit Spread rejected — required $1845.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,016 INFO [gate:capital] MU Call Debit Spread rejected — required $1610.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,031 INFO [repair] QCOM Short Strangle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,032 INFO [gate:capital] QCOM Short Straddle rejected — required $3846.60 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,043 INFO [repair] QCOM Short Straddle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,057 INFO [repair] QCOM Cash Secured Put — roi gate failed; injecting 6 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,067 INFO [repair] QCOM Iron Butterfly — roi gate failed; injecting 2 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,082 INFO [repair] QCOM Short Strangle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,097 INFO [repair] QCOM Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,127 INFO [repair] INTC Cash Secured Put — roi gate failed; injecting 23 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,127 INFO [gate:capital] INTC Short Straddle rejected — required $2614.10 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,142 INFO [repair] INTC Short Straddle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,142 INFO [gate:capital] INTC Short Strangle rejected — required $2041.10 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,175 INFO [repair] INTC Cash Secured Put — roi gate failed; injecting 22 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,175 INFO [gate:capital] INTC Short Strangle rejected — required $1530.10 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,189 INFO [repair] INTC Short Strangle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,198 INFO [repair] INTC Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,207 INFO [gate:capital] INTC Short Strangle rejected — required $1861.60 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,232 INFO [repair] LRCX Cash Secured Put — roi gate failed; injecting 11 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,257 INFO [repair] LRCX Iron Butterfly — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,258 INFO [gate:capital] LRCX Short Strangle rejected — required $4517.10 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,272 INFO [repair] LRCX Short Strangle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,287 INFO [repair] LRCX Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,287 INFO [gate:capital] LRCX Bear Combo rejected — required $4114.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,287 INFO [gate:capital] LRCX Short Strangle rejected — required $3924.60 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,287 INFO [gate:capital] LRCX Short Strangle rejected — required $3284.60 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,287 INFO [gate:capital] LRCX Short Strangle rejected — required $2704.60 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,287 INFO [gate:capital] LRCX Short Strangle rejected — required $2149.60 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,287 INFO [gate:capital] LRCX Short Strangle rejected — required $1619.60 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,297 INFO [gate:capital] LRCX Short Strangle rejected — required $4517.10 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,307 INFO [repair] LRCX Put Credit Spread — roi gate failed; injecting 3 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,331 INFO [repair] LRCX Cash Secured Put — roi gate failed; injecting 17 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,343 INFO [repair] LRCX Iron Condor — roi gate failed; injecting 3 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,367 INFO [repair] LRCX Iron Butterfly — roi gate failed; injecting 7 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,377 INFO [repair] LRCX Short Strangle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,387 INFO [repair] LRCX Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,387 INFO [gate:capital] LRCX Bear Combo rejected — required $1735.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,397 INFO [gate:capital] CDNS Diagonal Spread rejected — required $1540.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,397 INFO [gate:capital] ASML Call Debit Spread rejected — required $4150.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,421 INFO [repair] ASML Call Debit Spread — capital gate failed; injecting 12 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,424 INFO [gate:capital] ASML Call Debit Spread rejected — required $3810.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,425 INFO [gate:capital] ASML Call Debit Spread rejected — required $3720.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,425 INFO [gate:capital] ASML Call Debit Spread rejected — required $3340.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,428 INFO [gate:capital] ASML Call Debit Spread rejected — required $3110.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,429 INFO [gate:capital] ASML Call Debit Spread rejected — required $2870.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,430 INFO [gate:capital] ASML Call Debit Spread rejected — required $2560.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,431 INFO [gate:capital] ASML Call Debit Spread rejected — required $2340.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,431 INFO [gate:capital] ASML Call Debit Spread rejected — required $2100.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,432 INFO [gate:capital] SNOW Put Credit Spread rejected — required $1740.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,447 INFO [repair] SNOW Cash Secured Put — roi gate failed; injecting 13 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,457 INFO [repair] SNOW Iron Butterfly — roi gate failed; injecting 4 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,467 INFO [repair] SNOW Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,497 INFO [repair] MDB Cash Secured Put — roi gate failed; injecting 17 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,522 INFO [repair] MDB Cash Secured Put — roi gate failed; injecting 7 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,523 INFO [gate:capital] MDB Bear Combo rejected — required $2192.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,567 INFO [repair] PLTR Cash Secured Put — roi gate failed; injecting 47 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,567 INFO [gate:capital] PLTR Short Strangle rejected — required $2674.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,587 INFO [repair] PLTR Short Strangle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,587 INFO [gate:capital] PLTR Short Straddle rejected — required $4057.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,597 INFO [repair] PLTR Short Straddle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,597 INFO [gate:capital] PLTR Short Strangle rejected — required $2362.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,597 INFO [gate:capital] PLTR Short Strangle rejected — required $2055.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,597 INFO [gate:capital] PLTR Short Strangle rejected — required $2698.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,607 INFO [gate:capital] PLTR Short Strangle rejected — required $2394.50 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,609 INFO [gate:capital] PLTR Short Straddle rejected — required $3914.50 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,624 INFO [repair] PLTR Short Straddle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,652 INFO [repair] ORCL Cash Secured Put — roi gate failed; injecting 23 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,657 INFO [gate:capital] ORCL Short Strangle rejected — required $2337.70 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,667 INFO [repair] ORCL Short Strangle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,667 INFO [gate:capital] ORCL Short Straddle rejected — required $3714.20 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,677 INFO [repair] ORCL Short Straddle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,677 INFO [gate:capital] ORCL Short Strangle rejected — required $2203.70 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,677 INFO [gate:capital] ORCL Short Strangle rejected — required $2071.20 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,688 INFO [gate:capital] ORCL Short Strangle rejected — required $1930.70 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,688 INFO [gate:capital] ORCL Short Strangle rejected — required $1797.20 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,688 INFO [gate:capital] ORCL Short Strangle rejected — required $1675.70 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,688 INFO [gate:capital] ORCL Short Straddle rejected — required $3534.20 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,707 INFO [repair] ORCL Short Straddle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,713 INFO [gate:capital] ORCL Short Strangle rejected — required $2258.20 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,730 INFO [repair] NOW Cash Secured Put — roi gate failed; injecting 19 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,737 INFO [repair] NOW Call Credit Spread — roi gate failed; injecting 2 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,766 INFO [repair] NOW Iron Butterfly — roi gate failed; injecting 6 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,767 INFO [gate:capital] NOW Short Strangle rejected — required $1909.10 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,778 INFO [repair] NOW Short Strangle — capital gate failed; injecting 4 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,787 INFO [repair] NOW Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,787 INFO [gate:capital] NOW Bear Combo rejected — required $1589.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,787 INFO [gate:capital] NOW Short Strangle rejected — required $1757.10 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,787 INFO [gate:capital] NOW Short Strangle rejected — required $1628.10 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,813 INFO [repair] NET Cash Secured Put — roi gate failed; injecting 9 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,827 INFO [repair] NET Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,866 INFO [gate:capital] MELI Call Debit Spread rejected — required $5430.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,892 INFO [repair] MELI Call Debit Spread — capital gate failed; injecting 14 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,892 INFO [gate:capital] MELI Diagonal Spread rejected — required $7310.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,893 INFO [gate:capital] MELI Call Debit Spread rejected — required $5570.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,893 INFO [gate:capital] MELI Call Debit Spread rejected — required $5280.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,894 INFO [gate:capital] MELI Call Debit Spread rejected — required $4710.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,894 INFO [gate:capital] MELI Call Debit Spread rejected — required $4340.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,894 INFO [gate:capital] MELI Call Debit Spread rejected — required $4510.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,897 INFO [gate:capital] MELI Call Debit Spread rejected — required $3300.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,897 INFO [gate:capital] MELI Call Debit Spread rejected — required $3340.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,913 INFO [repair] APP Cash Secured Put — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,917 INFO [gate:capital] APP Short Strangle rejected — required $4960.20 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,927 INFO [repair] APP Short Strangle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,927 INFO [gate:capital] APP Short Straddle rejected — required $7681.20 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,937 INFO [repair] APP Short Straddle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:42,937 INFO [gate:capital] APP Bear Combo rejected — required $1910.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,947 INFO [gate:capital] APP Short Strangle rejected — required $4295.20 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,947 INFO [gate:capital] APP Short Strangle rejected — required $3720.20 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,947 INFO [gate:capital] APP Short Strangle rejected — required $3130.20 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,947 INFO [gate:capital] APP Short Strangle rejected — required $2055.20 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,947 INFO [gate:capital] APP Short Strangle rejected — required $6865.20 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,947 INFO [gate:capital] APP Short Strangle rejected — required $6145.20 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,947 INFO [gate:capital] APP Short Strangle rejected — required $5540.20 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,947 INFO [gate:capital] APP Short Strangle rejected — required $4870.20 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,958 INFO [gate:capital] APP Bear Combo rejected — required $1720.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:42,965 INFO [gate:capital] APP Diagonal Spread rejected — required $2160.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:43,007 INFO [repair] ABBV Iron Butterfly — roi gate failed; injecting 1 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,017 INFO [repair] ABBV Short Strangle — roi gate failed; injecting 1 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,027 INFO [repair] ABBV Short Straddle — roi gate failed; injecting 3 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,037 INFO [repair] ABBV Iron Butterfly — roi gate failed; injecting 1 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,047 INFO [repair] ABBV Short Strangle — roi gate failed; injecting 4 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,059 INFO [repair] ABBV Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,114 INFO [repair] XOM Iron Butterfly — roi gate failed; injecting 2 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,127 INFO [repair] XOM Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,137 INFO [repair] XOM Cash Secured Put — roi gate failed; injecting 9 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,147 INFO [repair] XOM Short Strangle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,169 INFO [repair] VRT Cash Secured Put — roi gate failed; injecting 12 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,186 INFO [repair] VRT Iron Butterfly — roi gate failed; injecting 4 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,197 INFO [repair] VRT Short Strangle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,207 INFO [repair] VRT Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,207 INFO [gate:capital] VRT Bear Combo rejected — required $2351.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:43,227 INFO [repair] VRT Cash Secured Put — roi gate failed; injecting 14 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,227 INFO [gate:capital] VRT Short Straddle rejected — required $7109.20 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:43,247 INFO [repair] VRT Short Straddle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,247 INFO [gate:capital] VRT Bear Combo rejected — required $2073.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:43,275 INFO [repair] COP Cash Secured Put — roi gate failed; injecting 12 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,294 INFO [repair] OXY Short Strangle — roi gate failed; injecting 3 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,315 INFO [repair] OXY Short Strangle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,327 INFO [repair] OXY Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,337 INFO [repair] CVX Cash Secured Put — roi gate failed; injecting 2 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,347 INFO [repair] CVX Short Strangle — roi gate failed; injecting 2 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,365 INFO [repair] CVX Cash Secured Put — roi gate failed; injecting 7 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,377 INFO [repair] FCX Short Strangle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,377 INFO [gate:capital] FCX Short Straddle rejected — required $1619.80 > buying_power $1500.00 × 100% = $1500.00
+2026-08-12 10:12:43,387 INFO [repair] FCX Short Straddle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,407 INFO [repair] FCX Cash Secured Put — roi gate failed; injecting 9 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,417 INFO [repair] FCX Short Strangle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,429 INFO [repair] FCX Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,437 INFO [repair] AMT Short Strangle — roi gate failed; injecting 1 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,447 INFO [repair] AMT Short Straddle — roi gate failed; injecting 2 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,458 INFO [repair] AMT Short Strangle — roi gate failed; injecting 1 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,466 INFO [repair] AMT Short Straddle — roi gate failed; injecting 2 variant(s) for full gate re-evaluation
+2026-08-12 10:12:43,527 INFO [filter] 2030 rejected, 172 survived — gate breakdown: {'strikes_incomplete': 341, 'expected_roi': 796, 'min_profit': 335, 'capital_feasibility': 159, 'reward_risk': 105, 'no_ev_or_pop': 77, 'iv_edge': 83, 'ml_confidence': 75, 'liquidity': 59}
+2026-08-12 10:12:43,527 INFO [filter] strikes_incomplete by structure: {'Jade Lizard': 51, 'Iron Condor': 40, 'Put Credit Spread': 36, 'Diagonal Spread': 36, 'Call Credit Spread': 31, 'Calendar Spread': 18, 'Iron Butterfly': 17, 'Put Debit Spread': 16, 'Short Straddle': 15, 'Bear Combo': 12, 'Short Strangle': 9, 'Call Debit Spread': 8, 'Risk Reversal': 8, 'Financed Long Put': 8, 'Ratio Put Backspread': 8, 'Long Strangle': 8, 'Cash Secured Put': 6, 'Financed Long Call': 6, 'Covered Call': 4, 'Ratio Call Backspread': 4}
+2026-08-12 10:13:01,167 INFO [risk] Skip NVDA — already have 4 open position(s)
+2026-08-12 10:13:07,854 INFO [risk] Skip QCOM — already have 3 open position(s)
+2026-08-12 10:13:32,357 INFO [risk] Skip WMT — already have 4 open position(s)
+2026-08-12 10:13:46,447 INFO [risk] Skip IWM — already have 3 open position(s)
+2026-08-12 10:13:46,447 INFO [risk] Skip XLE — already have 3 open position(s)
+2026-08-12 10:13:46,447 INFO [risk] Skip MRK — already have 3 open position(s)
+2026-08-12 10:13:46,447 INFO [risk] Skip TGT — already have 5 open position(s)
+2026-08-12 10:13:46,459 INFO [risk] Skip VZ — already have 2 open position(s)
+2026-08-12 10:13:46,460 INFO Ranking: composite score (XGBRanker not trained)
+2026-08-12 10:13:46,507 INFO [capital_rejected] 955 entries persisted to capital_rejected.jsonl
+2026-08-12 10:13:48,120 INFO Paper trade #1: 20260812AM_TSM_CDS_1  credit=11.875  expiry=2026-09-04
+2026-08-12 10:13:53,352 INFO Training snapshot written for paper trade 20260812AM_TSM_CDS_1
+2026-08-12 10:13:53,677 WARNING [capital] Skipping VRT Call Debit Spread — needs $1250.00 but only $160.00 buying power available.
+2026-08-12 10:13:54,027 WARNING [capital] Skipping LRCX Call Debit Spread — needs $1240.00 but only $160.00 buying power available.
+2026-08-12 10:13:54,357 WARNING [capital] Skipping PLTR Put Debit Spread — needs $585.00 but only $160.00 buying power available.
+2026-08-12 10:13:54,617 WARNING [capital] Skipping AMD Call Debit Spread — needs $1470.00 but only $160.00 buying power available.
+2026-08-12 10:13:54,949 WARNING [capital] Skipping APP Call Debit Spread — needs $1000.00 but only $160.00 buying power available.
+2026-08-12 10:13:55,267 WARNING [capital] Skipping META Call Debit Spread — needs $1225.00 but only $160.00 buying power available.
+2026-08-12 10:13:55,530 WARNING [capital] Skipping INTC Call Debit Spread — needs $457.00 but only $160.00 buying power available.
+2026-08-12 10:13:55,877 WARNING [capital] Skipping TSLA Call Debit Spread — needs $800.00 but only $160.00 buying power available.
+2026-08-12 10:13:56,167 WARNING [capital] Skipping CVX Call Debit Spread — needs $218.00 but only $160.00 buying power available.
+2026-08-12 10:13:56,457 WARNING [capital] Skipping AVGO Call Debit Spread — needs $1240.00 but only $160.00 buying power available.
+2026-08-12 10:13:56,716 WARNING [capital] Skipping CRM Call Debit Spread — needs $720.00 but only $160.00 buying power available.
+2026-08-12 10:13:57,177 WARNING [capital] Skipping QQQ Put Debit Spread — needs $854.00 but only $160.00 buying power available.
+2026-08-12 10:13:57,543 WARNING [capital] Skipping MSFT Call Debit Spread — needs $1198.00 but only $160.00 buying power available.
+2026-08-12 10:13:57,887 WARNING [capital] Skipping SPY Put Debit Spread — needs $465.00 but only $160.00 buying power available.
+2026-08-13 10:00:15,886 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-08-13 10:00:15,992 INFO ml_cache disk file is stale (331393s) — trying DuckDB
+2026-08-13 10:00:17,181 INFO ml_cache loaded from DuckDB fallback: 83 tickers
+2026-08-13 10:00:17,238 INFO [prefetch] step 1 — batch daily history for 102 tickers
+2026-08-13 10:00:52,364 ERROR $TGT: possibly delisted; no price data found  (period=1y)
+2026-08-13 10:01:04,270 ERROR 
+1 Failed download:
+2026-08-13 10:01:04,271 ERROR ['TGT']: possibly delisted; no price data found  (period=1y)
+2026-08-13 10:01:04,667 INFO [prefetch] daily history done: 101 ok, 1 fail  (47.4s)
+2026-08-13 10:01:04,668 INFO [prefetch] step 2 — batch weekly history for 101 tickers
+2026-08-13 10:01:27,642 INFO [prefetch] weekly history done: 101 ok, 0 fail  (70.4s)
+2026-08-13 10:01:27,642 INFO [prefetch] step 3+4 — expirations + chains for 101 tickers (serial)
+2026-08-13 10:03:11,595 INFO [prefetch] done in 174s — hist 101/102, weekly 101/101, exps 101/101, chains 405 (fail 0)
+2026-08-13 10:03:11,599 INFO [scan] cache ready — 708 total keys, 405 chain keys
+2026-08-13 10:03:12,719 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-13 10:03:13,007 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-13 10:03:13,445 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-13 10:03:13,457 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-13 10:03:13,885 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-13 10:03:13,885 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-13 10:03:17,030 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-13 10:03:31,427 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-13 10:03:32,041 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-13 10:03:33,358 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-13 10:03:33,871 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-13 10:03:36,545 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-13 10:03:36,937 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-13 10:04:32,179 WARNING persist_feature_snapshot failed for TXN: IOException: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9288)
+2026-08-13 10:04:32,893 WARNING persist_feature_snapshot failed for SPY: ConnectionException: Connection Error: Can't open a connection to same database file with a different configuration than existing connections
+2026-08-13 10:04:37,830 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-13 10:04:37,842 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-13 10:04:44,118 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-13 10:04:44,502 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-08-13 10:05:27,196 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-13 10:05:27,196 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-13 10:05:32,342 WARNING persist_feature_snapshot failed for MDB: ConnectionException: Connection Error: Can't open a connection to same database file with a different configuration than existing connections
+2026-08-13 10:06:07,251 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-13 10:06:07,273 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-13 10:06:44,686 WARNING persist_feature_snapshot failed for SPOT: IOException: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9288)
+2026-08-13 10:06:44,804 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-13 10:06:44,871 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-13 10:06:45,257 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-08-13 10:06:46,799 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-13 10:06:46,801 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-13 10:06:47,201 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-08-13 10:07:03,865 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-13 10:07:07,693 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-13 10:07:33,893 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-13 10:07:33,950 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-13 10:07:44,693 WARNING persist_feature_snapshot failed for LLY: ConnectionException: Connection Error: Can't open a connection to same database file with a different configuration than existing connections
+2026-08-13 10:07:45,885 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-13 10:07:45,890 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-13 10:08:17,898 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-13 10:08:17,913 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-13 10:08:53,068 WARNING analyze_ticker(ETN) failed: 'NoneType' object has no attribute 'copy'
+2026-08-13 10:08:57,628 WARNING persist_feature_snapshot failed for DE: IOException: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9288)
+2026-08-13 10:08:57,793 WARNING persist_feature_snapshot failed for MS: IOException: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9288)
+2026-08-13 10:08:58,329 WARNING persist_feature_snapshot failed for GE: IOException: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9288)
+2026-08-13 10:08:58,497 WARNING persist_feature_snapshot failed for BAC: IOException: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9288)
+2026-08-13 10:09:18,114 WARNING analyze_ticker(RTX) failed: 'NoneType' object has no attribute 'copy'
+2026-08-13 10:09:48,137 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-08-13 10:09:48,500 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-08-13 10:10:01,992 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-08-13 10:10:02,497 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-08-13 10:10:06,657 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-08-13 10:10:07,032 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-13 10:10:07,140 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-13 10:10:14,913 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-08-13 10:10:15,282 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-08-13 10:10:16,844 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-08-13 10:10:17,496 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-08-13 10:10:24,591 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-08-13 10:10:24,957 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-08-13 10:10:26,165 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-13 10:10:32,550 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-08-13 10:11:12,089 WARNING persist_feature_snapshot failed for UPS: IOException: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9288)
+2026-08-13 10:11:12,206 WARNING persist_feature_snapshot failed for FDX: IOException: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9288)
+2026-08-13 10:11:12,344 WARNING persist_feature_snapshot failed for LOW: IOException: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 9288)
+2026-08-13 10:11:25,080 INFO [gate:capital] MSFT Bear Combo rejected — required $1722.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,130 INFO [repair] AMD Cash Secured Put — roi gate failed; injecting 45 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,130 INFO [repair] AMD Call Credit Spread — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,142 INFO [gate:capital] AMD Short Strangle rejected — required $7191.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,153 INFO [repair] AMD Short Strangle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,154 INFO [gate:capital] AMD Short Straddle rejected — required $12118.50 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,164 INFO [repair] AMD Short Straddle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,166 INFO [gate:capital] AMD Call Debit Spread rejected — required $1685.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,185 INFO [repair] AMD Call Debit Spread — capital gate failed; injecting 7 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,186 INFO [gate:capital] AMD Bear Combo rejected — required $5985.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,190 INFO [gate:capital] AMD Short Strangle rejected — required $6603.50 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,191 INFO [gate:capital] AMD Short Strangle rejected — required $5996.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,191 INFO [gate:capital] AMD Short Strangle rejected — required $5416.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,192 INFO [gate:capital] AMD Short Strangle rejected — required $4838.50 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,194 INFO [gate:capital] AMD Short Strangle rejected — required $4281.50 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,221 INFO [gate:capital] AMD Short Straddle rejected — required $11576.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,237 INFO [repair] AMD Short Straddle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,241 INFO [gate:capital] AMD Bear Combo rejected — required $2640.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,288 INFO [gate:capital] TSM Call Debit Spread rejected — required $1610.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,298 INFO [repair] TSM Call Debit Spread — capital gate failed; injecting 6 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,323 INFO [repair] QCOM Cash Secured Put — roi gate failed; injecting 6 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,333 INFO [repair] QCOM Short Strangle — roi gate failed; injecting 4 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,333 INFO [gate:capital] QCOM Short Straddle rejected — required $3887.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,343 INFO [repair] QCOM Short Straddle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,360 INFO [repair] QCOM Iron Butterfly — roi gate failed; injecting 2 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,363 INFO [repair] QCOM Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,375 INFO [gate:capital] INTC Short Strangle rejected — required $1571.80 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,375 INFO [repair] INTC Short Strangle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,387 INFO [repair] INTC Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,411 INFO [gate:capital] INTC Short Strangle rejected — required $2108.30 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,411 INFO [gate:capital] INTC Short Strangle rejected — required $1998.30 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,441 INFO [repair] INTC Iron Butterfly — roi gate failed; injecting 7 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,452 INFO [repair] INTC Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,457 INFO [gate:capital] INTC Short Strangle rejected — required $1875.30 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,484 INFO [repair] KLAC Iron Butterfly — roi gate failed; injecting 7 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,500 INFO [repair] KLAC Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,501 INFO [gate:capital] KLAC Bear Combo rejected — required $1870.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,501 INFO [gate:capital] MU Short Strangle rejected — required $13614.50 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,518 INFO [repair] MU Short Strangle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,534 INFO [repair] MU Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,534 INFO [gate:capital] MU Call Debit Spread rejected — required $3325.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,559 INFO [repair] MU Call Debit Spread — capital gate failed; injecting 16 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,560 INFO [gate:capital] MU Bear Combo rejected — required $9685.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,564 INFO [gate:capital] MU Short Strangle rejected — required $12984.50 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,565 INFO [gate:capital] MU Short Strangle rejected — required $12357.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,566 INFO [gate:capital] MU Short Strangle rejected — required $11792.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,568 INFO [gate:capital] MU Short Strangle rejected — required $11184.50 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,568 INFO [gate:capital] MU Short Strangle rejected — required $10597.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,568 INFO [gate:capital] MU Short Strangle rejected — required $20279.50 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,568 INFO [gate:capital] MU Call Debit Spread rejected — required $2950.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,568 INFO [gate:capital] MU Call Debit Spread rejected — required $2685.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,568 INFO [gate:capital] MU Call Debit Spread rejected — required $2450.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,568 INFO [gate:capital] MU Call Debit Spread rejected — required $2490.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,568 INFO [gate:capital] MU Call Debit Spread rejected — required $2110.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,568 INFO [gate:capital] MU Call Debit Spread rejected — required $1895.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,568 INFO [gate:capital] MU Call Debit Spread rejected — required $1750.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,601 INFO [gate:capital] MU Short Strangle rejected — required $14657.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,618 INFO [repair] MU Short Strangle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,634 INFO [repair] MU Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,635 INFO [gate:capital] MU Call Debit Spread rejected — required $2375.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,655 INFO [repair] MU Call Debit Spread — capital gate failed; injecting 14 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,656 INFO [gate:capital] MU Bear Combo rejected — required $6725.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,662 INFO [gate:capital] MU Short Strangle rejected — required $14074.50 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,663 INFO [gate:capital] MU Short Strangle rejected — required $13474.50 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,664 INFO [gate:capital] MU Short Strangle rejected — required $12787.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,664 INFO [gate:capital] MU Short Strangle rejected — required $12189.50 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,665 INFO [gate:capital] MU Short Strangle rejected — required $11584.50 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,666 INFO [gate:capital] MU Short Strangle rejected — required $18544.50 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,667 INFO [gate:capital] MU Call Debit Spread rejected — required $2220.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,668 INFO [gate:capital] MU Call Debit Spread rejected — required $1880.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,668 INFO [gate:capital] MU Call Debit Spread rejected — required $1670.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,711 INFO [repair] LRCX Cash Secured Put — roi gate failed; injecting 20 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,725 INFO [repair] LRCX Iron Butterfly — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,737 INFO [repair] LRCX Short Strangle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,749 INFO [repair] LRCX Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,749 INFO [gate:capital] LRCX Bear Combo rejected — required $3274.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,749 INFO [gate:capital] LRCX Short Strangle rejected — required $4174.20 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,761 INFO [gate:capital] LRCX Short Strangle rejected — required $3556.70 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,761 INFO [gate:capital] LRCX Short Strangle rejected — required $2961.70 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,761 INFO [gate:capital] LRCX Short Strangle rejected — required $2431.70 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,761 INFO [gate:capital] LRCX Short Strangle rejected — required $1869.70 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,785 INFO [repair] LRCX Cash Secured Put — roi gate failed; injecting 19 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,785 INFO [repair] LRCX Short Strangle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,785 INFO [gate:capital] LRCX Short Straddle rejected — required $7897.70 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,807 INFO [repair] LRCX Short Straddle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,809 INFO [gate:capital] LRCX Bear Combo rejected — required $1838.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,813 INFO [gate:capital] ASML Call Debit Spread rejected — required $7840.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,850 INFO [repair] ASML Call Debit Spread — capital gate failed; injecting 31 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,850 INFO [gate:capital] ASML Call Debit Spread rejected — required $7600.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,850 INFO [gate:capital] ASML Call Debit Spread rejected — required $7640.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,868 INFO [gate:capital] ASML Call Debit Spread rejected — required $7100.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,872 INFO [gate:capital] ASML Call Debit Spread rejected — required $6550.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,874 INFO [gate:capital] ASML Call Debit Spread rejected — required $6570.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,879 INFO [gate:capital] ASML Call Debit Spread rejected — required $6240.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,882 INFO [gate:capital] ASML Call Debit Spread rejected — required $5760.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,882 INFO [gate:capital] ASML Call Debit Spread rejected — required $5720.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,883 INFO [gate:capital] ASML Call Debit Spread rejected — required $5660.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,885 INFO [gate:capital] ASML Call Debit Spread rejected — required $4780.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,885 INFO [gate:capital] ASML Call Debit Spread rejected — required $4760.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,885 INFO [gate:capital] ASML Call Debit Spread rejected — required $4500.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,885 INFO [gate:capital] ASML Call Debit Spread rejected — required $4190.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,885 INFO [gate:capital] ASML Call Debit Spread rejected — required $4280.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,885 INFO [gate:capital] ASML Call Debit Spread rejected — required $3540.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,885 INFO [gate:capital] ASML Call Debit Spread rejected — required $3660.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,885 INFO [gate:capital] ASML Call Debit Spread rejected — required $3090.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,885 INFO [gate:capital] ASML Call Debit Spread rejected — required $3570.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,899 INFO [repair] ASML Call Debit Spread — capital gate failed; injecting 10 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,899 INFO [gate:capital] ASML Call Debit Spread rejected — required $3120.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,899 INFO [gate:capital] ASML Call Debit Spread rejected — required $3160.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,899 INFO [gate:capital] ASML Call Debit Spread rejected — required $2480.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,899 INFO [gate:capital] ASML Call Debit Spread rejected — required $1970.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,899 INFO [gate:capital] ASML Call Debit Spread rejected — required $1620.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,916 INFO [gate:capital] SNOW Short Strangle rejected — required $4148.30 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,919 INFO [repair] SNOW Short Strangle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,919 INFO [gate:capital] SNOW Call Debit Spread rejected — required $2105.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,938 INFO [repair] SNOW Call Debit Spread — capital gate failed; injecting 9 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,938 INFO [gate:capital] SNOW Bear Combo rejected — required $4900.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,947 INFO [gate:capital] SNOW Diagonal Spread rejected — required $1690.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,948 INFO [gate:capital] SNOW Short Strangle rejected — required $3530.80 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,948 INFO [gate:capital] SNOW Short Strangle rejected — required $2890.80 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,950 INFO [gate:capital] SNOW Short Strangle rejected — required $2288.30 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,950 INFO [gate:capital] SNOW Short Strangle rejected — required $1718.30 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,950 INFO [gate:capital] SNOW Call Debit Spread rejected — required $1905.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,950 INFO [gate:capital] SNOW Call Debit Spread rejected — required $1550.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:25,989 INFO [repair] SNOW Cash Secured Put — roi gate failed; injecting 12 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,996 INFO [repair] SNOW Short Strangle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:25,996 INFO [gate:capital] SNOW Short Straddle rejected — required $7652.30 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,008 INFO [repair] SNOW Short Straddle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,008 INFO [gate:capital] SNOW Bear Combo rejected — required $2067.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,038 INFO [repair] MDB Cash Secured Put — roi gate failed; injecting 17 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,050 INFO [repair] MDB Cash Secured Put — roi gate failed; injecting 9 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,055 INFO [repair] MDB Short Strangle — roi gate failed; injecting 4 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,091 INFO [repair] PLTR Cash Secured Put — roi gate failed; injecting 49 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,115 INFO [repair] PLTR Iron Butterfly — roi gate failed; injecting 3 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,115 INFO [gate:capital] PLTR Short Strangle rejected — required $2622.80 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,127 INFO [repair] PLTR Short Strangle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,138 INFO [repair] PLTR Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,138 INFO [gate:capital] PLTR Short Strangle rejected — required $2909.30 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,179 INFO [repair] PLTR Cash Secured Put — roi gate failed; injecting 43 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,201 INFO [repair] PLTR Iron Butterfly — roi gate failed; injecting 3 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,210 INFO [repair] PLTR Short Strangle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,221 INFO [repair] PLTR Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,228 INFO [gate:capital] NET Short Strangle rejected — required $4760.20 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,230 INFO [repair] NET Short Strangle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,238 INFO [gate:capital] NET Diagonal Spread rejected — required $1860.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,250 INFO [repair] NET Cash Secured Put — roi gate failed; injecting 23 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,271 INFO [repair] NET Iron Butterfly — roi gate failed; injecting 3 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,287 INFO [repair] NET Short Strangle — roi gate failed; injecting 4 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,307 INFO [repair] NET Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,308 INFO [gate:capital] NET Bear Combo rejected — required $2471.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,352 INFO [repair] ORCL Cash Secured Put — roi gate failed; injecting 31 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,387 INFO [repair] ORCL Iron Butterfly — roi gate failed; injecting 4 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,387 INFO [gate:capital] ORCL Short Strangle rejected — required $2195.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,404 INFO [repair] ORCL Short Strangle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,420 INFO [repair] ORCL Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,434 INFO [gate:capital] ORCL Short Strangle rejected — required $2049.50 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,434 INFO [gate:capital] ORCL Short Strangle rejected — required $1891.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,434 INFO [gate:capital] ORCL Short Strangle rejected — required $1761.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,434 INFO [gate:capital] ORCL Short Strangle rejected — required $1633.50 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,438 INFO [gate:capital] ORCL Short Strangle rejected — required $1520.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,438 INFO [gate:capital] ORCL Short Strangle rejected — required $2811.50 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,438 INFO [gate:capital] ORCL Short Strangle rejected — required $2656.50 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,438 INFO [gate:capital] ORCL Short Strangle rejected — required $2507.50 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,464 INFO [repair] TEAM Cash Secured Put — roi gate failed; injecting 3 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,516 INFO [repair] NOW Cash Secured Put — roi gate failed; injecting 17 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,537 INFO [repair] NOW Iron Butterfly — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,538 INFO [gate:capital] NOW Short Strangle rejected — required $1977.20 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,551 INFO [repair] NOW Short Strangle — capital gate failed; injecting 4 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,572 INFO [repair] NOW Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,581 INFO [gate:capital] NOW Short Strangle rejected — required $1820.70 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,581 INFO [gate:capital] NOW Short Strangle rejected — required $1682.70 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,581 INFO [gate:capital] NOW Short Strangle rejected — required $1561.70 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,581 INFO [gate:capital] NOW Short Strangle rejected — required $2211.20 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,581 INFO [gate:capital] NOW Short Straddle rejected — required $2863.20 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,596 INFO [repair] NOW Short Straddle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,612 INFO [gate:capital] META Diagonal Spread rejected — required $2520.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,659 INFO [repair] RGTI Iron Butterfly — roi gate failed; injecting 3 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,676 INFO [repair] RGTI Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,711 INFO [repair] RGTI Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,796 INFO [repair] APP Cash Secured Put — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,796 INFO [gate:capital] APP Short Strangle rejected — required $4912.60 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,810 INFO [repair] APP Short Strangle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,810 INFO [gate:capital] APP Short Straddle rejected — required $7575.60 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,824 INFO [repair] APP Short Straddle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,831 INFO [gate:capital] APP Diagonal Spread rejected — required $2420.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,832 INFO [gate:capital] APP Short Strangle rejected — required $4282.60 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,833 INFO [gate:capital] APP Short Strangle rejected — required $3692.60 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,833 INFO [gate:capital] APP Short Strangle rejected — required $3140.10 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,834 INFO [gate:capital] APP Short Strangle rejected — required $2062.60 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,834 INFO [gate:capital] APP Short Strangle rejected — required $1515.10 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,835 INFO [gate:capital] APP Short Strangle rejected — required $6272.60 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,836 INFO [gate:capital] APP Short Strangle rejected — required $5622.60 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,836 INFO [gate:capital] APP Short Strangle rejected — required $4967.60 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,837 INFO [gate:capital] APP Short Strangle rejected — required $4332.60 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,840 INFO [gate:capital] APP Bear Combo rejected — required $2045.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,844 INFO [gate:capital] APP Diagonal Spread rejected — required $2230.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,870 INFO [gate:capital] LLY Call Debit Spread rejected — required $4275.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,894 INFO [repair] LLY Call Debit Spread — capital gate failed; injecting 19 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,894 INFO [gate:capital] LLY Diagonal Spread rejected — required $5100.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,894 INFO [gate:capital] LLY Call Debit Spread rejected — required $3600.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,894 INFO [gate:capital] LLY Call Debit Spread rejected — required $3400.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,894 INFO [gate:capital] LLY Call Debit Spread rejected — required $3300.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,906 INFO [gate:capital] LLY Call Debit Spread rejected — required $2900.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,908 INFO [gate:capital] LLY Call Debit Spread rejected — required $2700.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,908 INFO [gate:capital] LLY Call Debit Spread rejected — required $2400.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,912 INFO [gate:capital] LLY Call Debit Spread rejected — required $2300.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,912 INFO [gate:capital] LLY Call Debit Spread rejected — required $2100.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,913 INFO [gate:capital] LLY Call Debit Spread rejected — required $1900.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,914 INFO [gate:capital] LLY Call Debit Spread rejected — required $1700.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,915 INFO [gate:capital] LLY Call Debit Spread rejected — required $1600.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:26,952 INFO [repair] ABBV Short Straddle — roi gate failed; injecting 2 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,964 INFO [repair] ABBV Short Strangle — roi gate failed; injecting 4 variant(s) for full gate re-evaluation
+2026-08-13 10:11:26,974 INFO [repair] ABBV Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:27,014 INFO [repair] XOM Cash Secured Put — roi gate failed; injecting 9 variant(s) for full gate re-evaluation
+2026-08-13 10:11:27,024 INFO [repair] XOM Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:27,042 INFO [repair] XOM Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:27,055 INFO [repair] COP Short Strangle — roi gate failed; injecting 4 variant(s) for full gate re-evaluation
+2026-08-13 10:11:27,070 INFO [repair] COP Short Strangle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:27,083 INFO [repair] COP Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:27,103 INFO [repair] VRT Cash Secured Put — roi gate failed; injecting 10 variant(s) for full gate re-evaluation
+2026-08-13 10:11:27,121 INFO [repair] VRT Iron Butterfly — roi gate failed; injecting 4 variant(s) for full gate re-evaluation
+2026-08-13 10:11:27,121 INFO [gate:capital] VRT Short Strangle rejected — required $4410.50 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:27,132 INFO [repair] VRT Short Strangle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:27,143 INFO [repair] VRT Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:27,144 INFO [gate:capital] VRT Bear Combo rejected — required $2460.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:27,149 INFO [gate:capital] VRT Short Strangle rejected — required $3790.50 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:27,149 INFO [gate:capital] VRT Short Strangle rejected — required $3195.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:27,150 INFO [gate:capital] VRT Short Strangle rejected — required $2629.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:27,152 INFO [gate:capital] VRT Short Strangle rejected — required $2081.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:27,153 INFO [gate:capital] VRT Short Strangle rejected — required $1526.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:27,154 INFO [gate:capital] VRT Short Strangle rejected — required $5053.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:27,156 INFO [gate:capital] VRT Short Strangle rejected — required $4410.50 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:27,156 INFO [gate:capital] VRT Short Strangle rejected — required $3790.50 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:27,172 INFO [repair] VRT Cash Secured Put — roi gate failed; injecting 14 variant(s) for full gate re-evaluation
+2026-08-13 10:11:27,176 INFO [gate:capital] VRT Short Straddle rejected — required $6808.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:27,190 INFO [repair] VRT Short Straddle — capital gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:27,190 INFO [gate:capital] VRT Bear Combo rejected — required $1978.00 > buying_power $1500.00 × 100% = $1500.00
+2026-08-13 10:11:27,201 INFO [repair] CVX Cash Secured Put — roi gate failed; injecting 2 variant(s) for full gate re-evaluation
+2026-08-13 10:11:27,213 INFO [repair] CVX Short Straddle — roi gate failed; injecting 3 variant(s) for full gate re-evaluation
+2026-08-13 10:11:27,225 INFO [repair] CVX Cash Secured Put — roi gate failed; injecting 6 variant(s) for full gate re-evaluation
+2026-08-13 10:11:27,231 INFO [repair] CVX Call Credit Spread — roi gate failed; injecting 1 variant(s) for full gate re-evaluation
+2026-08-13 10:11:27,237 INFO [repair] CVX Iron Butterfly — roi gate failed; injecting 1 variant(s) for full gate re-evaluation
+2026-08-13 10:11:27,248 INFO [repair] CVX Short Strangle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:27,258 INFO [repair] CVX Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:27,272 INFO [repair] OXY Iron Butterfly — roi gate failed; injecting 2 variant(s) for full gate re-evaluation
+2026-08-13 10:11:27,278 INFO [repair] OXY Short Strangle — roi gate failed; injecting 1 variant(s) for full gate re-evaluation
+2026-08-13 10:11:27,287 INFO [repair] OXY Short Straddle — roi gate failed; injecting 4 variant(s) for full gate re-evaluation
+2026-08-13 10:11:27,296 INFO [repair] OXY Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:27,308 INFO [repair] FCX Short Strangle — roi gate failed; injecting 4 variant(s) for full gate re-evaluation
+2026-08-13 10:11:27,320 INFO [repair] FCX Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:27,340 INFO [repair] FCX Short Straddle — roi gate failed; injecting 5 variant(s) for full gate re-evaluation
+2026-08-13 10:11:27,352 INFO [repair] AMT Cash Secured Put — roi gate failed; injecting 2 variant(s) for full gate re-evaluation
+2026-08-13 10:11:27,352 INFO [repair] AMT Cash Secured Put — roi gate failed; injecting 2 variant(s) for full gate re-evaluation
+2026-08-13 10:11:27,440 INFO [filter] 2017 rejected, 163 survived — gate breakdown: {'liquidity': 57, 'capital_feasibility': 151, 'expected_roi': 755, 'iv_edge': 110, 'reward_risk': 107, 'strikes_incomplete': 333, 'min_profit': 340, 'no_ev_or_pop': 79, 'ml_confidence': 85}
+2026-08-13 10:11:27,440 INFO [filter] strikes_incomplete by structure: {'Jade Lizard': 51, 'Iron Condor': 40, 'Call Credit Spread': 37, 'Put Credit Spread': 33, 'Diagonal Spread': 32, 'Iron Butterfly': 17, 'Put Debit Spread': 15, 'Short Straddle': 14, 'Calendar Spread': 11, 'Risk Reversal': 10, 'Bear Combo': 10, 'Long Strangle': 10, 'Short Strangle': 9, 'Ratio Put Backspread': 9, 'Financed Long Call': 7, 'Covered Call': 6, 'Call Debit Spread': 6, 'Financed Long Put': 6, 'Cash Secured Put': 5, 'Ratio Call Backspread': 5}
+2026-08-13 10:11:41,241 INFO [risk] Skip NVDA — already have 4 open position(s)
+2026-08-13 10:11:45,457 INFO [risk] Skip QCOM — already have 3 open position(s)
+2026-08-13 10:12:09,785 INFO [risk] Skip NKE — already have 2 open position(s)
+2026-08-13 10:12:09,785 INFO [risk] Skip WMT — already have 4 open position(s)
+2026-08-13 10:12:27,484 INFO [risk] Skip IWM — already have 3 open position(s)
+2026-08-13 10:12:28,978 INFO Ranking: composite score (XGBRanker not trained)
+2026-08-13 10:12:29,054 INFO [capital_rejected] 906 entries persisted to capital_rejected.jsonl
+2026-08-13 10:12:30,402 INFO Paper trade #1: 20260813AM_SPY_CDS_1  credit=2.860  expiry=2026-08-21
+2026-08-13 10:12:34,242 INFO Training snapshot written for paper trade 20260813AM_SPY_CDS_1
+2026-08-13 10:12:34,726 INFO Paper trade #2: 20260813AM_META_CDS_2  credit=11.625  expiry=2026-08-28
+2026-08-13 10:12:37,624 INFO Training snapshot written for paper trade 20260813AM_META_CDS_2
+2026-08-13 10:12:37,959 INFO Paper trade #3: 20260813AM_APP_COV_3  credit=4.050  expiry=2026-08-28
+2026-08-13 10:12:41,834 INFO Training snapshot written for paper trade 20260813AM_APP_COV_3
+2026-08-13 10:22:55,082 INFO [scan_morning] scan snapshots: 194 saved, 6 skipped (opened), 0 errors
+2026-08-13 10:22:55,091 INFO Scan snapshots: 194 saved, 6 skipped
