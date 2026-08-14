@@ -1190,6 +1190,16 @@ def api_paper_trades_summary():
         return jsonify({"ok": False, "error": str(e)}), 500
 
 
+@app.route("/api/paper-trades/range-analysis")
+def api_paper_trades_range_analysis():
+    try:
+        from scripts.strike_range_analysis import compute_range_analysis
+        result = compute_range_analysis()
+        return jsonify({"ok": True, **result})
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+
 @app.route("/api/paper-trades/capital-rejected")
 def api_capital_rejected():
     try:

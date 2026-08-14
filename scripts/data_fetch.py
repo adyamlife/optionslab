@@ -1607,17 +1607,26 @@ def get_atr_pct(hist, spot, period=14):
 
 def get_iv_rank_52w(ticker_str, atm_iv):
     """
-    True 52-week IV rank: what percentile is today's ATM IV vs the past 252
-    trading days of realized volatility (HV20 rolling series)?
+    52-week IV percentile: what % of the past year's daily ATM IV readings are
+    below today's ATM IV.  Higher = IV currently elevated vs its own history.
 
-    Unlike iv_rank_proxy (which uses a 30-day window and IV/HV ratio), this
-    uses the full year of daily HV readings as a proxy for the IV distribution
-    — the best approximation available without a paid IV history feed.
+    Primary: queries training_snapshots in DuckDB for up to 252 days of stored
+    ATM IV — true IV vs IV comparison (no HV proxy distortion).
+    Fallback: ranks today's ATM IV against the rolling HV20 series from price
+    history when DuckDB has fewer than 60 rows for this ticker.
 
-    Returns float 0–100 (e.g. 78.5 = ATM IV is above 78.5% of the past year's
-    HV readings, meaning IV is currently elevated vs historical norms).
-    Returns None on failure.
+    Returns float 0–100, or None on failure.
     """
+    if atm_iv is None:
+        return None
+    try:
+        from scripts.db import get_iv_percentile_52w
+        db_rank = get_iv_percentile_52w(ticker_str, atm_iv)
+        if db_rank is not None:
+            return db_rank
+    except Exception:
+        pass
+    # HV-proxy fallback
     try:
         hist = get_price_history(ticker_str, period="1y")
         if hist.empty or len(hist) < 60:

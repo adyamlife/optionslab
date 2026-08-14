@@ -43,6 +43,12 @@ class TechnicalContext:
     iv_hv_ratio:          float | None = None   # ATM IV / 20-day HV; >1 = IV rich, <1 = IV cheap
     expected_move_pct:    float | None = None   # (ATM call mid + ATM put mid) / spot; market-implied ±1σ move
     term_slope:           float | None = None   # (front_iv - back_iv); positive = backwardation
+    # Macro / vol-regime signals
+    vvix:                 float | None = None   # VIX-of-VIX (vol-of-vol gauge)
+    vix_term_slope:       float | None = None   # VIX term structure slope
+    fed_within_dte:       int   | None = None   # 1 if FOMC meeting falls within trade DTE, else 0
+    cpi_within_dte:       int   | None = None   # 1 if CPI release falls within trade DTE, else 0
+    hy_oas:               float | None = None   # HY credit OAS spread (bps)
 
     @classmethod
     def from_row(cls, row: Mapping[str, Any]) -> "TechnicalContext":
@@ -68,6 +74,11 @@ class TechnicalContext:
             iv_hv_ratio           = row.get("iv_hv_ratio"),
             expected_move_pct     = row.get("expected_move_pct"),
             term_slope            = row.get("term_slope"),
+            vvix                  = row.get("vvix"),
+            vix_term_slope        = row.get("vix_term_slope"),
+            fed_within_dte        = row.get("fed_within_dte"),
+            cpi_within_dte        = row.get("cpi_within_dte"),
+            hy_oas                = row.get("hy_oas"),
         )
 
 

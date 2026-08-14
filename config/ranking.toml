@@ -84,7 +84,7 @@ weight = 8.0
 # Minimum number of closed trades in a score bucket before the calibration
 # multiplier is applied. Below this count the multiplier is 1.0 (neutral).
 # Raise to 10-20 once enough trade history exists.
-min_bucket_n = 5
+min_bucket_n = 15
 
 [portfolio_risk]
 max_ticker_trades   = 2    # max open positions per ticker (1 AM + 1 PM at most)

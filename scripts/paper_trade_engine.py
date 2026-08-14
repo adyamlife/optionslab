@@ -424,6 +424,16 @@ def _current_mark(trade):
             if not put_leg or not call_leg: return None
             return max(0.0, round(put_leg["mid"] + call_leg["mid"], 4))
 
+        if trade["structure"] in ("Calendar Spread", "Diagonal Spread"):
+            # Both legs use calls; fetch against stored (front) expiry as a best-effort
+            # approximation. Far-month leg is underpriced this way, so the mark is a
+            # lower bound — acceptable for stop-loss/target monitoring.
+            opt = "call"
+            sh  = _fetch_leg(ticker, expiry, strikes.get("short"), opt)
+            lo  = _fetch_leg(ticker, expiry, strikes.get("long"),  opt)
+            if not sh or not lo: return None
+            return max(0.0, round(lo["mid"] - sh["mid"], 4))
+
     except Exception as e:
         log.warning(f"_current_mark failed for {ticker}: {e}")
     return None
@@ -638,6 +648,15 @@ def _select_top3(rows, ml_snapshot: dict | None = None, open_positions: list | N
             "iv_edge_label":    item["iv_edge_label"],
             "pred_dist":        pred_dist,
             "kelly":            kelly,
+            # Entry analytics — zero-cost to capture (already computed in analyze.py)
+            "pop":              c.get("pop"),
+            "net_delta":        c.get("net_delta"),
+            "net_theta":        c.get("net_theta"),
+            "net_gamma":        c.get("net_gamma"),
+            "net_vega":         c.get("net_vega"),
+            "breakeven":        c.get("breakeven"),
+            "hv30":             row.get("hv30"),
+            "iv_rank_52w":      row.get("iv_rank_52w"),
         })
     return result, _cap_rejected_out
 
@@ -970,8 +989,8 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
             "spot_at_entry":c["spot_at_entry"],
             "signal_rating":c["signal_rating"],
             "signal_score": c["signal_score"],
-            "profit_target":round(ec * _s["profit_target_pct"], 4),
-            "stop_loss":    round(ec * _s["stop_loss_mult"], 4),
+            "profit_target":round((width - ec if _debit_live else ec) * _s["profit_target_pct"], 4),
+            "stop_loss":    round(ec if _debit_live else ec * _s["stop_loss_mult"], 4),
             "status":       "open",
             "snapshots":    [],
             "exit":         None,
@@ -992,6 +1011,15 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
             "position_size_factor":    c.get("position_size_factor"),
             "suggested_allocation_pct": c.get("suggested_allocation_pct"),
             "ml_scores_at_entry":      _ml_scores_at_entry(c, _ml_snapshot),
+            # Entry analytics — captured for post-hoc win-rate-by-pop and Greek-drift analysis
+            "pop_at_entry":            c.get("pop"),
+            "net_delta_at_entry":      c.get("net_delta"),
+            "net_theta_at_entry":      c.get("net_theta"),
+            "net_gamma_at_entry":      c.get("net_gamma"),
+            "net_vega_at_entry":       c.get("net_vega"),
+            "breakeven_at_entry":      c.get("breakeven"),
+            "hv30_at_entry":           c.get("hv30"),
+            "iv_rank_at_entry":        c.get("iv_rank_52w"),
             # Full optimizer candidate preserved for auditability and ML feature recovery.
             # selected_candidate ⊇ rejected_candidate at the candidate JSON level.
             "optimizer_candidate":     c,
@@ -1101,7 +1129,11 @@ def run_evening_check(force=False):
                          - date.fromisoformat(trade["entered_at"][:10])).days
             except Exception:
                 _days = None
-            _pnl_pct = round(pnl_ps / ec * 100, 1) if ec else None
+            _max_profit_exp = (ec if trade.get("structure") == "Long Strangle"
+                               else (trade.get("width", 0) - ec) if trade.get("structure") in
+                               ("Call Debit Spread", "Put Debit Spread", "Calendar Spread", "Diagonal Spread")
+                               else ec)
+            _pnl_pct = round(pnl_ps / _max_profit_exp * 100, 1) if _max_profit_exp else None
             trade["exit"] = {
                 "ts":             now.isoformat(),
                 "reason":         "expired",

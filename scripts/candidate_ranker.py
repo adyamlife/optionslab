@@ -478,8 +478,14 @@ def _composite_score(row, c, ev, ev_is_proxy: bool = False) -> float:
     exp_vol         = ml.get("expected_vol")
     if p_return_gt10   is not None and float(p_return_gt10)  < 0.35:
         score -= p_screen
-    if p_iv_expanding  is not None and float(p_iv_expanding) < 0.30:
-        score -= p_screen
+    _net_vega = c.get("net_vega") or 0
+    if p_iv_expanding is not None:
+        _piv = float(p_iv_expanding)
+        # Long-vega structures benefit from IV expansion; short-vega from contraction.
+        if _net_vega >= 0 and _piv < 0.30:   # long-vol: penalise low IV-expansion prob
+            score -= p_screen
+        elif _net_vega < 0 and _piv > 0.70:  # short-vol: penalise high IV-expansion prob
+            score -= p_screen
     if p_direction_up  is not None and float(p_direction_up) < 0.45:
         score -= p_screen
     if exp_vol is not None and float(exp_vol) < 0.12:   # below ~12% annualised vol → thin edge
@@ -602,7 +608,7 @@ def filter_candidates(rows, paper_trade: bool = False, buying_power: float | Non
     ready for composite scoring.
     """
     min_conf     = _g("gate", "min_confidence",         0.70)
-    min_rvol     = _g("gate", "min_rel_volume",         0.40)
+    min_rvol     = _g("gate", "min_rel_volume",         0.02)
     conv_meta    = _g("gate", "ml_conviction_meta",    10)
     conv_conf    = _g("gate", "ml_conviction_conf",     0.80)
     exp_move_thr = _g("gate", "expected_move_threshold", 0.12)
@@ -1347,10 +1353,10 @@ def rank_candidates(rows, n=3, score_fn=None, quality_floor=None, open_positions
     _use_split = len(_mc_idx) >= _MIN_GROUP and len(_prx_idx) >= _MIN_GROUP
 
     def _evroc(item):
-        """EV / capital_required (EVROC). Falls back to raw ev when cap is None."""
+        """EV / capital_required (EVROC). ev is $/share; cap is $/contract → divide by cap/100."""
         ev  = item["ev"]
         cap = item["candidate"].get("capital_required")
-        return ev / cap if cap else ev
+        return ev / (cap / 100.0) if cap else ev
 
     def _pct_rank_group(indices):
         """Return {orig_idx: pct_rank} ranked by EVROC within the group."""

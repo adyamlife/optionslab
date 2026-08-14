@@ -173,5 +173,10 @@
     "actual_return_pct": -245.68,
     "outcome": "loss",
     "closed_at": "2026-08-10T21:00:54.128904+00:00"
+  },
+  "20260730AM_NFLX_CDS_3": {
+    "actual_return_pct": 111.5,
+    "outcome": "win",
+    "closed_at": "2026-08-13T21:00:20.825313+00:00"
   }
 }

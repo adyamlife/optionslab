@@ -1060,7 +1060,7 @@ def pop_ev_debit(long_delta, debit, width):
 
 
 def pop_ev_iron_condor(put_short_delta, call_short_delta, total_credit, width):
-    pop = max(0.0, min(1.0, 1 - (abs(put_short_delta) + abs(call_short_delta))))
+    pop = max(0.0, min(1.0, (1 - abs(put_short_delta)) * (1 - abs(call_short_delta))))
     max_loss = width - total_credit
     ev = pop * total_credit - (1 - pop) * max_loss
     return round(pop * 100, 1), round(ev, 3)
@@ -1146,6 +1146,12 @@ def compute_signal_alignment(
         "term_slope":            technical.term_slope,
         "vol_pcr":               flow.vol_pcr,
         "pcr_diverge":           flow.pcr_diverge,
+        # ── Macro / vol-of-vol signals (fetched each scan, now wired into scoring) ──
+        "vvix":                  technical.vvix,
+        "vix_term_slope":        technical.vix_term_slope,
+        "fed_within_dte":        technical.fed_within_dte,
+        "cpi_within_dte":        technical.cpi_within_dte,
+        "hy_oas":                technical.hy_oas,
     }
 
     # Apply data-quality mask: null out stale fields before any evaluator runs.
@@ -1223,28 +1229,28 @@ def compute_signal_alignment(
         theoretical_max += eff_wt   # always accumulate — denominator for coverage_ratio
         n_possible      += 1
 
-        result = _sig_eval(sig_name, preference, market)
-        if result.score is None:
+        _ev = _sig_eval(sig_name, preference, market)
+        if _ev.score is None:
             missing_signals.append(sig_name)
             if is_required:
                 required_missing.append(sig_name)
             continue   # market field absent; exclude from effective_max
 
-        contribution = eff_wt * result.score * result.confidence
+        contribution = eff_wt * _ev.score * _ev.confidence
         score         += contribution
         effective_max += eff_wt
 
-        if contribution != 0 and result.explanation:
+        if contribution != 0 and _ev.explanation:
             contributions.append({
                 "factor":       _FACTOR_MAP.get(sig_name, "Technical"),
                 "subfactor":    _LABEL_MAP.get(sig_name, sig_name),
                 "weight":       round(eff_wt, 4),
                 "contribution": round(contribution, 4),
                 "direction":    "positive" if contribution > 0 else "negative",
-                "explanation":  result.explanation,
-                "confidence":   result.confidence,
+                "explanation":  _ev.explanation,
+                "confidence":   _ev.confidence,
             })
-            notes.append(result.explanation)
+            notes.append(_ev.explanation)
 
     pct    = round(score / effective_max, 4) if effective_max > 0 else 0.0
     rating = sc.score_to_rating(pct)
@@ -2008,6 +2014,11 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
         iv_hv_ratio           = result.get("iv_hv_ratio"),
         expected_move_pct     = result.get("expected_move_pct"),
         term_slope            = result.get("term_slope"),
+        vvix                  = result.get("vvix"),
+        vix_term_slope        = result.get("vix_term_slope"),
+        fed_within_dte        = result.get("fed_within_dte"),
+        cpi_within_dte        = result.get("cpi_within_dte"),
+        hy_oas                = result.get("hy_oas"),
     )
     _flow = FlowContext(
         news_sentiment  = news["sentiment"],
@@ -2643,7 +2654,7 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
         total_credit_jl = put_credit_jl + credit_call
         no_upside_risk = total_credit_jl >= width_call
         downside_breakeven = short_put_jl["strike"] - total_credit_jl
-        pop = max(0.0, min(1.0, 1 - (abs(short_put_jl["delta"]) + abs(short_call["delta"])))) * 100
+        pop = max(0.0, min(1.0, (1 - abs(short_put_jl["delta"])) * (1 - abs(short_call["delta"])))) * 100
         meets_profit, profit_msg = profit_note(total_credit_jl, min_profit_amount)
         # Reg-T style margin estimate for the naked short put (the undefined-risk leg):
         # max(20% of underlying - OTM amount, 10% of strike) per share, x100 shares/contract.

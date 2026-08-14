@@ -16437,3 +16437,282 @@ _duckdb.IOException: IO Error: Cannot open file "C:\Project Y\data\ml_training.d
 2026-08-13 14:20:12 INFO     werkzeug: 127.0.0.1 - - [13/Aug/2026 14:20:12] "[36mGET /static/css/login.css?v=1786644341 HTTP/1.1[0m" 304 -
 2026-08-13 14:20:12 INFO     werkzeug: 127.0.0.1 - - [13/Aug/2026 14:20:12] "[32mGET /favicon.ico HTTP/1.1[0m" 302 -
 2026-08-13 14:20:12 INFO     werkzeug: 127.0.0.1 - - [13/Aug/2026 14:20:12] "GET /login?next=/favicon.ico HTTP/1.1" 200 -
+2026-08-13 15:17:43 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\candidate_ranker.py', reloading
+2026-08-13 15:17:44 INFO     werkzeug:  * Restarting with stat
+2026-08-13 15:17:47 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-13 15:17:47 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-13 15:17:47 WARNING  werkzeug:  * Debugger is active!
+2026-08-13 15:17:47 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-13 15:17:50 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\paper_trade_engine.py', reloading
+2026-08-13 15:17:50 INFO     werkzeug:  * Restarting with stat
+2026-08-13 15:17:54 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-13 15:17:54 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-13 15:17:54 WARNING  werkzeug:  * Debugger is active!
+2026-08-13 15:17:54 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-13 15:17:56 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\candidate_ranker.py', reloading
+2026-08-13 15:17:56 INFO     werkzeug:  * Restarting with stat
+2026-08-13 15:17:59 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-13 15:17:59 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-13 15:17:59 WARNING  werkzeug:  * Debugger is active!
+2026-08-13 15:17:59 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-13 15:18:04 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\candidate_ranker.py', reloading
+2026-08-13 15:18:04 INFO     werkzeug:  * Restarting with stat
+2026-08-13 15:18:08 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-13 15:18:08 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-13 15:18:08 WARNING  werkzeug:  * Debugger is active!
+2026-08-13 15:18:08 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-13 15:19:50 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\paper_trade_engine.py', reloading
+2026-08-13 15:19:50 INFO     werkzeug:  * Restarting with stat
+2026-08-13 15:19:54 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-13 15:19:54 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-13 15:19:54 WARNING  werkzeug:  * Debugger is active!
+2026-08-13 15:19:54 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-13 15:20:32 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\analyze.py', reloading
+2026-08-13 15:20:33 INFO     werkzeug:  * Restarting with stat
+2026-08-13 15:20:36 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-13 15:20:36 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-13 15:20:36 WARNING  werkzeug:  * Debugger is active!
+2026-08-13 15:20:36 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-13 15:20:39 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\analyze.py', reloading
+2026-08-13 15:20:40 INFO     werkzeug:  * Restarting with stat
+2026-08-13 15:20:43 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-13 15:20:43 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-13 15:20:43 WARNING  werkzeug:  * Debugger is active!
+2026-08-13 15:20:43 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-13 15:20:47 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\analyze.py', reloading
+2026-08-13 15:20:48 INFO     werkzeug:  * Restarting with stat
+2026-08-13 15:20:51 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-13 15:20:51 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-13 15:20:52 WARNING  werkzeug:  * Debugger is active!
+2026-08-13 15:20:52 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-13 15:22:34 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\db.py', reloading
+2026-08-13 15:22:35 INFO     werkzeug:  * Restarting with stat
+2026-08-13 15:22:38 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-13 15:22:38 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-13 15:22:38 WARNING  werkzeug:  * Debugger is active!
+2026-08-13 15:22:38 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-13 15:22:50 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\data_fetch.py', reloading
+2026-08-13 15:22:50 INFO     werkzeug:  * Restarting with stat
+2026-08-13 15:22:54 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-13 15:22:54 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-13 15:22:54 WARNING  werkzeug:  * Debugger is active!
+2026-08-13 15:22:54 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-13 15:22:59 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\paper_trade_engine.py', reloading
+2026-08-13 15:22:59 INFO     werkzeug:  * Restarting with stat
+2026-08-13 15:23:03 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-13 15:23:03 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-13 15:23:03 WARNING  werkzeug:  * Debugger is active!
+2026-08-13 15:23:03 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-13 15:23:14 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\paper_trade_engine.py', reloading
+2026-08-13 15:23:14 INFO     werkzeug:  * Restarting with stat
+2026-08-13 15:23:18 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-13 15:23:18 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-13 15:23:18 WARNING  werkzeug:  * Debugger is active!
+2026-08-13 15:23:18 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-13 15:41:12 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\paper_trade_engine.py', reloading
+2026-08-13 15:41:12 INFO     werkzeug:  * Restarting with stat
+2026-08-13 15:41:15 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-13 15:41:16 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-13 15:41:16 WARNING  werkzeug:  * Debugger is active!
+2026-08-13 15:41:16 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-13 15:41:28 INFO     werkzeug: 127.0.0.1 - - [13/Aug/2026 15:41:28] "[32mGET /paper-trades HTTP/1.1[0m" 302 -
+2026-08-13 15:41:29 INFO     werkzeug: 127.0.0.1 - - [13/Aug/2026 15:41:29] "GET /login?next=/paper-trades HTTP/1.1" 200 -
+2026-08-13 15:41:29 INFO     werkzeug: 127.0.0.1 - - [13/Aug/2026 15:41:29] "GET /static/css/style.css?v=1786650075 HTTP/1.1" 200 -
+2026-08-13 15:41:29 INFO     werkzeug: 127.0.0.1 - - [13/Aug/2026 15:41:29] "GET /static/css/login.css?v=1786650075 HTTP/1.1" 200 -
+2026-08-13 15:41:29 INFO     werkzeug: 127.0.0.1 - - [13/Aug/2026 15:41:29] "[32mGET /favicon.ico HTTP/1.1[0m" 302 -
+2026-08-13 15:41:29 INFO     werkzeug: 127.0.0.1 - - [13/Aug/2026 15:41:29] "GET /login?next=/favicon.ico HTTP/1.1" 200 -
+2026-08-13 15:41:34 INFO     werkzeug: 127.0.0.1 - - [13/Aug/2026 15:41:34] "[32mGET /paper-trades HTTP/1.1[0m" 302 -
+2026-08-13 15:41:35 INFO     werkzeug: 127.0.0.1 - - [13/Aug/2026 15:41:35] "GET /login?next=/paper-trades HTTP/1.1" 200 -
+2026-08-13 15:41:35 INFO     werkzeug: 127.0.0.1 - - [13/Aug/2026 15:41:35] "[36mGET /static/css/style.css?v=1786650075 HTTP/1.1[0m" 304 -
+2026-08-13 15:41:35 INFO     werkzeug: 127.0.0.1 - - [13/Aug/2026 15:41:35] "[36mGET /static/css/login.css?v=1786650075 HTTP/1.1[0m" 304 -
+2026-08-13 15:41:35 INFO     werkzeug: 127.0.0.1 - - [13/Aug/2026 15:41:35] "[32mGET /favicon.ico HTTP/1.1[0m" 302 -
+2026-08-13 15:41:35 INFO     werkzeug: 127.0.0.1 - - [13/Aug/2026 15:41:35] "GET /login?next=/favicon.ico HTTP/1.1" 200 -
+2026-08-13 15:43:11 INFO     werkzeug: 127.0.0.1 - - [13/Aug/2026 15:43:11] "[32mGET /paper-trades HTTP/1.1[0m" 302 -
+2026-08-13 15:43:11 INFO     werkzeug: 127.0.0.1 - - [13/Aug/2026 15:43:11] "GET /login?next=/paper-trades HTTP/1.1" 200 -
+2026-08-13 15:43:11 INFO     werkzeug: 127.0.0.1 - - [13/Aug/2026 15:43:11] "[36mGET /static/css/style.css?v=1786650075 HTTP/1.1[0m" 304 -
+2026-08-13 15:43:11 INFO     werkzeug: 127.0.0.1 - - [13/Aug/2026 15:43:11] "[36mGET /static/css/login.css?v=1786650075 HTTP/1.1[0m" 304 -
+2026-08-13 15:43:11 INFO     werkzeug: 127.0.0.1 - - [13/Aug/2026 15:43:11] "[32mGET /favicon.ico HTTP/1.1[0m" 302 -
+2026-08-13 15:43:12 INFO     werkzeug: 127.0.0.1 - - [13/Aug/2026 15:43:12] "GET /login?next=/favicon.ico HTTP/1.1" 200 -
+2026-08-13 15:43:33 INFO     werkzeug: 127.0.0.1 - - [13/Aug/2026 15:43:33] "[32mGET /paper-trades HTTP/1.1[0m" 302 -
+2026-08-13 15:43:33 INFO     werkzeug: 127.0.0.1 - - [13/Aug/2026 15:43:33] "GET /login?next=/paper-trades HTTP/1.1" 200 -
+2026-08-13 15:43:33 INFO     werkzeug: 127.0.0.1 - - [13/Aug/2026 15:43:33] "[36mGET /static/css/style.css?v=1786650075 HTTP/1.1[0m" 304 -
+2026-08-13 15:43:33 INFO     werkzeug: 127.0.0.1 - - [13/Aug/2026 15:43:33] "[36mGET /static/css/login.css?v=1786650075 HTTP/1.1[0m" 304 -
+2026-08-13 15:43:33 INFO     werkzeug: 127.0.0.1 - - [13/Aug/2026 15:43:33] "[32mGET /favicon.ico HTTP/1.1[0m" 302 -
+2026-08-13 15:43:34 INFO     werkzeug: 127.0.0.1 - - [13/Aug/2026 15:43:34] "GET /login?next=/favicon.ico HTTP/1.1" 200 -
+2026-08-14 08:54:23 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-14 08:54:23 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-14 08:54:23 INFO     werkzeug: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2026-08-14 08:54:23 INFO     werkzeug: [33mPress CTRL+C to quit[0m
+2026-08-14 08:54:23 INFO     werkzeug:  * Restarting with stat
+2026-08-14 08:54:28 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-14 08:54:28 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-14 08:54:28 WARNING  werkzeug:  * Debugger is active!
+2026-08-14 08:54:28 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-14 08:54:28 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:28] "[32mGET / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:28 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:28] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:28 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:28] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:28 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:28] "GET /login?next=/ HTTP/1.1" 200 -
+2026-08-14 08:54:28 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:28] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:29 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:29] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:29 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:29] "GET /static/css/style.css?v=1786712068 HTTP/1.1" 200 -
+2026-08-14 08:54:29 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:29] "GET /static/css/login.css?v=1786712068 HTTP/1.1" 200 -
+2026-08-14 08:54:29 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:29] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:30 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:30] "[32mGET /favicon.ico HTTP/1.1[0m" 302 -
+2026-08-14 08:54:30 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:30] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:30 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:30] "GET /login?next=/favicon.ico HTTP/1.1" 200 -
+2026-08-14 08:54:30 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:30] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:31 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:31] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:31 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:31] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:32 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:32] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:32 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:32] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:33 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:33] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:33 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:33] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:34 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:34] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:34 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:34] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:35 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:35] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:35 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:35] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:36 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:36] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:36 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:36] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:37 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:37] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:37 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:37] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:38 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:38] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:38 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:38] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:39 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:39] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:39 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:39] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:40 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:40] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:40 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:40] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:41 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:41] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:41 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:41] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:42 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:42] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:42 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:42] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:42 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:42] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:43 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:43] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:43 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:43] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:44 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:44] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:44 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:44] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:45 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:45] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:45 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:45] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:46 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:46] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:46 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:46] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:47 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:47] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:47 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:47] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:48 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:48] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:48 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:48] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:49 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:49] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:49 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:49] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:50 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:50] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:50 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:50] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:51 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:51] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:51 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:51] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:52 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:52] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:52 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:52] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:53 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:53] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:53 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:53] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:54 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:54] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:54 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:54] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:55 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:55] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:55 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:55] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:55 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:55] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:56 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:56] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:56 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:56] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:57 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:57] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:57 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:57] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:58 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:58] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:58 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:58] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:59 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:59] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:54:59 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:54:59] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:00 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:00] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:00 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:00] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:01 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:01] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:01 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:01] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:02 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:02] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:02 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:02] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:02 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:02] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:03 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:03] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:03 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:03] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:04 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:04] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:04 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:04] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:05 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:05] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:05 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:05] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:06 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:06] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:06 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:06] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:07 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:07] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:07 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:07] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:08 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:08] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:08 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:08] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:09 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:09] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:09 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:09] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:10 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:10] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:10 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:10] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:11 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:11] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:11 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:11] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:12 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:12] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:12 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:12] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:13 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:13] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:13 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:13] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:14 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:14] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:14 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:14] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:14 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:14] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:15 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:15] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:15 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:15] "[32mHEAD / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:16 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:16] "[32mGET / HTTP/1.1[0m" 302 -
+2026-08-14 08:55:16 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:16] "GET /login?next=/ HTTP/1.1" 200 -
+2026-08-14 08:55:16 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:16] "[36mGET /static/css/style.css?v=1786712068 HTTP/1.1[0m" 304 -
+2026-08-14 08:55:16 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:16] "[36mGET /static/css/login.css?v=1786712068 HTTP/1.1[0m" 304 -
+2026-08-14 08:55:16 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:16] "[32mGET /favicon.ico HTTP/1.1[0m" 302 -
+2026-08-14 08:55:17 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 08:55:17] "GET /login?next=/favicon.ico HTTP/1.1" 200 -
+2026-08-14 08:59:39 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\strike_range_analysis.py', reloading
+2026-08-14 08:59:40 INFO     werkzeug:  * Restarting with stat
+2026-08-14 08:59:44 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-14 08:59:44 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-14 08:59:44 WARNING  werkzeug:  * Debugger is active!
+2026-08-14 08:59:44 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-14 09:00:30 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\strike_range_analysis.py', reloading
+2026-08-14 09:00:30 INFO     werkzeug:  * Restarting with stat
+2026-08-14 09:00:35 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-14 09:00:35 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-14 09:00:35 WARNING  werkzeug:  * Debugger is active!
+2026-08-14 09:00:35 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-14 09:00:36 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\strike_range_analysis.py', reloading
+2026-08-14 09:00:36 INFO     werkzeug:  * Restarting with stat
+2026-08-14 09:00:41 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-14 09:00:41 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-14 09:00:41 WARNING  werkzeug:  * Debugger is active!
+2026-08-14 09:00:41 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-14 09:21:48 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\contexts.py', reloading
+2026-08-14 09:21:48 INFO     werkzeug:  * Restarting with stat
+2026-08-14 09:21:51 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-14 09:21:51 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-14 09:21:51 WARNING  werkzeug:  * Debugger is active!
+2026-08-14 09:21:51 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-14 09:21:54 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\contexts.py', reloading
+2026-08-14 09:21:54 INFO     werkzeug:  * Restarting with stat
+2026-08-14 09:21:59 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-14 09:21:59 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-14 09:21:59 WARNING  werkzeug:  * Debugger is active!
+2026-08-14 09:21:59 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-14 09:22:14 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\analyze.py', reloading
+2026-08-14 09:22:14 INFO     werkzeug:  * Restarting with stat
+2026-08-14 09:22:19 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-14 09:22:19 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-14 09:22:19 WARNING  werkzeug:  * Debugger is active!
+2026-08-14 09:22:19 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-14 09:22:25 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\analyze.py', reloading
+2026-08-14 09:22:25 INFO     werkzeug:  * Restarting with stat
+2026-08-14 09:22:30 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-14 09:22:30 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-14 09:22:30 WARNING  werkzeug:  * Debugger is active!
+2026-08-14 09:22:30 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-14 09:31:50 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 09:31:50] "[32mGET /paper-trades HTTP/1.1[0m" 302 -
+2026-08-14 09:31:50 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 09:31:50] "GET /login?next=/paper-trades HTTP/1.1" 200 -
+2026-08-14 09:31:50 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 09:31:50] "GET /static/css/style.css?v=1786713750 HTTP/1.1" 200 -
+2026-08-14 09:31:51 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 09:31:51] "GET /static/css/login.css?v=1786713750 HTTP/1.1" 200 -
+2026-08-14 09:31:51 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 09:31:51] "[32mGET /favicon.ico HTTP/1.1[0m" 302 -
+2026-08-14 09:31:51 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 09:31:51] "GET /login?next=/favicon.ico HTTP/1.1" 200 -
+2026-08-14 09:31:55 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 09:31:55] "[32mGET /paper-trades HTTP/1.1[0m" 302 -
+2026-08-14 09:31:55 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 09:31:55] "GET /login?next=/paper-trades HTTP/1.1" 200 -
+2026-08-14 09:31:56 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 09:31:56] "[36mGET /static/css/style.css?v=1786713750 HTTP/1.1[0m" 304 -
+2026-08-14 09:31:56 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 09:31:56] "[36mGET /static/css/login.css?v=1786713750 HTTP/1.1[0m" 304 -
+2026-08-14 09:31:56 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 09:31:56] "[32mGET /favicon.ico HTTP/1.1[0m" 302 -
+2026-08-14 09:31:56 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 09:31:56] "GET /login?next=/favicon.ico HTTP/1.1" 200 -

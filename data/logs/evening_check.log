@@ -405,3 +405,27 @@ C:\Python312\python\python.exe (PID 10460)
 2026-08-12 17:00:46,018 INFO STOP-LOSS SKIPPED (paper trade) 20260805AM_NKE_CDS_2: mark=0.285  pnl=-203.4% (threshold -200.0%)
 2026-08-12 17:00:50,576 INFO STOP-LOSS SKIPPED (paper trade) 20260806AM_UPS_CDS_2: mark=0.92  pnl=-221.5% (threshold -200.0%)
 2026-08-12 17:01:05,956 INFO [POP] No new labels tonight — skipping retrain and failure analysis.
+2026-08-13 17:00:03,084 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-08-13 17:00:20,674 INFO CLOSED (max profit) 20260730AM_NFLX_CDS_3: mark=6.49  P&L=$475.00 (111.5% of max)
+2026-08-13 17:00:20,828 INFO [eval] trade 20260730AM_NFLX_CDS_3 outcome recorded: win +111.5%
+2026-08-13 17:00:23,084 INFO STOP-LOSS SKIPPED (paper trade) 20260803AM_QCOM_COV_3: mark=4.825  pnl=-235.1% (threshold -200.0%)
+2026-08-13 17:00:43,510 INFO STOP-LOSS SKIPPED (paper trade) 20260811AM_INTU_COV_3: mark=10.4  pnl=-252.5% (threshold -200.0%)
+2026-08-13 17:00:53,590 INFO [POP] 1 trade(s) newly labeled — triggering POP model retrain.
+2026-08-13 17:00:59,812 INFO [POP] Loaded 173 extra records from C:\Project Y\data\etrade_labeled_trades.jsonl
+2026-08-13 17:01:09,766 INFO [POP] 7174 labeled rows loaded — 2307 enriched with chain Greeks
+2026-08-13 17:01:10,205 INFO [POP] etrade-only: kept 173 / 7174 rows
+2026-08-13 17:01:10,373 INFO [POP] Dropping 31 all-null columns: ['atm_iv', 'pcr', 'earnings_days_away', 'vol_oi_ratio', 'iv_skew', 'iv_term_slope', 'otm_pcr', 'sector_rsi', 'sector_iv_ratio', 'vvix', 'vix_3m', 'vix_term_slope', 'earnings_inside_expiry', 'news_sentiment_score', 'analyst_rec_change', 'short_interest_pct', 'iv_skew_20d', 'gex_proxy', 'max_pain_strike', 'oi_concentration', 'wings_iv_ratio', 'dollar_index', 'fed_within_dte', 'cpi_within_dte', 'pop', 'ev', 'net_delta', 'net_theta', 'net_gamma', 'net_vega', 'capital_required']
+2026-08-13 17:01:11,754 INFO [POP] Retrain complete — AUC=0.8701  acc=0.8889  threshold=0.20  rows=138
+2026-08-13 17:01:11,779 INFO [FAILURES] 287 trades  win=53.7%  gap=15  iv_crush=0  theta=118
+2026-08-13 17:01:11,779 INFO [FAILURES]   Call Credit Spread              5 trades  100% win  gap=0 theta=0
+2026-08-13 17:01:11,779 INFO [FAILURES]   Call Debit Spread               62 trades  37% win  gap=10 theta=29
+2026-08-13 17:01:11,779 INFO [FAILURES]   Complex-2leg                    15 trades  27% win  gap=0 theta=11
+2026-08-13 17:01:11,779 INFO [FAILURES]   Complex-4leg                    12 trades  58% win  gap=0 theta=5
+2026-08-13 17:01:11,779 INFO [FAILURES]   Complex-8leg                    5 trades  80% win  gap=0 theta=1
+2026-08-13 17:01:11,779 INFO [FAILURES]   Covered Call                    10 trades  100% win  gap=0 theta=0
+2026-08-13 17:01:11,779 INFO [FAILURES]   Iron Condor                     26 trades  88% win  gap=0 theta=3
+2026-08-13 17:01:11,779 INFO [FAILURES]   Long Call                       44 trades  20% win  gap=0 theta=35
+2026-08-13 17:01:11,779 INFO [FAILURES]   Long Strangle                   6 trades  33% win  gap=1 theta=3
+2026-08-13 17:01:11,779 INFO [FAILURES]   Put Credit Spread               35 trades  80% win  gap=0 theta=7
+2026-08-13 17:01:11,779 INFO [FAILURES]   Put Debit Spread                40 trades  42% win  gap=4 theta=19
+2026-08-13 17:01:11,779 INFO [FAILURES]   Short Call                      7 trades  71% win  gap=0 theta=2

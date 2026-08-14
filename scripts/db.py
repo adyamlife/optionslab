@@ -64,6 +64,37 @@ def get_historical_atm_iv(ticker: str, days_ago: int = 7) -> float | None:
     return None
 
 
+def get_iv_percentile_52w(ticker: str, atm_iv: float) -> float | None:
+    """True 52-week IV percentile using stored ATM IV history from training_snapshots.
+
+    Returns float 0-100: what % of the past 252 daily ATM IV readings are below
+    today's ATM IV. Higher = IV currently elevated vs its own history.
+    Returns None when fewer than 60 daily rows exist (falls back to HV proxy).
+    """
+    try:
+        with _DB_WRITE_LOCK:
+            with connect() as con:
+                rows = con.execute(
+                    """
+                    SELECT atm_iv
+                    FROM training_snapshots
+                    WHERE ticker = ?
+                      AND atm_iv IS NOT NULL
+                      AND atm_iv > 0
+                    ORDER BY collected_at DESC
+                    LIMIT 252
+                    """,
+                    [ticker],
+                ).fetchall()
+        if not rows or len(rows) < 60:
+            return None
+        iv_series = [float(r[0]) for r in rows]
+        pct = sum(1 for v in iv_series if v < atm_iv) / len(iv_series) * 100
+        return round(pct, 1)
+    except Exception:
+        return None
+
+
 def read_df(query: str | None = None, params: list | None = None) -> pd.DataFrame:
     """
     Read from the database and return a DataFrame.

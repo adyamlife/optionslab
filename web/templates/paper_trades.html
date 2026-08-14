@@ -53,6 +53,7 @@
       <button class="pt-tab-btn active" data-tab="open">Open Positions <span id="pt-open-count" class="muted"></span></button>
       <button class="pt-tab-btn" data-tab="history">Trade History <span id="pt-closed-count" class="muted"></span></button>
       <button class="pt-tab-btn" data-tab="daywise">Day-wise Log</button>
+      <button class="pt-tab-btn" data-tab="rangeanalysis">Range Analysis</button>
     </div>
 
     <!-- Tab: Open Positions -->
@@ -67,6 +68,18 @@
     <div class="pt-tab-panel" data-tab="history">
       <section class="panel" id="pt-closed-section">
         <div id="pt-closed-table"><span class="muted">No closed trades yet.</span></div>
+      </section>
+    </div>
+
+    <!-- Tab: Range Analysis -->
+    <div class="pt-tab-panel" data-tab="rangeanalysis">
+      <section class="panel">
+        <p class="hint" style="margin-bottom:1rem">
+          Each structure makes an implicit price-at-expiry prediction. This tab validates those predictions against actual expiry prices.
+        </p>
+        <div id="pt-range-overview"></div>
+        <div id="pt-range-charts" style="display:flex;flex-wrap:wrap;gap:1.5rem;margin-top:1.5rem"></div>
+        <div id="pt-range-detail" style="margin-top:2rem"></div>
       </section>
     </div>
 

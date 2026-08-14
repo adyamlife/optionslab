@@ -259,14 +259,15 @@ function buildTradeCard(trade, liveData) {
   const mark      = live.mark       ?? trade.latest_mark;
   const unrealized= live.unrealized ?? trade.latest_unrealized;
   const loading   = liveData === null;
-  const isDebit   = (trade.structure ?? "").includes("Debit");
+  const isDebit   = (trade.structure ?? "").includes("Debit")
+                 || ["Long Strangle","Calendar Spread","Diagonal Spread"].includes(trade.structure);
 
-  const maxProfit = trade.entry_credit ?? 0;
-  const debitPaid = trade.max_loss    ?? null;
+  const maxProfit = isDebit ? (trade.max_profit ?? 0) : (trade.entry_credit ?? 0);
+  const debitPaid = trade.entry_credit ?? null;
 
   const pctDone = (mark != null && maxProfit > 0)
     ? (isDebit
-        ? Math.round((mark / maxProfit) * 100)
+        ? Math.round(((mark - (trade.entry_credit ?? 0)) / maxProfit) * 100)
         : Math.round((1 - mark / maxProfit) * 100))
     : null;
 
@@ -598,13 +599,16 @@ function renderOpenTrades(trades) {
 }
 
 function _patchCardMetrics(cardEl, trade, live) {
-  const isDebit   = (trade.structure ?? "").includes("Debit");
-  const maxProfit = trade.entry_credit ?? 0;
+  const isDebit   = (trade.structure ?? "").includes("Debit")
+                 || ["Long Strangle","Calendar Spread","Diagonal Spread"].includes(trade.structure);
+  const maxProfit = isDebit ? (trade.max_profit ?? 0) : (trade.entry_credit ?? 0);
   const mark      = live.mark       ?? trade.latest_mark;
   const unrealized= live.unrealized ?? trade.latest_unrealized;
 
   const pctDone = (mark != null && maxProfit > 0)
-    ? (isDebit ? Math.round((mark / maxProfit) * 100) : Math.round((1 - mark / maxProfit) * 100))
+    ? (isDebit
+        ? Math.round(((mark - (trade.entry_credit ?? 0)) / maxProfit) * 100)
+        : Math.round((1 - mark / maxProfit) * 100))
     : null;
 
   const unrCls = unrealized == null ? "na" : parseFloat(unrealized) >= 0 ? "pass" : "fail";
@@ -704,9 +708,10 @@ const _tickerAnalysisCache = {}; // ticker -> { data: row } | { error: true } | 
 function buildSpFromTrade(trade) {
   const live       = _latestMarks[trade.id] ?? {};
   const unrealized = live.unrealized ?? trade.latest_unrealized;
-  const isDebit    = (trade.structure ?? "").includes("Debit");
-  const maxProfit  = trade.entry_credit ?? 0;
-  const debitPaid  = trade.max_loss ?? null;
+  const isDebit    = (trade.structure ?? "").includes("Debit")
+                  || ["Long Strangle","Calendar Spread","Diagonal Spread"].includes(trade.structure);
+  const maxProfit  = isDebit ? (trade.max_profit ?? 0) : (trade.entry_credit ?? 0);
+  const debitPaid  = trade.entry_credit ?? null;
   const basis      = isDebit ? debitPaid : maxProfit;
 
   const pnl_pct = (unrealized != null && basis)
@@ -913,7 +918,7 @@ function renderClosedTrades(trades) {
         <thead><tr>
           <th>Closed</th><th>Ticker</th><th>Structure</th><th>Expiry</th>
           <th>Max Profit</th><th>Status</th><th>Exit Reason</th>
-          <th>P&L/sh</th><th>P&L $</th><th>P&L %</th><th>Signal</th><th></th>
+          <th>P&L/sh</th><th>P&L $</th><th>% of Max</th><th>Signal</th><th></th>
         </tr></thead>
         <tbody>${rows}</tbody>
       </table>
@@ -1147,6 +1152,360 @@ function renderDayWiseLog(allTrades, marksMap) {
   }
 }
 
+// ── Range Analysis tab ────────────────────────────────────────────────────────
+
+let _rangeLoaded = false;
+
+function _raTheme() {
+  const dark = document.documentElement.dataset.theme === "dark"
+            || (!document.documentElement.dataset.theme
+                && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  return {
+    bg:      dark ? "#1e1e2e" : "#ffffff",
+    grid:    dark ? "#333355" : "#e0e0e0",
+    font:    dark ? "#ccccdd" : "#333344",
+  };
+}
+
+function _raLayout(title, extra = {}) {
+  const t = _raTheme();
+  return {
+    title:         { text: title, font: { color: t.font, size: 13 } },
+    paper_bgcolor: t.bg, plot_bgcolor: t.bg,
+    font:          { color: t.font, size: 11 },
+    margin:        { t: 40, b: 90, l: 55, r: 20 },
+    legend:        { orientation: "h", y: -0.28 },
+    xaxis:         { gridcolor: t.grid, tickfont: { size: 10 } },
+    yaxis:         { gridcolor: t.grid },
+    ...extra,
+  };
+}
+
+function _chartDiv(id, charts) {
+  const div = document.createElement("div");
+  div.id    = id;
+  div.style.cssText = "width:520px;max-width:100%;height:340px;flex:1 1 460px";
+  charts.appendChild(div);
+  return div;
+}
+
+function _fmtCal(v) {
+  if (v == null) return "—";
+  const cls = v > 5 ? "pass" : v < -5 ? "fail" : "na";
+  return `<span class="${cls}">${v > 0 ? "+" : ""}${v}pp</span>`;
+}
+
+async function loadRangeAnalysis() {
+  if (_rangeLoaded) return;
+  _rangeLoaded = true;
+
+  const overview = document.getElementById("pt-range-overview");
+  const charts   = document.getElementById("pt-range-charts");
+  const detail   = document.getElementById("pt-range-detail");
+  overview.innerHTML = `<span class="muted">Loading…</span>`;
+
+  let data;
+  try {
+    const res = await fetch("/api/paper-trades/range-analysis");
+    data = await res.json();
+    if (!data.ok) throw new Error(data.error || "API error");
+  } catch(e) {
+    overview.innerHTML = `<p class="fail">Failed to load: ${esc(String(e))}</p>`;
+    return;
+  }
+
+  const ov  = data.overall;
+  const ss  = data.structure_summaries   || {};
+  const sc  = data.structure_calibration || {};
+  const ovc = data.overall_calibration   || [];
+  const dtc = data.dte_calibration       || [];
+  const recs = data.records              || [];
+
+  // ── Per-structure headline stats (computed from records) ────────────────────
+  // Bucket trades by structure; compute mean predicted POP and realized win rate.
+  const _structStats = {};
+  for (const r of recs) {
+    const s = r.structure;
+    if (!_structStats[s]) _structStats[s] = { n: 0, sumPred: 0, wins: 0 };
+    _structStats[s].n++;
+    // delta_implied_pop is already a percentage (0-100)
+    _structStats[s].sumPred += (r.delta_implied_pop ?? 0);
+    const z = r.zone || "";
+    // Win = any positive outcome across all structure types
+    if (z === "full_win" || z === "partial_win" || z === "contained" || z === "expired_otm")
+      _structStats[s].wins++;
+  }
+
+  const STRUCT_ORDER = [
+    "Iron Condor", "Call Debit Spread", "Put Debit Spread",
+    "Long Strangle", "Covered Call", "Cash Secured Put",
+    "Call Credit Spread", "Put Credit Spread",
+  ];
+
+  const headlineRows = STRUCT_ORDER
+    .filter(s => _structStats[s])
+    .map(struct => {
+      const st = _structStats[struct];
+      const smallSample = st.n < 10;
+      const pred = st.n ? +(st.sumPred / st.n).toFixed(1) : null;
+      const real = st.n ? +(st.wins / st.n * 100).toFixed(1) : null;
+      const err  = (pred != null && real != null) ? +(real - pred).toFixed(1) : null;
+      const errStr  = err == null ? "—" : (err > 0 ? "+" : "") + err + "pp";
+      const errCls  = err == null ? "muted"
+                    : err >  5 ? "pass" : err < -5 ? "fail" : "muted";
+      // Selection quality note: if predicted < 50% the strategy is deliberately
+      // choosing sub-50% setups — not necessarily a calibration problem.
+      const selNote = pred != null && pred < 50
+        ? `<span class="muted" style="font-size:0.72rem">low-prob selection</span>`
+        : pred != null && pred > 75
+        ? `<span class="muted" style="font-size:0.72rem">high-prob selection</span>`
+        : "";
+      const nDisplay = smallSample ? `${st.n}*` : `${st.n}`;
+      return `<tr>
+        <td><strong>${esc(struct)}</strong></td>
+        <td class="num">${pred != null ? pred + "%" : "—"}</td>
+        <td class="num">${real != null ? real + "%" : "—"}</td>
+        <td class="num ${errCls}" style="font-weight:600">${errStr}</td>
+        <td class="num muted">${nDisplay} &nbsp;${selNote}</td>
+      </tr>`;
+    }).join("");
+
+  // ── Overview cards ──────────────────────────────────────────────────────────
+  const calErr = ov.overall_calibration_error;
+  const calCls = calErr == null ? "na" : calErr > 5 ? "pass" : calErr < -5 ? "fail" : "na";
+  overview.innerHTML = `
+    <h3 style="margin:0 0 0.6rem">Calibration at a Glance</h3>
+    <div class="table-scroll" style="margin-bottom:1.5rem">
+      <table class="journal-table" style="font-size:0.82rem;min-width:480px">
+        <thead><tr>
+          <th>Structure</th>
+          <th class="num">Predicted</th>
+          <th class="num">Realized</th>
+          <th class="num">Error</th>
+          <th class="num">n</th>
+        </tr></thead>
+        <tbody>${headlineRows}</tbody>
+      </table>
+      <p class="muted" style="font-size:0.72rem;margin-top:0.35rem">
+        Error = realized − predicted. Green = model conservative. Red = model optimistic.
+        * n &lt; 10 — treat as directional only. &nbsp;|&nbsp; "low-prob selection" = strategy deliberately chooses &lt;50% setups; calibration may be fine but strategy intent warrants review.
+      </p>
+    </div>
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem">
+      <div class="pt-card" style="min-width:140px">
+        <div class="pt-card-label">Trades Analysed</div>
+        <div class="pt-card-val">${ov.total_trades}</div>
+      </div>
+      <div class="pt-card" style="min-width:160px">
+        <div class="pt-card-label">Avg Δ-Implied POP</div>
+        <div class="pt-card-val na">${ov.avg_delta_implied_pop ?? "—"}%</div>
+      </div>
+      <div class="pt-card" style="min-width:160px">
+        <div class="pt-card-label">Realized Win Rate</div>
+        <div class="pt-card-val ${ov.correct_pct >= 50 ? 'pass' : 'fail'}">${ov.correct_pct}%</div>
+      </div>
+      <div class="pt-card" style="min-width:200px">
+        <div class="pt-card-label">Overall Calibration Error</div>
+        <div class="pt-card-val ${calCls}">${calErr != null ? (calErr > 0 ? "+" : "") + calErr + "pp" : "—"}</div>
+        <div class="pt-card-sub muted" style="font-size:0.73rem">realized − predicted &nbsp;·&nbsp; positive = conservative model</div>
+      </div>
+    </div>
+    <p class="hint" style="margin-bottom:0.5rem">
+      <strong>Delta ≠ probability.</strong> Δ-Implied POP is a Black-Scholes heuristic derived from stored leg IV —
+      not a risk-neutral probability. Calibration error shows how far this heuristic's prediction diverges from what actually happened.
+      Gold standard is ML pop_score (stored for new trades only).
+    </p>`;
+
+  // ── Chart 1: Calibration chart — predicted vs realized per POP bucket ───────
+  charts.innerHTML = "";
+
+  if (ovc.length) {
+    const c1 = _chartDiv("ra-cal-overall", charts);
+    const buckets  = ovc.map(r => r.bucket);
+    const pred     = ovc.map(r => r.mean_predicted);
+    const realized = ovc.map(r => r.realized_pct);
+    const ns       = ovc.map(r => `n=${r.n}`);
+    Plotly.newPlot(c1, [
+      { name: "Δ-Implied POP (predicted)", x: buckets, y: pred,
+        type: "bar", marker: { color: "#6366f1" }, text: ns, textposition: "outside" },
+      { name: "Realized win rate",         x: buckets, y: realized,
+        type: "bar", marker: { color: "#22c55e" } },
+    ], _raLayout("POP Calibration: Predicted vs Realized (All Structures)", {
+      barmode: "group",
+      yaxis: { gridcolor: _raTheme().grid, range: [0, 110], ticksuffix: "%" },
+    }), { responsive: true, displayModeBar: false });
+  }
+
+  // ── Chart 2: Calibration error bar (shows +/- deviation per bucket) ──────────
+  if (ovc.length) {
+    const c2 = _chartDiv("ra-cal-error", charts);
+    const buckets = ovc.map(r => r.bucket);
+    const errors  = ovc.map(r => r.calibration_error);
+    const colors  = errors.map(e => e == null ? "#888" : e > 5 ? "#22c55e" : e < -5 ? "#ef4444" : "#94a3b8");
+    Plotly.newPlot(c2, [
+      { name: "Calibration error (realized − predicted)",
+        x: buckets, y: errors, type: "bar",
+        marker: { color: colors },
+        text: errors.map(e => e == null ? "" : (e > 0 ? "+" : "") + e + "pp"),
+        textposition: "outside" },
+    ], _raLayout("Calibration Error by POP Bucket", {
+      barmode: "relative",
+      yaxis: { gridcolor: _raTheme().grid, ticksuffix: "pp",
+               title: { text: "Error (pp)", font: { size: 11 } } },
+      shapes: [{ type: "line", x0: -0.5, x1: buckets.length - 0.5, y0: 0, y1: 0,
+                 line: { color: "#888", width: 1, dash: "dot" } }],
+    }), { responsive: true, displayModeBar: false });
+  }
+
+  // ── Chart 3: Outcome zone breakdown per structure (stacked %) ────────────────
+  const structNames = [], fullWin = [], partial = [], lossArr = [];
+  for (const [struct, s] of Object.entries(ss)) {
+    structNames.push(struct);
+    const zones = s.zones || {};
+    const fw = (zones.full_win    || zones.contained   || zones.expired_otm || {}).pct ?? 0;
+    const pt = (zones.partial_win || {}).pct ?? 0;
+    const ls = (zones.loss        || zones.loss_range  ||
+                zones.breached_put_side || zones.breached_call_side || {}).pct ?? 0;
+    // Sum all breach/loss zones
+    const allLoss = Object.entries(zones)
+      .filter(([k]) => k.startsWith("loss") || k.startsWith("breach") || k === "assigned")
+      .reduce((a, [, v]) => a + (v.pct || 0), 0);
+    fullWin.push(fw);
+    partial.push(pt);
+    lossArr.push(allLoss);
+  }
+  const c3 = _chartDiv("ra-chart-zones", charts);
+  Plotly.newPlot(c3, [
+    { name: "Win / Contained",  x: structNames, y: fullWin,  type: "bar", marker: { color: "#22c55e" } },
+    { name: "Partial Win",      x: structNames, y: partial,  type: "bar", marker: { color: "#f59e0b" } },
+    { name: "Loss / Breach",    x: structNames, y: lossArr,  type: "bar", marker: { color: "#ef4444" } },
+  ], _raLayout("Outcome Zone Breakdown by Structure (%)", {
+    barmode: "stack",
+    yaxis: { gridcolor: _raTheme().grid, range: [0, 100], ticksuffix: "%" },
+  }), { responsive: true, displayModeBar: false });
+
+  // ── Chart 4: Debit spread % of max profit captured (histogram) ──────────────
+  const cdsRecs = recs.filter(r => r.structure === "Call Debit Spread");
+  const pdsRecs = recs.filter(r => r.structure === "Put Debit Spread");
+  const cdsPcts = cdsRecs.map(r => r.pnl_pct_of_max).filter(v => v != null);
+  const pdsPcts = pdsRecs.map(r => r.pnl_pct_of_max).filter(v => v != null);
+  if (cdsPcts.length || pdsPcts.length) {
+    const c4 = _chartDiv("ra-chart-pct-max", charts);
+    Plotly.newPlot(c4, [
+      { name: "Call Debit", x: cdsPcts, type: "histogram", opacity: 0.75,
+        xbins: { start: -200, end: 120, size: 20 }, marker: { color: "#3b82f6" } },
+      { name: "Put Debit",  x: pdsPcts, type: "histogram", opacity: 0.75,
+        xbins: { start: -200, end: 120, size: 20 }, marker: { color: "#a855f7" } },
+    ], _raLayout("% of Max Profit Captured — Debit Spreads", {
+      barmode: "overlay",
+      xaxis: { gridcolor: _raTheme().grid, title: { text: "% of Max" } },
+      yaxis: { gridcolor: _raTheme().grid, title: { text: "# Trades" } },
+      shapes: [{ type: "line", x0: 0, x1: 0, y0: 0, y1: 1, yref: "paper",
+                 line: { color: "#f59e0b", width: 1.5, dash: "dash" } }],
+    }), { responsive: true, displayModeBar: false });
+  }
+
+  // ── Chart 5: DTE calibration ─────────────────────────────────────────────────
+  if (dtc.length > 1) {
+    const c5 = _chartDiv("ra-cal-dte", charts);
+    const dteBuckets = dtc.map(r => r.bucket);
+    Plotly.newPlot(c5, [
+      { name: "Δ-Implied POP", x: dteBuckets, y: dtc.map(r => r.mean_predicted),
+        type: "bar", marker: { color: "#6366f1" },
+        text: dtc.map(r => `n=${r.n}`), textposition: "outside" },
+      { name: "Realized",      x: dteBuckets, y: dtc.map(r => r.realized_pct),
+        type: "bar", marker: { color: "#22c55e" } },
+    ], _raLayout("Calibration by DTE Bucket", {
+      barmode: "group",
+      yaxis: { gridcolor: _raTheme().grid, range: [0, 110], ticksuffix: "%" },
+    }), { responsive: true, displayModeBar: false });
+  }
+
+  // ── Chart 6: IC range scatter (price vs box) if enough trades ────────────────
+  const icRecs = recs.filter(r => r.structure === "Iron Condor");
+  if (icRecs.length) {
+    const c6 = _chartDiv("ra-chart-ic", charts);
+    const labels = icRecs.map((r, i) => `${r.ticker} #${i+1}`);
+    Plotly.newPlot(c6, [
+      { name: "Put short (lower bound)", x: labels, y: icRecs.map(r => r.lower_bound),
+        mode: "markers", marker: { color: "#ef4444", size: 9, symbol: "triangle-up" } },
+      { name: "Price at expiry", x: labels, y: icRecs.map(r => r.actual_expiry_price),
+        mode: "markers", marker: { color: "#22c55e", size: 11, symbol: "circle" } },
+      { name: "Call short (upper bound)", x: labels, y: icRecs.map(r => r.upper_bound),
+        mode: "markers", marker: { color: "#ef4444", size: 9, symbol: "triangle-down" } },
+    ], _raLayout(`IC: Price at Expiry vs Short-Strike Range (n=${icRecs.length})`, {
+      yaxis: { gridcolor: _raTheme().grid, title: { text: "Price ($)" } },
+    }), { responsive: true, displayModeBar: false });
+  }
+
+  // ── Structure summary table ───────────────────────────────────────────────────
+  const PRED_DESC = {
+    "Iron Condor":        "Price stays between short_put ↔ short_call (containment)",
+    "Call Debit Spread":  "Price crosses breakeven = long_strike + debit (threshold)",
+    "Put Debit Spread":   "Price crosses breakeven = long_strike − debit (threshold)",
+    "Long Strangle":      "Price exceeds either breakeven (big-move)",
+    "Call Credit Spread": "Short call expires OTM (credit stays)",
+    "Put Credit Spread":  "Short put expires OTM (credit stays)",
+    "Covered Call":       "Short call expires OTM — stock not called away",
+    "Cash Secured Put":   "Short put expires OTM — stock not put to you",
+  };
+
+  const structRows = Object.entries(ss).map(([struct, s]) => {
+    const calRows = sc[struct] || [];
+    const calSummary = calRows.map(r => {
+      const tiny = r.n < 5;
+      const rowStyle = tiny ? "opacity:0.55" : "";
+      const errHtml  = tiny
+        ? `<span class="muted">~${r.calibration_error != null ? (r.calibration_error > 0 ? "+" : "") + r.calibration_error + "pp" : "—"}</span>`
+        : _fmtCal(r.calibration_error);
+      const nBadge = `<span class="muted" style="font-size:0.68rem;margin-left:3px">(n=${r.n}${tiny ? " ⚠" : ""})</span>`;
+      return `<span style="${rowStyle};font-size:0.72rem">` +
+        `<span class="muted">${r.bucket}: ${r.mean_predicted}% → ${r.realized_pct}% </span>` +
+        errHtml + nBadge +
+        `</span>`;
+    }).join("<br>");
+
+    const zonesHtml = Object.entries(s.zones || {})
+      .map(([z, v]) => {
+        const cls = z.startsWith("loss") || z.startsWith("breach") || z === "assigned" ? "fail"
+                  : z.includes("win") || z === "contained" || z === "expired_otm"       ? "pass"
+                  : "na";
+        return `<span class="${cls}">${z.replace(/_/g," ")}: ${v.pct}%</span>`;
+      }).join(" &nbsp;|&nbsp; ");
+
+    return `<tr>
+      <td><strong>${esc(struct)}</strong></td>
+      <td class="muted" style="font-size:0.75rem">${PRED_DESC[struct] || "—"}</td>
+      <td>${s.n}</td>
+      <td>${s.avg_delta_implied_pop ?? "—"}%</td>
+      <td>${zonesHtml}</td>
+      <td style="font-size:0.78rem">${calSummary || "—"}</td>
+    </tr>`;
+  }).join("");
+
+  detail.innerHTML = `
+    <h3 style="margin-bottom:0.75rem">Structure-by-Structure Prediction Calibration</h3>
+    <div class="table-scroll">
+      <table class="journal-table pt-trades-table">
+        <thead><tr>
+          <th>Structure</th>
+          <th>Prediction Type</th>
+          <th>n</th>
+          <th>Avg Predicted POP</th>
+          <th>Outcome Zones</th>
+          <th>Calibration (by POP bucket)</th>
+        </tr></thead>
+        <tbody>${structRows}</tbody>
+      </table>
+    </div>
+    <p class="hint" style="margin-top:1rem;font-size:0.78rem">
+      <strong>Calibration error</strong> = realized% − predicted%.
+      Positive (green) = model is conservative — trades won more often than predicted.
+      Negative (red) = model is optimistic — trades won less than predicted.
+      Buckets with n &lt; 5 are statistically unreliable.
+    </p>`;
+}
+
 // ── Tab switching ─────────────────────────────────────────────────────────────
 
 function initTabs() {
@@ -1158,6 +1517,7 @@ function initTabs() {
       const target = btn.dataset.tab;
       tabs.forEach(b   => b.classList.toggle("active", b.dataset.tab === target));
       panels.forEach(p => p.classList.toggle("active", p.dataset.tab === target));
+      if (target === "rangeanalysis") loadRangeAnalysis();
     });
   });
 }

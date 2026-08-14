@@ -1,6 +1,6 @@
 # ML Training Log — Options Strategy Lab
 
-Last updated: 2026-08-11
+Last updated: 2026-08-13
 
 ---
 
@@ -14,14 +14,14 @@ Build a pipeline that identifies which option candidates to paper-trade, learns 
 
 | Model | File | Purpose | Current Metrics | Last Trained |
 |---|---|---|---|---|
-| Regime Classifier | `regime_classifier.joblib` | Bull / Bear / Chop label for market context | Accuracy 33% (3-class, ~random) | 2026-08-11 |
-| Return Regressor | `return_regressor.joblib` | Predict forward return of a candidate | R²=−0.09 (below mean baseline) | 2026-08-11 |
-| Volatility Regressor | `volatility_regressor.joblib` | Predict forward realized vol | R²=0.51, RMSE=0.18 | 2026-08-11 |
-| POP Classifier | `pop_classifier.joblib` | Probability of profit per candidate | AUC=0.741, Brier=0.184 (calibrated) | 2026-08-11 |
-| Direction Classifier | `direction_classifier.joblib` | Up / Down / Flat market direction | AUC=0.539, weak Flat recall (4.5%) | 2026-08-11 |
-| IV Direction Classifier | `iv_direction_classifier.joblib` | Expanding vs Contracting IV | AUC=0.726, P@10=100% — strongest model | 2026-08-11 |
-| Meta Ensemble (win) | `meta_ensemble.joblib` | Rank candidates by P(win) | AUC=0.569, P@10=0% — not usable yet | 2026-08-11 |
-| Meta Ensemble (direction) | `meta_ensemble_direction.joblib` | Market direction from base model outputs | AUC=0.533, barely above naive | 2026-08-11 |
+| Regime Classifier | `regime_classifier.joblib` | Bull / Bear / Chop label for market context | Accuracy 33% (3-class, ~random) | 2026-08-13 |
+| Return Regressor | `return_regressor.joblib` | Predict forward return of a candidate | R²=−0.0935, RMSE=0.1026 (below mean baseline) | 2026-08-13 |
+| Volatility Regressor | `volatility_regressor.joblib` | Predict forward realized vol | R²=0.5092, RMSE=0.1817 | 2026-08-13 |
+| POP Classifier | `pop_classifier.joblib` | Probability of profit per candidate | AUC=0.7407, Brier=0.1844 (calibrated) | 2026-08-13 |
+| Direction Classifier | `direction_classifier.joblib` | Up / Down / Flat market direction | AUC=0.5392, weak Flat recall (4.5%) | 2026-08-13 |
+| IV Direction Classifier | `iv_direction_classifier.joblib` | Expanding vs Contracting IV | AUC=0.7263, P@10=100% — strongest model | 2026-08-13 |
+| Meta Ensemble (win) | `meta_ensemble.joblib` | Rank candidates by P(win) | AUC=0.5685, P@10=0% — not usable yet | 2026-08-13 |
+| Meta Ensemble (direction) | `meta_ensemble_direction.joblib` | Market direction from base model outputs | AUC=0.5328, barely above naive | 2026-08-13 |
 | Anomaly Detector | `anomaly_detector.joblib` | Flag unusual market conditions | Not evaluated this session | 2026-07-08 |
 | Trade Win Model | `train_trade_win_model.py` | Win prediction for Calendar/Long Strangle only | Temporal split broken (all data 3 days) | 2026-08-11 |
 
@@ -169,6 +169,7 @@ Models retrained on 2026-08-11 incorporate current distributions.
 | Run date | Trades | Buckets | Best bucket | Notes |
 |---|---|---|---|---|
 | 2026-08-11 | 103 IC trades | 12 (7 low-conf) | δ=0.05 W=1: 97% win, +$0.353, n=31 | Only IC data; debit grids uncalibrated |
+| 2026-08-13 | 103 IC trades | 12 (7 low-conf) | δ=0.05 W=1: 97% win, +$0.353, n=31 | Same dataset — calibrator recommends [1,2,5] but W=5 negative avg P&L in both δ buckets; manually keeping width_grid=[1,2] |
 
 DTE analysis: 15–30 DTE at δ=0.05 W=1 is the strongest bucket (96% win, $0.365, n=27).
 
