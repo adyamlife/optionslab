@@ -338,8 +338,8 @@ risk_free_rate = 0.043  # annualised risk-free rate (update periodically with 3-
 # Wider WIDTH_GRID entries suit high-priced underlyings (SPY, NVDA);
 # narrower entries suit low-priced tickers. Deltas are absolute magnitudes.
 [optimize_grid]
-credit_delta_grid      = [0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40]
-width_grid             = [1, 1.5, 2, 3, 5, 7, 10, 15, 20, 30]
+credit_delta_grid      = [0.05, 0.10]
+width_grid             = [1, 2]
 debit_long_delta_grid  = [0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65]  # long leg — unchanged
 debit_short_delta_grid = [0.20, 0.25, 0.30, 0.35, 0.40]              # short leg — widened from 0.10-0.20
 

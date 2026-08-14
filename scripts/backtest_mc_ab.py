@@ -178,7 +178,7 @@ def show_ranking_divergence(rows=None):
         print("  (Skipping live fetch to avoid yfinance/DuckDB conflicts.)")
         return
 
-    items, _ = filter_candidates(rows)
+    items, _, _snap = filter_candidates(rows)
     both = [it for it in items
             if it.get("ev_mc") is not None and it.get("ev_delta_proxy") is not None]
 

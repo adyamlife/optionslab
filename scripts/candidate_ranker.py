@@ -228,6 +228,56 @@ def attempt_repairs(candidate: dict, context: dict) -> RepairResult:
     return RepairResult(status="PASS", replacement_candidates=variants)
 
 
+# ---------------------------------------------------------------------------
+# P1-B: Evidence-n helper — count comparable closed paper trades
+# ---------------------------------------------------------------------------
+
+_EVIDENCE_CACHE: dict = {}   # (structure, regime) → n;  cleared each morning scan
+
+def _count_comparable_trades(structure: str, market_regime: str | None) -> int:
+    """Count closed paper trades with matching structure + market_regime.
+
+    Comparable-trade definition is intentional and documented here so future
+    changes to it are visible: structure exact-match, regime bucket match.
+    Returns 0 on any DB error so evidence_n is never None.
+    """
+    regime_key = market_regime or ""
+    cache_key  = (structure, regime_key)
+    if cache_key in _EVIDENCE_CACHE:
+        return _EVIDENCE_CACHE[cache_key]
+    try:
+        from scripts.db import read_df as _rdf
+        _df = _rdf(
+            "SELECT COUNT(*) AS n FROM paper_trades "
+            "WHERE closed_at IS NOT NULL AND structure = ? AND market_regime = ?",
+            [structure, regime_key],
+        )
+        n = int(_df.iloc[0]["n"]) if len(_df) else 0
+    except Exception:
+        n = 0
+    _EVIDENCE_CACHE[cache_key] = n
+    return n
+
+
+def _confidence_tier(evidence_n: int) -> str:
+    """Map evidence count to a named tier.
+
+    Tiers are intentionally non-overlapping and use strict boundaries so the
+    definition is deterministic and testable:
+      INSUFFICIENT  n < 5
+      LOW           5 ≤ n < 10
+      MEDIUM        10 ≤ n < 30
+      HIGH          n ≥ 30
+    """
+    if evidence_n < 5:
+        return "INSUFFICIENT"
+    if evidence_n < 10:
+        return "LOW"
+    if evidence_n < 30:
+        return "MEDIUM"
+    return "HIGH"
+
+
 def _load_ranking_cfg() -> dict:
     """Load config/ranking.toml. Cached per process via module-level singleton."""
     try:
@@ -1047,9 +1097,11 @@ def filter_candidates(rows, paper_trade: bool = False, buying_power: float | Non
             # on rejected candidates. Use 2,000 sims for batch ranking (rank
             # stability test confirmed identical ordering vs 5,000 sims).
             # ev_mc replaces the delta-proxy as the primary EV when available.
+            # Direct import of run_mc (GARCH(1,1) + GBM fallback); bypasses the
+            # candidate_provider wrapper which adds no logic beyond delegation.
             try:
-                from scripts.candidate_provider import monte_carlo_outcome as _run_mc
-                _mc = _run_mc(row, c, n_sims=2000, ticker=_t)
+                from scripts.monte_carlo import run_mc as _run_mc
+                _mc = _run_mc(_t, row, c, n_sims=2000)
             except Exception:
                 _mc = None
 
@@ -1058,7 +1110,7 @@ def filter_candidates(rows, paper_trade: bool = False, buying_power: float | Non
             ev_is_proxy = ev_mc is None
 
             # Store MC metrics on candidate dict for downstream use (CVaR penalty,
-            # prob_of_touch display, trade record snapshotting in Task #4).
+            # prob_of_touch display, trade record snapshotting).
             if _mc:
                 c["mc_expected_pnl"]    = ev_mc
                 c["mc_cvar_loss"]       = _mc.get("cvar_loss")
@@ -1066,22 +1118,53 @@ def filter_candidates(rows, paper_trade: bool = False, buying_power: float | Non
                 c["mc_prob_of_touch"]   = _mc.get("prob_of_touch")
                 c["mc_worst_loss_95"]   = _mc.get("worst_loss_95")
                 c["mc_vol_source"]      = _mc.get("vol_source")
+                c["mc_p10_pnl"]         = _mc.get("p10_pnl")
+                c["mc_p90_pnl"]         = _mc.get("p90_pnl")
+                # Phase 2A: S_T distribution summary (observational — not used in ranking)
+                c["mc_expiry_mean"]     = _mc.get("mc_expiry_mean")
+                c["mc_expiry_median"]   = _mc.get("mc_expiry_median")
+                c["mc_expiry_p10"]      = _mc.get("mc_expiry_p10")
+                c["mc_expiry_p25"]      = _mc.get("mc_expiry_p25")
+                c["mc_expiry_p50"]      = _mc.get("mc_expiry_p50")
+                c["mc_expiry_p75"]      = _mc.get("mc_expiry_p75")
+                c["mc_expiry_p90"]      = _mc.get("mc_expiry_p90")
+                c["distribution_model_version"] = _mc.get("distribution_model_version")
+                # Zone probabilities (price-space, structure-specific)
+                for _zk in ("mc_zone_below_long", "mc_zone_between", "mc_zone_above_short",
+                            "mc_zone_below_put_long", "mc_zone_in_loss_put", "mc_zone_in_profit",
+                            "mc_zone_in_loss_call", "mc_zone_above_call_long",
+                            "mc_zone_below_short"):
+                    if _zk in _mc:
+                        c[_zk] = _mc[_zk]
+
+            # P1-B: evidence volume for this (structure, regime) pair
+            _struct_key  = c.get("structure") or ""
+            _regime_key  = row.get("market_regime") or ""
+            _ev_n        = _count_comparable_trades(_struct_key, _regime_key)
+            _conf_tier   = _confidence_tier(_ev_n)
+
+            # P1-D: repair lineage — original_candidate_id is repair_of for max-depth=1
+            _repair_of   = c.get("repair_of")
+            _orig_cid    = _repair_of  # None for original candidates
 
             result.append({
-                "row":             row,
-                "candidate":       c,
-                "ev":              round(ev, 4),
-                "ev_delta_proxy":  ev_delta_proxy,
-                "ev_mc":           ev_mc,
-                "ev_is_proxy":     ev_is_proxy,
-                "meets_both":      (
+                "row":                  row,
+                "candidate":            c,
+                "ev":                   round(ev, 4),
+                "ev_delta_proxy":       ev_delta_proxy,
+                "ev_mc":                ev_mc,
+                "ev_is_proxy":          ev_is_proxy,
+                "meets_both":           (
                     bool(c.get("meets_min_profit"))
                     and c.get("meets_max_loss") is not False
                 ),
-                "iv_edge_vp":      iv_edge_vp,
-                "iv_edge_label":   iv_edge_label,
-                "pred_dist":       pred_dist,
-                "liquidity_score": _liq_score,   # Gate 8 score; None when gate disabled
+                "iv_edge_vp":           iv_edge_vp,
+                "iv_edge_label":        iv_edge_label,
+                "pred_dist":            pred_dist,
+                "liquidity_score":      _liq_score,
+                "evidence_n":           _ev_n,
+                "confidence_tier":      _conf_tier,
+                "original_candidate_id": _orig_cid,
             })
 
     if _rejections:
@@ -1096,6 +1179,49 @@ def filter_candidates(rows, paper_trade: bool = False, buying_power: float | Non
             log.info(f"[filter] strikes_incomplete by structure: "
                      f"{dict(_si_structs.most_common())}")
         log.debug(f"[filter] rejection detail: {_rejections}")
+
+    # P1-D: Capture the complete pre-dedup candidate universe as the decision snapshot.
+    # This preserves all repair variants and gate-surviving candidates before the
+    # within-group dedup collapses them.  Stored fields are the minimal set needed
+    # to reconstruct the decision state at entry: candidate identity, repair lineage,
+    # gates passed, EV, POP, composite (not yet computed here), and rejection reason.
+    decision_snapshot = [
+        {
+            "candidate_id":          _r["candidate"].get("candidate_id"),
+            "structure":             _r["candidate"].get("structure"),
+            "ticker":                _r["row"].get("ticker") or _r["candidate"].get("ticker"),
+            "expiry":                _r["row"].get("expiry") or _r["candidate"].get("expiry"),
+            "repair_of":             _r["candidate"].get("repair_of"),
+            "original_candidate_id": _r["original_candidate_id"],
+            "ev":                    _r["ev"],
+            "ev_mc":                 _r["ev_mc"],
+            "ev_is_proxy":           _r["ev_is_proxy"],
+            "pop":                   _r["candidate"].get("pop"),
+            "evidence_n":            _r["evidence_n"],
+            "confidence_tier":       _r["confidence_tier"],
+            "disposition":           "survived_filter",
+            "rejection_reason":      None,
+        }
+        for _r in result
+    ] + [
+        {
+            "candidate_id":          _rej.get("candidate_id"),
+            "structure":             _rej.get("structure"),
+            "ticker":                _rej.get("ticker"),
+            "expiry":                _rej.get("expiry"),
+            "repair_of":             _rej.get("repair_of"),
+            "original_candidate_id": _rej.get("repair_of"),
+            "ev":                    None,
+            "ev_mc":                 None,
+            "ev_is_proxy":           None,
+            "pop":                   None,
+            "evidence_n":            None,
+            "confidence_tier":       None,
+            "disposition":           "rejected",
+            "rejection_reason":      _rej.get("gate"),
+        }
+        for _rej in _rejections
+    ]
 
     # Within-group dedup: keep best EV per (ticker, structure, expiry).
     # Prevents multiple repair variants of the same thesis from all surviving
@@ -1120,7 +1246,7 @@ def filter_candidates(rows, paper_trade: bool = False, buying_power: float | Non
                 _before, len(result), _before - len(result),
             )
 
-    return result, _cap_rejected
+    return result, _cap_rejected, decision_snapshot
 
 
 def _latest_greeks(trade: dict) -> dict:
@@ -1318,7 +1444,7 @@ def _suggested_allocation(composite: float) -> float:
     return _g("allocation", "tier3_pct", 1.0)
 
 
-def rank_candidates(rows, n=3, score_fn=None, quality_floor=None, open_positions=None, paper_trade: bool = False, buying_power: float | None = None, _cap_rejected_out: list | None = None):  # noqa: score_fn kept for API compat
+def rank_candidates(rows, n=3, score_fn=None, quality_floor=None, open_positions=None, paper_trade: bool = False, buying_power: float | None = None, _cap_rejected_out: list | None = None, _decision_meta_out: list | None = None):  # noqa: score_fn kept for API compat
     """
     Steps 3-5: Score → best per ticker → quality gate → rank tickers → top-n.
 
@@ -1330,10 +1456,27 @@ def rank_candidates(rows, n=3, score_fn=None, quality_floor=None, open_positions
     always return the top-n by score regardless of quality threshold — every
     outcome, good or bad, is training data.
     """
-    items, _cap_rej = filter_candidates(rows, paper_trade=paper_trade, buying_power=buying_power)
+    _n_evaluated = len(rows)   # candidates entering the full pipeline
+    items, _cap_rej, _dec_snapshot = filter_candidates(rows, paper_trade=paper_trade, buying_power=buying_power)
     if _cap_rejected_out is not None:
         _cap_rejected_out.extend(_cap_rej)
+    _n_survived_filter = len(items)
+
     if not items:
+        if _decision_meta_out is not None:
+            _decision_meta_out.append({
+                "status":                       "NO_TRADE",
+                "reason":                       "NO_CANDIDATES_SURVIVED_FILTER",
+                "best_score":                   None,
+                "required_score":               None,
+                "candidates_evaluated":         _n_evaluated,
+                "candidates_survived_filter":   0,
+                "candidates_cleared_quality_gate": 0,
+                "portfolio_eligible":           0,
+                "market_regime":                None,
+                "repair_summary":               [],
+                "decision_snapshot":            _dec_snapshot,
+            })
         return []
 
     # Step 3a: Percentile-rank EV (capital-normalized) across surviving candidates.
@@ -1448,6 +1591,33 @@ def rank_candidates(rows, n=3, score_fn=None, quality_floor=None, open_positions
         item["ranker_score"] = ml.get("ranker_score")  # None when ranker not trained
         item["position_size_factor"] = _position_size_factor(ml)
 
+    # Repair lift: for each repair group, record original vs best repair composite.
+    # Collected here (after scoring, before dedup) for inclusion in decision_meta.
+    # Not optimised on — just accumulated for future diagnostic analysis.
+    _repair_summary: list = []
+    if _decision_meta_out is not None:
+        _orig_by_id   = {it["candidate"].get("candidate_id"): it for it in items
+                         if it["candidate"].get("repair_of") is None}
+        _repairs_by_orig: dict = {}
+        for _it in items:
+            _rof = _it["candidate"].get("repair_of")
+            if _rof is not None:
+                _repairs_by_orig.setdefault(_rof, []).append(_it)
+        for _oid, _orig_item in _orig_by_id.items():
+            _variants = _repairs_by_orig.get(_oid) or []
+            if not _variants:
+                continue
+            _best_repair = max(_variants, key=lambda x: x["composite"])
+            _repair_summary.append({
+                "original_candidate_id": _oid,
+                "structure":             _orig_item["candidate"].get("structure"),
+                "ticker":                _orig_item["row"].get("ticker"),
+                "original_composite":    _orig_item["composite"],
+                "best_repair_composite": _best_repair["composite"],
+                "repair_count":          len(_variants),
+                "repair_lift":           round(_best_repair["composite"] - _orig_item["composite"], 2),
+            })
+
     # Step 4: Best candidate per ticker (prefer higher ranker_score; fall back to composite)
     best: dict[str, dict] = {}
     for item in items:
@@ -1475,10 +1645,57 @@ def rank_candidates(rows, n=3, score_fn=None, quality_floor=None, open_positions
         log.debug(f"[rank] dynamic quality floor: {min_q:.1f} (static={static_floor}, p90={_dynamic_floor:.1f})")
     else:
         min_q = static_floor
+
+    _n_best_per_ticker  = len(best)
+    _best_score         = max((v["composite"] for v in best.values()), default=None)
+    _regime             = (items[0]["row"].get("market_regime") if items else None)
     best = {t: v for t, v in best.items() if v["composite"] >= min_q}
+    _n_cleared_quality  = len(best)
+
+    # P1-C: NO TRADE — quality gate eliminated all remaining tickers
+    if not best:
+        if _decision_meta_out is not None:
+            _decision_meta_out.append({
+                "status":                          "NO_TRADE",
+                "reason":                          "NO_QUALIFIED_CANDIDATES",
+                "best_score":                      _best_score,
+                "required_score":                  min_q,
+                "candidates_evaluated":            _n_evaluated,
+                "candidates_survived_filter":      _n_survived_filter,
+                "candidates_cleared_quality_gate": 0,
+                "portfolio_eligible":              0,
+                "market_regime":                   _regime,
+                "repair_summary":                  _repair_summary,
+                "decision_snapshot":               _dec_snapshot,
+            })
+        log.info(
+            "[rank] NO_TRADE(quality): best=%.1f required=%.1f survived_filter=%d regime=%s",
+            _best_score if _best_score is not None else -1, min_q,
+            _n_survived_filter, _regime,
+        )
+        return []
 
     # Step 4c: Portfolio risk check — removes tickers that breach concentration limits
     best = _portfolio_risk_check(best, open_positions or [])
+    _n_portfolio_eligible = len(best)
+
+    # P1-C: NO TRADE — portfolio concentration gate eliminated all quality-passing tickers
+    if not best:
+        if _decision_meta_out is not None:
+            _decision_meta_out.append({
+                "status":                          "NO_TRADE",
+                "reason":                          "PORTFOLIO_RISK_GATE",
+                "best_score":                      _best_score,
+                "required_score":                  min_q,
+                "candidates_evaluated":            _n_evaluated,
+                "candidates_survived_filter":      _n_survived_filter,
+                "candidates_cleared_quality_gate": _n_cleared_quality,
+                "portfolio_eligible":              0,
+                "market_regime":                   _regime,
+                "repair_summary":                  _repair_summary,
+                "decision_snapshot":               _dec_snapshot,
+            })
+        return []
 
     # Step 5: Rank by ranker_score (cross-sectional ML signal) when available,
     # fall back to composite score when ranker not trained.
@@ -1501,4 +1718,20 @@ def rank_candidates(rows, n=3, score_fn=None, quality_floor=None, open_positions
     result = ranked[:n]
     for item in result:
         item["suggested_allocation_pct"] = _suggested_allocation(item["composite"])
+
+    if _decision_meta_out is not None:
+        _decision_meta_out.append({
+            "status":                          "TRADE",
+            "reason":                          None,
+            "best_score":                      result[0]["composite"] if result else None,
+            "required_score":                  min_q,
+            "candidates_evaluated":            _n_evaluated,
+            "candidates_survived_filter":      _n_survived_filter,
+            "candidates_cleared_quality_gate": _n_cleared_quality,
+            "portfolio_eligible":              _n_portfolio_eligible,
+            "market_regime":                   _regime,
+            "repair_summary":                  _repair_summary,
+            "decision_snapshot":               _dec_snapshot,
+        })
+
     return result

@@ -6378,3 +6378,71 @@ C:\Python312\python\python.exe (PID 9288)
 2026-08-13 10:12:41,834 INFO Training snapshot written for paper trade 20260813AM_APP_COV_3
 2026-08-13 10:22:55,082 INFO [scan_morning] scan snapshots: 194 saved, 6 skipped (opened), 0 errors
 2026-08-13 10:22:55,091 INFO Scan snapshots: 194 saved, 6 skipped
+2026-08-14 10:00:05,604 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-08-14 10:00:05,618 INFO ml_cache disk file is stale (417782s) — trying DuckDB
+2026-08-14 10:00:12,337 INFO ml_cache loaded from DuckDB fallback: 83 tickers
+2026-08-14 10:00:12,348 INFO [prefetch] step 1 — batch daily history for 102 tickers
+2026-08-14 10:00:29,425 INFO [prefetch] daily history done: 102 ok, 0 fail  (17.1s)
+2026-08-14 10:00:29,425 INFO [prefetch] step 2 — batch weekly history for 101 tickers
+2026-08-14 10:00:45,262 INFO [prefetch] weekly history done: 101 ok, 0 fail  (32.9s)
+2026-08-14 10:00:45,273 INFO [prefetch] step 3+4 — expirations + chains for 101 tickers (serial)
+2026-08-14 10:02:40,358 INFO [prefetch] done in 148s — hist 102/102, weekly 101/101, exps 101/101, chains 407 (fail 0)
+2026-08-14 10:02:40,361 INFO [scan] cache ready — 711 total keys, 407 chain keys
+2026-08-14 10:02:42,557 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-14 10:02:42,575 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-14 10:02:42,821 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-14 10:02:42,827 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-14 10:02:42,943 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-14 10:02:43,403 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-14 10:03:10,583 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-14 10:03:10,583 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-14 10:03:14,246 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-14 10:03:17,050 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-14 10:03:17,426 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-14 10:03:18,664 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-14 10:03:19,034 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-14 10:03:21,126 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-14 10:03:21,641 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-14 10:04:19,256 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-14 10:06:47,902 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-14 10:07:04,500 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-08-14 10:07:22,104 WARNING persist_feature_snapshot failed for SHOP: ConnectionException: Connection Error: Can't open a connection to same database file with a different configuration than existing connections
+2026-08-14 10:07:22,256 WARNING persist_feature_snapshot failed for AMZN: ConnectionException: Connection Error: Can't open a connection to same database file with a different configuration than existing connections
+2026-08-14 10:08:05,510 WARNING persist_feature_snapshot failed for COST: ConnectionException: Connection Error: Can't open a connection to same database file with a different configuration than existing connections
+2026-08-14 10:08:20,149 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-14 10:08:20,172 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-14 10:08:45,314 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-14 10:08:45,330 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-14 10:08:55,520 WARNING persist_feature_snapshot failed for MA: IOException: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 4104)
+2026-08-14 10:08:56,473 WARNING persist_feature_snapshot failed for UNH: IOException: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 4104)
+2026-08-14 10:08:57,439 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-08-14 10:09:23,772 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-14 10:09:23,850 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-14 10:10:00,176 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-14 10:10:54,597 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-08-14 10:10:54,965 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-08-14 10:10:56,985 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-08-14 10:10:57,599 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-08-14 10:11:01,990 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-14 10:11:19,919 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-08-14 10:11:20,253 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-08-14 10:11:30,508 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-08-14 10:11:30,758 WARNING persist_feature_snapshot failed for GLD: IOException: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 4104)
+2026-08-14 10:11:30,875 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: IWM"}}}
+2026-08-14 10:11:30,891 WARNING persist_feature_snapshot failed for FCX: IOException: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 4104)
+2026-08-14 10:11:37,218 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-08-14 10:11:37,735 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
+2026-08-14 10:11:42,808 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-08-14 10:11:43,583 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}

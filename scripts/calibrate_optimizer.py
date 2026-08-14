@@ -479,7 +479,7 @@ def run_calibration(write: bool = False) -> dict:
 def _print_calibration_result(result: dict) -> None:
     print(f"\n=== Optimizer Calibration  run_id={result['run_id']} ===")
     dr = result["date_range"]
-    print(f"Data range        : {dr['from']} → {dr['to']}  ({result['n_trades']} labeled trades)")
+    print(f"Data range        : {dr['from']} -> {dr['to']}  ({result['n_trades']} labeled trades)")
     print(f"Grids hash        : {result['grids_hash']}")
     print(f"Buckets analyzed  : {result['n_buckets']}  ({result['low_conf_buckets']} flagged low-confidence)")
 
@@ -532,7 +532,7 @@ def _print_history(records: list[dict]) -> None:
     for r in records:
         dr  = r.get("date_range") or {}
         cm  = r.get("calibration_metrics") or {}
-        date_range = f"{dr.get('from','?')} → {dr.get('to','?')}"
+        date_range = f"{dr.get('from','?')} -> {dr.get('to','?')}"
         written    = "yes" if r.get("written") else "no"
         w_win  = f"{cm.get('weighted_win_rate', 0):.1%}" if cm else "—"
         w_pnl  = f"${cm.get('weighted_avg_pnl', 0):.3f}" if cm else "—"

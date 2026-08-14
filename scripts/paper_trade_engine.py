@@ -41,7 +41,8 @@ log = logging.getLogger(__name__)
 EDT        = ZoneInfo("America/New_York")
 _ROOT      = Path(__file__).parent.parent
 DATA_DIR   = _ROOT / "data"
-TRADES_PATH = DATA_DIR / "paper_trades.json"
+TRADES_PATH    = DATA_DIR / "paper_trades.json"
+DECISIONS_PATH = DATA_DIR / "scan_decisions.jsonl"
 
 
 _SETTINGS_DEFAULTS = {
@@ -562,8 +563,12 @@ def load_capital_rejected(days: int = 30, from_date: str | None = None, to_date:
 
 # ── Select top-3 (mirrors app.py build_top_trades without AI) ────────────────
 
-def _select_top3(rows, ml_snapshot: dict | None = None, open_positions: list | None = None, buying_power: float | None = None):
-    """Return (candidates, cap_rejected) using the shared filter/rank pipeline.
+def _select_top3(rows, ml_snapshot: dict | None = None, open_positions: list | None = None, buying_power: float | None = None, _decision_meta_out: list | None = None):
+    """Return (candidates, cap_rejected, rank_items) using the shared filter/rank pipeline.
+
+    rank_items: full ranked list from rank_candidates (all gate-surviving candidates,
+    pre-3-trade-cap) — passed to write_scan_candidate_snapshots for per-candidate
+    training snapshots.
 
     ml_snapshot: {ticker: pred_result} from predict_all or ml_cache. When
     provided it is attached to each row as row["ml"] so the confidence gate
@@ -593,7 +598,7 @@ def _select_top3(rows, ml_snapshot: dict | None = None, open_positions: list | N
     # low buying power), so fetch enough that there are fallbacks after those rejections.
     _n_fetch = max(15, 3 + len(_excluded) * 2 + 6)
     _cap_rejected_out: list = []
-    items = rank_candidates(rows, n=_n_fetch, quality_floor=0, open_positions=open_positions or [], paper_trade=True, buying_power=buying_power, _cap_rejected_out=_cap_rejected_out)
+    items = rank_candidates(rows, n=_n_fetch, quality_floor=0, open_positions=open_positions or [], paper_trade=True, buying_power=buying_power, _cap_rejected_out=_cap_rejected_out, _decision_meta_out=_decision_meta_out)
     # Return up to _n_fetch candidates (not capped at 3 here) so the caller's
     # capital gate and strike checks can skip expensive candidates and still fill 3 slots.
     result = []
@@ -634,6 +639,19 @@ def _select_top3(rows, ml_snapshot: dict | None = None, open_positions: list | N
             "entry_cvar_loss":       c.get("mc_cvar_loss"),
             "entry_prob_of_touch":   c.get("mc_prob_of_touch"),
             "entry_mc_vol_source":   c.get("mc_vol_source"),
+            # Phase 2A: S_T distribution snapshot at entry (observational)
+            "entry_mc_expiry_mean":   c.get("mc_expiry_mean"),
+            "entry_mc_expiry_median": c.get("mc_expiry_median"),
+            "entry_mc_expiry_p10":    c.get("mc_expiry_p10"),
+            "entry_mc_expiry_p25":    c.get("mc_expiry_p25"),
+            "entry_mc_expiry_p50":    c.get("mc_expiry_p50"),
+            "entry_mc_expiry_p75":    c.get("mc_expiry_p75"),
+            "entry_mc_expiry_p90":    c.get("mc_expiry_p90"),
+            "entry_distribution_model_version": c.get("distribution_model_version"),
+            "entry_mc_zone_below_long":    c.get("mc_zone_below_long"),
+            "entry_mc_zone_between":       c.get("mc_zone_between"),
+            "entry_mc_zone_above_short":   c.get("mc_zone_above_short"),
+            "entry_mc_zone_in_profit":     c.get("mc_zone_in_profit"),
             "meets_both":       item["meets_both"],
             "signal_score":     row.get("signal_score", 0) or 0,
             "signal_rating":    row.get("signal_rating", "Neutral"),
@@ -658,7 +676,7 @@ def _select_top3(rows, ml_snapshot: dict | None = None, open_positions: list | N
             "hv30":             row.get("hv30"),
             "iv_rank_52w":      row.get("iv_rank_52w"),
         })
-    return result, _cap_rejected_out
+    return result, _cap_rejected_out, items
 
 
 # ── ML scores snapshot at trade entry ─────────────────────────────────────────
@@ -850,9 +868,11 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
     else:
         log.debug("[circuit breaker] disabled — skipping loss/buying-power enforcement.")
 
-    candidates, _cap_rejected = _select_top3(rows, ml_snapshot=_ml_snapshot, open_positions=open_trades, buying_power=cb["buying_power"])
+    _decision_meta_out: list = []
+    candidates, _cap_rejected, _rank_items = _select_top3(rows, ml_snapshot=_ml_snapshot, open_positions=open_trades, buying_power=cb["buying_power"], _decision_meta_out=_decision_meta_out)
     _persist_capital_rejected(_cap_rejected)
     today_str = date.today().strftime("%Y%m%d")
+    scan_decision_id = f"{today_str}{scan_tag}"
     seen      = {t["id"] for t in trades}
     new       = []
     rank      = 0  # incremented only when a trade is actually recorded
@@ -1010,6 +1030,7 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
             "ranker_score":            c.get("ranker_score"),
             "position_size_factor":    c.get("position_size_factor"),
             "suggested_allocation_pct": c.get("suggested_allocation_pct"),
+            "scan_decision_id":         scan_decision_id,
             "ml_scores_at_entry":      _ml_scores_at_entry(c, _ml_snapshot),
             # Entry analytics — captured for post-hoc win-rate-by-pop and Greek-drift analysis
             "pop_at_entry":            c.get("pop"),
@@ -1039,6 +1060,33 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
 
     save_trades(trades)
 
+    # Phase 2 observational: persist the scan decision (TRADE or NO_TRADE) to DuckDB.
+    # This is the single source of truth for the full decision funnel — all future
+    # Phase 2 analysis (evidence_n vs outcome, NO TRADE counterfactuals, repair lift,
+    # selection quality) joins scan_decisions to training_snapshots via scan_decision_id.
+    try:
+        from scripts.training_data_collector import write_scan_decision as _wsd
+        _meta = _decision_meta_out[0] if _decision_meta_out else {
+            "status": "TRADE" if new else "NO_TRADE",
+            "reason": None,
+            "best_score": None, "required_score": None,
+            "candidates_evaluated": len(rows),
+            "candidates_survived_filter": None,
+            "candidates_cleared_quality_gate": None,
+            "portfolio_eligible": None,
+            "market_regime": None,
+            "decision_snapshot": [], "repair_summary": [],
+        }
+        _wsd(
+            meta=_meta,
+            scan_decision_id=scan_decision_id,
+            scan_date=date.today().isoformat(),
+            scan_time=scan_time,
+            trade_ids=[t["id"] for t in new],
+        )
+    except Exception as _dec_err:
+        log.warning(f"Scan decision write failed: {_dec_err}")
+
     # Write snapshots for ALL scanned tickers (not just top 3) so ML training
     # gets negative examples, scan-time features, and 100x more labeled rows.
     try:
@@ -1048,6 +1096,23 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
         log.info(f"Scan snapshots: {snap_result['saved']} saved, {snap_result['skipped']} skipped")
     except Exception as _snap_err:
         log.warning(f"Scan snapshot bulk write failed: {_snap_err}")
+
+    # Write one training_snapshot per gate-surviving candidate (ticker × structure).
+    # Complements write_scan_all_snapshots (which writes one row per ticker using only
+    # the recommended candidate); this captures all structures that cleared every gate,
+    # enabling SQL-based selection quality analysis across structure × outcome pairs.
+    try:
+        from scripts.training_data_collector import write_scan_candidate_snapshots
+        opened_tickers_for_cand = {t["ticker"] for t in new}
+        cand_result = write_scan_candidate_snapshots(
+            _rank_items, scan_decision_id, scan_time, opened_tickers_for_cand
+        )
+        log.info(
+            f"Candidate snapshots: {cand_result['saved']} saved, "
+            f"{cand_result['skipped']} skipped, {len(cand_result['errors'])} errors"
+        )
+    except Exception as _cand_err:
+        log.warning(f"Candidate snapshot write failed: {_cand_err}")
 
     return {"ok": True, "date": today_str, "recorded": len(new), "trades": new,
             "circuit_breaker": cb}

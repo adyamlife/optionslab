@@ -184,6 +184,45 @@ def _append(record: dict):
     insert_snapshot(record)
 
 
+def write_scan_decision(
+    meta: dict,
+    scan_decision_id: str,
+    scan_date: str,
+    scan_time: str,
+    trade_ids: list | None = None,
+) -> None:
+    """
+    Persist one scan decision to the scan_decisions table in DuckDB.
+
+    Called once per morning/afternoon scan regardless of TRADE or NO_TRADE
+    outcome.  This is the single write path for Phase 2 observational data —
+    no separate JSONL files, no side channels.
+
+    meta: the dict appended to _decision_meta_out by rank_candidates (P1-C).
+    trade_ids: list of paper trade IDs entered this scan (empty for NO_TRADE).
+    """
+    from scripts.db import insert_scan_decision as _ins
+    _ins({
+        "scan_decision_id":               scan_decision_id,
+        "scan_date":                      scan_date,
+        "scan_time":                      scan_time,
+        "status":                         meta.get("status"),
+        "reason":                         meta.get("reason"),
+        "best_score":                     meta.get("best_score"),
+        "required_score":                 meta.get("required_score"),
+        "candidates_evaluated":           meta.get("candidates_evaluated"),
+        "candidates_survived_filter":     meta.get("candidates_survived_filter"),
+        "candidates_cleared_quality_gate": meta.get("candidates_cleared_quality_gate"),
+        "portfolio_eligible":             meta.get("portfolio_eligible"),
+        "market_regime":                  meta.get("market_regime"),
+        "n_trades_entered":               len(trade_ids or []),
+        "trade_ids":                      trade_ids or [],
+        "decision_snapshot":              meta.get("decision_snapshot", []),
+        "repair_summary":                 meta.get("repair_summary", []),
+        "created_at":                     datetime.now().isoformat(),
+    })
+
+
 def _fetch_garch_vol(ticker: str) -> float | None:
     """Return GARCH(1,1) conditional vol (annualized) from saved model, or None."""
     try:
@@ -1184,6 +1223,8 @@ def label_pending_snapshots() -> dict:
         r["outcome"] = {**core, **_eligibility_masks(core),
                         **_provenance("hold_to_expiry", "yfinance", dte)}
         r["labeled_at"] = datetime.now().isoformat()
+        r["spot_at_expiry"] = round(s_t, 2)
+        r["zone_at_expiry"] = _zone_at_expiry(r.get("candidate"), s_t)
         labeled_count += 1
 
     from scripts.db import update_snapshot_labels
@@ -1393,6 +1434,8 @@ def relabel_previously_unlabelable() -> dict:
                 r["outcome"] = {**core, **_eligibility_masks(core),
                                 **_provenance("hold_to_expiry", settle_src, dte)}
                 r["labeled_at"] = datetime.now().isoformat()
+                r["spot_at_expiry"] = round(s_t, 2)
+                r["zone_at_expiry"] = _zone_at_expiry(r.get("candidate"), s_t)
                 relabeled += 1
                 continue
 
@@ -1520,6 +1563,8 @@ def relabel_low_confidence_labels() -> dict:
             r["outcome"] = {**core, **_eligibility_masks(core),
                             **_provenance("upgraded_from_estimate", new_src, dte)}
             r["labeled_at"] = datetime.now().isoformat()
+            r["spot_at_expiry"] = round(s_t, 2)
+            r["zone_at_expiry"] = _zone_at_expiry(candidate, s_t)
             changed.append(r)
             upgraded += 1
 
@@ -1556,6 +1601,101 @@ def _label_confidence(settlement_source: str, dte: float) -> float:
     except Exception:
         horizon = 5
     return round(max(0.0, 1.0 - abs(horizon - dte) / max(dte, 1.0)), 2)
+
+
+def _zone_at_expiry(candidate: dict, s_t: float) -> str | None:
+    """Classify where s_t landed relative to the trade's strikes at expiry."""
+    if s_t is None or candidate is None:
+        return None
+    structure = candidate.get("structure", "")
+
+    if structure == "Iron Condor":
+        pl = candidate.get("put_long_strike")
+        ps = candidate.get("put_short_strike")
+        cs = candidate.get("call_short_strike")
+        cl = candidate.get("call_long_strike")
+        if None in (pl, ps, cs, cl):
+            return None
+        if ps <= s_t <= cs:
+            return "full_win"
+        if (pl <= s_t < ps) or (cs < s_t <= cl):
+            return "partial_win"
+        return "loss"
+
+    if structure in ("Call Debit Spread", "Call Credit Spread",
+                     "Ratio Call Backspread"):
+        k_long  = candidate.get("long_strike")
+        k_short = candidate.get("short_strike")
+        if None in (k_long, k_short):
+            return None
+        lo, hi = sorted([k_long, k_short])
+        if s_t >= hi:
+            return "full_win"
+        if s_t >= lo:
+            return "partial_win"
+        return "loss"
+
+    if structure in ("Put Debit Spread", "Put Credit Spread",
+                     "Ratio Put Backspread"):
+        k_long  = candidate.get("long_strike")
+        k_short = candidate.get("short_strike")
+        if None in (k_long, k_short):
+            return None
+        lo, hi = sorted([k_long, k_short])
+        if s_t <= lo:
+            return "full_win"
+        if s_t <= hi:
+            return "partial_win"
+        return "loss"
+
+    if structure == "Cash Secured Put":
+        k = candidate.get("short_strike")
+        if k is None:
+            return None
+        return "full_win" if s_t >= k else "loss"
+
+    if structure == "Covered Call":
+        k = candidate.get("short_strike")
+        if k is None:
+            return None
+        return "partial_win" if s_t >= k else "full_win"
+
+    if structure in ("Long Call", "Long Put"):
+        k = candidate.get("long_strike") or candidate.get("short_strike")
+        if k is None:
+            return None
+        if structure == "Long Call":
+            return "full_win" if s_t > k else "loss"
+        return "full_win" if s_t < k else "loss"
+
+    if structure in ("Long Strangle", "Long Straddle"):
+        k_put  = candidate.get("put_short_strike") or candidate.get("short_strike")
+        k_call = candidate.get("call_short_strike") or candidate.get("long_strike")
+        if None in (k_put, k_call):
+            return None
+        lo, hi = sorted([k_put, k_call])
+        return "loss" if lo <= s_t <= hi else "full_win"
+
+    if structure == "Short Strangle":
+        k_put  = candidate.get("put_short_strike")
+        k_call = candidate.get("call_short_strike")
+        if None in (k_put, k_call):
+            return None
+        lo, hi = sorted([k_put, k_call])
+        return "full_win" if lo <= s_t <= hi else "loss"
+
+    if structure == "Risk Reversal":
+        k_put  = candidate.get("short_strike")   # short put
+        k_call = candidate.get("long_strike")    # long call
+        if None in (k_put, k_call):
+            return None
+        if s_t >= k_call:
+            return "full_win"
+        if s_t <= k_put:
+            return "loss"
+        return "partial_win"
+
+    return None
 
 
 def _eligibility_masks(outcome: dict) -> dict:
@@ -1792,6 +1932,9 @@ def label_rejected_candidates() -> dict:
                 "label_schema_version":  LABEL_SCHEMA_VERSION,
                 "quality_rule_set":      QUALITY_RULESET_FINGERPRINT,
             }
+            if s_t is not None:
+                r["spot_at_expiry"] = round(float(s_t), 2)
+                r["zone_at_expiry"] = _zone_at_expiry(candidate, float(s_t))
             changed.append(r)
             labeled += 1
 
@@ -2412,6 +2555,147 @@ def write_scan_all_snapshots(rows: list[dict], scan_time: str, opened_tickers: s
             log.warning(f"Scan snapshot write failed for {ticker}: {e}")
 
     log.info(f"[{source}] scan snapshots: {saved} saved, {skipped} skipped (opened), {len(errors)} errors")
+    return {"saved": saved, "skipped": skipped, "errors": errors}
+
+
+def write_scan_candidate_snapshots(
+    items: list[dict],
+    scan_decision_id: str,
+    scan_time: str,
+    entered_tickers: set[str],
+) -> dict:
+    """
+    Write one training_snapshot per gate-surviving candidate (ticker × structure).
+
+    Complements write_scan_all_snapshots (one row per ticker, recommended candidate only).
+    Captures every structure that cleared the filter + quality + portfolio gates so
+    SQL queries can analyse selection quality across structure × outcome pairs.
+
+    items: rank_candidates output — each dict has 'row', 'candidate', 'ev', 'composite',
+           'evidence_n', 'confidence_tier'.
+    entered_tickers: tickers already written by write_paper_trade_snapshot (skipped here
+                     to avoid duplicating rows that already have richer trade context).
+    """
+    from scripts.db import insert_snapshot
+    from datetime import datetime
+
+    source = f"scan_candidate_{scan_time}"
+    _now   = datetime.now().isoformat()
+    vix_price = _fetch_vix_now()
+    saved, skipped, errors = 0, 0, []
+
+    for item in items:
+        row       = item.get("row") or {}
+        candidate = item.get("candidate") or {}
+        ticker    = row.get("ticker") or candidate.get("ticker")
+        structure = candidate.get("structure") or ""
+
+        if not ticker or not structure:
+            skipped += 1
+            continue
+
+        # Tickers entered as paper trades already have a richer paper_trade_entry snapshot.
+        if ticker in entered_tickers:
+            skipped += 1
+            continue
+
+        try:
+            _struct_key = structure.replace(" ", "_").lower()
+            snapshot_id = f"scan-cand-{scan_decision_id}-{ticker}-{_struct_key}"
+
+            expiry = candidate.get("expiry") or row.get("expiry")
+            dte    = candidate.get("dte")    or row.get("dte")
+            spot   = row.get("spot")
+
+            record = {
+                "snapshot_id":             snapshot_id,
+                "collected_at":            _now,
+                "source":                  source,
+                "scan_decision_id":        scan_decision_id,
+                "ticker":                  ticker,
+                "spot":                    spot,
+                "iv_env":                  row.get("iv_env"),
+                "trend":                   row.get("trend"),
+                "weekly_trend":            row.get("weekly_trend"),
+                "regime":                  row.get("regime"),
+                "rsi":                     row.get("rsi"),
+                "macd_trend":              row.get("macd_trend"),
+                "adx":                     row.get("adx"),
+                "atm_iv":                  row.get("atm_iv"),
+                "iv_rank_proxy":           row.get("iv_rank_proxy"),
+                "hv20":                    row.get("hv20"),
+                "pcr":                     row.get("pcr"),
+                "vix":                     vix_price,
+                "earnings_days_away":      None,
+                "news_headlines":          [],
+                "status":                  row.get("status"),
+                "recommended_structure":   row.get("recommended_structure"),
+                "signal_score":            row.get("signal_score"),
+                "signal_pct":              row.get("signal_pct"),
+                "candidate":               candidate,
+                "expiry":                  expiry,
+                "dte":                     dte,
+                # Tier 1
+                "vol_oi_ratio":            row.get("vol_oi_ratio"),
+                "call_vol":                row.get("call_vol"),
+                "put_vol":                 row.get("put_vol"),
+                "iv_skew":                 row.get("vol_skew_pct"),
+                "short_interest_pct":      row.get("short_interest"),
+                "iv_term_slope":           row.get("iv_term_slope"),
+                "otm_pcr":                 None,
+                "beta_60d":                row.get("beta_60d"),
+                "atr_pct":                 row.get("atr_pct"),
+                "iv_rank_52w":             row.get("iv_rank_52w"),
+                "max_pain_strike":         row.get("max_pain_strike"),
+                "oi_concentration":        row.get("oi_concentration"),
+                "vvix":                    row.get("vvix"),
+                "vix_3m":                  row.get("vix_3m"),
+                "vix_term_slope":          row.get("vix_term_slope"),
+                "move_index":              row.get("move_index"),
+                # Tier 2-5
+                "sector_etf": None, "sector_trend": None, "sector_rsi": None,
+                "sector_iv_ratio": None, "sector_return_1d": None,
+                "spy_trend": None, "spy_rsi": None,
+                "qqq_trend": None, "qqq_rsi": None, "iwm_trend": None,
+                "iwm_rsi": None, "earnings_inside_expiry": None,
+                "news_sentiment_score": None, "analyst_rec_change": None,
+                "iv_skew_20d": None, "gex_proxy": None, "wings_iv_ratio": None,
+                "iv_change_5d":         row.get("iv_change_5d"),
+                "unusual_activity":     row.get("unusual_activity"),
+                "iv_hv_ratio":          row.get("iv_hv_ratio"),
+                "expected_move_pct":    row.get("expected_move_pct"),
+                "term_slope":           row.get("term_slope"),
+                "vol_pcr":              row.get("vol_pcr"),
+                "pcr_diverge":          row.get("pcr_diverge"),
+                "hy_oas":               row.get("hy_oas"),
+                "yield_10y":            row.get("yield_10y"),
+                "yield_3m":             row.get("yield_3m"),
+                "yield_curve":          row.get("yield_curve"),
+                "dollar_index":         None,
+                "fed_within_dte":       row.get("fed_within_dte"),
+                "cpi_within_dte":       row.get("cpi_within_dte"),
+                "garch_vol_at_entry":   None,
+                # P1-B evidence quality
+                "evidence_n":           item.get("evidence_n"),
+                "confidence_tier":      item.get("confidence_tier"),
+                # Composite score from rank_candidates (decision-quality signal)
+                "composite_score":      item.get("composite"),
+                # ML state at scan time
+                **_ml_scores_at_entry(ticker),
+                # Trade geometry, Greeks, optimizer opinion
+                **_extract_trade_fields(candidate, spot),
+                "paper_trade_id":  None,
+                "labeled":         False,
+                "outcome":         None,
+                "labeled_at":      None,
+            }
+            insert_snapshot(record)
+            saved += 1
+        except Exception as e:
+            errors.append({"ticker": ticker, "structure": structure, "error": str(e)})
+            log.warning(f"Candidate snapshot write failed for {ticker} {structure}: {e}")
+
+    log.info(f"[{source}] candidate snapshots: {saved} saved, {skipped} skipped, {len(errors)} errors")
     return {"saved": saved, "skipped": skipped, "errors": errors}
 
 

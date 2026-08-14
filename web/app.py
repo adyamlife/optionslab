@@ -1975,6 +1975,35 @@ def api_training_data_summary():
         return jsonify({"ok": False, "error": str(e)}), 500
 
 
+@app.route("/api/distribution-calibration")
+def api_distribution_calibration():
+    """
+    Phase 2B distribution calibration report (Tasks #20, #21, #22).
+
+    Query params:
+      analysis — zone | tail | implied | all  (default: all)
+    """
+    import io
+    import contextlib
+    from scripts.distribution_calibration import zone_calibration, tail_calibration, \
+        market_implied_vs_model, _dbload
+
+    analysis = request.args.get("analysis", "all").lower()
+    buf = io.StringIO()
+    try:
+        rows = _dbload()
+        with contextlib.redirect_stdout(buf):
+            if analysis in ("all", "zone"):
+                zone_calibration(rows)
+            if analysis in ("all", "tail"):
+                tail_calibration(rows)
+            if analysis in ("all", "implied"):
+                market_implied_vs_model(rows)
+        return jsonify({"ok": True, "report": buf.getvalue()})
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e), "partial": buf.getvalue()}), 500
+
+
 @app.route("/api/gate-analytics")
 def api_gate_analytics():
     """

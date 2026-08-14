@@ -16716,3 +16716,123 @@ _duckdb.IOException: IO Error: Cannot open file "C:\Project Y\data\ml_training.d
 2026-08-14 09:31:56 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 09:31:56] "[36mGET /static/css/login.css?v=1786713750 HTTP/1.1[0m" 304 -
 2026-08-14 09:31:56 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 09:31:56] "[32mGET /favicon.ico HTTP/1.1[0m" 302 -
 2026-08-14 09:31:56 INFO     werkzeug: 127.0.0.1 - - [14/Aug/2026 09:31:56] "GET /login?next=/favicon.ico HTTP/1.1" 200 -
+2026-08-14 10:11:00 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\analyze.py', reloading
+2026-08-14 10:11:01 INFO     werkzeug:  * Restarting with stat
+2026-08-14 10:11:09 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-14 10:11:09 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-14 10:11:09 WARNING  werkzeug:  * Debugger is active!
+2026-08-14 10:11:09 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-14 10:11:16 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\analyze.py', reloading
+2026-08-14 10:11:16 INFO     werkzeug:  * Restarting with stat
+2026-08-14 10:11:23 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-14 10:11:23 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-14 10:11:23 WARNING  werkzeug:  * Debugger is active!
+2026-08-14 10:11:23 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-14 10:11:33 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\analyze.py', reloading
+2026-08-14 10:11:33 INFO     werkzeug:  * Restarting with stat
+2026-08-14 10:11:41 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-14 10:11:41 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-14 10:11:42 WARNING  werkzeug:  * Debugger is active!
+2026-08-14 10:11:42 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-14 10:16:08 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\candidate_ranker.py', reloading
+2026-08-14 10:16:08 INFO     werkzeug:  * Restarting with stat
+2026-08-14 10:16:14 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-14 10:16:14 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-14 10:16:14 WARNING  werkzeug:  * Debugger is active!
+2026-08-14 10:16:14 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-14 10:16:19 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\candidate_ranker.py', reloading
+2026-08-14 10:16:19 INFO     werkzeug:  * Restarting with stat
+2026-08-14 10:16:25 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-14 10:16:25 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-14 10:16:25 WARNING  werkzeug:  * Debugger is active!
+2026-08-14 10:16:25 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-14 10:16:37 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\candidate_ranker.py', reloading
+2026-08-14 10:16:37 INFO     werkzeug:  * Restarting with stat
+2026-08-14 10:16:42 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-14 10:16:42 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-14 10:16:42 WARNING  werkzeug:  * Debugger is active!
+2026-08-14 10:16:42 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-14 10:16:46 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\candidate_ranker.py', reloading
+2026-08-14 10:16:46 INFO     werkzeug:  * Restarting with stat
+2026-08-14 10:16:52 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-14 10:16:52 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-14 10:16:52 WARNING  werkzeug:  * Debugger is active!
+2026-08-14 10:16:52 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-14 10:16:53 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\candidate_ranker.py', reloading
+2026-08-14 10:16:54 INFO     werkzeug:  * Restarting with stat
+2026-08-14 10:16:59 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-14 10:16:59 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-14 10:16:59 WARNING  werkzeug:  * Debugger is active!
+2026-08-14 10:16:59 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-14 10:17:17 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\candidate_ranker.py', reloading
+2026-08-14 10:17:18 INFO     werkzeug:  * Restarting with stat
+2026-08-14 10:17:23 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-14 10:17:23 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-14 10:17:23 WARNING  werkzeug:  * Debugger is active!
+2026-08-14 10:17:23 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-14 10:17:24 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\backtest_mc_ab.py', reloading
+2026-08-14 10:17:24 INFO     werkzeug:  * Restarting with stat
+2026-08-14 10:17:29 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-14 10:17:29 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-14 10:17:29 WARNING  werkzeug:  * Debugger is active!
+2026-08-14 10:17:29 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-14 10:24:27 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\candidate_ranker.py', reloading
+2026-08-14 10:24:28 INFO     werkzeug:  * Restarting with stat
+2026-08-14 10:24:31 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-14 10:24:31 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-14 10:24:31 WARNING  werkzeug:  * Debugger is active!
+2026-08-14 10:24:31 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-14 10:25:11 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\candidate_ranker.py', reloading
+2026-08-14 10:25:11 INFO     werkzeug:  * Restarting with stat
+2026-08-14 10:25:14 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-14 10:25:14 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-14 10:25:14 WARNING  werkzeug:  * Debugger is active!
+2026-08-14 10:25:14 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-14 10:27:16 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\tests\\test_pop_ev_debit_regression.py', reloading
+2026-08-14 10:27:17 INFO     werkzeug:  * Restarting with stat
+2026-08-14 10:27:20 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-14 10:27:20 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-14 10:27:20 WARNING  werkzeug:  * Debugger is active!
+2026-08-14 10:27:20 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-14 10:36:47 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\paper_trade_engine.py', reloading
+2026-08-14 10:36:48 INFO     werkzeug:  * Restarting with stat
+2026-08-14 10:36:54 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-14 10:36:54 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-14 10:36:54 WARNING  werkzeug:  * Debugger is active!
+2026-08-14 10:36:54 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-14 10:44:58 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\db.py', reloading
+2026-08-14 10:44:59 INFO     werkzeug:  * Restarting with stat
+2026-08-14 10:45:02 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-14 10:45:02 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-14 10:45:02 WARNING  werkzeug:  * Debugger is active!
+2026-08-14 10:45:02 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-14 10:45:12 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\training_data_collector.py', reloading
+2026-08-14 10:45:12 INFO     werkzeug:  * Restarting with stat
+2026-08-14 10:45:15 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-14 10:45:15 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-14 10:45:15 WARNING  werkzeug:  * Debugger is active!
+2026-08-14 10:45:15 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-14 10:45:18 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\paper_trade_engine.py', reloading
+2026-08-14 10:45:18 INFO     werkzeug:  * Restarting with stat
+2026-08-14 10:45:21 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-14 10:45:21 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-14 10:45:21 WARNING  werkzeug:  * Debugger is active!
+2026-08-14 10:45:21 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-14 10:45:25 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\paper_trade_engine.py', reloading
+2026-08-14 10:45:26 INFO     werkzeug:  * Restarting with stat
+2026-08-14 10:45:29 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-14 10:45:29 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-14 10:45:29 WARNING  werkzeug:  * Debugger is active!
+2026-08-14 10:45:29 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-14 10:45:33 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\paper_trade_engine.py', reloading
+2026-08-14 10:45:36 INFO     werkzeug:  * Restarting with stat
+2026-08-14 10:45:39 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-14 10:45:39 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-14 10:45:39 WARNING  werkzeug:  * Debugger is active!
+2026-08-14 10:45:40 INFO     werkzeug:  * Debugger PIN: 570-262-726
+2026-08-14 10:45:51 INFO     werkzeug:  * Detected change in 'C:\\Project Y\\scripts\\paper_trade_engine.py', reloading
+2026-08-14 10:45:51 INFO     werkzeug:  * Restarting with stat
+2026-08-14 10:45:55 INFO     app: Loaded 142 scheduler run entries from disk
+2026-08-14 10:45:55 INFO     app: Scheduler disabled via secrets.toml [scheduler] enabled=false
+2026-08-14 10:45:55 WARNING  werkzeug:  * Debugger is active!
+2026-08-14 10:45:55 INFO     werkzeug:  * Debugger PIN: 570-262-726

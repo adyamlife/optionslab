@@ -957,7 +957,7 @@ def enumerate_ds_repair_variants(
         if width <= 0:
             continue
         max_profit = round(width - debit, 3)
-        pop, ev = pop_ev_debit(long_row["delta"], debit, width)
+        pop, ev = pop_ev_debit(long_row["delta"], debit, width, short_row["delta"])
         meets_profit, profit_msg = profit_note(max_profit, min_profit_amount)
         meets_loss, loss_msg = loss_note(debit, width_target)
         _nd, _nth, _ngm, _nvg = _net_greeks(spot, T, long_row, short_row, option_type)
@@ -1051,11 +1051,43 @@ def pop_ev_credit(short_delta, credit, width):
     return round(pop * 100, 1), round(ev, 3)
 
 
-def pop_ev_debit(long_delta, debit, width):
-    """Approx probability of profit (long leg finishes ITM) and expected value."""
-    pop = max(0.0, min(1.0, abs(long_delta)))
+def pop_ev_debit(long_delta, debit, width, short_delta=None):
+    """3-outcome analytical EV for debit spreads.
+
+    Uses both leg deltas when available:
+      P(full_win)    ≈ |delta_short|              — short expires ITM, max profit captured
+      P(loss)        ≈ 1 − |delta_long|            — long expires OTM, full debit lost
+      P(partial_win) ≈ |delta_long| − |delta_short| — long ITM but short not, partial profit
+      EV_partial     ≈ 0.5 × max_profit            — midpoint of partial zone
+
+    Falls back to binary formula when short_delta is unavailable.
+    Probabilities are clamped to [0,1] and normalised to sum exactly to 1.
+    """
     max_profit = width - debit
-    ev = pop * max_profit - (1 - pop) * debit
+    if long_delta is None:
+        return 0.0, round(-debit, 3)
+
+    p_long = max(0.0, min(1.0, abs(float(long_delta))))
+
+    if short_delta is not None:
+        p_short = max(0.0, min(1.0, abs(float(short_delta))))
+        # |delta_short| ≤ |delta_long| because short is further OTM
+        p_full_win  = min(p_short, p_long)
+        p_partial   = max(0.0, p_long - p_full_win)
+        p_loss      = max(0.0, 1.0 - p_long)
+        # Normalise to guard against delta-input edge cases
+        _total = p_full_win + p_partial + p_loss
+        if _total > 0:
+            p_full_win /= _total
+            p_partial  /= _total
+            p_loss     /= _total
+        ev  = p_full_win * max_profit + p_partial * (0.5 * max_profit) - p_loss * debit
+        pop = p_long        # P(any profit) = P(long finishes ITM)
+    else:
+        # Fallback: binary (preserves backward compat)
+        pop = p_long
+        ev  = pop * max_profit - (1 - pop) * debit
+
     return round(pop * 100, 1), round(ev, 3)
 
 
@@ -1720,7 +1752,7 @@ def optimize_debit_spread(df, option_type, min_oi=0, min_profit_amount=0, max_lo
             if debit <= 0 or width <= 0 or debit >= width:
                 continue
             max_loss = debit
-            pop, ev = pop_ev_debit(long_row["delta"], debit, width)
+            pop, ev = pop_ev_debit(long_row["delta"], debit, width, short_row["delta"])
             entry = {"long": long_row, "short": short_row, "debit": debit,
                      "width": width, "pop": pop, "ev": ev, "max_loss": max_loss}
             if best_overall is None or ev > best_overall["ev"]:
@@ -2577,7 +2609,7 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
     elif long_call_d is not None and short_call_d is not None and short_call_d["strike"] > long_call_d["strike"]:
         debit = long_call_d["ask"] - short_call_d["bid"]
         width_d = short_call_d["strike"] - long_call_d["strike"]
-        pop, ev = pop_ev_debit(long_call_d["delta"], debit, width_d)
+        pop, ev = pop_ev_debit(long_call_d["delta"], debit, width_d, short_call_d["delta"])
         max_profit_d = width_d - debit
         meets_profit, profit_msg = profit_note(max_profit_d, min_profit_amount)
         meets_loss, loss_msg = loss_note(debit, width_target)
@@ -2617,7 +2649,7 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
     elif long_put_d is not None and short_put_d is not None and short_put_d["strike"] < long_put_d["strike"]:
         debit = long_put_d["ask"] - short_put_d["bid"]
         width_d = long_put_d["strike"] - short_put_d["strike"]
-        pop, ev = pop_ev_debit(long_put_d["delta"], debit, width_d)
+        pop, ev = pop_ev_debit(long_put_d["delta"], debit, width_d, short_put_d["delta"])
         max_profit_d = width_d - debit
         meets_profit, profit_msg = profit_note(max_profit_d, min_profit_amount)
         meets_loss, loss_msg = loss_note(debit, width_target)

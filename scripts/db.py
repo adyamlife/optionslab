@@ -298,7 +298,33 @@ CREATE TABLE IF NOT EXISTS {SNAPSHOTS_TABLE} (
     quality_score      DOUBLE,
     -- Schema version: records which feature set this row was written with
     -- 1 = market context only, 2 = + geometry/Greeks, 3 = + optimizer opinions
-    feature_schema_version INTEGER
+    feature_schema_version INTEGER,
+    -- Phase 2 observational: evidence quality and ranking composite at scan time
+    evidence_n             INTEGER,
+    confidence_tier        VARCHAR,
+    composite_score        DOUBLE,
+    -- Phase 2A: S_T expiry price distribution snapshot (observational, not used in ranking)
+    mc_expiry_mean         DOUBLE,
+    mc_expiry_median       DOUBLE,
+    mc_expiry_p10          DOUBLE,
+    mc_expiry_p25          DOUBLE,
+    mc_expiry_p50          DOUBLE,
+    mc_expiry_p75          DOUBLE,
+    mc_expiry_p90          DOUBLE,
+    distribution_model_version VARCHAR,
+    -- Zone probabilities (price-space, structure-specific)
+    mc_zone_below_long     DOUBLE,
+    mc_zone_between        DOUBLE,
+    mc_zone_above_short    DOUBLE,
+    mc_zone_in_profit      DOUBLE,
+    mc_zone_below_put_long DOUBLE,
+    mc_zone_in_loss_put    DOUBLE,
+    mc_zone_in_loss_call   DOUBLE,
+    mc_zone_above_call_long DOUBLE,
+    mc_zone_below_short    DOUBLE,
+    -- Task #17/#18: top-level expiry outcome columns (queryable without JSON parse)
+    spot_at_expiry         DOUBLE,
+    zone_at_expiry         VARCHAR
 )
 """
 
@@ -599,6 +625,32 @@ def ensure_snapshot_tables() -> None:
             ("trade_structure",        "VARCHAR"),
             # Normalized signal alignment score (bounded [-1,1]) — replaces raw signal_score in training
             ("signal_pct",             "DOUBLE"),
+            # Phase 2 observational: link to the scan decision that produced this snapshot
+            ("scan_decision_id",       "VARCHAR"),
+            # P1-B evidence quality and ranking composite (scan_candidate rows)
+            ("evidence_n",             "INTEGER"),
+            ("confidence_tier",        "VARCHAR"),
+            ("composite_score",        "DOUBLE"),
+            # Phase 2A: S_T expiry price distribution (observational)
+            ("mc_expiry_mean",         "DOUBLE"),
+            ("mc_expiry_median",       "DOUBLE"),
+            ("mc_expiry_p10",          "DOUBLE"),
+            ("mc_expiry_p25",          "DOUBLE"),
+            ("mc_expiry_p50",          "DOUBLE"),
+            ("mc_expiry_p75",          "DOUBLE"),
+            ("mc_expiry_p90",          "DOUBLE"),
+            ("distribution_model_version", "VARCHAR"),
+            ("mc_zone_below_long",     "DOUBLE"),
+            ("mc_zone_between",        "DOUBLE"),
+            ("mc_zone_above_short",    "DOUBLE"),
+            ("mc_zone_in_profit",      "DOUBLE"),
+            ("mc_zone_below_put_long", "DOUBLE"),
+            ("mc_zone_in_loss_put",    "DOUBLE"),
+            ("mc_zone_in_loss_call",   "DOUBLE"),
+            ("mc_zone_above_call_long","DOUBLE"),
+            ("mc_zone_below_short",    "DOUBLE"),
+            ("spot_at_expiry",         "DOUBLE"),
+            ("zone_at_expiry",         "VARCHAR"),
         ]:
             try:
                 con.execute(f"ALTER TABLE {SNAPSHOTS_TABLE} ADD COLUMN {col} {typ}")
@@ -606,6 +658,94 @@ def ensure_snapshot_tables() -> None:
                 pass  # column already exists
         con.commit()
     _snapshot_tables_ready = True
+
+
+# ---------------------------------------------------------------------------
+# Phase 2: scan_decisions table — one row per morning/afternoon scan
+# ---------------------------------------------------------------------------
+
+_SCAN_DECISIONS_DDL = """
+CREATE TABLE IF NOT EXISTS scan_decisions (
+    scan_decision_id              VARCHAR PRIMARY KEY,
+    scan_date                     VARCHAR NOT NULL,
+    scan_time                     VARCHAR NOT NULL,
+    status                        VARCHAR NOT NULL,
+    reason                        VARCHAR,
+    best_score                    DOUBLE,
+    required_score                DOUBLE,
+    candidates_evaluated          INTEGER,
+    candidates_survived_filter    INTEGER,
+    candidates_cleared_quality_gate INTEGER,
+    portfolio_eligible            INTEGER,
+    market_regime                 VARCHAR,
+    n_trades_entered              INTEGER,
+    trade_ids                     JSON,
+    decision_snapshot             JSON,
+    repair_summary                JSON,
+    created_at                    VARCHAR NOT NULL
+)
+"""
+
+_scan_decisions_ready = False
+
+
+def ensure_scan_decisions_table() -> None:
+    global _scan_decisions_ready
+    if _scan_decisions_ready:
+        return
+    with connect() as con:
+        con.execute(_SCAN_DECISIONS_DDL)
+        con.execute(
+            "CREATE INDEX IF NOT EXISTS idx_scan_decisions_date "
+            "ON scan_decisions (scan_date, scan_time)"
+        )
+        con.commit()
+    _scan_decisions_ready = True
+
+
+def insert_scan_decision(record: dict) -> None:
+    """Persist one scan decision record (TRADE or NO_TRADE)."""
+    import json as _json
+    ensure_scan_decisions_table()
+
+    def _ser(v):
+        if v is None or isinstance(v, (str, int, float, bool)):
+            return v
+        return _json.dumps(v, default=str)
+
+    with connect() as con:
+        con.execute(
+            """
+            INSERT OR REPLACE INTO scan_decisions (
+                scan_decision_id, scan_date, scan_time,
+                status, reason, best_score, required_score,
+                candidates_evaluated, candidates_survived_filter,
+                candidates_cleared_quality_gate, portfolio_eligible,
+                market_regime, n_trades_entered, trade_ids,
+                decision_snapshot, repair_summary, created_at
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+            """,
+            [
+                record.get("scan_decision_id"),
+                record.get("scan_date"),
+                record.get("scan_time"),
+                record.get("status"),
+                record.get("reason"),
+                record.get("best_score"),
+                record.get("required_score"),
+                record.get("candidates_evaluated"),
+                record.get("candidates_survived_filter"),
+                record.get("candidates_cleared_quality_gate"),
+                record.get("portfolio_eligible"),
+                record.get("market_regime"),
+                record.get("n_trades_entered", 0),
+                _ser(record.get("trade_ids", [])),
+                _ser(record.get("decision_snapshot", [])),
+                _ser(record.get("repair_summary", [])),
+                record.get("created_at"),
+            ],
+        )
+        con.commit()
 
 
 _FEATURE_METADATA_DDL = """
@@ -851,12 +991,15 @@ def update_snapshot_labels(records: list[dict]) -> int:
     with connect() as con:
         for r in records:
             con.execute(
-                f"UPDATE {SNAPSHOTS_TABLE} SET labeled=?, outcome=?, labeled_at=? "
+                f"UPDATE {SNAPSHOTS_TABLE} "
+                f"SET labeled=?, outcome=?, labeled_at=?, spot_at_expiry=?, zone_at_expiry=? "
                 f"WHERE snapshot_id=?",
                 [
                     bool(r.get("labeled")),
                     _json.dumps(r.get("outcome")),
                     r.get("labeled_at"),
+                    r.get("spot_at_expiry"),
+                    r.get("zone_at_expiry"),
                     r["snapshot_id"],
                 ],
             )

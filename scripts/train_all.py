@@ -10,6 +10,7 @@ Steps (in order):
   6. POP classifier         → data/models/pop_classifier.joblib  (skips if < min data)
   7. Probability calibration — isotonic regression on all classifiers
   8. Grid calibration        — delta/width optimizer grids from labeled outcomes
+  9. Distribution calibration — zone/tail/implied vs MC (Phase 2B; skips if < min data)
 
 Run:
   python -m scripts.train_all                   # full pipeline, grid calibration dry-run
@@ -131,6 +132,20 @@ def step_calibrate_optimizer(write_grids: bool):
     _print_calibration_result(result)
 
 
+def step_distribution_calibration():
+    import io, contextlib
+    from scripts.distribution_calibration import zone_calibration, tail_calibration, \
+        market_implied_vs_model, _dbload
+    rows = _dbload()
+    buf  = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        zone_calibration(rows)
+        tail_calibration(rows)
+        market_implied_vs_model(rows)
+    for line in buf.getvalue().splitlines():
+        log.info("  %s", line)
+
+
 def _log_train_result(label: str, result: dict):
     if not result:
         return
@@ -205,6 +220,9 @@ def main():
 
     with _step(8, "Grid calibration (delta/width optimizer)"):
         step_calibrate_optimizer(write_grids=args.write_grids)
+
+    with _step(9, "Distribution calibration (zone/tail/implied)"):
+        step_distribution_calibration()
 
     _print_summary()
 

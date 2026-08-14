@@ -192,6 +192,80 @@ def simulate_paths(
     return T, mn, mx, "gbm"
 
 
+def _distribution_version(vol_source: str, art: dict | None) -> str:
+    """
+    Compact version tag for the forecasting assumptions used in this run.
+    Allows calibration data from different model versions to be separated.
+    Format: '<engine>:<fitted_at|v1>'
+    """
+    if vol_source == "garch" and art is not None:
+        fitted = art.get("fitted_at") or art.get("trained_at") or "unknown"
+        # Truncate to date only if it's a full ISO timestamp
+        if isinstance(fitted, str) and len(fitted) > 10:
+            fitted = fitted[:10]
+        return f"garch:{fitted}"
+    return "gbm:v1"
+
+
+def _zone_probs(candidate: dict, S_T: np.ndarray) -> dict:
+    """
+    Compute S_T zone probabilities relative to the candidate's strike structure.
+    All probabilities are 0–100 rounded to 1 decimal.
+
+    Two-leg (CDS/PDS/CCS/PCS):
+        below_long  = P(S_T < long_strike)
+        between     = P(long_strike <= S_T <= short_strike) — price-ordered
+        above_short = P(S_T > short_strike)
+
+    Iron Condor:
+        below_put_long  = P(S_T < put_long)
+        in_loss_put     = P(put_long <= S_T < put_short)
+        in_profit       = P(put_short <= S_T <= call_short)
+        in_loss_call    = P(call_short < S_T <= call_long)
+        above_call_long = P(S_T > call_long)
+
+    Single-leg (CSP/CC):
+        below_short = P(S_T < short_strike)
+        above_short = P(S_T >= short_strike)
+    """
+    n = len(S_T)
+
+    # Iron condor
+    pl = candidate.get("put_long_strike")
+    ps = candidate.get("put_short_strike")
+    cs = candidate.get("call_short_strike")
+    cl = candidate.get("call_long_strike")
+    if all(v is not None for v in (pl, ps, cs, cl)):
+        return {
+            "mc_zone_below_put_long":  round(float(np.mean(S_T < pl))  * 100, 1),
+            "mc_zone_in_loss_put":     round(float(np.mean((S_T >= pl) & (S_T < ps))) * 100, 1),
+            "mc_zone_in_profit":       round(float(np.mean((S_T >= ps) & (S_T <= cs))) * 100, 1),
+            "mc_zone_in_loss_call":    round(float(np.mean((S_T > cs) & (S_T <= cl))) * 100, 1),
+            "mc_zone_above_call_long": round(float(np.mean(S_T > cl))  * 100, 1),
+        }
+
+    # Two-leg
+    long_k  = candidate.get("long_strike")
+    short_k = candidate.get("short_strike")
+    if long_k is not None and short_k is not None:
+        lo, hi = min(long_k, short_k), max(long_k, short_k)
+        return {
+            "mc_zone_below_long":   round(float(np.mean(S_T < lo))                   * 100, 1),
+            "mc_zone_between":      round(float(np.mean((S_T >= lo) & (S_T <= hi)))  * 100, 1),
+            "mc_zone_above_short":  round(float(np.mean(S_T > hi))                   * 100, 1),
+        }
+
+    # Single-leg
+    short_k = candidate.get("short_strike")
+    if short_k is not None:
+        return {
+            "mc_zone_below_short": round(float(np.mean(S_T < short_k))  * 100, 1),
+            "mc_zone_above_short": round(float(np.mean(S_T >= short_k)) * 100, 1),
+        }
+
+    return {}
+
+
 def run_mc(ticker: str, row: dict, candidate: dict,
            n_sims: int = DEFAULT_N_SIMS) -> dict | None:
     """
@@ -207,6 +281,7 @@ def run_mc(ticker: str, row: dict, candidate: dict,
     dte            = candidate.get("dte") if candidate.get("dte") is not None else row.get("dte")
     risk_free_rate = row.get("risk_free_rate") or RISK_FREE_RATE
 
+    art = _load_garch_art(ticker) if ticker else None
     S_T, path_min, path_max, vol_source = simulate_paths(
         ticker, spot, iv, dte, risk_free_rate, n_sims=n_sims
     )
@@ -241,6 +316,10 @@ def run_mc(ticker: str, row: dict, candidate: dict,
     tail  = pnl[pnl <= var_5]
     cvar_loss = round(float(tail.mean()), 3) if len(tail) > 0 else 0.0
 
+    # S_T price-space distribution summary (Phase 2A — observational only,
+    # not fed into ranking until calibration validates the forecast).
+    _pcts = np.percentile(S_T, [10, 25, 50, 75, 90])
+
     return {
         "prob_of_touch":   prob_of_touch,
         "worst_loss_95":   round(float(np.percentile(pnl, 5)), 3),
@@ -251,6 +330,16 @@ def run_mc(ticker: str, row: dict, candidate: dict,
         "cvar_loss":       cvar_loss,
         "vol_source":      vol_source,
         "n_sims":          n_sims,
+        # S_T distribution summary
+        "mc_expiry_mean":   round(float(np.mean(S_T)), 4),
+        "mc_expiry_median": round(float(np.median(S_T)), 4),
+        "mc_expiry_p10":    round(float(_pcts[0]), 4),
+        "mc_expiry_p25":    round(float(_pcts[1]), 4),
+        "mc_expiry_p50":    round(float(_pcts[2]), 4),
+        "mc_expiry_p75":    round(float(_pcts[3]), 4),
+        "mc_expiry_p90":    round(float(_pcts[4]), 4),
+        "distribution_model_version": _distribution_version(vol_source, art),
+        **_zone_probs(candidate, S_T),
     }
 
 
