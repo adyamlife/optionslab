@@ -1446,6 +1446,70 @@ def load_all_ticker_profiles() -> dict[str, dict]:
         return {}
 
 
+# ---------------------------------------------------------------------------
+# Ticker Forecast Calibration tables
+# ---------------------------------------------------------------------------
+
+_TICKER_FORECAST_LOG_DDL = """
+CREATE TABLE IF NOT EXISTS ticker_forecast_log (
+    id              VARCHAR PRIMARY KEY,
+    ticker          VARCHAR NOT NULL,
+    forecast_date   DATE    NOT NULL,
+    scan_timestamp  VARCHAR NOT NULL,
+    expiry_date     DATE    NOT NULL,
+    dte             INTEGER NOT NULL,
+    spot            DOUBLE,
+    atm_iv          DOUBLE,
+    model_version   VARCHAR,
+    p10             DOUBLE,
+    p25             DOUBLE,
+    p50             DOUBLE,
+    p75             DOUBLE,
+    p90             DOUBLE
+)
+"""
+
+_TICKER_FORECAST_VALIDATION_DDL = """
+CREATE TABLE IF NOT EXISTS ticker_forecast_validation (
+    id                  VARCHAR PRIMARY KEY,
+    ticker              VARCHAR NOT NULL,
+    forecast_date       DATE    NOT NULL,
+    expiry_date         DATE    NOT NULL,
+    actual_price        DOUBLE,
+    actual_price_date   DATE,
+    dte_bucket          VARCHAR,
+    in_80pct            BOOLEAN,
+    in_50pct            BOOLEAN,
+    above_p50           BOOLEAN,
+    below_p10           BOOLEAN,
+    above_p90           BOOLEAN,
+    pct_error_p50       DOUBLE,
+    validated_at        VARCHAR
+)
+"""
+
+_forecast_tables_ready = False
+
+
+def ensure_forecast_tables() -> None:
+    global _forecast_tables_ready
+    if _forecast_tables_ready:
+        return
+    with connect() as con:
+        con.execute(_TICKER_FORECAST_LOG_DDL)
+        con.execute(_TICKER_FORECAST_VALIDATION_DDL)
+        con.execute(
+            "CREATE UNIQUE INDEX IF NOT EXISTS idx_forecast_log_uniq "
+            "ON ticker_forecast_log (ticker, forecast_date, expiry_date, model_version)"
+        )
+        con.execute(
+            "CREATE INDEX IF NOT EXISTS idx_forecast_val_expiry "
+            "ON ticker_forecast_validation (expiry_date, ticker)"
+        )
+        con.commit()
+    _forecast_tables_ready = True
+
+
 def load_chain_index_from_db() -> dict:
     """
     Rebuild the chain lookup index from DuckDB:

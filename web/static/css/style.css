@@ -1076,6 +1076,31 @@ span.pt-live-loading {
 .pt-drift-placeholder,
 .pt-tracking-placeholder { /* querySelector targets — styled by lp-analysis-placeholder */ }
 
+/* ── MC entry distribution bar ───────────────────────────────────────────── */
+.pt-mc-wrap {
+  margin: .75rem 0 .4rem;
+  padding: .55rem .75rem .3rem;
+  background: var(--bg-subtle);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+.pt-mc-header {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: .78rem; margin-bottom: .1rem;
+}
+.pt-mc-title { color: var(--text-muted); }
+.pt-mc-modeltag {
+  font-size: .68rem; color: var(--text-muted); opacity: .75;
+  font-family: monospace; background: var(--bg-card);
+  padding: .1rem .35rem; border-radius: 3px; border: 1px solid var(--border);
+}
+.pt-mc-backfill { opacity: .55; }
+.pt-mc-plotly { width: 100%; }
+.pt-mc-entry-tag {
+  margin-left: .6rem; font-size: .75rem;
+  color: var(--text-muted); font-weight: 400;
+}
+
 .pt-card-footer {
   display: flex;
   justify-content: flex-end;
@@ -3837,3 +3862,29 @@ span.pt-live-loading {
   border-top: 1px solid var(--clr-border-light, #eee);
   padding-top: 0.35rem; margin-top: 0.1rem;
 }
+
+/* ── MC entry distribution chart (open position cards) ─────────────────── */
+.pt-mc-wrap {
+  margin: .75rem 0 .4rem;
+  padding: .55rem .75rem .3rem;
+  background: var(--bg-subtle);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+.pt-mc-header {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: .78rem; margin-bottom: .1rem;
+}
+.pt-mc-title { color: var(--text-muted); }
+.pt-mc-modeltag {
+  font-size: .68rem; color: var(--text-muted); opacity: .75;
+  font-family: monospace; background: var(--bg-card);
+  padding: .1rem .35rem; border-radius: 3px; border: 1px solid var(--border);
+}
+.pt-mc-backfill { opacity: .55; }
+.pt-mc-plotly { width: 100%; }
+.pt-mc-entry-tag {
+  margin-left: .6rem; font-size: .75rem;
+  color: var(--text-muted); font-weight: 400;
+}
+

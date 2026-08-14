@@ -50,6 +50,21 @@
     </div>
   </section>
 
+  <!-- Forecast Calibration Stats -->
+  <section class="card" style="margin-bottom:1.2rem">
+    <h3>Database — Ticker Forecast Calibration
+      <span class="muted" style="font-size:.8rem;font-weight:400;margin-left:.5rem">MC price-distribution accuracy · adjust <code>vol_adj_factor</code> after 4+ weeks</span>
+    </h3>
+    <div class="sched-grid" id="forecast-stats">
+      <div class="sched-stat"><span class="sched-label">Forecasts logged</span><span id="fc-log-rows" class="sched-val">…</span></div>
+      <div class="sched-stat"><span class="sched-label">Validated</span><span id="fc-val-rows" class="sched-val">…</span></div>
+      <div class="sched-stat"><span class="sched-label">80% Coverage</span><span id="fc-cov80" class="sched-val">…</span></div>
+      <div class="sched-stat"><span class="sched-label">50% Coverage</span><span id="fc-cov50" class="sched-val">…</span></div>
+      <div class="sched-stat"><span class="sched-label">Bias (median p50)</span><span id="fc-bias" class="sched-val">…</span></div>
+      <div class="sched-stat"><span class="sched-label">vol_adj_factor</span><span id="fc-vol-adj" class="sched-val">…</span></div>
+    </div>
+  </section>
+
   <!-- ML Cache -->
   <section class="card" style="margin-bottom:1.2rem">
     <h3>ML Cache</h3>
@@ -133,6 +148,10 @@
           <option value="daily_iv_collect">Daily IV Collect</option>
           <option value="weekly_profile_build">Weekly Profile Build</option>
           <option value="weekly_calibration">Weekly Calibration Check</option>
+        </optgroup>
+        <optgroup label="Forecast Calibration">
+          <option value="forecast_collect">Ticker Forecast Collect</option>
+          <option value="forecast_calibration">Forecast Calibration</option>
         </optgroup>
       </select>
       <button class="btn-sm" id="log-refresh-btn">Refresh</button>

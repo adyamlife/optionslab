@@ -373,6 +373,12 @@ roi_low_iv          = 0.06    # paper-trade low-IV override
 min_liquidity_score = 0.30    # paper-trade override: collect diverse structures (live uses 0.60)
 max_trades_per_structure = 2  # cap any single structure from filling all slots; promotes diversity in training data
 
+[model]
+# IV scaling factor applied before every MC simulation.
+# Diagnostic-only for the first 4 weeks of calibration data — do not adjust until
+# ticker_forecast_calibration.py shows consistent directional bias with n >= 4 weeks.
+vol_adj_factor = 1.00
+
 [ai]
 primary_provider  = "groq"
 primary_model     = "llama-3.3-70b-versatile"

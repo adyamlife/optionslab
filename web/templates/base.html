@@ -38,9 +38,10 @@
           Reports <span class="nav-caret">&#9662;</span>
         </button>
         <div class="nav-dropdown-menu">
-          <a href="/reports"    {% if page == 'reports'    %}class="active"{% endif %}>Gate Analytics</a>
-          <a href="/mispricing" {% if page == 'mispricing' %}class="active"{% endif %}>Mispricing</a>
-          <a href="/compare"    {% if page == 'compare'    %}class="active"{% endif %}>Compare</a>
+          <a href="/reports"        {% if page == 'reports'        %}class="active"{% endif %}>Gate Analytics</a>
+          <a href="/mispricing"     {% if page == 'mispricing'     %}class="active"{% endif %}>Mispricing</a>
+          <a href="/compare"        {% if page == 'compare'        %}class="active"{% endif %}>Compare</a>
+          <a href="/ticker-forecast"{% if page == 'ticker-forecast'%}class="active"{% endif %}>Ticker Forecast</a>
         </div>
       </div>
       {% endif %}

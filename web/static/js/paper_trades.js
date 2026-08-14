@@ -254,6 +254,138 @@ function buildProgressBar(credit, mark, target, stop, isDebit = false) {
 
 // ── Open trade card (collapsed by default) ────────────────────────────────────
 
+function buildMcBar(trade) {
+  const p10 = trade.entry_mc_expiry_p10;
+  const p25 = trade.entry_mc_expiry_p25;
+  const p50 = trade.entry_mc_expiry_p50;
+  const p75 = trade.entry_mc_expiry_p75;
+  const p90 = trade.entry_mc_expiry_p90;
+  if (p10 == null || p90 == null) return "";
+
+  const model = (trade.entry_distribution_model_version ?? "").toUpperCase();
+  const isBackfill = model.startsWith("BACKFILL");
+  const modelShort = isBackfill
+    ? "Backfill estimate"
+    : model.startsWith("GARCH") ? "GARCH model" : model.startsWith("GBM") ? "GBM model" : model;
+
+  const spot = trade.spot_at_entry;
+  const entryTag = spot != null
+    ? `<span class="pt-mc-entry-tag">Entry <strong>$${spot.toFixed(2)}</strong></span>`
+    : "";
+
+  const divId = `mc-chart-${trade.id.replace(/[^a-z0-9]/gi, "")}`;
+  return `<div class="pt-mc-wrap">
+    <div class="pt-mc-header">
+      <span class="pt-mc-title">Where is <strong>${esc(trade.ticker)}</strong> likely to be at expiry? ${entryTag}</span>
+      <span class="pt-mc-modeltag${isBackfill ? " pt-mc-backfill" : ""}" title="${esc(model)}">${esc(modelShort)}</span>
+    </div>
+    <div id="${divId}" class="pt-mc-plotly"></div>
+  </div>`;
+}
+
+function renderMcChart(trade) {
+  const p10 = trade.entry_mc_expiry_p10;
+  const p25 = trade.entry_mc_expiry_p25;
+  const p50 = trade.entry_mc_expiry_p50;
+  const p75 = trade.entry_mc_expiry_p75;
+  const p90 = trade.entry_mc_expiry_p90;
+  if (p10 == null || p90 == null) return;
+
+  const divId = `mc-chart-${trade.id.replace(/[^a-z0-9]/gi, "")}`;
+  const el = document.getElementById(divId);
+  if (!el || typeof Plotly === "undefined") return;
+
+  const spot = trade.spot_at_entry ?? null;
+  const pad  = (p90 - p10) * 0.12;
+  const xmin = p10 - pad;
+  const xmax = p90 + pad;
+  const fmt  = v => "$" + v.toFixed(2);
+
+  // Colour tokens from CSS vars (read computed)
+  const style   = getComputedStyle(document.documentElement);
+  const accent  = style.getPropertyValue("--accent").trim()       || "#4f8ef7";
+  const textMut = style.getPropertyValue("--text-muted").trim()   || "#888";
+  const bgCard  = style.getPropertyValue("--bg-card").trim()      || "#1e1e2e";
+
+  // ── Traces ────────────────────────────────────────────────────────────
+  // Stacked horizontal bars: left-gap | left-tail | core-50 | right-tail | right-gap
+  const traces = [
+    // invisible left spacer
+    { type:"bar", orientation:"h", x:[p10-xmin], base:xmin,
+      y:[""], marker:{color:"rgba(0,0,0,0)"}, hoverinfo:"skip", showlegend:false },
+    // left tail  p10→p25
+    { type:"bar", orientation:"h", x:[p25-p10], base:p10,
+      y:[""],
+      name:"Outer 25% (lower)",
+      hovertemplate:`<b>Lower zone</b><br>25% chance price is between ${fmt(p10)} and ${fmt(p25)}<extra></extra>`,
+      marker:{color:"rgba(251,191,36,0.35)", line:{color:"rgba(251,191,36,0.7)", width:1}} },
+    // core 50%  p25→p75
+    { type:"bar", orientation:"h", x:[p75-p25], base:p25,
+      y:[""],
+      name:"Middle 50%",
+      hovertemplate:`<b>Most likely zone</b><br>50% chance price is between ${fmt(p25)} and ${fmt(p75)}<extra></extra>`,
+      marker:{color:"rgba(79,142,247,0.55)", line:{color:"rgba(79,142,247,0.9)", width:1}} },
+    // right tail  p75→p90
+    { type:"bar", orientation:"h", x:[p90-p75], base:p75,
+      y:[""],
+      name:"Outer 25% (upper)",
+      hovertemplate:`<b>Upper zone</b><br>25% chance price is between ${fmt(p75)} and ${fmt(p90)}<extra></extra>`,
+      marker:{color:"rgba(251,191,36,0.35)", line:{color:"rgba(251,191,36,0.7)", width:1}} },
+    // invisible right spacer
+    { type:"bar", orientation:"h", x:[xmax-p90], base:p90,
+      y:[""], marker:{color:"rgba(0,0,0,0)"}, hoverinfo:"skip", showlegend:false },
+  ];
+
+  // ── Shapes: median line only ──────────────────────────────────────────
+  const shapes = [
+    { type:"line", x0:p50, x1:p50, y0:-0.45, y1:0.45, xref:"x", yref:"y",
+      line:{color:accent, width:2.5, dash:"solid"} },
+  ];
+
+  // ── Annotations: price labels ─────────────────────────────────────────
+  const labelY = -0.62;
+  const annotations = [
+    { x:p10, y:labelY, xref:"x", yref:"y", text:fmt(p10), showarrow:false,
+      font:{size:10, color:textMut}, xanchor:"center" },
+    { x:p25, y:labelY, xref:"x", yref:"y", text:fmt(p25), showarrow:false,
+      font:{size:10, color:"rgb(251,191,36)"}, xanchor:"center" },
+    { x:p50, y:labelY, xref:"x", yref:"y",
+      text:`<b>${fmt(p50)}</b><br><span style="font-size:9px">expected</span>`,
+      showarrow:false, font:{size:10, color:accent}, xanchor:"center" },
+    { x:p75, y:labelY, xref:"x", yref:"y", text:fmt(p75), showarrow:false,
+      font:{size:10, color:"rgb(251,191,36)"}, xanchor:"center" },
+    { x:p90, y:labelY, xref:"x", yref:"y", text:fmt(p90), showarrow:false,
+      font:{size:10, color:textMut}, xanchor:"center" },
+  ];
+
+  // ── Layout ────────────────────────────────────────────────────────────
+  const layout = {
+    barmode: "stack",
+    height: 110,
+    margin: { t:22, b:38, l:4, r:4 },
+    paper_bgcolor: "rgba(0,0,0,0)",
+    plot_bgcolor:  "rgba(0,0,0,0)",
+    xaxis: {
+      range: [xmin, xmax],
+      tickformat: "$.2f",
+      showgrid: false, zeroline: false,
+      showticklabels: false,
+      fixedrange: true,
+    },
+    yaxis: { showticklabels:false, showgrid:false, zeroline:false, fixedrange:true },
+    shapes,
+    annotations,
+    showlegend: false,
+    hovermode: "closest",
+  };
+
+  Plotly.newPlot(el, traces, layout, {
+    displayModeBar: false,
+    responsive: true,
+    staticPlot: false,
+  });
+}
+
 function buildTradeCard(trade, liveData) {
   const live      = liveData ?? {};
   const mark      = live.mark       ?? trade.latest_mark;
@@ -413,6 +545,8 @@ function buildTradeCard(trade, liveData) {
           return `<div class="pt-iv-flag pt-iv-flag-${cls}">⚠ IV Surface: ${esc(lastFlag)}</div>`;
         })()}
 
+        ${buildMcBar(trade)}
+
         <div class="pt-drift-placeholder"></div>
 
         <div class="pt-tracking-placeholder lp-analysis-placeholder">
@@ -557,6 +691,32 @@ function renderOpenTradesTable(trades) {
     });
   });
 
+  // Row click → expand inline MC bar detail
+  el.querySelectorAll("tbody tr[data-trade-id]").forEach(tr => {
+    tr.style.cursor = "pointer";
+    tr.addEventListener("click", e => {
+      if (e.target.closest(".pt-del-btn")) return;
+      const tradeId = tr.dataset.tradeId;
+      const existing = tr.nextElementSibling;
+      if (existing && existing.classList.contains("pt-row-detail")) {
+        existing.remove();
+        tr.classList.remove("pt-row-expanded");
+        return;
+      }
+      const trade = (_openTrades || []).find(t => t.id === tradeId);
+      if (!trade) return;
+      const mcHtml = buildMcBar(trade);
+      const detail = document.createElement("tr");
+      detail.className = "pt-row-detail";
+      detail.innerHTML = `<td colspan="11" style="padding:0 1rem 0.75rem;background:var(--bg-subtle)">
+        ${mcHtml || '<span class="muted" style="font-size:.8rem">No MC distribution data for this trade.</span>'}
+      </td>`;
+      tr.after(detail);
+      tr.classList.add("pt-row-expanded");
+      renderMcChart(trade);
+    });
+  });
+
   // Fetch current prices for all unique tickers and fill price cells
   const uniqueTickers = [...new Set(sorted.map(t => t.ticker).filter(Boolean))];
   if (uniqueTickers.length) {
@@ -583,6 +743,7 @@ function renderOpenTradesCards(trades) {
     return;
   }
   el.innerHTML = trades.map(t => buildTradeCard(t, null)).join("");
+  trades.forEach(t => renderMcChart(t));
   renderPortfolioSummary(trades, {});
 }
 

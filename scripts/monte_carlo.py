@@ -178,6 +178,19 @@ def simulate_paths(
     if spot is None or dte is None or dte <= 0:
         return None, None, None, "error"
 
+    # Apply vol_adj_factor from settings (diagnostic calibration scalar; default 1.0)
+    try:
+        import tomllib
+    except ImportError:
+        import tomli as tomllib
+    try:
+        _st = (Path(__file__).resolve().parent.parent / "config" / "settings.toml").read_text(encoding="utf-8")
+        _vol_adj = float(tomllib.loads(_st).get("model", {}).get("vol_adj_factor", 1.0))
+    except Exception:
+        _vol_adj = 1.0
+    if _vol_adj != 1.0 and iv is not None:
+        iv = iv * _vol_adj
+
     art = _load_garch_art(ticker) if ticker else None
     if art is not None:
         try:

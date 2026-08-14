@@ -1609,6 +1609,54 @@ def scheduler_page():
     return render_template("scheduler.html", page="scheduler")
 
 
+def _forecast_stats() -> dict:
+    try:
+        from scripts.db import connect, ensure_forecast_tables
+        import statistics as _stats
+        ensure_forecast_tables()
+        with connect(read_only=True) as con:
+            log_n = con.execute("SELECT COUNT(*) FROM ticker_forecast_log").fetchone()[0]
+            val_n = con.execute("SELECT COUNT(*) FROM ticker_forecast_validation").fetchone()[0]
+            metrics = con.execute("""
+                SELECT in_80pct, in_50pct, pct_error_p50
+                FROM ticker_forecast_validation
+                WHERE pct_error_p50 IS NOT NULL
+            """).fetchall()
+        cov80 = cov50 = bias_med = None
+        if metrics:
+            n = len(metrics)
+            cov80 = round(sum(1 for r in metrics if r[0]) / n, 3)
+            cov50 = round(sum(1 for r in metrics if r[1]) / n, 3)
+            errors = [r[2] for r in metrics if r[2] is not None]
+            bias_med = round(_stats.median(errors), 4) if errors else None
+        # vol_adj_factor from settings.toml
+        try:
+            import tomllib as _tl
+        except ImportError:
+            import tomli as _tl
+        _st = (Path(__file__).resolve().parent.parent / "config" / "settings.toml").read_text(encoding="utf-8")
+        vol_adj = float(_tl.loads(_st).get("model", {}).get("vol_adj_factor", 1.0))
+        return {
+            "log_rows": int(log_n),
+            "val_rows": int(val_n),
+            "cov80":    cov80,
+            "cov50":    cov50,
+            "bias_med": bias_med,
+            "vol_adj_factor": vol_adj,
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.route("/api/scheduler/run-forecast-collect", methods=["POST"])
+def api_run_forecast_collect():
+    def _collect():
+        from scripts.ticker_forecast_collector import collect
+        collect()
+    _run_in_bg("forecast_collect", _collect)
+    return jsonify({"ok": True, "message": "Ticker Forecast Collect started"})
+
+
 @app.route("/api/scheduler/status")
 def api_scheduler_status():
     import time
@@ -1742,15 +1790,17 @@ def api_scheduler_status():
         "scheduler_cfg": _scheduler_cfg,
         "scheduler_jobs": jobs,
         "job_status": {
-            "morning_scan":      _job_status("morning_scan"),
-            "afternoon_scan":    _job_status("afternoon_scan"),
-            "evening_check":     _job_status("evening_check"),
-            "training_collect":  _job_status("training_collect"),
-            "regime_backfill":   _job_status("regime_backfill"),
-            "train_models":      _job_status("train_models"),
-            "oi_open":           _job_status("oi_open"),
-            "oi_close":          _job_status("oi_close"),
-            "daily_archive":     _job_status("daily_archive"),
+            "morning_scan":         _job_status("morning_scan"),
+            "afternoon_scan":       _job_status("afternoon_scan"),
+            "evening_check":        _job_status("evening_check"),
+            "training_collect":     _job_status("training_collect"),
+            "regime_backfill":      _job_status("regime_backfill"),
+            "train_models":         _job_status("train_models"),
+            "oi_open":              _job_status("oi_open"),
+            "oi_close":             _job_status("oi_close"),
+            "daily_archive":        _job_status("daily_archive"),
+            "forecast_collect":     _job_status("forecast_collect"),
+            "forecast_calibration": _job_status("forecast_calibration"),
         },
         "ml_cache": {
             "warm":      _mlc.is_warm(),
@@ -1765,6 +1815,7 @@ def api_scheduler_status():
         },
         "collect_quality": _collect_quality_summary(),
         "layer_b": layer_b,
+        "forecast": _forecast_stats(),
     })
 
 
@@ -1973,6 +2024,148 @@ def api_training_data_summary():
         return jsonify({"ok": True, **tdc.get_dataset_summary()})
     except Exception as e:
         return jsonify({"ok": False, "error": str(e)}), 500
+
+
+@app.route("/ticker-forecast")
+def ticker_forecast_page():
+    return render_template("ticker_forecast.html")
+
+
+@app.route("/api/ticker-forecast")
+def api_ticker_forecast():
+    """
+    Run MC price distribution for each watchlist ticker across 8 weekly expiries.
+    Also returns latest signal data from training_snapshots.
+
+    Query params:
+      tickers — comma-separated override (default: full WATCHLIST)
+      n_sims  — MC simulations per run (default 300)
+    """
+    import concurrent.futures
+    import traceback
+    from datetime import date, timedelta
+    import yfinance as yf
+    from config.watchlist import WATCHLIST
+    from scripts.db import connect, SNAPSHOTS_TABLE, ensure_snapshot_tables
+    from scripts.monte_carlo import run_mc
+
+    try:
+        tickers_param = request.args.get("tickers", "")
+        tickers = [t.strip().upper() for t in tickers_param.split(",") if t.strip()] or WATCHLIST
+        n_sims  = int(request.args.get("n_sims", 300))
+
+        # ── Next 8 weekly Friday expiries ────────────────────────────────────
+        today = date.today()
+        expiries = []
+        d = today
+        while len(expiries) < 8:
+            d += timedelta(days=1)
+            if d.weekday() == 4:  # Friday
+                expiries.append(d)
+
+        # ── Latest signal + atm_iv per ticker from snapshots ─────────────────
+        from config.scoring import score_to_rating
+        ensure_snapshot_tables()
+        signal_map = {}
+        with connect(read_only=True) as con:
+            rows = con.execute(f"""
+                SELECT ticker, signal_score, signal_pct,
+                       recommended_structure, atm_iv, spot, collected_at
+                FROM {SNAPSHOTS_TABLE}
+                WHERE ticker IN ({','.join('?' * len(tickers))})
+                  AND atm_iv IS NOT NULL
+                QUALIFY ROW_NUMBER() OVER (PARTITION BY ticker ORDER BY collected_at DESC) = 1
+            """, tickers).fetchall()
+            for r in rows:
+                score = r[1]
+                pct   = r[2]
+                signal_map[r[0]] = {
+                    "signal_rating":         score_to_rating(pct) if pct is not None else None,
+                    "signal_score":          score,
+                    "signal_pct":            pct,
+                    "recommended_structure": r[3],
+                    "atm_iv":                r[4],
+                    "snap_spot":             r[5],
+                    "snap_date":             (r[6] or "")[:10],
+                }
+
+        # ── Current prices via yfinance batch ────────────────────────────────
+        try:
+            raw = yf.download(tickers, period="1d", auto_adjust=True, progress=False)
+            close = raw["Close"] if "Close" in raw else raw
+            current_prices = {t: float(close[t].dropna().iloc[-1])
+                              for t in tickers if t in close.columns and not close[t].dropna().empty}
+        except Exception:
+            current_prices = {}
+
+        # ── MC runner (price distribution only, no structure needed) ──────────
+        import numpy as np
+        from scripts.monte_carlo import simulate_paths
+        from config.rules import RISK_FREE_RATE
+
+        def _mc_one(ticker, expiry_date):
+            sig  = signal_map.get(ticker, {})
+            spot = current_prices.get(ticker) or sig.get("snap_spot")
+            iv   = sig.get("atm_iv")
+            if not spot or not iv:
+                return None
+            dte = (expiry_date - today).days
+            if dte < 1:
+                return None
+            try:
+                S_T, _, _, vol_source = simulate_paths(
+                    ticker, spot, iv, dte, RISK_FREE_RATE, n_sims=n_sims
+                )
+                if S_T is None:
+                    return None
+                pcts = np.percentile(S_T, [10, 25, 50, 75, 90])
+                return {
+                    "expiry": str(expiry_date),
+                    "dte":    dte,
+                    "p10":    round(float(pcts[0]), 4),
+                    "p25":    round(float(pcts[1]), 4),
+                    "p50":    round(float(pcts[2]), 4),
+                    "p75":    round(float(pcts[3]), 4),
+                    "p90":    round(float(pcts[4]), 4),
+                    "model":  vol_source,
+                }
+            except Exception:
+                return None
+
+        # ── Parallel execution ────────────────────────────────────────────────
+        tasks = [(t, exp) for t in tickers for exp in expiries]
+        results_map = {}
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
+            futures = {pool.submit(_mc_one, t, exp): (t, exp) for t, exp in tasks}
+            for fut in concurrent.futures.as_completed(futures):
+                t, exp = futures[fut]
+                week = fut.result()
+                if week:
+                    results_map.setdefault(t, []).append(week)
+
+        # ── Assemble response ─────────────────────────────────────────────────
+        output = []
+        for ticker in tickers:
+            sig   = signal_map.get(ticker, {})
+            weeks = sorted(results_map.get(ticker, []), key=lambda w: w["expiry"])
+            output.append({
+                "ticker":                ticker,
+                "spot":                  current_prices.get(ticker),
+                "signal_rating":         sig.get("signal_rating"),
+                "signal_score":          sig.get("signal_score"),
+                "signal_pct":            sig.get("signal_pct"),
+                "recommended_structure": sig.get("recommended_structure"),
+                "snap_date":             sig.get("snap_date"),
+                "weeks":                 weeks,
+            })
+
+        return jsonify({"ok": True, "tickers": output,
+                        "expiries": [str(e) for e in expiries],
+                        "n_sims": n_sims})
+    except Exception as _e:
+        return jsonify({"ok": False, "error": str(_e),
+                        "traceback": traceback.format_exc()}), 500
 
 
 @app.route("/api/distribution-calibration")

@@ -163,6 +163,8 @@ def score_to_rating(pct: float) -> str:
     scores produce the same label rather than jumping between Weak and Neutral
     on tiny score changes (see scoring.toml [rating] for thresholds).
     """
+    if pct is None:
+        return "Neutral"
     cfg = _cfg()
     r   = cfg["rating"]
     if pct >= r["strong"]:   return "Strong"

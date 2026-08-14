@@ -9,9 +9,11 @@ const JOB_META = {
   daily_archive:    { label: "Daily Archive (Bars/VIX/Earnings)", api: "/api/archive/run",                sched_id: "daily_archive", group: "Flywheel", api_body: {job:"all"} },
   regime_backfill:      { label: "Regime Backfill",                api: "/api/training-data/backfill-regime", sched_id: null, group: "ML" },
   train_models:         { label: "Train ML Models",                api: "/api/training-data/train-models",    sched_id: null, group: "ML" },
-  daily_iv_collect:     { label: "Daily IV Collect",               api: null, sched_id: null, group: "Layer B", schedule: "Mon–Fri 4:15 PM ET (cron)" },
-  weekly_profile_build: { label: "Weekly Profile Build",           api: null, sched_id: null, group: "Layer B", schedule: "Sun 8:00 PM ET (cron)" },
-  weekly_calibration:   { label: "Weekly Calibration Check",       api: null, sched_id: null, group: "Layer B", schedule: "Sun 9:00 PM ET (cron)" },
+  daily_iv_collect:          { label: "Daily IV Collect",               api: null, sched_id: null, group: "Layer B", schedule: "Mon–Fri 4:15 PM ET (cron)" },
+  weekly_profile_build:      { label: "Weekly Profile Build",           api: null, sched_id: null, group: "Layer B", schedule: "Sun 8:00 PM ET (cron)" },
+  weekly_calibration:        { label: "Weekly Calibration Check",       api: null, sched_id: null, group: "Layer B", schedule: "Sun 9:00 PM ET (cron)" },
+  forecast_collect:          { label: "Ticker Forecast Collect",        api: "/api/scheduler/run-forecast-collect", sched_id: "forecast_collect", group: "Forecast", schedule: "Mon–Fri after scan (cron)" },
+  forecast_calibration:      { label: "Forecast Calibration",           api: null, sched_id: null, group: "Forecast", schedule: "Sat/Sun 8:00 AM ET (cron)" },
 };
 
 const JOB_LABELS = {
@@ -24,9 +26,11 @@ const JOB_LABELS = {
   daily_archive:        "Daily Archive",
   regime_backfill:      "Regime Backfill",
   train_models:         "Train ML Models",
-  daily_iv_collect:     "Daily IV Collect",
-  weekly_profile_build: "Weekly Profile Build",
-  weekly_calibration:   "Weekly Calibration Check",
+  daily_iv_collect:          "Daily IV Collect",
+  weekly_profile_build:      "Weekly Profile Build",
+  weekly_calibration:        "Weekly Calibration Check",
+  forecast_collect:          "Ticker Forecast Collect",
+  forecast_calibration:      "Forecast Calibration",
 };
 
 const AUDIT_MODEL_LABELS = {
@@ -216,6 +220,24 @@ async function loadStatus() {
     });
     document.getElementById("lb-phase3-inline").textContent = "—";
   }
+
+  // Forecast calibration stats
+  const fc = data.forecast || {};
+  if (!fc.error) {
+    document.getElementById("fc-log-rows").textContent = fmt(fc.log_rows);
+    document.getElementById("fc-val-rows").textContent = fmt(fc.val_rows);
+    document.getElementById("fc-cov80").textContent    = fc.cov80  != null ? (fc.cov80 * 100).toFixed(1) + "%" : "—";
+    document.getElementById("fc-cov50").textContent    = fc.cov50  != null ? (fc.cov50 * 100).toFixed(1) + "%" : "—";
+    const bias = fc.bias_med;
+    const biasEl = document.getElementById("fc-bias");
+    biasEl.textContent = bias != null ? (bias >= 0 ? "+" : "") + (bias * 100).toFixed(2) + "%" : "—";
+    biasEl.style.color = bias == null ? "" : bias > 0.02 ? "var(--danger,#e55)" : bias < -0.02 ? "var(--danger,#e55)" : "var(--success,#4c8)";
+    document.getElementById("fc-vol-adj").textContent = fc.vol_adj_factor != null ? fc.vol_adj_factor.toFixed(2) : "—";
+  } else {
+    ["fc-log-rows","fc-val-rows","fc-cov80","fc-cov50","fc-bias","fc-vol-adj"].forEach(id => {
+      document.getElementById(id).textContent = "—";
+    });
+  }
 }
 
 document.getElementById("ml-refresh-btn").addEventListener("click", async function() {
@@ -288,7 +310,7 @@ async function loadLogs() {
     const dur = e.duration_s != null ? `${e.duration_s}s` : "—";
     const detail = e.state === "error"
       ? `<span class="state-error" title="${(e.trace || "").replace(/"/g,"'").slice(0,500)}">${(e.error || "").slice(0, 120)}</span>`
-      : `<span class="muted">${(e.summary || "").slice(0, 120)}</span>`;
+      : `<span class="muted">${(e.summary && e.summary !== "None" ? e.summary : "").slice(0, 120)}</span>`;
     return `<tr>
       <td class="muted" style="white-space:nowrap;font-size:.82rem">${t}</td>
       <td><strong>${lbl}</strong></td>
