@@ -45,7 +45,8 @@ NUMERIC_FEATURES = ["rsi", "adx", "hv20", "vix_close", "rel_strength_spy",
                     "iv_skew_20d", "gex_proxy", "max_pain_strike",
                     "oi_concentration", "wings_iv_ratio",
                     "yield_10y", "yield_3m", "yield_curve", "dollar_index",
-                    "fed_within_dte", "cpi_within_dte"]
+                    "fed_within_dte", "cpi_within_dte",
+                    "garch_conditional_var"]   # P3: GARCH daily conditional variance
 
 _CATEGORICAL_COLS = ("macd_trend", "trend", "spy_trend", "qqq_trend", "iwm_trend",
                      "sector_etf", "sector_trend")

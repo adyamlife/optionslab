@@ -234,8 +234,12 @@ def train(out_path=_MODEL_PATH) -> dict:
     }
     joblib.dump(artifact, out_path)
 
-    # ── Conditional calibration on val fold ──────────────────────────────────
+    # ── Calibration on val fold — always overwrites calibrated artifact ───────
+    # A-2: unconditional save prevents stale wrappers from surviving a retrain
+    # where calibration doesn't improve (the old bug that caused the Aug-15
+    # IsotonicCalibrator n_classes mismatch incident).
     brier_before = brier_after = None
+    cal_path = out_path.with_name(out_path.stem + "_calibrated.joblib")
     try:
         brier_before = float(np.mean([
             brier_score_loss((y_test == i).astype(int), proba[:, i])
@@ -249,16 +253,34 @@ def train(out_path=_MODEL_PATH) -> dict:
             brier_score_loss((y_test == i).astype(int), proba_cal[:, i])
             for i in range(3)
         ]))
-        if brier_after < brier_before:
-            joblib.dump({**artifact, "model": cal_model, "calibrated": True,
-                         "brier_before": round(brier_before, 4),
-                         "brier_after":  round(brier_after, 4)},
-                        out_path.with_name(out_path.stem + "_calibrated.joblib"))
+
+        # A-3: shape + probability-sum validation before replacing production artifact
+        _probe = cal_model.predict_proba(X_test[:1])
+        if _probe.shape != (1, 3):
+            raise ValueError(f"Calibrated model output shape {_probe.shape} != (1, 3)")
+        _psum = float(_probe[0].sum())
+        if abs(_psum - 1.0) > 1e-4:
+            raise ValueError(f"Calibrated probabilities don't sum to 1: {_psum:.6f}")
+
+        use_calibrated = brier_after < brier_before
+        cal_artifact = {
+            **artifact,
+            "model":          cal_model if use_calibrated else _final_model,
+            "calibrated":     use_calibrated,
+            "brier_before":   round(brier_before, 4),
+            "brier_after":    round(brier_after, 4),
+        }
+        joblib.dump(cal_artifact, cal_path)
+        if use_calibrated:
+            log.info("Calibration improved Brier (%.4f→%.4f); calibrated artifact saved",
+                     brier_before, brier_after)
         else:
-            log.info("Calibration did not improve Brier (%.4f→%.4f); raw model preferred",
+            log.info("Calibration did not improve Brier (%.4f→%.4f); raw model saved as calibrated artifact",
                      brier_before, brier_after)
     except Exception as e:
-        log.warning("Calibration failed: %s", e)
+        log.warning("Calibration failed (%s); saving raw model as calibrated artifact fallback", e)
+        # Always write something so the predictor never loads a stale prior-version artifact
+        joblib.dump({**artifact, "calibrated": False}, cal_path)
 
     return {
         "ok":               True,

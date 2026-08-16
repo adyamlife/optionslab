@@ -696,6 +696,9 @@ def _ml_scores_at_entry(candidate: dict, ml_snapshot: dict) -> dict:
     scores = {
         "regime":            ml.get("regime"),
         "regime_prob":       ml.get("regime_prob"),
+        "p_up":              ml.get("p_up"),
+        "p_flat":            ml.get("p_flat"),
+        "p_down":            ml.get("p_down"),
         "expected_return":   ml.get("expected_return"),
         "expected_vol":      ml.get("expected_vol"),
         "expected_move_pct": ml.get("expected_move_pct"),

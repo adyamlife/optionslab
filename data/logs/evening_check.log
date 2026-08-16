@@ -429,3 +429,133 @@ C:\Python312\python\python.exe (PID 10460)
 2026-08-13 17:01:11,779 INFO [FAILURES]   Put Credit Spread               35 trades  80% win  gap=0 theta=7
 2026-08-13 17:01:11,779 INFO [FAILURES]   Put Debit Spread                40 trades  42% win  gap=4 theta=19
 2026-08-13 17:01:11,779 INFO [FAILURES]   Short Call                      7 trades  71% win  gap=0 theta=2
+2026-08-14 17:00:11,735 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-08-14 17:00:31,731 ERROR $SOFI: possibly delisted; no price data found  (period=1d)
+2026-08-14 17:00:31,734 WARNING Cannot compute P&L for 20260715AM_SOFI_COV_1 on expiry day — will retry tonight
+2026-08-14 17:00:32,264 WARNING option_chain(LOW, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:32,460 WARNING option_chain(LOW, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:32,816 WARNING option_chain(PFE, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:33,021 WARNING option_chain(PFE, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:33,516 WARNING option_chain(JNJ, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:33,708 WARNING option_chain(JNJ, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:34,041 WARNING option_chain(AXP, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:34,228 WARNING option_chain(AXP, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:34,629 WARNING option_chain(SCHW, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:34,928 WARNING option_chain(SCHW, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:35,257 WARNING option_chain(JNJ, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:35,433 WARNING option_chain(JNJ, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:35,908 WARNING option_chain(MRK, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:36,489 WARNING option_chain(MRK, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:36,943 WARNING option_chain(XLE, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:37,177 WARNING option_chain(XLE, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:37,852 WARNING option_chain(LOW, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:38,125 WARNING option_chain(LOW, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:38,472 WARNING option_chain(SCHW, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:38,676 WARNING option_chain(SCHW, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:39,858 WARNING option_chain(AXP, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:40,301 WARNING option_chain(AXP, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:40,730 WARNING option_chain(SLB, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:40,915 WARNING option_chain(SLB, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:41,265 WARNING option_chain(WFC, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:41,467 WARNING option_chain(WFC, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:41,757 WARNING option_chain(SCHW, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:41,978 WARNING option_chain(SCHW, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:42,506 WARNING option_chain(NVDA, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:42,832 WARNING option_chain(NVDA, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:43,050 INFO EXPIRED 20260730AM_WFC_PDS_1: ul=88.78500366210938  P&L=$-182.50  LOSS
+2026-08-14 17:00:43,411 INFO [eval] trade 20260730AM_WFC_PDS_1 outcome recorded: loss -100.0%
+2026-08-14 17:00:43,877 WARNING option_chain(NVDA, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:44,113 WARNING option_chain(NVDA, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:44,832 INFO EXPIRED 20260731AM_WMT_CDS_2: ul=115.2699966430664  P&L=$219.50  WIN
+2026-08-14 17:00:44,952 INFO [eval] trade 20260731AM_WMT_CDS_2 outcome recorded: win +105.8%
+2026-08-14 17:00:45,323 WARNING option_chain(NVDA, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:45,716 WARNING option_chain(NVDA, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:47,462 INFO EXPIRED 20260731AM_WMT_CDS_1: ul=115.2699966430664  P&L=$222.00  WIN
+2026-08-14 17:00:47,475 INFO [eval] trade 20260731AM_WMT_CDS_1 outcome recorded: win +108.3%
+2026-08-14 17:00:47,859 WARNING option_chain(NVDA, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:48,032 WARNING option_chain(NVDA, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:48,483 INFO EXPIRED 20260803AM_QCOM_COV_3: ul=165.85000610351562  P&L=$-441.00  LOSS
+2026-08-14 17:00:48,496 INFO [eval] trade 20260803AM_QCOM_COV_3 outcome recorded: loss -306.2%
+2026-08-14 17:00:48,781 INFO EXPIRED 20260803PM_AXP_PDS_2: ul=342.42999267578125  P&L=$-228.00  LOSS
+2026-08-14 17:00:48,811 INFO [eval] trade 20260803PM_AXP_PDS_2 outcome recorded: loss -47.0%
+2026-08-14 17:00:49,047 INFO EXPIRED 20260803PM_TGT_CDS_3: ul=154.47999572753906  P&L=$319.00  WIN
+2026-08-14 17:00:49,058 INFO [eval] trade 20260803PM_TGT_CDS_3 outcome recorded: win +97.0%
+2026-08-14 17:00:49,206 INFO EXPIRED 20260804AM_TGT_CDS_1: ul=154.47999572753906  P&L=$576.00  WIN
+2026-08-14 17:00:49,241 INFO [eval] trade 20260804AM_TGT_CDS_1 outcome recorded: win +154.8%
+2026-08-14 17:00:49,944 WARNING option_chain(IWM, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:52,106 WARNING option_chain(IWM, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:54,234 WARNING option_chain(XLE, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:54,472 WARNING option_chain(XLE, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:54,889 WARNING option_chain(IWM, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:55,113 WARNING option_chain(IWM, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:55,482 WARNING option_chain(QCOM, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:55,666 WARNING option_chain(QCOM, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:56,016 WARNING option_chain(WMT, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:56,201 WARNING option_chain(WMT, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:56,670 WARNING option_chain(JNJ, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:56,869 WARNING option_chain(JNJ, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:57,291 WARNING option_chain(LOW, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:57,573 WARNING option_chain(LOW, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:58,166 WARNING option_chain(SLB, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:58,367 WARNING option_chain(SLB, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:58,860 WARNING option_chain(TSLA, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:59,079 WARNING option_chain(TSLA, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:59,420 WARNING option_chain(NKE, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:00:59,721 WARNING option_chain(NKE, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:00,278 WARNING option_chain(QCOM, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:00,601 WARNING option_chain(JNJ, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:00,801 WARNING option_chain(JNJ, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:01,250 WARNING option_chain(UPS, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:01,433 WARNING option_chain(UPS, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:02,101 WARNING option_chain(PFE, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:02,351 WARNING option_chain(PFE, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:03,025 WARNING option_chain(AXP, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:03,209 WARNING option_chain(AXP, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:03,532 INFO EXPIRED 20260805PM_TGT_CDS_2: ul=154.47999572753906  P&L=$496.00  WIN
+2026-08-14 17:01:03,554 INFO [eval] trade 20260805PM_TGT_CDS_2 outcome recorded: win +196.8%
+2026-08-14 17:01:04,027 WARNING option_chain(SLB, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:04,226 WARNING option_chain(SLB, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:04,644 WARNING option_chain(LOW, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:05,355 WARNING option_chain(UPS, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:06,103 WARNING option_chain(UPS, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:06,893 WARNING option_chain(VZ, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:09,337 WARNING option_chain(VZ, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:10,983 WARNING option_chain(JNJ, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:11,188 WARNING option_chain(JNJ, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:11,401 INFO EXPIRED 20260806PM_UPS_PDS_2: ul=104.5  P&L=$-136.50  LOSS
+2026-08-14 17:01:11,415 INFO [eval] trade 20260806PM_UPS_PDS_2 outcome recorded: loss -73.2%
+2026-08-14 17:01:11,957 WARNING option_chain(MRK, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:12,307 WARNING option_chain(MRK, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:12,934 WARNING option_chain(TGT, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:13,088 WARNING option_chain(TGT, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:13,390 INFO EXPIRED 20260807AM_MRK_CDS_2: ul=135.85000610351562  P&L=$438.50  WIN
+2026-08-14 17:01:13,506 INFO [eval] trade 20260807AM_MRK_CDS_2 outcome recorded: win +271.5%
+2026-08-14 17:01:14,121 WARNING option_chain(WMT, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:14,309 WARNING option_chain(WMT, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:14,781 WARNING option_chain(TGT, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:14,984 WARNING option_chain(TGT, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:15,409 WARNING option_chain(IWM, 2026-08-17) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:15,618 WARNING option_chain(IWM, 2026-08-17) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:16,197 WARNING option_chain(XLE, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:16,621 WARNING option_chain(XLE, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:17,021 WARNING option_chain(C, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:17,531 WARNING option_chain(C, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:18,017 WARNING option_chain(VZ, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:18,450 WARNING option_chain(VZ, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:18,796 WARNING option_chain(MRNA, 2026-08-28) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:19,083 WARNING option_chain(MRNA, 2026-08-28) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:19,473 WARNING option_chain(VST, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:19,797 WARNING option_chain(VST, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:20,442 WARNING option_chain(NEE, 2026-08-28) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:20,988 WARNING option_chain(NKE, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:21,365 WARNING option_chain(NKE, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:22,209 WARNING option_chain(APP, 2026-08-28) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:22,417 WARNING option_chain(APP, 2026-08-28) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:22,871 WARNING option_chain(VRT, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:23,446 WARNING option_chain(INTU, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:23,809 WARNING option_chain(C, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:24,019 WARNING option_chain(C, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:24,418 WARNING option_chain(MRNA, 2026-08-28) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:24,584 WARNING option_chain(MRNA, 2026-08-28) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:24,916 WARNING option_chain(T, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.
+2026-08-14 17:01:25,112 WARNING option_chain(T, 2026-08-21) failed: Too Many Requests. Rate limited. Try after a while.

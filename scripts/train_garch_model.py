@@ -29,7 +29,7 @@ Output: data/models/garch/{TICKER}.joblib
 import argparse
 import logging
 import sys
-from datetime import date
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 import joblib
@@ -150,6 +150,8 @@ def fit_garch(ticker: str, period: str = "2y") -> dict | None:
         "loglikelihood": float(res.loglikelihood),
         "n_obs":         int(len(ret)),
         "converged":     converged,
+        "fitted_at":     datetime.now(timezone.utc).isoformat(),
+        "data_end_date": str(hist.index[-1].date()),
         "last_fit_date": str(last_fit_date),
         "forecast_for":  str(forecast_for),
         "cond_vol_ann":  cond_vol_ann,

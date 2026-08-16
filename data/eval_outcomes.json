@@ -10,9 +10,9 @@
     "closed_at": "2026-08-04T21:00:19.708024+00:00"
   },
   "20260803AM_QCOM_COV_3": {
-    "actual_return_pct": -348.2,
+    "actual_return_pct": -306.25,
     "outcome": "loss",
-    "closed_at": "2026-08-04T21:00:50.438813+00:00"
+    "closed_at": "2026-08-14T21:00:48.491541+00:00"
   },
   "20260721AM_C_CAL_2": {
     "actual_return_pct": -9.61,
@@ -178,5 +178,50 @@
     "actual_return_pct": 111.5,
     "outcome": "win",
     "closed_at": "2026-08-13T21:00:20.825313+00:00"
+  },
+  "20260730AM_WFC_PDS_1": {
+    "actual_return_pct": -100.0,
+    "outcome": "loss",
+    "closed_at": "2026-08-14T21:00:43.402588+00:00"
+  },
+  "20260731AM_WMT_CDS_2": {
+    "actual_return_pct": 105.78,
+    "outcome": "win",
+    "closed_at": "2026-08-14T21:00:44.948860+00:00"
+  },
+  "20260731AM_WMT_CDS_1": {
+    "actual_return_pct": 108.29,
+    "outcome": "win",
+    "closed_at": "2026-08-14T21:00:47.464118+00:00"
+  },
+  "20260803PM_AXP_PDS_2": {
+    "actual_return_pct": -47.01,
+    "outcome": "loss",
+    "closed_at": "2026-08-14T21:00:48.792021+00:00"
+  },
+  "20260803PM_TGT_CDS_3": {
+    "actual_return_pct": 96.96,
+    "outcome": "win",
+    "closed_at": "2026-08-14T21:00:49.051440+00:00"
+  },
+  "20260804AM_TGT_CDS_1": {
+    "actual_return_pct": 154.84,
+    "outcome": "win",
+    "closed_at": "2026-08-14T21:00:49.222494+00:00"
+  },
+  "20260805PM_TGT_CDS_2": {
+    "actual_return_pct": 196.83,
+    "outcome": "win",
+    "closed_at": "2026-08-14T21:01:03.541435+00:00"
+  },
+  "20260806PM_UPS_PDS_2": {
+    "actual_return_pct": -73.19,
+    "outcome": "loss",
+    "closed_at": "2026-08-14T21:01:11.405466+00:00"
+  },
+  "20260807AM_MRK_CDS_2": {
+    "actual_return_pct": 271.52,
+    "outcome": "win",
+    "closed_at": "2026-08-14T21:01:13.502771+00:00"
   }
 }

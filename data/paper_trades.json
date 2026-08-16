@@ -8211,7 +8211,7 @@
     "signal_score": 0.312,
     "profit_target": 0.324,
     "stop_loss": 1.08,
-    "status": "open",
+    "status": "expired_profit",
     "snapshots": [
       {
         "ts": "2026-07-15T17:00:00.004554-04:00",
@@ -8450,7 +8450,21 @@
         "net_vega": -0.0
       }
     ],
-    "exit": null,
+    "exit": {
+      "ts": "2026-08-14T17:08:22.049471-04:00",
+      "reason": "expired",
+      "spread_val": 0.0,
+      "ul_price": 18.29,
+      "pnl_per_share": 0.36,
+      "pnl_total": 36.0,
+      "pnl_pct_of_max": 100.0,
+      "win": true,
+      "hit_tp": true,
+      "hit_sl": false,
+      "mae_pct": 0.0,
+      "mfe_pct": 98.6,
+      "days_held": 30
+    },
     "iv_edge_vp": 0.42,
     "iv_edge_label": "fair",
     "kelly_fraction": null,
@@ -8465,7 +8479,13 @@
     "scan_time": "morning",
     "ranker_score": null,
     "position_size_factor": null,
-    "suggested_allocation_pct": null
+    "suggested_allocation_pct": null,
+    "entry_mc_expiry_p10": 14.6303,
+    "entry_mc_expiry_p25": 16.1253,
+    "entry_mc_expiry_p50": 18.0824,
+    "entry_mc_expiry_p75": 20.3141,
+    "entry_mc_expiry_p90": 22.4066,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260716AM_SOFI_COV_1",
@@ -13397,6 +13417,26 @@
         "net_theta": -0.0206,
         "net_gamma": -0.010974,
         "net_vega": -0.0292
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 16.55,
+        "ul_price": 218.49000549316406,
+        "unrealized": -0.4,
+        "net_delta": 0.5346,
+        "net_theta": 0.0455,
+        "net_gamma": -0.009985,
+        "net_vega": -0.0336
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 16.55,
+        "ul_price": 218.47,
+        "unrealized": -0.4,
+        "net_delta": 0.629,
+        "net_theta": 0.1335,
+        "net_gamma": -0.013018,
+        "net_vega": -0.0498
       }
     ],
     "exit": null,
@@ -13450,7 +13490,13 @@
           "git_sha": null
         }
       }
-    }
+    },
+    "entry_mc_expiry_p10": 180.88,
+    "entry_mc_expiry_p25": 190.8335,
+    "entry_mc_expiry_p50": 202.784,
+    "entry_mc_expiry_p75": 217.4828,
+    "entry_mc_expiry_p90": 227.523,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260722AM_TGT_PDS_2",
@@ -13922,6 +13968,26 @@
         "net_theta": 0.0008,
         "net_gamma": -0.400247,
         "net_vega": -0.0085
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 1.695,
+        "ul_price": 26.78499984741211,
+        "unrealized": 0.185,
+        "net_delta": 0.4871,
+        "net_theta": -0.0134,
+        "net_gamma": -0.520714,
+        "net_vega": -0.0058
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 1.695,
+        "ul_price": 26.79,
+        "unrealized": 0.185,
+        "net_delta": 0.5928,
+        "net_theta": 0.0106,
+        "net_gamma": -0.56911,
+        "net_vega": -0.0118
       }
     ],
     "exit": null,
@@ -13975,7 +14041,13 @@
           "git_sha": null
         }
       }
-    }
+    },
+    "entry_mc_expiry_p10": 23.2457,
+    "entry_mc_expiry_p25": 24.1336,
+    "entry_mc_expiry_p50": 25.2348,
+    "entry_mc_expiry_p75": 26.3459,
+    "entry_mc_expiry_p90": 27.1942,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260722PM_JNJ_PDS_1",
@@ -14228,6 +14300,26 @@
         "net_theta": -0.0099,
         "net_gamma": -0.030733,
         "net_vega": -0.0759
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 2.385,
+        "ul_price": 260.3599853515625,
+        "unrealized": -9.315,
+        "net_delta": 0.3238,
+        "net_theta": -0.1146,
+        "net_gamma": -0.038676,
+        "net_vega": -0.0619
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 2.385,
+        "ul_price": 260.35,
+        "unrealized": -9.315,
+        "net_delta": 0.4484,
+        "net_theta": 0.158,
+        "net_gamma": -0.053723,
+        "net_vega": -0.1292
       }
     ],
     "exit": null,
@@ -14281,7 +14373,13 @@
           "git_sha": null
         }
       }
-    }
+    },
+    "entry_mc_expiry_p10": 231.3748,
+    "entry_mc_expiry_p25": 241.9343,
+    "entry_mc_expiry_p50": 254.214,
+    "entry_mc_expiry_p75": 266.6495,
+    "entry_mc_expiry_p90": 279.1172,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260722PM_TGT_PDS_2",
@@ -17769,6 +17867,26 @@
         "net_theta": -0.2368,
         "net_gamma": 0.002041,
         "net_vega": 0.0667
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 12.62,
+        "ul_price": 342.44000244140625,
+        "unrealized": 1.28,
+        "net_delta": 0.7496,
+        "net_theta": -0.0904,
+        "net_gamma": 0.005049,
+        "net_vega": 0.0324
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 12.62,
+        "ul_price": 342.48,
+        "unrealized": 1.28,
+        "net_delta": 0.8225,
+        "net_theta": -0.0518,
+        "net_gamma": 0.00535,
+        "net_vega": 0.0213
       }
     ],
     "exit": null,
@@ -17822,7 +17940,13 @@
           "git_sha": null
         }
       }
-    }
+    },
+    "entry_mc_expiry_p10": 303.5786,
+    "entry_mc_expiry_p25": 316.9539,
+    "entry_mc_expiry_p50": 334.513,
+    "entry_mc_expiry_p75": 351.6913,
+    "entry_mc_expiry_p90": 367.9864,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260727PM_SCHW_PDS_2",
@@ -18052,6 +18176,26 @@
         "net_theta": 0.0091,
         "net_gamma": -0.032021,
         "net_vega": -0.0176
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 0.0,
+        "ul_price": 111.08999633789062,
+        "unrealized": -2.5,
+        "net_delta": 0.0807,
+        "net_theta": -0.0364,
+        "net_gamma": -0.019459,
+        "net_vega": -0.0119
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 0.0,
+        "ul_price": 111.09,
+        "unrealized": -2.5,
+        "net_delta": 0.0236,
+        "net_theta": 0.0013,
+        "net_gamma": -0.017816,
+        "net_vega": -0.0068
       }
     ],
     "exit": null,
@@ -18105,7 +18249,13 @@
           "git_sha": null
         }
       }
-    }
+    },
+    "entry_mc_expiry_p10": 94.7926,
+    "entry_mc_expiry_p25": 99.0738,
+    "entry_mc_expiry_p50": 103.9091,
+    "entry_mc_expiry_p75": 109.0244,
+    "entry_mc_expiry_p90": 113.6299,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260727PM_JNJ_CDS_1",
@@ -18335,6 +18485,26 @@
         "net_theta": -0.1425,
         "net_gamma": 0.036691,
         "net_vega": 0.1121
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 1.1,
+        "ul_price": 260.3599853515625,
+        "unrealized": -5.59,
+        "net_delta": 0.2472,
+        "net_theta": -0.1105,
+        "net_gamma": 0.037585,
+        "net_vega": 0.0912
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 1.1,
+        "ul_price": 260.35,
+        "unrealized": -5.59,
+        "net_delta": 0.246,
+        "net_theta": -0.1188,
+        "net_gamma": 0.040058,
+        "net_vega": 0.0953
       }
     ],
     "exit": null,
@@ -18388,7 +18558,13 @@
           "git_sha": null
         }
       }
-    }
+    },
+    "entry_mc_expiry_p10": 246.3652,
+    "entry_mc_expiry_p25": 256.8474,
+    "entry_mc_expiry_p50": 270.059,
+    "entry_mc_expiry_p75": 282.5057,
+    "entry_mc_expiry_p90": 292.8676,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260727PM_MRK_PDS_2",
@@ -18618,6 +18794,26 @@
         "net_theta": 0.037,
         "net_gamma": -0.06121,
         "net_vega": -0.0512
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 1.21,
+        "ul_price": 135.85000610351562,
+        "unrealized": -4.07,
+        "net_delta": 0.3267,
+        "net_theta": 0.0018,
+        "net_gamma": -0.07299,
+        "net_vega": -0.0444
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 1.27,
+        "ul_price": 135.84,
+        "unrealized": -4.01,
+        "net_delta": 0.4059,
+        "net_theta": 0.1144,
+        "net_gamma": -0.084752,
+        "net_vega": -0.0707
       }
     ],
     "exit": null,
@@ -18671,7 +18867,13 @@
           "git_sha": null
         }
       }
-    }
+    },
+    "entry_mc_expiry_p10": 113.5176,
+    "entry_mc_expiry_p25": 120.156,
+    "entry_mc_expiry_p50": 130.6135,
+    "entry_mc_expiry_p75": 141.165,
+    "entry_mc_expiry_p90": 151.305,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260727PM_XLE_CDS_3",
@@ -18901,6 +19103,26 @@
         "net_theta": -0.013,
         "net_gamma": -0.055859,
         "net_vega": -0.0037
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 3.64,
+        "ul_price": 61.91999816894531,
+        "unrealized": 2.06,
+        "net_delta": 0.6156,
+        "net_theta": 0.0023,
+        "net_gamma": -0.136561,
+        "net_vega": -0.0149
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 3.64,
+        "ul_price": 61.91,
+        "unrealized": 2.06,
+        "net_delta": 0.6806,
+        "net_theta": 0.0315,
+        "net_gamma": -0.156909,
+        "net_vega": -0.024
       }
     ],
     "exit": null,
@@ -18954,7 +19176,13 @@
           "git_sha": null
         }
       }
-    }
+    },
+    "entry_mc_expiry_p10": 54.1041,
+    "entry_mc_expiry_p25": 56.2677,
+    "entry_mc_expiry_p50": 58.4866,
+    "entry_mc_expiry_p75": 60.6727,
+    "entry_mc_expiry_p90": 62.716,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260728AM_LOW_PDS_1",
@@ -19164,6 +19392,26 @@
         "net_theta": 0.0466,
         "net_gamma": -0.014241,
         "net_vega": -0.048
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 5.525,
+        "ul_price": 218.49000549316406,
+        "unrealized": -1.325,
+        "net_delta": 0.3654,
+        "net_theta": 0.0654,
+        "net_gamma": -0.015048,
+        "net_vega": -0.0477
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 5.525,
+        "ul_price": 218.47,
+        "unrealized": -1.325,
+        "net_delta": 0.4297,
+        "net_theta": 0.2141,
+        "net_gamma": -0.016719,
+        "net_vega": -0.0692
       }
     ],
     "exit": null,
@@ -19217,7 +19465,13 @@
           "git_sha": null
         }
       }
-    }
+    },
+    "entry_mc_expiry_p10": 193.6525,
+    "entry_mc_expiry_p25": 203.9906,
+    "entry_mc_expiry_p50": 216.43,
+    "entry_mc_expiry_p75": 232.5661,
+    "entry_mc_expiry_p90": 245.7232,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260728AM_SCHW_PDS_2",
@@ -19417,6 +19671,26 @@
         "net_theta": -0.1361,
         "net_gamma": -0.032154,
         "net_vega": 0.0104
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 0.04,
+        "ul_price": 111.08999633789062,
+        "unrealized": -2.32,
+        "net_delta": -0.0093,
+        "net_theta": -0.1384,
+        "net_gamma": -0.026836,
+        "net_vega": 0.0015
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 0.0,
+        "ul_price": 111.09,
+        "unrealized": -2.36,
+        "net_delta": 0.0378,
+        "net_theta": -0.0016,
+        "net_gamma": -0.026862,
+        "net_vega": -0.0095
       }
     ],
     "exit": null,
@@ -19470,7 +19744,13 @@
           "git_sha": null
         }
       }
-    }
+    },
+    "entry_mc_expiry_p10": 96.1464,
+    "entry_mc_expiry_p25": 100.0102,
+    "entry_mc_expiry_p50": 104.6333,
+    "entry_mc_expiry_p75": 109.7904,
+    "entry_mc_expiry_p90": 114.8647,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260728AM_C_PDS_3",
@@ -20550,6 +20830,26 @@
         "net_theta": -0.2494,
         "net_gamma": 0.007076,
         "net_vega": 0.092
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 8.645,
+        "ul_price": 342.44000244140625,
+        "unrealized": 0.85,
+        "net_delta": 0.6565,
+        "net_theta": -0.1316,
+        "net_gamma": 0.013719,
+        "net_vega": 0.0695
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 8.645,
+        "ul_price": 342.48,
+        "unrealized": 0.85,
+        "net_delta": 0.7165,
+        "net_theta": -0.1171,
+        "net_gamma": 0.01713,
+        "net_vega": 0.0721
       }
     ],
     "exit": null,
@@ -20603,7 +20903,13 @@
           "git_sha": null
         }
       }
-    }
+    },
+    "entry_mc_expiry_p10": 300.993,
+    "entry_mc_expiry_p25": 319.182,
+    "entry_mc_expiry_p50": 335.1057,
+    "entry_mc_expiry_p75": 354.2082,
+    "entry_mc_expiry_p90": 369.8112,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260728PM_SCHW_CDS_2",
@@ -21023,6 +21329,26 @@
         "net_theta": -0.0225,
         "net_gamma": 0.016264,
         "net_vega": 0.0061
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 3.47,
+        "ul_price": 53.76499938964844,
+        "unrealized": 1.895,
+        "net_delta": 0.5508,
+        "net_theta": -0.0026,
+        "net_gamma": -0.094063,
+        "net_vega": -0.01
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 3.47,
+        "ul_price": 53.77,
+        "unrealized": 1.895,
+        "net_delta": 0.6477,
+        "net_theta": 0.0375,
+        "net_gamma": -0.116197,
+        "net_vega": -0.0192
       }
     ],
     "exit": null,
@@ -21076,7 +21402,13 @@
           "git_sha": null
         }
       }
-    }
+    },
+    "entry_mc_expiry_p10": 45.1418,
+    "entry_mc_expiry_p25": 47.4751,
+    "entry_mc_expiry_p50": 49.9664,
+    "entry_mc_expiry_p75": 53.3591,
+    "entry_mc_expiry_p90": 56.3591,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260729AM_XLE_COV_1",
@@ -22400,6 +22732,26 @@
         "net_theta": -0.0189,
         "net_gamma": -0.064579,
         "net_vega": -0.0169
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 0.2,
+        "ul_price": 88.78500366210938,
+        "unrealized": -2.1,
+        "net_delta": 0.0941,
+        "net_theta": 0.0068,
+        "net_gamma": -0.065552,
+        "net_vega": -0.0159
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 0.18,
+        "ul_price": 88.82,
+        "unrealized": -2.12,
+        "net_delta": 0.1355,
+        "net_theta": 0.0402,
+        "net_gamma": -0.078018,
+        "net_vega": -0.026
       }
     ],
     "exit": null,
@@ -22476,7 +22828,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 77.4564,
+    "entry_mc_expiry_p25": 80.7557,
+    "entry_mc_expiry_p50": 84.6031,
+    "entry_mc_expiry_p75": 88.3898,
+    "entry_mc_expiry_p90": 92.5867,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260729PM_SCHW_PDS_2",
@@ -22666,6 +23024,26 @@
         "net_theta": -0.1262,
         "net_gamma": -0.030027,
         "net_vega": 0.0112
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 0.035,
+        "ul_price": 111.08999633789062,
+        "unrealized": -1.97,
+        "net_delta": 0.0035,
+        "net_theta": -0.0962,
+        "net_gamma": -0.025076,
+        "net_vega": -0.0006
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 0.0,
+        "ul_price": 111.09,
+        "unrealized": -2.005,
+        "net_delta": 0.0246,
+        "net_theta": -0.0133,
+        "net_gamma": -0.023586,
+        "net_vega": -0.006
       }
     ],
     "exit": null,
@@ -22742,7 +23120,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 97.9073,
+    "entry_mc_expiry_p25": 101.4693,
+    "entry_mc_expiry_p50": 105.8052,
+    "entry_mc_expiry_p75": 110.7189,
+    "entry_mc_expiry_p90": 115.6596,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260729PM_NVDA_CDS_3",
@@ -22932,6 +23316,26 @@
         "net_theta": 0.0951,
         "net_gamma": -0.014052,
         "net_vega": -0.0516
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 19.525,
+        "ul_price": 225.16000366210938,
+        "unrealized": 12.475,
+        "net_delta": 0.0935,
+        "net_theta": 0.0941,
+        "net_gamma": -0.014576,
+        "net_vega": -0.0452
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 9.625,
+        "ul_price": 225.16,
+        "unrealized": 2.575,
+        "net_delta": 0.0914,
+        "net_theta": 0.1139,
+        "net_gamma": -0.015749,
+        "net_vega": -0.0495
       }
     ],
     "exit": null,
@@ -23031,7 +23435,13 @@
         "p_profit": 0.546,
         "confidence": 0.528
       }
-    }
+    },
+    "entry_mc_expiry_p10": 171.8524,
+    "entry_mc_expiry_p25": 181.1349,
+    "entry_mc_expiry_p50": 192.9254,
+    "entry_mc_expiry_p75": 204.9243,
+    "entry_mc_expiry_p90": 219.4942,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260730AM_WFC_PDS_1",
@@ -23080,7 +23490,7 @@
     "signal_score": 48.4985,
     "profit_target": 1.6425,
     "stop_loss": 5.475,
-    "status": "open",
+    "status": "expired_loss",
     "snapshots": [
       {
         "ts": "2026-07-30T17:00:02.188189-04:00",
@@ -23213,7 +23623,21 @@
         "net_vega": -0.0052
       }
     ],
-    "exit": null,
+    "exit": {
+      "ts": "2026-08-14T17:00:01.789526-04:00",
+      "reason": "expired",
+      "spread_val": 0.0,
+      "ul_price": 88.78500366210938,
+      "pnl_per_share": -1.825,
+      "pnl_total": -182.5,
+      "pnl_pct_of_max": -57.5,
+      "win": false,
+      "hit_tp": false,
+      "hit_sl": true,
+      "mae_pct": -174.0,
+      "mfe_pct": -97.3,
+      "days_held": 15
+    },
     "iv_edge_vp": 0.15,
     "iv_edge_label": "fair",
     "kelly_fraction": null,
@@ -23287,7 +23711,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 78.7303,
+    "entry_mc_expiry_p25": 81.7686,
+    "entry_mc_expiry_p50": 84.6935,
+    "entry_mc_expiry_p75": 87.7462,
+    "entry_mc_expiry_p90": 90.4693,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260730AM_NVDA_CDS_2",
@@ -23467,6 +23897,26 @@
         "net_theta": 0.1011,
         "net_gamma": -0.017653,
         "net_vega": -0.0603
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 19.625,
+        "ul_price": 225.16000366210938,
+        "unrealized": 12.9,
+        "net_delta": 0.1042,
+        "net_theta": 0.0426,
+        "net_gamma": -0.017689,
+        "net_vega": -0.0434
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 11.925,
+        "ul_price": 225.16,
+        "unrealized": 5.2,
+        "net_delta": 0.1291,
+        "net_theta": 0.1346,
+        "net_gamma": -0.02094,
+        "net_vega": -0.0624
       }
     ],
     "exit": null,
@@ -23566,7 +24016,13 @@
         "p_profit": 0.545,
         "confidence": 0.508
       }
-    }
+    },
+    "entry_mc_expiry_p10": 172.0843,
+    "entry_mc_expiry_p25": 181.3458,
+    "entry_mc_expiry_p50": 192.8459,
+    "entry_mc_expiry_p75": 205.4477,
+    "entry_mc_expiry_p90": 216.7898,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260730AM_NFLX_CDS_3",
@@ -24760,7 +25216,7 @@
     "signal_score": 0,
     "profit_target": 1.8675,
     "stop_loss": 6.225,
-    "status": "open",
+    "status": "expired_profit",
     "snapshots": [
       {
         "ts": "2026-07-31T17:00:00.007426-04:00",
@@ -24863,7 +25319,21 @@
         "net_vega": -0.0022
       }
     ],
-    "exit": null,
+    "exit": {
+      "ts": "2026-08-14T17:00:01.789526-04:00",
+      "reason": "expired",
+      "spread_val": 4.27,
+      "ul_price": 115.2699966430664,
+      "pnl_per_share": 2.195,
+      "pnl_total": 219.5,
+      "pnl_pct_of_max": 55.9,
+      "win": true,
+      "hit_tp": true,
+      "hit_sl": false,
+      "mae_pct": -112.5,
+      "mfe_pct": 145.3,
+      "days_held": 14
+    },
     "iv_edge_vp": -0.28,
     "iv_edge_label": "fair",
     "kelly_fraction": 0.0927,
@@ -24960,7 +25430,13 @@
         "p_profit": 0.549,
         "confidence": 0.592
       }
-    }
+    },
+    "entry_mc_expiry_p10": 105.5842,
+    "entry_mc_expiry_p25": 108.4829,
+    "entry_mc_expiry_p50": 111.7621,
+    "entry_mc_expiry_p75": 115.8916,
+    "entry_mc_expiry_p90": 118.7101,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260731AM_NVDA_CDS_3",
@@ -25110,6 +25586,26 @@
         "net_theta": 0.1011,
         "net_gamma": -0.017653,
         "net_vega": -0.0603
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 19.625,
+        "ul_price": 225.16000366210938,
+        "unrealized": 12.785,
+        "net_delta": 0.1042,
+        "net_theta": 0.0426,
+        "net_gamma": -0.017689,
+        "net_vega": -0.0434
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 11.925,
+        "ul_price": 225.16,
+        "unrealized": 5.085,
+        "net_delta": 0.1291,
+        "net_theta": 0.1346,
+        "net_gamma": -0.02094,
+        "net_vega": -0.0624
       }
     ],
     "exit": null,
@@ -25209,7 +25705,13 @@
         "p_profit": 0.569,
         "confidence": 0.51
       }
-    }
+    },
+    "entry_mc_expiry_p10": 175.1769,
+    "entry_mc_expiry_p25": 186.0443,
+    "entry_mc_expiry_p50": 197.3331,
+    "entry_mc_expiry_p75": 209.2747,
+    "entry_mc_expiry_p90": 222.9123,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260731AM_WMT_CDS_1",
@@ -25258,7 +25760,7 @@
     "signal_score": 0,
     "profit_target": 1.845,
     "stop_loss": 6.15,
-    "status": "open",
+    "status": "expired_profit",
     "snapshots": [
       {
         "ts": "2026-07-31T17:00:00.007426-04:00",
@@ -25361,7 +25863,21 @@
         "net_vega": -0.0022
       }
     ],
-    "exit": null,
+    "exit": {
+      "ts": "2026-08-14T17:00:01.789526-04:00",
+      "reason": "expired",
+      "spread_val": 4.27,
+      "ul_price": 115.2699966430664,
+      "pnl_per_share": 2.22,
+      "pnl_total": 222.0,
+      "pnl_pct_of_max": 56.2,
+      "win": true,
+      "hit_tp": true,
+      "hit_sl": false,
+      "mae_pct": -115.1,
+      "mfe_pct": 148.3,
+      "days_held": 14
+    },
     "iv_edge_vp": 0.21,
     "iv_edge_label": "fair",
     "kelly_fraction": 0.0899,
@@ -25458,7 +25974,13 @@
         "p_profit": 0.544,
         "confidence": 0.592
       }
-    }
+    },
+    "entry_mc_expiry_p10": 105.089,
+    "entry_mc_expiry_p25": 107.9811,
+    "entry_mc_expiry_p50": 111.0897,
+    "entry_mc_expiry_p75": 115.1792,
+    "entry_mc_expiry_p90": 119.0721,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260731AM_NVDA_CDS_2",
@@ -25608,6 +26130,26 @@
         "net_theta": 0.1011,
         "net_gamma": -0.017653,
         "net_vega": -0.0603
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 19.625,
+        "ul_price": 225.16000366210938,
+        "unrealized": 12.895,
+        "net_delta": 0.1042,
+        "net_theta": 0.0426,
+        "net_gamma": -0.017689,
+        "net_vega": -0.0434
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 11.925,
+        "ul_price": 225.16,
+        "unrealized": 5.195,
+        "net_delta": 0.1291,
+        "net_theta": 0.1346,
+        "net_gamma": -0.02094,
+        "net_vega": -0.0624
       }
     ],
     "exit": null,
@@ -25707,7 +26249,13 @@
         "p_profit": 0.57,
         "confidence": 0.51
       }
-    }
+    },
+    "entry_mc_expiry_p10": 175.2495,
+    "entry_mc_expiry_p25": 185.4059,
+    "entry_mc_expiry_p50": 196.3652,
+    "entry_mc_expiry_p75": 210.1028,
+    "entry_mc_expiry_p90": 224.5188,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260731AM_NKE_CDS_3",
@@ -26886,7 +27434,7 @@
     "signal_score": 0,
     "profit_target": 1.296,
     "stop_loss": 4.32,
-    "status": "open",
+    "status": "expired_loss",
     "snapshots": [
       {
         "ts": "2026-08-03T17:00:02.539943-04:00",
@@ -26997,6 +27545,27 @@
         "vol_source": null
       },
       "kelly": null
+    },
+    "entry_mc_expiry_p10": 129.1461,
+    "entry_mc_expiry_p25": 135.9925,
+    "entry_mc_expiry_p50": 142.6229,
+    "entry_mc_expiry_p75": 151.3104,
+    "entry_mc_expiry_p90": 160.0255,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch",
+    "exit": {
+      "ts": "2026-08-14T17:00:01.789526-04:00",
+      "reason": "expired",
+      "spread_val": 5.85,
+      "ul_price": 165.85000610351562,
+      "pnl_per_share": -4.41,
+      "pnl_total": -441.0,
+      "pnl_pct_of_max": -306.2,
+      "win": false,
+      "hit_tp": false,
+      "hit_sl": true,
+      "mae_pct": -181.2,
+      "mfe_pct": -107.3,
+      "days_held": 11
     }
   },
   {
@@ -27209,7 +27778,7 @@
     "signal_score": 52.9441,
     "profit_target": 4.365,
     "stop_loss": 14.55,
-    "status": "open",
+    "status": "expired_loss",
     "snapshots": [
       {
         "ts": "2026-08-03T17:00:02.539943-04:00",
@@ -27302,7 +27871,21 @@
         "net_vega": -0.0405
       }
     ],
-    "exit": null,
+    "exit": {
+      "ts": "2026-08-14T17:00:01.789526-04:00",
+      "reason": "expired",
+      "spread_val": 2.56,
+      "ul_price": 342.44000244140625,
+      "pnl_per_share": -2.29,
+      "pnl_total": -229.0,
+      "pnl_pct_of_max": -22.6,
+      "win": false,
+      "hit_tp": false,
+      "hit_sl": true,
+      "mae_pct": -157.1,
+      "mfe_pct": -55.9,
+      "days_held": 11
+    },
     "iv_edge_vp": 0.1,
     "iv_edge_label": "fair",
     "kelly_fraction": null,
@@ -27376,7 +27959,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 323.0312,
+    "entry_mc_expiry_p25": 333.465,
+    "entry_mc_expiry_p50": 342.1093,
+    "entry_mc_expiry_p75": 353.1302,
+    "entry_mc_expiry_p90": 364.3739,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260803PM_TGT_CDS_3",
@@ -27425,7 +28014,7 @@
     "signal_score": 60.69,
     "profit_target": 2.961,
     "stop_loss": 9.87,
-    "status": "open",
+    "status": "expired_profit",
     "snapshots": [
       {
         "ts": "2026-08-03T17:00:02.539943-04:00",
@@ -27518,7 +28107,21 @@
         "net_vega": -0.0072
       }
     ],
-    "exit": null,
+    "exit": {
+      "ts": "2026-08-14T17:00:01.789526-04:00",
+      "reason": "expired",
+      "spread_val": 6.48,
+      "ul_price": 154.47999572753906,
+      "pnl_per_share": 3.19,
+      "pnl_total": 319.0,
+      "pnl_pct_of_max": 51.4,
+      "win": true,
+      "hit_tp": true,
+      "hit_sl": false,
+      "mae_pct": -138.4,
+      "mfe_pct": 124.2,
+      "days_held": 11
+    },
     "iv_edge_vp": -0.56,
     "iv_edge_label": "fair",
     "kelly_fraction": null,
@@ -27592,7 +28195,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 139.5292,
+    "entry_mc_expiry_p25": 143.7506,
+    "entry_mc_expiry_p50": 149.9394,
+    "entry_mc_expiry_p75": 155.7383,
+    "entry_mc_expiry_p90": 160.6248,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260804AM_TGT_CDS_1",
@@ -27641,7 +28250,7 @@
     "signal_score": 66.322,
     "profit_target": 3.348,
     "stop_loss": 11.16,
-    "status": "open",
+    "status": "expired_profit",
     "snapshots": [
       {
         "ts": "2026-08-04T17:00:02.060185-04:00",
@@ -27724,7 +28333,21 @@
         "net_vega": -0.0296
       }
     ],
-    "exit": null,
+    "exit": {
+      "ts": "2026-08-14T17:00:01.789526-04:00",
+      "reason": "expired",
+      "spread_val": 9.48,
+      "ul_price": 154.47999572753906,
+      "pnl_per_share": 5.76,
+      "pnl_total": 576.0,
+      "pnl_pct_of_max": 91.7,
+      "win": true,
+      "hit_tp": true,
+      "hit_sl": false,
+      "mae_pct": -85.5,
+      "mfe_pct": 151.9,
+      "days_held": 10
+    },
     "iv_edge_vp": 0.42,
     "iv_edge_label": "fair",
     "kelly_fraction": null,
@@ -27798,7 +28421,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 137.9372,
+    "entry_mc_expiry_p25": 142.9074,
+    "entry_mc_expiry_p50": 147.8517,
+    "entry_mc_expiry_p75": 153.1149,
+    "entry_mc_expiry_p90": 157.9856,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260804AM_IWM_CDS_2",
@@ -27928,6 +28557,26 @@
         "net_theta": -0.0664,
         "net_gamma": -0.007126,
         "net_vega": 0.0172
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 6.95,
+        "ul_price": 305.0799865722656,
+        "unrealized": 2.775,
+        "net_delta": 0.6472,
+        "net_theta": -0.0228,
+        "net_gamma": -0.030739,
+        "net_vega": -0.0341
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 6.95,
+        "ul_price": 305.09,
+        "unrealized": 2.775,
+        "net_delta": 0.6451,
+        "net_theta": -0.0083,
+        "net_gamma": -0.030088,
+        "net_vega": -0.0412
       }
     ],
     "exit": null,
@@ -28004,7 +28653,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 286.5495,
+    "entry_mc_expiry_p25": 292.7652,
+    "entry_mc_expiry_p50": 299.1112,
+    "entry_mc_expiry_p75": 306.3031,
+    "entry_mc_expiry_p90": 312.8228,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260804AM_XLE_PDS_3",
@@ -28134,6 +28789,26 @@
         "net_theta": 0.0029,
         "net_gamma": -0.078826,
         "net_vega": -0.012
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 0.06,
+        "ul_price": 61.91999816894531,
+        "unrealized": -1.445,
+        "net_delta": 0.0314,
+        "net_theta": -0.0155,
+        "net_gamma": -0.046828,
+        "net_vega": -0.0038
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 0.045,
+        "ul_price": 61.91,
+        "unrealized": -1.46,
+        "net_delta": 0.0655,
+        "net_theta": 0.0183,
+        "net_gamma": -0.062306,
+        "net_vega": -0.0108
       }
     ],
     "exit": null,
@@ -28210,7 +28885,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 54.6079,
+    "entry_mc_expiry_p25": 56.1788,
+    "entry_mc_expiry_p50": 58.0073,
+    "entry_mc_expiry_p75": 59.8309,
+    "entry_mc_expiry_p90": 61.4897,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260804AM_IWM_CDS_1",
@@ -28340,6 +29021,26 @@
         "net_theta": -0.0664,
         "net_gamma": -0.007126,
         "net_vega": 0.0172
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 6.95,
+        "ul_price": 305.0799865722656,
+        "unrealized": 2.825,
+        "net_delta": 0.6472,
+        "net_theta": -0.0228,
+        "net_gamma": -0.030739,
+        "net_vega": -0.0341
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 6.95,
+        "ul_price": 305.09,
+        "unrealized": 2.825,
+        "net_delta": 0.6451,
+        "net_theta": -0.0083,
+        "net_gamma": -0.030088,
+        "net_vega": -0.0412
       }
     ],
     "exit": null,
@@ -28416,7 +29117,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 287.3668,
+    "entry_mc_expiry_p25": 293.9905,
+    "entry_mc_expiry_p50": 299.7211,
+    "entry_mc_expiry_p75": 306.1929,
+    "entry_mc_expiry_p90": 311.7709,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260804AM_QCOM_PCS_2",
@@ -28546,6 +29253,26 @@
         "net_theta": -0.0553,
         "net_gamma": 0.004542,
         "net_vega": 0.0155
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 0.02,
+        "ul_price": 165.85000610351562,
+        "unrealized": 1.0,
+        "net_delta": 0.0179,
+        "net_theta": 0.0702,
+        "net_gamma": 0.000242,
+        "net_vega": -0.0069
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 0.02,
+        "ul_price": 165.79,
+        "unrealized": 1.0,
+        "net_delta": -0.0074,
+        "net_theta": -0.0079,
+        "net_gamma": 0.001843,
+        "net_vega": 0.0036
       }
     ],
     "exit": null,
@@ -28637,7 +29364,13 @@
         "vol_source": null
       },
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 139.2469,
+    "entry_mc_expiry_p25": 148.6009,
+    "entry_mc_expiry_p50": 158.0406,
+    "entry_mc_expiry_p75": 170.1284,
+    "entry_mc_expiry_p90": 180.4108,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260804AM_WMT_CDS_3",
@@ -28767,6 +29500,26 @@
         "net_theta": 0.0422,
         "net_gamma": -0.021184,
         "net_vega": -0.0221
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 4.53,
+        "ul_price": 115.2699966430664,
+        "unrealized": 1.595,
+        "net_delta": 0.4382,
+        "net_theta": 0.0237,
+        "net_gamma": -0.019302,
+        "net_vega": -0.0157
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 4.53,
+        "ul_price": 115.27,
+        "unrealized": 1.595,
+        "net_delta": 0.4675,
+        "net_theta": 0.0696,
+        "net_gamma": -0.016419,
+        "net_vega": -0.0211
       }
     ],
     "exit": null,
@@ -28866,7 +29619,13 @@
         "p_profit": 0.55,
         "confidence": 0.597
       }
-    }
+    },
+    "entry_mc_expiry_p10": 103.1555,
+    "entry_mc_expiry_p25": 105.7499,
+    "entry_mc_expiry_p50": 109.8484,
+    "entry_mc_expiry_p75": 113.5053,
+    "entry_mc_expiry_p90": 116.5765,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260804PM_JNJ_CDS_1",
@@ -28996,6 +29755,26 @@
         "net_theta": -0.1092,
         "net_gamma": -0.009814,
         "net_vega": 0.0072
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 8.115,
+        "ul_price": 260.3599853515625,
+        "unrealized": 2.725,
+        "net_delta": 0.6797,
+        "net_theta": -0.1275,
+        "net_gamma": 0.002594,
+        "net_vega": 0.0353
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 8.115,
+        "ul_price": 260.35,
+        "unrealized": 2.725,
+        "net_delta": 0.749,
+        "net_theta": -0.0356,
+        "net_gamma": 0.003802,
+        "net_vega": 0.0108
       }
     ],
     "exit": null,
@@ -29072,7 +29851,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 234.0777,
+    "entry_mc_expiry_p25": 243.4212,
+    "entry_mc_expiry_p50": 254.3299,
+    "entry_mc_expiry_p75": 265.1427,
+    "entry_mc_expiry_p90": 275.8532,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260804PM_LOW_CDS_2",
@@ -29202,6 +29987,26 @@
         "net_theta": -0.2327,
         "net_gamma": 0.014643,
         "net_vega": 0.0739
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 5.7,
+        "ul_price": 218.49000549316406,
+        "unrealized": -1.075,
+        "net_delta": 0.4502,
+        "net_theta": -0.2769,
+        "net_gamma": 0.014074,
+        "net_vega": 0.0696
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 5.7,
+        "ul_price": 218.47,
+        "unrealized": -1.075,
+        "net_delta": 0.4675,
+        "net_theta": -0.2617,
+        "net_gamma": 0.01795,
+        "net_vega": 0.0761
       }
     ],
     "exit": null,
@@ -29278,7 +30083,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 199.9462,
+    "entry_mc_expiry_p25": 207.4067,
+    "entry_mc_expiry_p50": 217.0875,
+    "entry_mc_expiry_p75": 228.1214,
+    "entry_mc_expiry_p90": 239.5894,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260804PM_SLB_PDS_3",
@@ -29408,6 +30219,26 @@
         "net_theta": 0.0224,
         "net_gamma": -0.062966,
         "net_vega": -0.013
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 0.1,
+        "ul_price": 53.76499938964844,
+        "unrealized": -1.11,
+        "net_delta": 0.1301,
+        "net_theta": 0.0182,
+        "net_gamma": -0.037695,
+        "net_vega": -0.009
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 0.075,
+        "ul_price": 53.77,
+        "unrealized": -1.135,
+        "net_delta": 0.0954,
+        "net_theta": 0.0235,
+        "net_gamma": -0.066265,
+        "net_vega": -0.0112
       }
     ],
     "exit": null,
@@ -29484,7 +30315,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 44.9148,
+    "entry_mc_expiry_p25": 47.3202,
+    "entry_mc_expiry_p50": 50.0458,
+    "entry_mc_expiry_p75": 53.1067,
+    "entry_mc_expiry_p90": 56.3905,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260805AM_TSLA_CDS_1",
@@ -29604,6 +30441,26 @@
         "net_theta": -0.0572,
         "net_gamma": -0.000389,
         "net_vega": 0.0053
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 19.025,
+        "ul_price": 342.32000732421875,
+        "unrealized": 7.525,
+        "net_delta": 0.7002,
+        "net_theta": 0.0208,
+        "net_gamma": -0.003354,
+        "net_vega": -0.0223
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 19.025,
+        "ul_price": 342.27,
+        "unrealized": 7.525,
+        "net_delta": 0.7038,
+        "net_theta": 0.0914,
+        "net_gamma": -0.003461,
+        "net_vega": -0.0358
       }
     ],
     "exit": null,
@@ -29703,7 +30560,13 @@
         "p_profit": 0.559,
         "confidence": 0.682
       }
-    }
+    },
+    "entry_mc_expiry_p10": 283.5089,
+    "entry_mc_expiry_p25": 303.0389,
+    "entry_mc_expiry_p50": 326.1257,
+    "entry_mc_expiry_p75": 349.2242,
+    "entry_mc_expiry_p90": 376.2138,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260805AM_NKE_CDS_2",
@@ -29813,6 +30676,26 @@
         "net_theta": -0.0293,
         "net_gamma": 0.122895,
         "net_vega": 0.0145
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 0.2,
+        "ul_price": 40.72999954223633,
+        "unrealized": -0.695,
+        "net_delta": 0.2032,
+        "net_theta": -0.0265,
+        "net_gamma": 0.15795,
+        "net_vega": 0.0136
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 0.2,
+        "ul_price": 40.73,
+        "unrealized": -0.695,
+        "net_delta": 0.2024,
+        "net_theta": -0.0259,
+        "net_gamma": 0.154819,
+        "net_vega": 0.0133
       }
     ],
     "exit": null,
@@ -29912,7 +30795,13 @@
         "p_profit": 0.49,
         "confidence": 0.621
       }
-    }
+    },
+    "entry_mc_expiry_p10": 37.8458,
+    "entry_mc_expiry_p25": 39.5201,
+    "entry_mc_expiry_p50": 41.8321,
+    "entry_mc_expiry_p75": 43.8637,
+    "entry_mc_expiry_p90": 45.8894,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260805AM_QCOM_COV_3",
@@ -30021,6 +30910,26 @@
         "net_theta": 0.1278,
         "net_gamma": -0.016244,
         "net_vega": -0.0442
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 0.395,
+        "ul_price": 165.85000610351562,
+        "unrealized": 1.82,
+        "net_delta": -0.0773,
+        "net_theta": 0.0972,
+        "net_gamma": -0.015619,
+        "net_vega": -0.0333
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 0.395,
+        "ul_price": 165.79,
+        "unrealized": 1.82,
+        "net_delta": -0.089,
+        "net_theta": 0.1144,
+        "net_gamma": -0.016401,
+        "net_vega": -0.037
       }
     ],
     "exit": null,
@@ -30112,7 +31021,13 @@
         "vol_source": null
       },
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 139.8211,
+    "entry_mc_expiry_p25": 149.0483,
+    "entry_mc_expiry_p50": 159.9691,
+    "entry_mc_expiry_p75": 170.3815,
+    "entry_mc_expiry_p90": 182.7402,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260805AM_JNJ_PDS_1",
@@ -30232,6 +31147,26 @@
         "net_theta": -0.0172,
         "net_gamma": -0.027323,
         "net_vega": -0.0624
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 2.33,
+        "ul_price": 260.3599853515625,
+        "unrealized": -3.705,
+        "net_delta": 0.3028,
+        "net_theta": -0.0777,
+        "net_gamma": -0.034921,
+        "net_vega": -0.0542
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 2.33,
+        "ul_price": 260.35,
+        "unrealized": -3.705,
+        "net_delta": 0.4318,
+        "net_theta": 0.1408,
+        "net_gamma": -0.049372,
+        "net_vega": -0.1173
       }
     ],
     "exit": null,
@@ -30308,7 +31243,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 239.1727,
+    "entry_mc_expiry_p25": 247.706,
+    "entry_mc_expiry_p50": 256.8066,
+    "entry_mc_expiry_p75": 268.5271,
+    "entry_mc_expiry_p90": 276.6098,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260805AM_UPS_PDS_2",
@@ -30428,6 +31369,26 @@
         "net_theta": -0.0572,
         "net_gamma": -0.013099,
         "net_vega": 0.0121
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 4.96,
+        "ul_price": 104.5,
+        "unrealized": 2.045,
+        "net_delta": 0.7521,
+        "net_theta": -0.0076,
+        "net_gamma": 0.039117,
+        "net_vega": 0.0081
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 4.96,
+        "ul_price": 104.5,
+        "unrealized": 2.045,
+        "net_delta": 0.6935,
+        "net_theta": 0.0061,
+        "net_gamma": 0.035089,
+        "net_vega": 0.0042
       }
     ],
     "exit": null,
@@ -30504,7 +31465,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 99.3137,
+    "entry_mc_expiry_p25": 102.7142,
+    "entry_mc_expiry_p50": 107.084,
+    "entry_mc_expiry_p75": 111.5576,
+    "entry_mc_expiry_p90": 115.3917,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260805AM_PFE_PDS_3",
@@ -30624,6 +31591,26 @@
         "net_theta": 0.007,
         "net_gamma": -0.090989,
         "net_vega": -0.0043
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 0.005,
+        "ul_price": 26.78499984741211,
+        "unrealized": -0.365,
+        "net_delta": 0.0009,
+        "net_theta": -0.0146,
+        "net_gamma": -0.079404,
+        "net_vega": -0.0
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 0.005,
+        "ul_price": 26.79,
+        "unrealized": -0.365,
+        "net_delta": 0.0212,
+        "net_theta": 0.0014,
+        "net_gamma": -0.071582,
+        "net_vega": -0.0016
       }
     ],
     "exit": null,
@@ -30700,7 +31687,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 23.7214,
+    "entry_mc_expiry_p25": 24.6562,
+    "entry_mc_expiry_p50": 25.5696,
+    "entry_mc_expiry_p75": 26.3895,
+    "entry_mc_expiry_p90": 27.1592,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260805PM_AXP_PDS_1",
@@ -30820,6 +31813,26 @@
         "net_theta": -0.1182,
         "net_gamma": -0.008504,
         "net_vega": -0.0017
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 10.105,
+        "ul_price": 342.42999267578125,
+        "unrealized": 2.655,
+        "net_delta": 0.5981,
+        "net_theta": -0.1155,
+        "net_gamma": -0.003669,
+        "net_vega": 0.0159
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 10.105,
+        "ul_price": 342.48,
+        "unrealized": 2.655,
+        "net_delta": 0.6822,
+        "net_theta": 0.0039,
+        "net_gamma": -0.00249,
+        "net_vega": -0.0147
       }
     ],
     "exit": null,
@@ -30896,7 +31909,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 323.8432,
+    "entry_mc_expiry_p25": 334.8719,
+    "entry_mc_expiry_p50": 348.4937,
+    "entry_mc_expiry_p75": 361.19,
+    "entry_mc_expiry_p90": 373.0438,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260805PM_TGT_CDS_2",
@@ -30945,7 +31964,7 @@
     "signal_score": 72.562,
     "profit_target": 2.268,
     "stop_loss": 7.56,
-    "status": "open",
+    "status": "expired_profit",
     "snapshots": [
       {
         "ts": "2026-08-05T17:00:00.008090-04:00",
@@ -31018,7 +32037,21 @@
         "net_vega": -0.0219
       }
     ],
-    "exit": null,
+    "exit": {
+      "ts": "2026-08-14T17:00:01.789526-04:00",
+      "reason": "expired",
+      "spread_val": 7.48,
+      "ul_price": 154.47999572753906,
+      "pnl_per_share": 4.96,
+      "pnl_total": 496.0,
+      "pnl_pct_of_max": 90.5,
+      "win": true,
+      "hit_tp": true,
+      "hit_sl": false,
+      "mae_pct": -139.5,
+      "mfe_pct": 192.5,
+      "days_held": 9
+    },
     "iv_edge_vp": 0.46,
     "iv_edge_label": "fair",
     "kelly_fraction": null,
@@ -31092,7 +32125,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 138.3284,
+    "entry_mc_expiry_p25": 142.8135,
+    "entry_mc_expiry_p50": 147.7497,
+    "entry_mc_expiry_p75": 153.0599,
+    "entry_mc_expiry_p90": 157.4023,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260805PM_SLB_CDS_3",
@@ -31212,6 +32251,26 @@
         "net_theta": -0.0053,
         "net_gamma": -0.017486,
         "net_vega": -0.0012
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 3.065,
+        "ul_price": 53.76499938964844,
+        "unrealized": 1.77,
+        "net_delta": 0.386,
+        "net_theta": 0.0092,
+        "net_gamma": -0.104556,
+        "net_vega": -0.0133
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 3.065,
+        "ul_price": 53.77,
+        "unrealized": 1.77,
+        "net_delta": 0.4804,
+        "net_theta": 0.0467,
+        "net_gamma": -0.134526,
+        "net_vega": -0.0226
       }
     ],
     "exit": null,
@@ -31288,7 +32347,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 46.4396,
+    "entry_mc_expiry_p25": 48.3001,
+    "entry_mc_expiry_p50": 50.5248,
+    "entry_mc_expiry_p75": 52.9836,
+    "entry_mc_expiry_p90": 55.4844,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260806AM_LOW_COV_1",
@@ -31387,6 +32452,26 @@
         "net_theta": 0.298,
         "net_gamma": -0.015592,
         "net_vega": -0.0875
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 0.975,
+        "ul_price": 218.49000549316406,
+        "unrealized": 1.15,
+        "net_delta": -0.1413,
+        "net_theta": 0.2307,
+        "net_gamma": -0.015732,
+        "net_vega": -0.0678
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 0.975,
+        "ul_price": 218.47,
+        "unrealized": 1.15,
+        "net_delta": -0.1356,
+        "net_theta": 0.2196,
+        "net_gamma": -0.015625,
+        "net_vega": -0.0659
       }
     ],
     "exit": null,
@@ -31463,7 +32548,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 200.6949,
+    "entry_mc_expiry_p25": 209.2649,
+    "entry_mc_expiry_p50": 219.6194,
+    "entry_mc_expiry_p75": 229.7907,
+    "entry_mc_expiry_p90": 238.3242,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260806AM_UPS_CDS_2",
@@ -31553,6 +32644,26 @@
         "net_theta": -0.0345,
         "net_gamma": 0.082011,
         "net_vega": 0.0299
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 0.73,
+        "ul_price": 104.5,
+        "unrealized": -0.85,
+        "net_delta": 0.648,
+        "net_theta": -0.0271,
+        "net_gamma": 0.257841,
+        "net_vega": 0.0428
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 0.73,
+        "ul_price": 104.5,
+        "unrealized": -0.85,
+        "net_delta": 0.5276,
+        "net_theta": -0.0284,
+        "net_gamma": 0.132679,
+        "net_vega": 0.0345
       }
     ],
     "exit": null,
@@ -31629,7 +32740,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 96.3875,
+    "entry_mc_expiry_p25": 99.7135,
+    "entry_mc_expiry_p50": 103.496,
+    "entry_mc_expiry_p75": 107.7798,
+    "entry_mc_expiry_p90": 112.2269,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260806AM_VZ_DGS_3",
@@ -31668,6 +32785,26 @@
         "net_theta": -0.0017,
         "net_gamma": -0.060375,
         "net_vega": -0.0037
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 1.25,
+        "ul_price": 48.46500015258789,
+        "unrealized": 0.647,
+        "net_delta": 0.4402,
+        "net_theta": -0.0032,
+        "net_gamma": -0.128437,
+        "net_vega": -0.0063
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 1.25,
+        "ul_price": 48.48,
+        "unrealized": 0.647,
+        "net_delta": 0.4978,
+        "net_theta": 0.0108,
+        "net_gamma": -0.127734,
+        "net_vega": -0.0104
       }
     ],
     "exit": null,
@@ -31744,7 +32881,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 43.8846,
+    "entry_mc_expiry_p25": 45.2146,
+    "entry_mc_expiry_p50": 46.8388,
+    "entry_mc_expiry_p75": 48.4944,
+    "entry_mc_expiry_p90": 50.0102,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260806PM_JNJ_PDS_1",
@@ -31854,6 +32997,26 @@
         "net_theta": -0.0197,
         "net_gamma": -0.030211,
         "net_vega": -0.0677
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 3.89,
+        "ul_price": 260.3599853515625,
+        "unrealized": -3.37,
+        "net_delta": 0.4312,
+        "net_theta": -0.0981,
+        "net_gamma": -0.036266,
+        "net_vega": -0.0506
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 3.89,
+        "ul_price": 260.35,
+        "unrealized": -3.37,
+        "net_delta": 0.5707,
+        "net_theta": 0.1381,
+        "net_gamma": -0.045817,
+        "net_vega": -0.1131
       }
     ],
     "exit": null,
@@ -31930,7 +33093,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 240.9726,
+    "entry_mc_expiry_p25": 247.0385,
+    "entry_mc_expiry_p50": 256.8128,
+    "entry_mc_expiry_p75": 266.5894,
+    "entry_mc_expiry_p90": 274.0734,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260806PM_UPS_PDS_2",
@@ -31979,7 +33148,7 @@
     "signal_score": 0,
     "profit_target": 1.6785,
     "stop_loss": 5.595,
-    "status": "open",
+    "status": "expired_loss",
     "snapshots": [
       {
         "ts": "2026-08-06T17:00:01.890086-04:00",
@@ -32042,7 +33211,21 @@
         "net_vega": -0.0134
       }
     ],
-    "exit": null,
+    "exit": {
+      "ts": "2026-08-14T17:00:01.789526-04:00",
+      "reason": "expired",
+      "spread_val": 0.5,
+      "ul_price": 104.5,
+      "pnl_per_share": -1.365,
+      "pnl_total": -136.5,
+      "pnl_pct_of_max": -43.5,
+      "win": false,
+      "hit_tp": false,
+      "hit_sl": true,
+      "mae_pct": -105.4,
+      "mfe_pct": -48.0,
+      "days_held": 8
+    },
     "iv_edge_vp": -0.84,
     "iv_edge_label": "fair",
     "kelly_fraction": null,
@@ -32116,7 +33299,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 97.9866,
+    "entry_mc_expiry_p25": 100.6798,
+    "entry_mc_expiry_p50": 103.2885,
+    "entry_mc_expiry_p75": 106.3246,
+    "entry_mc_expiry_p90": 109.0988,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260806PM_MRK_PDS_3",
@@ -32226,6 +33415,26 @@
         "net_theta": 0.055,
         "net_gamma": -0.02417,
         "net_vega": -0.0315
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 0.095,
+        "ul_price": 135.85000610351562,
+        "unrealized": -2.86,
+        "net_delta": 0.1156,
+        "net_theta": 0.0276,
+        "net_gamma": -0.023635,
+        "net_vega": -0.0237
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 0.155,
+        "ul_price": 135.84,
+        "unrealized": -2.8,
+        "net_delta": 0.1048,
+        "net_theta": 0.061,
+        "net_gamma": -0.035104,
+        "net_vega": -0.0328
       }
     ],
     "exit": null,
@@ -32302,7 +33511,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 118.5684,
+    "entry_mc_expiry_p25": 122.9013,
+    "entry_mc_expiry_p50": 127.9451,
+    "entry_mc_expiry_p75": 133.138,
+    "entry_mc_expiry_p90": 138.6255,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260807AM_TGT_PCS_1",
@@ -32402,6 +33617,26 @@
         "net_theta": -0.0629,
         "net_gamma": 0.006509,
         "net_vega": 0.0189
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 0.875,
+        "ul_price": 154.47999572753906,
+        "unrealized": 1.35,
+        "net_delta": -0.0907,
+        "net_theta": -0.0734,
+        "net_gamma": 0.007337,
+        "net_vega": 0.0188
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 0.42,
+        "ul_price": 154.48,
+        "unrealized": 1.805,
+        "net_delta": -0.0988,
+        "net_theta": -0.0899,
+        "net_gamma": 0.007254,
+        "net_vega": 0.0206
       }
     ],
     "exit": null,
@@ -32478,7 +33713,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 137.5171,
+    "entry_mc_expiry_p25": 141.7911,
+    "entry_mc_expiry_p50": 147.464,
+    "entry_mc_expiry_p75": 153.5708,
+    "entry_mc_expiry_p90": 158.2203,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260807AM_MRK_CDS_2",
@@ -32527,7 +33768,7 @@
     "signal_score": 0,
     "profit_target": 1.4535,
     "stop_loss": 4.845,
-    "status": "open",
+    "status": "expired_profit",
     "snapshots": [
       {
         "ts": "2026-08-10T17:00:02.396814-04:00",
@@ -32580,7 +33821,21 @@
         "net_vega": -0.0067
       }
     ],
-    "exit": null,
+    "exit": {
+      "ts": "2026-08-14T17:00:01.789526-04:00",
+      "reason": "expired",
+      "spread_val": 6.0,
+      "ul_price": 135.85000610351562,
+      "pnl_per_share": 4.385,
+      "pnl_total": 438.5,
+      "pnl_pct_of_max": 100.0,
+      "win": true,
+      "hit_tp": true,
+      "hit_sl": false,
+      "mae_pct": -86.7,
+      "mfe_pct": 248.9,
+      "days_held": 7
+    },
     "iv_edge_vp": 0.21,
     "iv_edge_label": "fair",
     "kelly_fraction": null,
@@ -32654,7 +33909,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 120.9635,
+    "entry_mc_expiry_p25": 124.4235,
+    "entry_mc_expiry_p50": 127.7753,
+    "entry_mc_expiry_p75": 131.0465,
+    "entry_mc_expiry_p90": 134.0894,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260807AM_WMT_CDS_3",
@@ -32754,6 +34015,26 @@
         "net_theta": -0.0222,
         "net_gamma": -0.008982,
         "net_vega": -0.0028
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 4.275,
+        "ul_price": 115.2699966430664,
+        "unrealized": 1.355,
+        "net_delta": 0.4758,
+        "net_theta": -0.0225,
+        "net_gamma": -0.003909,
+        "net_vega": 0.0005
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 4.275,
+        "ul_price": 115.27,
+        "unrealized": 1.355,
+        "net_delta": 0.4769,
+        "net_theta": 0.004,
+        "net_gamma": -0.000749,
+        "net_vega": -0.0019
       }
     ],
     "exit": null,
@@ -32853,7 +34134,13 @@
         "p_profit": 0.555,
         "confidence": 0.663
       }
-    }
+    },
+    "entry_mc_expiry_p10": 105.197,
+    "entry_mc_expiry_p25": 108.1502,
+    "entry_mc_expiry_p50": 111.5066,
+    "entry_mc_expiry_p75": 114.9412,
+    "entry_mc_expiry_p90": 118.0516,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260810AM_TGT_CDS_1",
@@ -32953,6 +34240,26 @@
         "net_theta": 0.0027,
         "net_gamma": -0.001555,
         "net_vega": -0.0035
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 6.135,
+        "ul_price": 154.47999572753906,
+        "unrealized": 2.035,
+        "net_delta": 0.4036,
+        "net_theta": -0.0249,
+        "net_gamma": 0.000817,
+        "net_vega": 0.0034
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 6.135,
+        "ul_price": 154.48,
+        "unrealized": 2.035,
+        "net_delta": 0.3861,
+        "net_theta": -0.0198,
+        "net_gamma": 0.000728,
+        "net_vega": 0.0027
       }
     ],
     "exit": null,
@@ -33029,7 +34336,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 128.6118,
+    "entry_mc_expiry_p25": 138.2519,
+    "entry_mc_expiry_p50": 147.4226,
+    "entry_mc_expiry_p75": 159.615,
+    "entry_mc_expiry_p90": 169.3641,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260810AM_IWM_PDS_2",
@@ -33129,6 +34442,26 @@
         "net_theta": 0.0542,
         "net_gamma": -0.064739,
         "net_vega": -0.061
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 0.105,
+        "ul_price": 305.0799865722656,
+        "unrealized": -1.705,
+        "net_delta": 0.0471,
+        "net_theta": 0.0335,
+        "net_gamma": -0.037263,
+        "net_vega": -0.025
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 0.095,
+        "ul_price": 305.09,
+        "unrealized": -1.715,
+        "net_delta": 0.0747,
+        "net_theta": 0.0638,
+        "net_gamma": -0.046177,
+        "net_vega": -0.0374
       }
     ],
     "exit": null,
@@ -33205,7 +34538,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 293.526,
+    "entry_mc_expiry_p25": 296.8969,
+    "entry_mc_expiry_p50": 300.9182,
+    "entry_mc_expiry_p75": 305.1331,
+    "entry_mc_expiry_p90": 308.6326,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260810AM_XLE_CDS_3",
@@ -33305,6 +34644,26 @@
         "net_theta": 0.0028,
         "net_gamma": -0.067968,
         "net_vega": -0.0087
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 2.33,
+        "ul_price": 61.91999816894531,
+        "unrealized": 1.35,
+        "net_delta": 0.407,
+        "net_theta": 0.0232,
+        "net_gamma": -0.1399,
+        "net_vega": -0.0198
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 2.33,
+        "ul_price": 61.91,
+        "unrealized": 1.35,
+        "net_delta": 0.4386,
+        "net_theta": 0.029,
+        "net_gamma": -0.163416,
+        "net_vega": -0.0232
       }
     ],
     "exit": null,
@@ -33381,7 +34740,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 56.6146,
+    "entry_mc_expiry_p25": 57.9887,
+    "entry_mc_expiry_p50": 59.3527,
+    "entry_mc_expiry_p75": 60.8223,
+    "entry_mc_expiry_p90": 62.223,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260811AM_C_CDS_1",
@@ -33461,6 +34826,26 @@
         "net_theta": -0.0334,
         "net_gamma": -0.015194,
         "net_vega": -0.0013
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 4.12,
+        "ul_price": 139.32000732421875,
+        "unrealized": 1.49,
+        "net_delta": 0.5274,
+        "net_theta": -0.0026,
+        "net_gamma": -0.025951,
+        "net_vega": -0.0131
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 4.12,
+        "ul_price": 139.33,
+        "unrealized": 1.49,
+        "net_delta": 0.5367,
+        "net_theta": 0.0104,
+        "net_gamma": -0.024484,
+        "net_vega": -0.0161
       }
     ],
     "exit": null,
@@ -33537,7 +34922,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 128.0846,
+    "entry_mc_expiry_p25": 131.3578,
+    "entry_mc_expiry_p50": 135.5667,
+    "entry_mc_expiry_p75": 140.2941,
+    "entry_mc_expiry_p90": 144.8062,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260811AM_VZ_CDS_2",
@@ -33617,6 +35008,26 @@
         "net_theta": -0.0017,
         "net_gamma": -0.060375,
         "net_vega": -0.0037
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 1.25,
+        "ul_price": 48.46500015258789,
+        "unrealized": 0.57,
+        "net_delta": 0.4402,
+        "net_theta": -0.0032,
+        "net_gamma": -0.128437,
+        "net_vega": -0.0063
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 1.25,
+        "ul_price": 48.48,
+        "unrealized": 0.57,
+        "net_delta": 0.4978,
+        "net_theta": 0.0108,
+        "net_gamma": -0.127734,
+        "net_vega": -0.0104
       }
     ],
     "exit": null,
@@ -33693,7 +35104,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 45.0724,
+    "entry_mc_expiry_p25": 45.9546,
+    "entry_mc_expiry_p50": 47.1342,
+    "entry_mc_expiry_p75": 48.4121,
+    "entry_mc_expiry_p90": 49.4818,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260811AM_MRNA_CDS_3",
@@ -33763,6 +35180,26 @@
         "net_theta": -0.0045,
         "net_gamma": 0.004057,
         "net_vega": 0.0026
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 4.22,
+        "ul_price": 63.290000915527344,
+        "unrealized": 2.005,
+        "net_delta": 0.4448,
+        "net_theta": -0.0224,
+        "net_gamma": 0.003432,
+        "net_vega": 0.0059
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 4.22,
+        "ul_price": 63.32,
+        "unrealized": 2.005,
+        "net_delta": 0.4476,
+        "net_theta": -0.0031,
+        "net_gamma": 0.007706,
+        "net_vega": 0.004
       }
     ],
     "exit": null,
@@ -33839,7 +35276,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 48.158,
+    "entry_mc_expiry_p25": 52.3154,
+    "entry_mc_expiry_p50": 58.8417,
+    "entry_mc_expiry_p75": 65.7053,
+    "entry_mc_expiry_p90": 72.5843,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260811AM_VST_CDS_1",
@@ -33919,6 +35362,26 @@
         "net_theta": -0.1006,
         "net_gamma": 0.014015,
         "net_vega": 0.0315
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 5.355,
+        "ul_price": 148.13999938964844,
+        "unrealized": 1.065,
+        "net_delta": 0.5167,
+        "net_theta": -0.1505,
+        "net_gamma": 0.005607,
+        "net_vega": 0.0268
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 5.355,
+        "ul_price": 148.13,
+        "unrealized": 1.065,
+        "net_delta": 0.5687,
+        "net_theta": -0.0579,
+        "net_gamma": 0.015592,
+        "net_vega": 0.0218
       }
     ],
     "exit": null,
@@ -34018,7 +35481,13 @@
         "p_profit": 0.559,
         "confidence": 0.661
       }
-    }
+    },
+    "entry_mc_expiry_p10": 130.9183,
+    "entry_mc_expiry_p25": 138.0926,
+    "entry_mc_expiry_p50": 145.105,
+    "entry_mc_expiry_p75": 152.7988,
+    "entry_mc_expiry_p90": 160.1647,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260811AM_NEE_COV_2",
@@ -34087,6 +35556,26 @@
         "net_theta": 0.051,
         "net_gamma": -0.091187,
         "net_vega": -0.0633
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 0.58,
+        "ul_price": 86.19000244140625,
+        "unrealized": -0.025,
+        "net_delta": -0.3136,
+        "net_theta": 0.0445,
+        "net_gamma": -0.107265,
+        "net_vega": -0.0598
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 0.58,
+        "ul_price": 86.19,
+        "unrealized": -0.025,
+        "net_delta": -0.309,
+        "net_theta": 0.0432,
+        "net_gamma": -0.109204,
+        "net_vega": -0.0595
       }
     ],
     "exit": null,
@@ -34178,7 +35667,13 @@
         "vol_source": null
       },
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 79.438,
+    "entry_mc_expiry_p25": 82.1752,
+    "entry_mc_expiry_p50": 84.8685,
+    "entry_mc_expiry_p75": 88.0452,
+    "entry_mc_expiry_p90": 90.9006,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260811AM_NKE_CDS_3",
@@ -34258,6 +35753,26 @@
         "net_theta": -0.0223,
         "net_gamma": 0.071493,
         "net_vega": 0.0094
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 0.505,
+        "ul_price": 40.72999954223633,
+        "unrealized": -0.335,
+        "net_delta": 0.3807,
+        "net_theta": -0.0318,
+        "net_gamma": 0.160414,
+        "net_vega": 0.0147
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 0.505,
+        "ul_price": 40.73,
+        "unrealized": -0.335,
+        "net_delta": 0.3812,
+        "net_theta": -0.0304,
+        "net_gamma": 0.17512,
+        "net_vega": 0.015
       }
     ],
     "exit": null,
@@ -34357,7 +35872,13 @@
         "p_profit": 0.571,
         "confidence": 0.57
       }
-    }
+    },
+    "entry_mc_expiry_p10": 38.325,
+    "entry_mc_expiry_p25": 39.8313,
+    "entry_mc_expiry_p50": 41.329,
+    "entry_mc_expiry_p75": 42.9843,
+    "entry_mc_expiry_p90": 44.585,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260811AM_APP_PDS_1",
@@ -34437,6 +35958,26 @@
         "net_theta": 0.0041,
         "net_gamma": -0.003134,
         "net_vega": -0.0384
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 14.55,
+        "ul_price": 315.3999938964844,
+        "unrealized": 1.45,
+        "net_delta": 0.398,
+        "net_theta": 0.0589,
+        "net_gamma": -0.003544,
+        "net_vega": -0.0555
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 15.05,
+        "ul_price": 315.44,
+        "unrealized": 1.95,
+        "net_delta": 0.4062,
+        "net_theta": 0.0841,
+        "net_gamma": -0.003393,
+        "net_vega": -0.0599
       }
     ],
     "exit": null,
@@ -34536,7 +36077,13 @@
         "p_profit": 0.48,
         "confidence": 0.727
       }
-    }
+    },
+    "entry_mc_expiry_p10": 266.2732,
+    "entry_mc_expiry_p25": 291.1515,
+    "entry_mc_expiry_p50": 324.1114,
+    "entry_mc_expiry_p75": 356.6021,
+    "entry_mc_expiry_p90": 396.4698,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260811AM_VRT_COV_2",
@@ -34605,6 +36152,26 @@
         "net_theta": 0.5139,
         "net_gamma": -0.013038,
         "net_vega": -0.1382
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 5.15,
+        "ul_price": 293.8999938964844,
+        "unrealized": -1.475,
+        "net_delta": -0.3303,
+        "net_theta": 0.589,
+        "net_gamma": -0.016175,
+        "net_vega": -0.1475
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 5.15,
+        "ul_price": 293.84,
+        "unrealized": -1.475,
+        "net_delta": -0.3397,
+        "net_theta": 0.6294,
+        "net_gamma": -0.015463,
+        "net_vega": -0.1491
       }
     ],
     "exit": null,
@@ -34696,7 +36263,13 @@
         "vol_source": null
       },
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 240.9335,
+    "entry_mc_expiry_p25": 257.7731,
+    "entry_mc_expiry_p50": 274.5359,
+    "entry_mc_expiry_p75": 294.3403,
+    "entry_mc_expiry_p90": 317.0199,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260811AM_INTU_COV_3",
@@ -34755,6 +36328,26 @@
         "net_theta": 0.3693,
         "net_gamma": -0.010383,
         "net_vega": -0.137
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 3.55,
+        "ul_price": 345.75,
+        "unrealized": -0.6,
+        "net_delta": -0.2696,
+        "net_theta": 0.5112,
+        "net_gamma": -0.015529,
+        "net_vega": -0.1582
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 3.55,
+        "ul_price": 345.66,
+        "unrealized": -0.6,
+        "net_delta": -0.2711,
+        "net_theta": 0.5193,
+        "net_gamma": -0.015373,
+        "net_vega": -0.1586
       }
     ],
     "exit": null,
@@ -34846,7 +36439,13 @@
         "vol_source": null
       },
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 309.1366,
+    "entry_mc_expiry_p25": 321.598,
+    "entry_mc_expiry_p50": 333.7105,
+    "entry_mc_expiry_p75": 349.3922,
+    "entry_mc_expiry_p90": 361.3739,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260811PM_C_CDS_1",
@@ -34926,6 +36525,26 @@
         "net_theta": -0.0334,
         "net_gamma": -0.015194,
         "net_vega": -0.0013
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 4.12,
+        "ul_price": 139.32000732421875,
+        "unrealized": 1.58,
+        "net_delta": 0.5274,
+        "net_theta": -0.0026,
+        "net_gamma": -0.025951,
+        "net_vega": -0.0131
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 4.12,
+        "ul_price": 139.33,
+        "unrealized": 1.58,
+        "net_delta": 0.5367,
+        "net_theta": 0.0104,
+        "net_gamma": -0.024484,
+        "net_vega": -0.0161
       }
     ],
     "exit": null,
@@ -35002,7 +36621,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 127.011,
+    "entry_mc_expiry_p25": 131.3635,
+    "entry_mc_expiry_p50": 136.1838,
+    "entry_mc_expiry_p75": 141.4933,
+    "entry_mc_expiry_p90": 146.3173,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260811PM_MRNA_CDS_2",
@@ -35082,6 +36707,26 @@
         "net_theta": -0.0045,
         "net_gamma": 0.004057,
         "net_vega": 0.0026
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 4.22,
+        "ul_price": 63.290000915527344,
+        "unrealized": 1.475,
+        "net_delta": 0.4448,
+        "net_theta": -0.0224,
+        "net_gamma": 0.003432,
+        "net_vega": 0.0059
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 4.22,
+        "ul_price": 63.32,
+        "unrealized": 1.475,
+        "net_delta": 0.4476,
+        "net_theta": -0.0031,
+        "net_gamma": 0.007706,
+        "net_vega": 0.004
       }
     ],
     "exit": null,
@@ -35158,7 +36803,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 47.3278,
+    "entry_mc_expiry_p25": 53.1069,
+    "entry_mc_expiry_p50": 59.4203,
+    "entry_mc_expiry_p75": 67.2017,
+    "entry_mc_expiry_p90": 74.5381,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260811PM_T_PDS_3",
@@ -35238,6 +36889,26 @@
         "net_theta": -0.0072,
         "net_gamma": -0.23874,
         "net_vega": -0.0035
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 0.1,
+        "ul_price": 24.8799991607666,
+        "unrealized": -0.25,
+        "net_delta": 0.1265,
+        "net_theta": -0.0104,
+        "net_gamma": -0.264382,
+        "net_vega": -0.003
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 0.1,
+        "ul_price": 24.89,
+        "unrealized": -0.25,
+        "net_delta": 0.2277,
+        "net_theta": 0.0102,
+        "net_gamma": -0.371393,
+        "net_vega": -0.0082
       }
     ],
     "exit": null,
@@ -35314,7 +36985,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 22.981,
+    "entry_mc_expiry_p25": 23.5906,
+    "entry_mc_expiry_p50": 24.355,
+    "entry_mc_expiry_p75": 25.0432,
+    "entry_mc_expiry_p90": 25.6798,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260812AM_GLD_CDS_1",
@@ -35384,6 +37061,26 @@
         "net_theta": -0.1471,
         "net_gamma": 0.022221,
         "net_vega": 0.0993
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 1.405,
+        "ul_price": 401.42999267578125,
+        "unrealized": -2.295,
+        "net_delta": 0.2686,
+        "net_theta": -0.1781,
+        "net_gamma": 0.03521,
+        "net_vega": 0.1147
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 1.13,
+        "ul_price": 401.48,
+        "unrealized": -2.57,
+        "net_delta": 0.2809,
+        "net_theta": -0.2002,
+        "net_gamma": 0.03217,
+        "net_vega": 0.116
       }
     ],
     "exit": null,
@@ -35460,7 +37157,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 391.5929,
+    "entry_mc_expiry_p25": 397.9543,
+    "entry_mc_expiry_p50": 406.0608,
+    "entry_mc_expiry_p75": 415.4589,
+    "entry_mc_expiry_p90": 422.8943,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260812AM_TSLA_CDS_2",
@@ -35530,6 +37233,26 @@
         "net_theta": 0.0447,
         "net_gamma": -0.003118,
         "net_vega": -0.0489
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 12.075,
+        "ul_price": 342.32000732421875,
+        "unrealized": 5.2,
+        "net_delta": 0.2506,
+        "net_theta": 0.0692,
+        "net_gamma": -0.004133,
+        "net_vega": -0.0636
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 10.975,
+        "ul_price": 342.27,
+        "unrealized": 4.1,
+        "net_delta": 0.2588,
+        "net_theta": 0.0834,
+        "net_gamma": -0.003953,
+        "net_vega": -0.0674
       }
     ],
     "exit": null,
@@ -35629,7 +37352,13 @@
         "p_profit": 0.562,
         "confidence": 0.665
       }
-    }
+    },
+    "entry_mc_expiry_p10": 285.0639,
+    "entry_mc_expiry_p25": 304.0091,
+    "entry_mc_expiry_p50": 327.5884,
+    "entry_mc_expiry_p75": 350.3372,
+    "entry_mc_expiry_p90": 374.5448,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260812AM_NVO_CDS_3",
@@ -35699,6 +37428,26 @@
         "net_theta": -0.0153,
         "net_gamma": -0.009559,
         "net_vega": 0.0028
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 0.415,
+        "ul_price": 45.8849983215332,
+        "unrealized": -0.205,
+        "net_delta": 0.3584,
+        "net_theta": -0.0186,
+        "net_gamma": 0.145857,
+        "net_vega": 0.0122
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 0.415,
+        "ul_price": 45.89,
+        "unrealized": -0.205,
+        "net_delta": 0.3274,
+        "net_theta": -0.0164,
+        "net_gamma": 0.103207,
+        "net_vega": 0.0097
       }
     ],
     "exit": null,
@@ -35798,7 +37547,13 @@
         "p_profit": 0.553,
         "confidence": 0.609
       }
-    }
+    },
+    "entry_mc_expiry_p10": 41.9925,
+    "entry_mc_expiry_p25": 43.9466,
+    "entry_mc_expiry_p50": 45.9983,
+    "entry_mc_expiry_p75": 48.3385,
+    "entry_mc_expiry_p90": 50.7381,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260812PM_GLD_PDS_1",
@@ -35868,6 +37623,26 @@
         "net_theta": -0.0141,
         "net_gamma": -0.00045,
         "net_vega": 0.0006
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 4.65,
+        "ul_price": 401.42999267578125,
+        "unrealized": 0.4,
+        "net_delta": 0.2328,
+        "net_theta": -0.0007,
+        "net_gamma": -0.002861,
+        "net_vega": -0.0242
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 4.65,
+        "ul_price": 401.48,
+        "unrealized": 0.4,
+        "net_delta": 0.2383,
+        "net_theta": 0.0085,
+        "net_gamma": -0.002287,
+        "net_vega": -0.0266
       }
     ],
     "exit": null,
@@ -35951,7 +37726,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 378.8023,
+    "entry_mc_expiry_p25": 389.8574,
+    "entry_mc_expiry_p50": 403.8129,
+    "entry_mc_expiry_p75": 417.3929,
+    "entry_mc_expiry_p90": 428.1629,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260812PM_T_PDS_2",
@@ -36021,6 +37802,26 @@
         "net_theta": -0.0008,
         "net_gamma": -0.106087,
         "net_vega": -0.004
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 0.23,
+        "ul_price": 24.8799991607666,
+        "unrealized": -0.185,
+        "net_delta": 0.1998,
+        "net_theta": 0.003,
+        "net_gamma": -0.148936,
+        "net_vega": -0.0065
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 0.23,
+        "ul_price": 24.89,
+        "unrealized": -0.185,
+        "net_delta": 0.2524,
+        "net_theta": 0.0077,
+        "net_gamma": -0.181194,
+        "net_vega": -0.01
       }
     ],
     "exit": null,
@@ -36104,7 +37905,13 @@
       "iv_edge_label": "fair",
       "pred_dist": null,
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 22.7573,
+    "entry_mc_expiry_p25": 23.4142,
+    "entry_mc_expiry_p50": 24.233,
+    "entry_mc_expiry_p75": 25.0809,
+    "entry_mc_expiry_p90": 25.8549,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:gbm"
   },
   {
     "id": "20260812PM_APP_COV_3",
@@ -36163,6 +37970,26 @@
         "net_theta": 0.3919,
         "net_gamma": -0.008953,
         "net_vega": -0.2037
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 5.5,
+        "ul_price": 315.3999938964844,
+        "unrealized": -0.75,
+        "net_delta": -0.2651,
+        "net_theta": 0.4068,
+        "net_gamma": -0.00961,
+        "net_vega": -0.2024
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 5.5,
+        "ul_price": 315.44,
+        "unrealized": -0.75,
+        "net_delta": -0.2674,
+        "net_theta": 0.4118,
+        "net_gamma": -0.009575,
+        "net_vega": -0.2033
       }
     ],
     "exit": null,
@@ -36261,7 +38088,13 @@
         "vol_source": null
       },
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 251.1173,
+    "entry_mc_expiry_p25": 275.0518,
+    "entry_mc_expiry_p50": 310.0058,
+    "entry_mc_expiry_p75": 349.5259,
+    "entry_mc_expiry_p90": 389.6204,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260813AM_AMD_CDS_1",
@@ -36321,6 +38154,26 @@
         "net_theta": -0.0751,
         "net_gamma": 0.000834,
         "net_vega": 0.0602
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 11.325,
+        "ul_price": 514.3699951171875,
+        "unrealized": 2.825,
+        "net_delta": 0.1403,
+        "net_theta": 0.005,
+        "net_gamma": -7e-05,
+        "net_vega": -0.0071
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 11.325,
+        "ul_price": 514.39,
+        "unrealized": 2.825,
+        "net_delta": 0.1393,
+        "net_theta": 0.0163,
+        "net_gamma": 1.9e-05,
+        "net_vega": -0.0074
       }
     ],
     "exit": null,
@@ -36419,7 +38272,13 @@
         "vol_source": null
       },
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 403.8604,
+    "entry_mc_expiry_p25": 443.2837,
+    "entry_mc_expiry_p50": 493.5042,
+    "entry_mc_expiry_p75": 541.9383,
+    "entry_mc_expiry_p90": 598.7554,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260813AM_NEE_CDS_2",
@@ -36479,6 +38338,26 @@
         "net_theta": -0.0196,
         "net_gamma": 0.025961,
         "net_vega": 0.011
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 0.65,
+        "ul_price": 86.19000244140625,
+        "unrealized": -0.12,
+        "net_delta": 0.3196,
+        "net_theta": -0.0224,
+        "net_gamma": 0.03072,
+        "net_vega": 0.0113
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 0.65,
+        "ul_price": 86.19,
+        "unrealized": -0.12,
+        "net_delta": 0.3299,
+        "net_theta": -0.0123,
+        "net_gamma": 0.060946,
+        "net_vega": 0.0115
       }
     ],
     "exit": null,
@@ -36577,7 +38456,13 @@
         "vol_source": null
       },
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 81.8867,
+    "entry_mc_expiry_p25": 83.9358,
+    "entry_mc_expiry_p50": 86.092,
+    "entry_mc_expiry_p75": 88.2989,
+    "entry_mc_expiry_p90": 90.451,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260813AM_PG_CDS_3",
@@ -36637,6 +38522,26 @@
         "net_theta": -0.0142,
         "net_gamma": 0.019434,
         "net_vega": 0.0134
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 0.745,
+        "ul_price": 144.5500030517578,
+        "unrealized": -0.105,
+        "net_delta": 0.2032,
+        "net_theta": -0.0229,
+        "net_gamma": 0.017571,
+        "net_vega": 0.0141
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 0.745,
+        "ul_price": 144.55,
+        "unrealized": -0.105,
+        "net_delta": 0.218,
+        "net_theta": -0.0258,
+        "net_gamma": 0.020592,
+        "net_vega": 0.0164
       }
     ],
     "exit": null,
@@ -36735,7 +38640,13 @@
         "vol_source": null
       },
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 138.2723,
+    "entry_mc_expiry_p25": 141.889,
+    "entry_mc_expiry_p50": 145.1374,
+    "entry_mc_expiry_p75": 148.216,
+    "entry_mc_expiry_p90": 151.542,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260813AM_VST_DGS_1",
@@ -36774,6 +38685,26 @@
         "net_theta": 0.0079,
         "net_gamma": -0.004079,
         "net_vega": -0.0123
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 0.0,
+        "ul_price": 148.13999938964844,
+        "unrealized": -2.333,
+        "net_delta": 0.2692,
+        "net_theta": 0.0085,
+        "net_gamma": -0.008522,
+        "net_vega": -0.0205
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 0.0,
+        "ul_price": 148.13,
+        "unrealized": -2.333,
+        "net_delta": 0.3111,
+        "net_theta": 0.0444,
+        "net_gamma": -0.006872,
+        "net_vega": -0.0283
       }
     ],
     "exit": null,
@@ -36872,7 +38803,13 @@
         "vol_source": null
       },
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 125.8039,
+    "entry_mc_expiry_p25": 134.61,
+    "entry_mc_expiry_p50": 144.9561,
+    "entry_mc_expiry_p75": 154.2386,
+    "entry_mc_expiry_p90": 165.8586,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260813AM_AAPL_CDS_2",
@@ -36932,6 +38869,26 @@
         "net_theta": -0.0178,
         "net_gamma": 0.001734,
         "net_vega": 0.0142
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 3.86,
+        "ul_price": 305.95001220703125,
+        "unrealized": -0.305,
+        "net_delta": 0.3009,
+        "net_theta": -0.0244,
+        "net_gamma": 0.000457,
+        "net_vega": 0.0119
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 4.62,
+        "ul_price": 305.93,
+        "unrealized": 0.455,
+        "net_delta": 0.3044,
+        "net_theta": -0.0189,
+        "net_gamma": 0.001304,
+        "net_vega": 0.0115
       }
     ],
     "exit": null,
@@ -37030,7 +38987,13 @@
         "vol_source": null
       },
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 277.7461,
+    "entry_mc_expiry_p25": 291.0482,
+    "entry_mc_expiry_p50": 302.9659,
+    "entry_mc_expiry_p75": 316.7368,
+    "entry_mc_expiry_p90": 329.8371,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260813AM_LRCX_COV_3",
@@ -37079,6 +39042,26 @@
         "net_theta": 0.5933,
         "net_gamma": -0.00809,
         "net_vega": -0.1376
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 1.32,
+        "ul_price": 332.25,
+        "unrealized": 2.505,
+        "net_delta": -0.0893,
+        "net_theta": 0.2989,
+        "net_gamma": -0.006289,
+        "net_vega": -0.0743
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 2.365,
+        "ul_price": 332.36,
+        "unrealized": 1.46,
+        "net_delta": -0.0979,
+        "net_theta": 0.331,
+        "net_gamma": -0.006505,
+        "net_vega": -0.0795
       }
     ],
     "exit": null,
@@ -37177,7 +39160,13 @@
         "vol_source": null
       },
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 288.6124,
+    "entry_mc_expiry_p25": 310.3369,
+    "entry_mc_expiry_p50": 335.9914,
+    "entry_mc_expiry_p75": 366.0836,
+    "entry_mc_expiry_p90": 393.5517,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260813AM_ABBV_PDS_1",
@@ -37237,6 +39226,26 @@
         "net_theta": -0.0343,
         "net_gamma": -0.012695,
         "net_vega": -0.0177
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 3.74,
+        "ul_price": 249.4499969482422,
+        "unrealized": 0.41,
+        "net_delta": 0.3388,
+        "net_theta": -0.001,
+        "net_gamma": -0.006836,
+        "net_vega": -0.012
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 3.74,
+        "ul_price": 249.46,
+        "unrealized": 0.41,
+        "net_delta": 0.3671,
+        "net_theta": 0.0039,
+        "net_gamma": -0.007622,
+        "net_vega": -0.0142
       }
     ],
     "exit": null,
@@ -37335,7 +39344,13 @@
         "vol_source": null
       },
       "kelly": null
-    }
+    },
+    "entry_mc_expiry_p10": 236.8475,
+    "entry_mc_expiry_p25": 242.7809,
+    "entry_mc_expiry_p50": 250.484,
+    "entry_mc_expiry_p75": 258.2761,
+    "entry_mc_expiry_p90": 263.8877,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260813AM_PG_CDS_2",
@@ -37395,6 +39410,26 @@
         "net_theta": -0.0242,
         "net_gamma": 0.002879,
         "net_vega": 0.0173
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 1.765,
+        "ul_price": 144.5500030517578,
+        "unrealized": 0.2,
+        "net_delta": 0.275,
+        "net_theta": -0.0239,
+        "net_gamma": 0.0026,
+        "net_vega": 0.016
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 1.765,
+        "ul_price": 144.55,
+        "unrealized": 0.2,
+        "net_delta": 0.3033,
+        "net_theta": -0.0164,
+        "net_gamma": 0.013014,
+        "net_vega": 0.0188
       }
     ],
     "exit": null,
@@ -37501,7 +39536,13 @@
         "p_profit": 0.441,
         "confidence": 0.624
       }
-    }
+    },
+    "entry_mc_expiry_p10": 136.2424,
+    "entry_mc_expiry_p25": 140.576,
+    "entry_mc_expiry_p50": 144.7517,
+    "entry_mc_expiry_p75": 148.6849,
+    "entry_mc_expiry_p90": 153.1141,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260813AM_UNH_PDS_3",
@@ -37561,6 +39602,26 @@
         "net_theta": -0.0004,
         "net_gamma": -0.002339,
         "net_vega": -0.0262
+      },
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 6.17,
+        "ul_price": 401.80999755859375,
+        "unrealized": 0.145,
+        "net_delta": 0.2726,
+        "net_theta": 0.0185,
+        "net_gamma": -0.004534,
+        "net_vega": -0.052
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 6.17,
+        "ul_price": 401.73,
+        "unrealized": 0.145,
+        "net_delta": 0.2917,
+        "net_theta": 0.0332,
+        "net_gamma": -0.004464,
+        "net_vega": -0.0591
       }
     ],
     "exit": null,
@@ -37667,7 +39728,13 @@
         "p_profit": 0.475,
         "confidence": 0.575
       }
-    }
+    },
+    "entry_mc_expiry_p10": 357.3157,
+    "entry_mc_expiry_p25": 377.9473,
+    "entry_mc_expiry_p50": 400.0838,
+    "entry_mc_expiry_p75": 425.418,
+    "entry_mc_expiry_p90": 446.4379,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260814AM_AMD_COV_1",
@@ -37706,7 +39773,28 @@
     "profit_target": 7.8075,
     "stop_loss": 26.025,
     "status": "open",
-    "snapshots": [],
+    "snapshots": [
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 11.725,
+        "ul_price": 514.3699951171875,
+        "unrealized": -3.05,
+        "net_delta": -0.323,
+        "net_theta": 0.7395,
+        "net_gamma": -0.00636,
+        "net_vega": -0.3617
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 11.725,
+        "ul_price": 514.39,
+        "unrealized": -3.05,
+        "net_delta": -0.3281,
+        "net_theta": 0.7626,
+        "net_gamma": -0.006245,
+        "net_vega": -0.364
+      }
+    ],
     "exit": null,
     "iv_edge_vp": -0.39,
     "iv_edge_label": "fair",
@@ -37819,7 +39907,13 @@
       "breakeven": null,
       "hv30": 0.7704,
       "iv_rank_52w": 7.9
-    }
+    },
+    "entry_mc_expiry_p10": 418.3752,
+    "entry_mc_expiry_p25": 452.6232,
+    "entry_mc_expiry_p50": 493.145,
+    "entry_mc_expiry_p75": 538.1964,
+    "entry_mc_expiry_p90": 585.9368,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260814AM_MU_CDS_2",
@@ -37869,7 +39963,28 @@
     "profit_target": 12.96,
     "stop_loss": 43.2,
     "status": "open",
-    "snapshots": [],
+    "snapshots": [
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 12.025,
+        "ul_price": 972.780029296875,
+        "unrealized": -2.375,
+        "net_delta": 0.1775,
+        "net_theta": -0.3901,
+        "net_gamma": 0.001006,
+        "net_vega": 0.098
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 12.025,
+        "ul_price": 971.66,
+        "unrealized": -2.375,
+        "net_delta": 0.1703,
+        "net_theta": -0.3927,
+        "net_gamma": 0.000877,
+        "net_vega": 0.0917
+      }
+    ],
     "exit": null,
     "iv_edge_vp": null,
     "iv_edge_label": "fair",
@@ -37990,7 +40105,13 @@
       "breakeven": null,
       "hv30": 0.9409,
       "iv_rank_52w": 5.6
-    }
+    },
+    "entry_mc_expiry_p10": 822.7068,
+    "entry_mc_expiry_p25": 880.0675,
+    "entry_mc_expiry_p50": 953.6474,
+    "entry_mc_expiry_p75": 1061.718,
+    "entry_mc_expiry_p90": 1134.2447,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   },
   {
     "id": "20260814AM_NVO_CDS_3",
@@ -38040,7 +40161,28 @@
     "profit_target": 0.3915,
     "stop_loss": 1.305,
     "status": "open",
-    "snapshots": [],
+    "snapshots": [
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 0.37,
+        "ul_price": 45.8849983215332,
+        "unrealized": -0.065,
+        "net_delta": 0.3079,
+        "net_theta": -0.0138,
+        "net_gamma": 0.106571,
+        "net_vega": 0.0088
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 0.37,
+        "ul_price": 45.89,
+        "unrealized": -0.065,
+        "net_delta": 0.2769,
+        "net_theta": -0.0122,
+        "net_gamma": 0.071952,
+        "net_vega": 0.0069
+      }
+    ],
     "exit": null,
     "iv_edge_vp": -1.81,
     "iv_edge_label": "fair",
@@ -38161,6 +40303,618 @@
       "breakeven": null,
       "hv30": 0.4094,
       "iv_rank_52w": 13.9
-    }
+    },
+    "entry_mc_expiry_p10": 42.1298,
+    "entry_mc_expiry_p25": 44.0923,
+    "entry_mc_expiry_p50": 45.9646,
+    "entry_mc_expiry_p75": 48.2906,
+    "entry_mc_expiry_p90": 50.2747,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
+  },
+  {
+    "id": "20260814PM_MU_CDS_1",
+    "rank": 1,
+    "entered_at": "2026-08-14T14:06:01.656010-04:00",
+    "ticker": "MU",
+    "structure": "Call Debit Spread",
+    "expiry": "2026-08-21",
+    "strikes": {
+      "short": 1010.0,
+      "long": 980.0
+    },
+    "width": 30.0,
+    "entry_credit": 9.975,
+    "entry_mid": 9.975,
+    "entry_legs": {
+      "long": {
+        "strike": 980.0,
+        "bid": 23.9,
+        "ask": 24.8,
+        "mid": 24.35,
+        "iv": 58.4,
+        "iv_raw": 0.58424,
+        "volume": 1440,
+        "oi": 5241
+      },
+      "short": {
+        "strike": 1010.0,
+        "bid": 14.15,
+        "ask": 14.6,
+        "mid": 14.375,
+        "iv": 58.6,
+        "iv_raw": 0.58606,
+        "volume": 813,
+        "oi": 1461
+      }
+    },
+    "scan_credit": 19.3,
+    "slippage_pct": 0.0,
+    "fill_source": "live_quote",
+    "max_profit": 9.975,
+    "max_loss": 20.025,
+    "dte_at_entry": 7,
+    "spot_at_entry": 963.92,
+    "signal_rating": null,
+    "signal_score": 0,
+    "profit_target": 8.9775,
+    "stop_loss": 29.925,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 11.225,
+        "ul_price": 972.780029296875,
+        "unrealized": 1.25,
+        "net_delta": 0.1467,
+        "net_theta": -0.2001,
+        "net_gamma": 0.000442,
+        "net_vega": 0.0458
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 11.225,
+        "ul_price": 971.66,
+        "unrealized": 1.25,
+        "net_delta": 0.1374,
+        "net_theta": -0.1599,
+        "net_gamma": 0.000459,
+        "net_vega": 0.0422
+      }
+    ],
+    "exit": null,
+    "iv_edge_vp": null,
+    "iv_edge_label": "fair",
+    "kelly_fraction": 0.0286,
+    "kelly_pct": 0.0286,
+    "kelly_contracts": 1,
+    "kelly_capital": 42.88,
+    "ml_p_win": 0.411,
+    "ml_confidence": 0.677,
+    "capital_required": 1070.0,
+    "capital_type": "debit",
+    "requires_margin": false,
+    "scan_time": "afternoon",
+    "ranker_score": null,
+    "position_size_factor": null,
+    "suggested_allocation_pct": null,
+    "scan_decision_id": "20260814PM",
+    "ml_scores_at_entry": {
+      "regime": "Trending",
+      "regime_prob": null,
+      "expected_return": null,
+      "expected_vol": 0.7527,
+      "expected_move_pct": 0.1499,
+      "iv_direction": "Expanding",
+      "iv_expanding_prob": 0.2623,
+      "pop_score": 0.8764,
+      "pop_threshold": 0.2,
+      "meta_score": 52.0,
+      "is_anomaly": false,
+      "anomaly_score": 13.7,
+      "model_versions": {
+        "pop": {
+          "trained_at": "2026-08-14T17:59:00.244226+00:00",
+          "git_sha": "unknown"
+        },
+        "regime": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "return": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "vol": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "meta": {
+          "trained_at": null,
+          "git_sha": null
+        }
+      }
+    },
+    "pop_at_entry": 43.8,
+    "net_delta_at_entry": 0.14,
+    "net_theta_at_entry": -0.2723,
+    "net_gamma_at_entry": 0.000615,
+    "net_vega_at_entry": 0.0631,
+    "breakeven_at_entry": null,
+    "hv30_at_entry": 0.9402,
+    "iv_rank_at_entry": 5.2,
+    "optimizer_candidate": {
+      "ticker": "MU",
+      "structure": "Call Debit Spread",
+      "expiry": "2026-08-21",
+      "dte": 7,
+      "max_profit": 19.3,
+      "max_loss": 10.7,
+      "ev": 1.273,
+      "entry_ev_mc": 1.273,
+      "entry_ev_delta_proxy": 1.092,
+      "entry_ev_is_proxy": false,
+      "entry_prob_profit_sim": 41.1,
+      "entry_cvar_loss": -10.7,
+      "entry_prob_of_touch": 54.0,
+      "entry_mc_vol_source": "garch",
+      "entry_mc_expiry_mean": 968.6108,
+      "entry_mc_expiry_median": 960.7184,
+      "entry_mc_expiry_p10": 802.2978,
+      "entry_mc_expiry_p25": 875.7218,
+      "entry_mc_expiry_p50": 960.7184,
+      "entry_mc_expiry_p75": 1055.7184,
+      "entry_mc_expiry_p90": 1137.3421,
+      "entry_distribution_model_version": "garch:unknown",
+      "entry_mc_zone_below_long": 56.0,
+      "entry_mc_zone_between": 8.1,
+      "entry_mc_zone_above_short": 35.9,
+      "entry_mc_zone_in_profit": null,
+      "meets_both": false,
+      "signal_score": 0,
+      "signal_rating": null,
+      "spot_at_entry": 963.92,
+      "short_strike": 1010.0,
+      "long_strike": 980.0,
+      "put_short_strike": null,
+      "put_long_strike": null,
+      "call_short_strike": null,
+      "call_long_strike": null,
+      "iv_edge_vp": null,
+      "iv_edge_label": "fair",
+      "pred_dist": {
+        "p_win": 0.649,
+        "ev_std": 0.161,
+        "confidence": 0.677,
+        "model_agreement": "Medium",
+        "n_signals": 3,
+        "signals": {
+          "meta": 0.52,
+          "pop": 0.876,
+          "regime_up": 0.55
+        },
+        "p10_pnl": null,
+        "p90_pnl": null,
+        "ev_per_share": null,
+        "vol_source": null
+      },
+      "kelly": {
+        "kelly_f": 0.0286,
+        "kelly_pct": 0.0286,
+        "kelly_capital": 42.88,
+        "kelly_contracts": 1,
+        "confidence_scalar": 0.677,
+        "p_profit": 0.411,
+        "confidence": 0.677
+      },
+      "pop": 43.8,
+      "net_delta": 0.14,
+      "net_theta": -0.2723,
+      "net_gamma": 0.000615,
+      "net_vega": 0.0631,
+      "breakeven": null,
+      "hv30": 0.9402,
+      "iv_rank_52w": 5.2
+    },
+    "entry_mc_expiry_p10": 789.2696,
+    "entry_mc_expiry_p25": 865.1872,
+    "entry_mc_expiry_p50": 951.5814,
+    "entry_mc_expiry_p75": 1034.6199,
+    "entry_mc_expiry_p90": 1125.9361,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
+  },
+  {
+    "id": "20260814PM_VRT_COV_2",
+    "rank": 2,
+    "entered_at": "2026-08-14T14:06:05.765936-04:00",
+    "ticker": "VRT",
+    "structure": "Covered Call",
+    "expiry": "2026-08-28",
+    "strikes": {
+      "short": 320.0
+    },
+    "width": 320.0,
+    "entry_credit": 4.5,
+    "entry_mid": 4.5,
+    "entry_legs": {
+      "short": {
+        "strike": 320.0,
+        "bid": 4.2,
+        "ask": 4.8,
+        "mid": 4.5,
+        "iv": 56.8,
+        "iv_raw": 0.56803,
+        "volume": 22,
+        "oi": 336
+      }
+    },
+    "scan_credit": 30.76,
+    "slippage_pct": 0.0,
+    "fill_source": "live_quote",
+    "max_profit": 4.5,
+    "max_loss": 315.5,
+    "dte_at_entry": 14,
+    "spot_at_entry": 293.44,
+    "signal_rating": "Moderate",
+    "signal_score": 38.725,
+    "profit_target": 4.05,
+    "stop_loss": 13.5,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 4.425,
+        "ul_price": 293.8999938964844,
+        "unrealized": 0.075,
+        "net_delta": -0.2364,
+        "net_theta": 0.3572,
+        "net_gamma": -0.009682,
+        "net_vega": -0.1774
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 4.425,
+        "ul_price": 293.84,
+        "unrealized": 0.075,
+        "net_delta": -0.2426,
+        "net_theta": 0.372,
+        "net_gamma": -0.009562,
+        "net_vega": -0.18
+      }
+    ],
+    "exit": null,
+    "iv_edge_vp": 0.26,
+    "iv_edge_label": "fair",
+    "kelly_fraction": null,
+    "kelly_pct": null,
+    "kelly_contracts": null,
+    "kelly_capital": null,
+    "ml_p_win": null,
+    "ml_confidence": null,
+    "capital_required": null,
+    "capital_type": "shares",
+    "requires_margin": false,
+    "scan_time": "afternoon",
+    "ranker_score": null,
+    "position_size_factor": null,
+    "suggested_allocation_pct": null,
+    "scan_decision_id": "20260814PM",
+    "ml_scores_at_entry": {
+      "regime": "Trending",
+      "regime_prob": null,
+      "expected_return": null,
+      "expected_vol": 0.6668,
+      "expected_move_pct": 0.1328,
+      "iv_direction": "Expanding",
+      "iv_expanding_prob": 0.4508,
+      "pop_score": 0.7335,
+      "pop_threshold": 0.2,
+      "meta_score": 52.0,
+      "is_anomaly": false,
+      "anomaly_score": 20.8,
+      "model_versions": {
+        "pop": {
+          "trained_at": "2026-08-14T17:59:00.244226+00:00",
+          "git_sha": "unknown"
+        },
+        "regime": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "return": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "vol": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "meta": {
+          "trained_at": null,
+          "git_sha": null
+        }
+      }
+    },
+    "pop_at_entry": 75.9,
+    "net_delta_at_entry": -0.241,
+    "net_theta_at_entry": 0.3743,
+    "net_gamma_at_entry": -0.0095,
+    "net_vega_at_entry": -0.1792,
+    "breakeven_at_entry": null,
+    "hv30_at_entry": 0.7839,
+    "iv_rank_at_entry": 5.6,
+    "optimizer_candidate": {
+      "ticker": "VRT",
+      "structure": "Covered Call",
+      "expiry": "2026-08-28",
+      "dte": 14,
+      "max_profit": 30.76,
+      "max_loss": 289.24,
+      "ev": 23.3468,
+      "entry_ev_mc": null,
+      "entry_ev_delta_proxy": 23.3468,
+      "entry_ev_is_proxy": true,
+      "entry_prob_profit_sim": null,
+      "entry_cvar_loss": null,
+      "entry_prob_of_touch": null,
+      "entry_mc_vol_source": null,
+      "entry_mc_expiry_mean": null,
+      "entry_mc_expiry_median": null,
+      "entry_mc_expiry_p10": null,
+      "entry_mc_expiry_p25": null,
+      "entry_mc_expiry_p50": null,
+      "entry_mc_expiry_p75": null,
+      "entry_mc_expiry_p90": null,
+      "entry_distribution_model_version": null,
+      "entry_mc_zone_below_long": null,
+      "entry_mc_zone_between": null,
+      "entry_mc_zone_above_short": null,
+      "entry_mc_zone_in_profit": null,
+      "meets_both": true,
+      "signal_score": 38.725,
+      "signal_rating": "Moderate",
+      "spot_at_entry": 293.44,
+      "short_strike": 320.0,
+      "long_strike": null,
+      "put_short_strike": null,
+      "put_long_strike": null,
+      "call_short_strike": null,
+      "call_long_strike": null,
+      "iv_edge_vp": 0.26,
+      "iv_edge_label": "fair",
+      "pred_dist": {
+        "p_win": 0.61,
+        "ev_std": 0.09,
+        "confidence": 0.819,
+        "model_agreement": "High",
+        "n_signals": 3,
+        "signals": {
+          "meta": 0.52,
+          "pop": 0.734,
+          "regime_up": 0.577
+        },
+        "p10_pnl": null,
+        "p90_pnl": null,
+        "ev_per_share": null,
+        "vol_source": null
+      },
+      "kelly": null,
+      "pop": 75.9,
+      "net_delta": -0.241,
+      "net_theta": 0.3743,
+      "net_gamma": -0.0095,
+      "net_vega": -0.1792,
+      "breakeven": null,
+      "hv30": 0.7839,
+      "iv_rank_52w": 5.6
+    },
+    "entry_mc_expiry_p10": 244.0135,
+    "entry_mc_expiry_p25": 267.3636,
+    "entry_mc_expiry_p50": 293.5433,
+    "entry_mc_expiry_p75": 318.7049,
+    "entry_mc_expiry_p90": 339.7115,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
+  },
+  {
+    "id": "20260814PM_AAPL_CDS_3",
+    "rank": 3,
+    "entered_at": "2026-08-14T14:06:06.837502-04:00",
+    "ticker": "AAPL",
+    "structure": "Call Debit Spread",
+    "expiry": "2026-08-28",
+    "strikes": {
+      "short": 312.5,
+      "long": 305.0
+    },
+    "width": 7.5,
+    "entry_credit": 3.105,
+    "entry_mid": 3.105,
+    "entry_legs": {
+      "long": {
+        "strike": 305.0,
+        "bid": 5.7,
+        "ask": 5.9,
+        "mid": 5.8,
+        "iv": 21.5,
+        "iv_raw": 0.21458,
+        "volume": 1237,
+        "oi": 2420
+      },
+      "short": {
+        "strike": 312.5,
+        "bid": 2.63,
+        "ask": 2.76,
+        "mid": 2.695,
+        "iv": 21.6,
+        "iv_raw": 0.21592,
+        "volume": 413,
+        "oi": 283
+      }
+    },
+    "scan_credit": 4.2,
+    "slippage_pct": 0.0,
+    "fill_source": "live_quote",
+    "max_profit": 3.105,
+    "max_loss": 4.395,
+    "dte_at_entry": 14,
+    "spot_at_entry": 305.98,
+    "signal_rating": null,
+    "signal_score": 0,
+    "profit_target": 2.7945,
+    "stop_loss": 9.315,
+    "status": "open",
+    "snapshots": [
+      {
+        "ts": "2026-08-14T17:00:01.789526-04:00",
+        "mark": 3.86,
+        "ul_price": 305.95001220703125,
+        "unrealized": 0.755,
+        "net_delta": 0.2265,
+        "net_theta": -0.03,
+        "net_gamma": 0.001712,
+        "net_vega": 0.0218
+      },
+      {
+        "ts": "2026-08-14T17:08:22.049471-04:00",
+        "mark": 3.17,
+        "ul_price": 305.93,
+        "unrealized": 0.065,
+        "net_delta": 0.2278,
+        "net_theta": -0.0241,
+        "net_gamma": 0.002743,
+        "net_vega": 0.0219
+      }
+    ],
+    "exit": null,
+    "iv_edge_vp": -0.11,
+    "iv_edge_label": "fair",
+    "kelly_fraction": null,
+    "kelly_pct": null,
+    "kelly_contracts": null,
+    "kelly_capital": null,
+    "ml_p_win": null,
+    "ml_confidence": null,
+    "capital_required": 330.0,
+    "capital_type": "debit",
+    "requires_margin": false,
+    "scan_time": "afternoon",
+    "ranker_score": null,
+    "position_size_factor": null,
+    "suggested_allocation_pct": null,
+    "scan_decision_id": "20260814PM",
+    "ml_scores_at_entry": {
+      "regime": "Trending",
+      "regime_prob": null,
+      "expected_return": null,
+      "expected_vol": 0.2631,
+      "expected_move_pct": 0.0524,
+      "iv_direction": "Expanding",
+      "iv_expanding_prob": 0.4558,
+      "pop_score": 0.8695,
+      "pop_threshold": 0.2,
+      "meta_score": 52.0,
+      "is_anomaly": false,
+      "anomaly_score": 45.7,
+      "model_versions": {
+        "pop": {
+          "trained_at": "2026-08-14T17:59:00.244226+00:00",
+          "git_sha": "unknown"
+        },
+        "regime": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "return": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "vol": {
+          "trained_at": null,
+          "git_sha": null
+        },
+        "meta": {
+          "trained_at": null,
+          "git_sha": null
+        }
+      }
+    },
+    "pop_at_entry": 55.2,
+    "net_delta_at_entry": 0.225,
+    "net_theta_at_entry": -0.0234,
+    "net_gamma_at_entry": 0.00254,
+    "net_vega_at_entry": 0.0207,
+    "breakeven_at_entry": null,
+    "hv30_at_entry": 0.3202,
+    "iv_rank_at_entry": 5.2,
+    "optimizer_candidate": {
+      "ticker": "AAPL",
+      "structure": "Call Debit Spread",
+      "expiry": "2026-08-28",
+      "dte": 14,
+      "max_profit": 4.2,
+      "max_loss": 3.3,
+      "ev": -0.093,
+      "entry_ev_mc": -0.093,
+      "entry_ev_delta_proxy": 0.368,
+      "entry_ev_is_proxy": false,
+      "entry_prob_profit_sim": 43.6,
+      "entry_cvar_loss": -3.3,
+      "entry_prob_of_touch": 58.2,
+      "entry_mc_vol_source": "garch",
+      "entry_mc_expiry_mean": 305.6455,
+      "entry_mc_expiry_median": 305.2497,
+      "entry_mc_expiry_p10": 281.9351,
+      "entry_mc_expiry_p25": 293.2739,
+      "entry_mc_expiry_p50": 305.2497,
+      "entry_mc_expiry_p75": 317.3103,
+      "entry_mc_expiry_p90": 328.7564,
+      "entry_distribution_model_version": "garch:unknown",
+      "entry_mc_zone_below_long": 49.6,
+      "entry_mc_zone_between": 15.6,
+      "entry_mc_zone_above_short": 34.8,
+      "entry_mc_zone_in_profit": null,
+      "meets_both": false,
+      "signal_score": 0,
+      "signal_rating": null,
+      "spot_at_entry": 305.98,
+      "short_strike": 312.5,
+      "long_strike": 305.0,
+      "put_short_strike": null,
+      "put_long_strike": null,
+      "call_short_strike": null,
+      "call_long_strike": null,
+      "iv_edge_vp": -0.11,
+      "iv_edge_label": "fair",
+      "pred_dist": {
+        "p_win": 0.618,
+        "ev_std": 0.179,
+        "confidence": 0.641,
+        "model_agreement": "Medium",
+        "n_signals": 3,
+        "signals": {
+          "meta": 0.52,
+          "pop": 0.87,
+          "regime_up": 0.464
+        },
+        "p10_pnl": null,
+        "p90_pnl": null,
+        "ev_per_share": null,
+        "vol_source": null
+      },
+      "kelly": null,
+      "pop": 55.2,
+      "net_delta": 0.225,
+      "net_theta": -0.0234,
+      "net_gamma": 0.00254,
+      "net_vega": 0.0207,
+      "breakeven": null,
+      "hv30": 0.3202,
+      "iv_rank_52w": 5.2
+    },
+    "entry_mc_expiry_p10": 283.2034,
+    "entry_mc_expiry_p25": 294.6786,
+    "entry_mc_expiry_p50": 305.078,
+    "entry_mc_expiry_p75": 318.5033,
+    "entry_mc_expiry_p90": 329.9909,
+    "entry_distribution_model_version": "backfill_approx:2026-08-14:garch"
   }
 ]

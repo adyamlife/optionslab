@@ -70,6 +70,10 @@ def get_iv_percentile_52w(ticker: str, atm_iv: float) -> float | None:
     Returns float 0-100: what % of the past 252 daily ATM IV readings are below
     today's ATM IV. Higher = IV currently elevated vs its own history.
     Returns None when fewer than 60 daily rows exist (falls back to HV proxy).
+
+    Deduplicates to one row per calendar day (latest snapshot that day) before
+    applying the 252-day window — fixes the 252-row-not-252-day bug where
+    tickers with multiple intraday snapshots would get fewer than 252 actual days.
     """
     try:
         with _DB_WRITE_LOCK:
@@ -77,11 +81,20 @@ def get_iv_percentile_52w(ticker: str, atm_iv: float) -> float | None:
                 rows = con.execute(
                     """
                     SELECT atm_iv
-                    FROM training_snapshots
-                    WHERE ticker = ?
-                      AND atm_iv IS NOT NULL
-                      AND atm_iv > 0
-                    ORDER BY collected_at DESC
+                    FROM (
+                        SELECT atm_iv,
+                               ROW_NUMBER() OVER (
+                                   PARTITION BY CAST(collected_at AS DATE)
+                                   ORDER BY collected_at DESC
+                               ) AS rn
+                        FROM training_snapshots
+                        WHERE ticker = ?
+                          AND atm_iv IS NOT NULL
+                          AND atm_iv > 0
+                          AND collected_at >= CURRENT_DATE - INTERVAL '366 days'
+                    ) deduped
+                    WHERE rn = 1
+                    ORDER BY 1
                     LIMIT 252
                     """,
                     [ticker],

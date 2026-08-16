@@ -37,6 +37,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import roc_auc_score, accuracy_score
 from xgboost import XGBClassifier
+from scripts.calibrate_models import IsotonicCalibrator as _IsoCal
 
 _ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_ROOT))
@@ -310,6 +311,44 @@ def run() -> None:
             f"{r.get('avg_realized_top3', 0):>9.3f}"
         )
     print(f"{'='*78}")
+
+    # ── Canonical calibrated artifact (combined variant + isotonic calibration) ──
+    # Raw combined probabilities are severely compressed (all deciles underpredict).
+    # IsotonicCalibrator corrects monotonically using the val fold.
+    try:
+        _combined_r = next(r for r in results if r["label"] == "combined")
+        _, _splits_c = next((l, s) for l, s in variants if l == "combined")
+        _Xtr_c, _Xval_c, _Xte_c = _splits_c
+        _cal_model = _IsoCal(_combined_r["model"], n_classes=2)
+        _cal_model.fit(_Xval_c, y_val)
+        _cal_proba_te = _cal_model.predict_proba(_Xte_c)[:, 1]
+        _cal_auc = float(roc_auc_score(y_te, _cal_proba_te)) if len(np.unique(y_te)) > 1 else None
+        _cal_decile = _calibration_by_decile(_cal_proba_te, y_te)
+        joblib.dump({
+            "model":      _cal_model,
+            "features":   _combined_r["features"],
+            "target":     "win",
+            "variant":    "combined_calibrated",
+            "system":     "v2",
+            "cutoff":     str(_SYSTEM_V2_CUTOFF.date()),
+            "auc":        _cal_auc,
+            "base_rate":  _combined_r["base_rate"],
+            "calibrated": True,
+            "n_classes":  2,
+        }, _MODELS_DIR / "trade_win_classifier.joblib")
+        print(f"\nCalibration — combined_calibrated (test n={len(y_te)}):")
+        print(f"  {'Decile':>6}  {'Pred':>6}  {'Obs':>6}  {'N':>4}  {'Gap':>7}")
+        print(f"  {'─'*36}")
+        for _row in _cal_decile:
+            _gap  = _row["obs_mean"] - _row["pred_mean"]
+            _flag = "  ←" if abs(_gap) > 0.10 else ""
+            print(f"  {_row['decile']:>6}  {_row['pred_mean']:>6.3f}  "
+                  f"{_row['obs_mean']:>6.3f}  {_row['n']:>4}  {_gap:>+7.3f}{_flag}")
+        _auc_str = f"{_cal_auc:.4f}" if _cal_auc is not None else "n/a"
+        print(f"\nCanonical artifact saved: trade_win_classifier.joblib  "
+              f"(calibrated combined  AUC={_auc_str})")
+    except Exception as _e:
+        print(f"\n[WARN] Could not save canonical trade_win_classifier.joblib: {_e}")
 
     # ── Calibration by decile — all variants ──────────────────────────────────
     for r in results:
