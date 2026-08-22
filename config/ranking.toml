@@ -29,12 +29,15 @@ max_capital_utilization = 1.0
 # 25% EV             — expected value per capital at risk
 # 15% Signal score   — rulebook quality (per-candidate, includes gamma/div penalties)
 # 10% POP            — probability of profit (candidate-level)
-# 10% ML meta_score  — ensemble directional conviction; reduced to avoid double-counting
+# 10% ML meta_score  — DISABLED 2026-08-22: primary meta_ensemble.joblib AUC=0.5677
+#     (barely above the uninformative 0.50 baseline) with P@10=0.00, P@25=0.00 —
+#     zero top-decile ranking signal. Weight left unallocated pending validation
+#     of the resulting composite score before deciding redistribution.
 #  5% IV edge        — structural IV alignment (credit wants high IV, debit wants low)
 #  5% Liquidity      — relative volume vs 20-day average
 confidence = 0.30
 ev         = 0.25
-meta_score = 0.10
+meta_score = 0.00
 pop        = 0.10
 signal     = 0.15
 iv_edge    = 0.05
@@ -90,7 +93,7 @@ min_bucket_n = 15
 max_ticker_trades   = 2    # max open positions per ticker (1 AM + 1 PM at most)
 max_sector_count    = 2    # max open trades in the same sector ETF
 max_deployment_pct  = 20.0 # max % of total notional capital deployed
-max_net_delta       = 25.0  # TEMP: legacy book expires 2026-08-21; restore to 3.0 after
+max_net_delta       = 3.0   # max delta exposure across all open legs
 max_net_theta       = 0.0  # max |portfolio theta| per day (0 = gate disabled until calibrated)
 max_net_gamma       = 0.0  # max |portfolio gamma| (0 = gate disabled until calibrated)
 corr_warn_threshold = 0.75 # 60d return correlation above this → warning (not block)

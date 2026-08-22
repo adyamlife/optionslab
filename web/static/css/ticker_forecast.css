@@ -1,0 +1,114 @@
+/* ── Page layout ──────────────────────────────────────────────────────────── */
+.tf-page { max-width: 1400px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+
+.tf-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.tf-header h2 { margin: 0; font-size: 1.25rem; }
+.tf-header .tf-subtitle { color: var(--text-muted); font-size: 0.85rem; }
+
+#tf-run-btn {
+  padding: .45rem 1.2rem; border-radius: 6px; border: none; cursor: pointer;
+  /*background: var(--accent); */color: #fff; font-size: .9rem; font-weight: 600;
+}
+#tf-run-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+#tf-status { font-size: .85rem; color: var(--text-muted); min-width: 12rem; }
+
+/* ── Table ────────────────────────────────────────────────────────────────── */
+.tf-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); }
+
+table.tf-table {
+  width: 100%; border-collapse: collapse; font-size: .82rem;
+  background: var(--bg-card);
+}
+table.tf-table th {
+  padding: .55rem .6rem; text-align: center; white-space: nowrap;
+  background: var(--bg-subtle); color: var(--text-muted); font-weight: 600;
+  border-bottom: 2px solid var(--border); position: sticky; top: 0; z-index: 2;
+}
+table.tf-table th:first-child,
+table.tf-table th:nth-child(2),
+table.tf-table th:nth-child(3),
+table.tf-table th:nth-child(4) { text-align: left; }
+
+table.tf-table td {
+  padding: .4rem .6rem; border-bottom: 1px solid var(--border); vertical-align: middle;
+}
+table.tf-table tr:last-child td { border-bottom: none; }
+table.tf-table tr:hover td { background: var(--bg-hover); }
+
+.tf-ticker { font-weight: 700; font-size: .9rem; letter-spacing: .02em; }
+.tf-price  { font-variant-numeric: tabular-nums; font-weight: 600; }
+.tf-snap-date { font-size: .72rem; color: var(--text-muted); }
+
+/* Signal badge */
+.tf-sig {
+  display: inline-block; padding: .18rem .55rem; border-radius: 999px;
+  font-size: .75rem; font-weight: 700; white-space: nowrap;
+}
+.tf-sig-strong    { background: #16a34a22; color: #16a34a; }
+.tf-sig-moderate  { background: #2563eb18; color: #2563eb; }
+.tf-sig-neutral   { background: var(--bg-subtle); color: var(--text-muted); }
+.tf-sig-weak      { background: #f59e0b20; color: #b45309; }
+.tf-sig-conflicted{ background: #dc262620; color: #dc2626; }
+
+@media (prefers-color-scheme: dark) {
+  .tf-sig-strong    { color: #4ade80; }
+  .tf-sig-moderate  { color: #60a5fa; }
+  .tf-sig-weak      { color: #fbbf24; }
+  .tf-sig-conflicted{ color: #f87171; }
+}
+:root[data-theme="dark"] .tf-sig-strong    { color: #4ade80; }
+:root[data-theme="dark"] .tf-sig-moderate  { color: #60a5fa; }
+:root[data-theme="dark"] .tf-sig-weak      { color: #fbbf24; }
+:root[data-theme="dark"] .tf-sig-conflicted{ color: #f87171; }
+
+/* Week cell */
+.tf-week { text-align: center; min-width: 88px; }
+.tf-week-inner { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+
+.tf-week-p50 { font-variant-numeric: tabular-nums; font-weight: 600; font-size: .83rem; }
+.tf-week-p50.up   { color: #16a34a; }
+.tf-week-p50.down { color: #dc2626; }
+
+/* Mini range bar */
+.tf-range-bar {
+  width: 72px; height: 6px; border-radius: 3px;
+  background: var(--bg-subtle); position: relative; overflow: visible;
+}
+.tf-range-fill {
+  position: absolute; height: 100%; border-radius: 3px;
+  background: var(--accent); opacity: .35;
+}
+.tf-range-spot {
+  position: absolute; top: -3px; width: 2px; height: 12px;
+  background: var(--text-base); border-radius: 1px;
+}
+.tf-range-mid {
+  position: absolute; top: 0; width: 1px; height: 100%;
+  background: var(--accent); opacity: .8;
+}
+.tf-week-dte { font-size: .68rem; color: var(--text-muted); }
+.tf-week-range-label { font-size: .68rem; color: var(--text-muted); white-space: nowrap; }
+
+/* No data cell */
+.tf-no-data { color: var(--text-muted); font-size: .8rem; text-align: center; }
+
+/* Loading skeleton */
+.tf-skeleton { animation: tf-pulse 1.4s ease-in-out infinite; }
+@keyframes tf-pulse {
+  0%, 100% { opacity: .4; }
+  50%       { opacity: .9; }
+}
+
+/* Rec structure */
+.tf-struct { font-size: .75rem; color: var(--text-muted); white-space: nowrap; }
+
+/* Per-row refresh */
+.tf-refresh-btn {
+  background: none; border: 1px solid var(--border); border-radius: 4px;
+  cursor: pointer; color: var(--text-muted); font-size: .75rem; padding: .1rem .3rem;
+  margin-left: .4rem; line-height: 1; vertical-align: middle;
+  transition: color .15s, border-color .15s;
+}
+.tf-refresh-btn:hover { color: var(--accent); border-color: var(--accent); }
+.tf-refresh-btn:disabled { opacity: .4; cursor: not-allowed; }

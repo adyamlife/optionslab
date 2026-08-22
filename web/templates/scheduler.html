@@ -122,6 +122,41 @@
     </label>
   </div>
 
+  <!-- Log Files Viewer -->
+  <section class="card" style="margin-bottom:1.2rem">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-bottom:.8rem">
+      <h3 style="margin:0">Log Files</h3>
+      <select id="log-file-select" class="btn-sm" style="padding:.2rem .5rem">
+        <option value="morning_scan">Morning Scan</option>
+        <option value="afternoon_scan">Afternoon Scan</option>
+        <option value="evening_check">Evening Check</option>
+        <option value="data_collect">Data Collect</option>
+        <option value="daily_archive">Daily Archive</option>
+        <option value="forecast_collect">Forecast Collect</option>
+        <option value="oi_open">OI Snapshot (Open)</option>
+        <option value="oi_close">OI Snapshot (Close)</option>
+        <option value="daily_iv_collect">Daily IV Collect</option>
+        <option value="weekly_profile">Weekly Profile Build</option>
+        <option value="weekly_calibration">Weekly Calibration</option>
+        <option value="scheduler">Scheduler</option>
+        <option value="optionlab">App (optionlab)</option>
+      </select>
+      <select id="log-lines-select" class="btn-sm" style="padding:.2rem .4rem">
+        <option value="50">50 lines</option>
+        <option value="100" selected>100 lines</option>
+        <option value="200">200 lines</option>
+        <option value="500">500 lines</option>
+      </select>
+      <button class="btn-sm" id="log-file-refresh-btn">Refresh</button>
+      <label style="font-size:.82rem;margin-left:.4rem">
+        <input type="checkbox" id="log-auto-refresh"> Auto (30s)
+      </label>
+      <span class="muted" style="font-size:.78rem;margin-left:auto" id="log-file-meta"></span>
+    </div>
+    <div id="log-file-error" class="alert fail" style="display:none;margin-bottom:.5rem"></div>
+    <pre id="log-file-output" style="background:var(--surface2,#111);border:1px solid var(--border,#333);border-radius:4px;padding:.7rem .9rem;font-size:.72rem;line-height:1.5;max-height:420px;overflow-y:auto;white-space:pre-wrap;word-break:break-all;margin:0">Select a log and click Refresh.</pre>
+  </section>
+
   <!-- Run History Log -->
   <section class="card" style="margin-bottom:1.2rem">
     <div style="display:flex;align-items:center;gap:.8rem;margin-bottom:.8rem">

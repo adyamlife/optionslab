@@ -325,6 +325,56 @@ document.getElementById("log-filter").addEventListener("change", loadLogs);
 document.getElementById("log-refresh-btn").addEventListener("click", loadLogs);
 loadLogs();
 
+// ── Log File Viewer ───────────────────────────────────────────────────────────
+
+let _logFileAutoTimer = null;
+
+async function loadLogFile() {
+  const file  = document.getElementById("log-file-select").value;
+  const lines = document.getElementById("log-lines-select").value;
+  const out   = document.getElementById("log-file-output");
+  const meta  = document.getElementById("log-file-meta");
+  const err   = document.getElementById("log-file-error");
+  err.style.display = "none";
+  out.textContent = "Loading…";
+  try {
+    const r = await fetch(`/api/logs?file=${encodeURIComponent(file)}&lines=${lines}`);
+    const d = await r.json();
+    if (!d.ok) {
+      err.textContent = d.error || "Unknown error";
+      err.style.display = "";
+      out.textContent = "";
+      meta.textContent = "";
+      return;
+    }
+    if (!d.exists) {
+      out.textContent = "(log file does not exist yet)";
+      meta.textContent = "";
+      return;
+    }
+    out.textContent = d.lines.join("");
+    meta.textContent = `${d.total_lines} lines shown · ${d.size_kb} KB`;
+    // Scroll to bottom
+    out.scrollTop = out.scrollHeight;
+  } catch(e) {
+    err.textContent = "Failed to load log: " + e.message;
+    err.style.display = "";
+    out.textContent = "";
+  }
+}
+
+function scheduleLogAuto() {
+  clearInterval(_logFileAutoTimer);
+  if (document.getElementById("log-auto-refresh").checked) {
+    _logFileAutoTimer = setInterval(loadLogFile, 30000);
+  }
+}
+
+document.getElementById("log-file-select").addEventListener("change", loadLogFile);
+document.getElementById("log-lines-select").addEventListener("change", loadLogFile);
+document.getElementById("log-file-refresh-btn").addEventListener("click", loadLogFile);
+document.getElementById("log-auto-refresh").addEventListener("change", scheduleLogAuto);
+
 // ── Model Audit ───────────────────────────────────────────────────────────────
 
 let _auditCurveStore = {};   // plotId → { curves, label }

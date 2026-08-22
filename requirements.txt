@@ -16,3 +16,4 @@ optuna
 requests
 oauthlib
 requests-oauthlib
+lxml

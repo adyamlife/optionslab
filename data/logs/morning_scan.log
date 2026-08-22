@@ -6446,3 +6446,157 @@ C:\Python312\python\python.exe (PID 4104)
 2026-08-14 10:11:37,735 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: GLD"}}}
 2026-08-14 10:11:42,808 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
 2026-08-14 10:11:43,583 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-08-17 10:00:16,449 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-08-17 10:00:16,466 INFO ml_cache disk file is stale (676993s) — trying DuckDB
+2026-08-17 10:00:17,515 INFO ml_cache loaded from DuckDB fallback: 83 tickers
+2026-08-17 10:00:17,518 INFO [prefetch] step 1 — batch daily history for 102 tickers
+2026-08-17 10:00:38,159 INFO [prefetch] daily history done: 102 ok, 0 fail  (20.6s)
+2026-08-17 10:00:38,159 INFO [prefetch] step 2 — batch weekly history for 101 tickers
+2026-08-17 10:00:57,838 INFO [prefetch] weekly history done: 101 ok, 0 fail  (40.3s)
+2026-08-17 10:00:57,841 INFO [prefetch] step 3+4 — expirations + chains for 101 tickers (serial)
+2026-08-17 10:02:56,388 INFO [prefetch] done in 159s — hist 102/102, weekly 101/101, exps 101/101, chains 234 (fail 0)
+2026-08-17 10:02:56,405 INFO [scan] cache ready — 538 total keys, 234 chain keys
+2026-08-17 10:02:59,086 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-17 10:02:59,603 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-17 10:03:00,989 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-17 10:03:02,304 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-17 10:03:02,666 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-17 10:03:03,881 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-17 10:03:36,162 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-17 10:03:36,701 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-17 10:03:38,693 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-17 10:03:39,099 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-17 10:03:41,907 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-17 10:03:42,574 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-17 10:03:48,608 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-17 10:03:49,344 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-08-17 10:03:58,793 WARNING analyze_ticker(MU) failed: 'NoneType' object has no attribute 'copy'
+2026-08-17 10:04:44,844 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-08-17 10:05:09,718 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-17 10:06:17,267 WARNING analyze_ticker(SPOT) failed: 'NoneType' object has no attribute 'copy'
+2026-08-18 10:00:52,233 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-08-18 10:00:52,313 INFO ml_cache disk file is stale (763429s) — trying DuckDB
+2026-08-18 10:00:55,293 INFO ml_cache loaded from DuckDB fallback: 83 tickers
+2026-08-18 10:00:55,332 INFO [prefetch] step 1 — batch daily history for 102 tickers
+2026-08-18 10:01:12,732 INFO [prefetch] daily history done: 102 ok, 0 fail  (17.4s)
+2026-08-18 10:01:12,732 INFO [prefetch] step 2 — batch weekly history for 101 tickers
+2026-08-18 10:01:30,549 INFO [prefetch] weekly history done: 101 ok, 0 fail  (35.2s)
+2026-08-18 10:01:30,565 INFO [prefetch] step 3+4 — expirations + chains for 101 tickers (serial)
+2026-08-18 10:03:20,542 INFO [prefetch] done in 145s — hist 102/102, weekly 101/101, exps 101/101, chains 471 (fail 0)
+2026-08-18 10:03:20,545 INFO [scan] cache ready — 775 total keys, 471 chain keys
+2026-08-18 10:03:21,910 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-18 10:03:22,342 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-18 10:03:22,830 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-18 10:03:23,037 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-18 10:03:23,445 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-18 10:03:23,531 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-18 10:03:43,108 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-18 10:03:43,417 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-18 10:03:46,039 WARNING persist_feature_snapshot failed for AMD: IOException: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 13188)
+2026-08-18 10:03:48,922 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-18 10:03:49,240 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-18 10:04:00,850 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-18 10:04:01,144 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-18 10:04:26,943 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-18 10:04:27,031 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-18 10:05:03,416 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-08-18 10:05:31,782 WARNING persist_feature_snapshot failed for ASML: ConnectionException: Connection Error: Can't open a connection to same database file with a different configuration than existing connections
+2026-08-18 10:05:33,057 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-08-18 10:05:43,758 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-18 10:05:46,386 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-08-18 10:05:58,377 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-08-18 10:06:21,300 WARNING persist_feature_snapshot failed for SPOT: IOException: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 13188)
+2026-08-18 10:06:22,572 WARNING persist_feature_snapshot failed for NFLX: IOException: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 13188)
+2026-08-18 10:06:23,340 WARNING persist_feature_snapshot failed for DIS: IOException: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 13188)
+2026-08-18 10:06:24,062 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-18 10:06:24,071 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-18 10:06:24,086 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-18 10:06:24,125 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-18 10:06:24,187 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-08-18 10:06:32,018 WARNING persist_feature_snapshot failed for SPOT: IOException: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 13188)
+2026-08-18 10:06:32,334 WARNING persist_feature_snapshot failed for RGTI: IOException: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 13188)
+2026-08-18 10:06:32,458 WARNING persist_feature_snapshot failed for DIS: IOException: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 13188)
+2026-08-18 10:06:33,838 WARNING analyze_ticker(AMZN) failed: 'NoneType' object has no attribute 'copy'
+2026-08-18 10:06:35,268 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-18 10:07:33,720 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-18 10:07:42,696 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-18 10:07:42,712 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-18 10:07:46,832 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-18 10:07:58,775 WARNING persist_feature_snapshot failed for BSX: ConnectionException: Connection Error: Can't open a connection to same database file with a different configuration than existing connections
+2026-08-20 10:01:11,167 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-08-20 10:01:11,270 INFO ml_cache disk file is stale (936248s) — trying DuckDB
+2026-08-20 10:01:13,112 INFO ml_cache loaded from DuckDB fallback: 83 tickers
+2026-08-20 10:01:13,161 INFO [prefetch] step 1 — batch daily history for 102 tickers
+2026-08-20 10:01:54,468 INFO [prefetch] daily history done: 102 ok, 0 fail  (41.3s)
+2026-08-20 10:01:54,468 INFO [prefetch] step 2 — batch weekly history for 101 tickers
+2026-08-20 10:02:10,562 INFO [prefetch] weekly history done: 101 ok, 0 fail  (57.4s)
+2026-08-20 10:02:10,566 INFO [prefetch] step 3+4 — expirations + chains for 101 tickers (serial)
+2026-08-20 10:03:57,403 INFO [prefetch] done in 164s — hist 102/102, weekly 101/101, exps 101/101, chains 486 (fail 0)
+2026-08-20 10:03:57,404 INFO [scan] cache ready — 790 total keys, 486 chain keys
+2026-08-20 10:03:58,796 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-20 10:03:59,143 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-20 10:03:59,437 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-20 10:03:59,683 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-20 10:03:59,712 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-20 10:04:00,111 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-20 10:04:09,698 WARNING persist_feature_snapshot failed for SPY: ConnectionException: Connection Error: Can't open a connection to same database file with a different configuration than existing connections
+2026-08-20 10:04:12,704 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-20 10:04:13,118 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-20 10:04:23,606 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-20 10:04:23,979 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-20 10:04:27,969 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-20 10:04:28,326 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-20 10:04:58,716 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+2026-08-20 10:05:06,959 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-20 10:06:13,561 WARNING persist_feature_snapshot failed for SNOW: IOException: IO Error: Cannot open file "C:\Project Y\data\ml_training.duckdb": The process cannot access the file because it is being used by another process.
+
+File is already open in 
+C:\Python312\python\python.exe (PID 12936)
+2026-08-20 10:06:14,422 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-20 10:06:14,433 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-08-21 10:01:03,033 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-08-21 10:01:03,166 INFO ml_cache disk file is stale (1022640s) — trying DuckDB
+2026-08-21 10:01:07,983 INFO ml_cache loaded from DuckDB fallback: 83 tickers
+2026-08-21 10:01:08,048 INFO [prefetch] step 1 — batch daily history for 102 tickers
+2026-08-21 10:01:24,436 INFO [prefetch] daily history done: 102 ok, 0 fail  (16.4s)
+2026-08-21 10:01:24,438 INFO [prefetch] step 2 — batch weekly history for 101 tickers
+2026-08-21 10:01:40,460 INFO [prefetch] weekly history done: 101 ok, 0 fail  (32.4s)
+2026-08-21 10:01:40,468 INFO [prefetch] step 3+4 — expirations + chains for 101 tickers (serial)
+2026-08-21 10:03:24,656 INFO [prefetch] done in 137s — hist 102/102, weekly 101/101, exps 101/101, chains 486 (fail 0)
+2026-08-21 10:03:24,658 INFO [scan] cache ready — 790 total keys, 486 chain keys
+2026-08-21 10:03:26,979 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-21 10:03:26,999 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-21 10:03:27,117 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-21 10:03:28,675 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-21 10:03:28,687 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-21 10:03:29,423 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-21 10:03:53,016 WARNING persist_feature_snapshot failed for SPY: ConnectionException: Connection Error: Can't open a connection to same database file with a different configuration than existing connections
+2026-08-21 10:03:56,303 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-21 10:03:56,591 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-21 10:04:02,845 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-21 10:04:03,263 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-21 10:04:09,831 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-21 10:04:10,205 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-21 10:04:41,940 WARNING persist_feature_snapshot failed for INTC: ConnectionException: Connection Error: Can't open a connection to same database file with a different configuration than existing connections
+2026-08-21 10:04:53,668 ERROR HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}

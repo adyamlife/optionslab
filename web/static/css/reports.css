@@ -87,7 +87,7 @@
 }
 .rpt-btn {
   padding: 0.45rem 1.2rem;
-  background: var(--accent);
+  /*background: var(--accent);*/
   color: #fff;
   border: none;
   border-radius: 6px;

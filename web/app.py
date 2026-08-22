@@ -1587,6 +1587,18 @@ def _start_training_data_scheduler():
                   day_of_week="mon-fri", id="daily_archive", name="Daily Archive (T0-A/B/D)",
                   timezone="America/New_York")
 
+    # F4: Earnings IV snapshot — runs at 9:35 AM ET daily to capture pre-open IV
+    # at target offsets (-30d, -14d, -7d, -3d, -1d) and +1d post-earnings.
+    def _earnings_iv_snapshot():
+        from scripts.collect_earnings_iv_snapshots import run as _eiv_run
+        _run_in_bg("earnings_iv_snapshot", _eiv_run)
+
+    sched.add_job(_earnings_iv_snapshot, "cron",
+                  hour=9, minute=35,
+                  day_of_week="mon-fri", id="earnings_iv_snapshot",
+                  name="Earnings IV Snapshot",
+                  timezone="America/New_York")
+
     sched.start()
     app.logger.info(
         "Scheduler started — morning scan 10:00, afternoon scan 14:00, OI open 9:45, "
@@ -1841,6 +1853,59 @@ def api_scheduler_resume(job_id):
         return jsonify({"ok": False, "error": str(e)}), 400
 
 
+_LOG_FILES = {
+    "optionlab":          _LOG_DIR / "optionlab.log",
+    "scheduler":          _LOG_DIR / "scheduler.log",
+    "morning_scan":       _LOG_DIR / "morning_scan.log",
+    "afternoon_scan":     _LOG_DIR / "afternoon_scan.log",
+    "evening_check":      _LOG_DIR / "evening_check.log",
+    "data_collect":       _LOG_DIR / "data_collect.log",
+    "daily_archive":      _LOG_DIR / "daily_archive.log",
+    "oi_open":            _LOG_DIR / "oi_snapshot_open.log",
+    "oi_close":           _LOG_DIR / "oi_snapshot_close.log",
+    "daily_iv_collect":   _LOG_DIR / "daily_iv_collect.log",
+    "weekly_profile":     _LOG_DIR / "weekly_profile_build.log",
+    "weekly_calibration": _LOG_DIR / "weekly_calibration.log",
+    "forecast_collect":   Path("/opt/optionlab/logs/forecast_collect.log"),
+    "train_garch":        _LOG_DIR / "train_garch.log",
+}
+
+
+@app.route("/api/logs")
+def api_log_tail():
+    """Return the last N lines of a named log file.
+    Usage: /api/logs?file=morning_scan&lines=100
+    """
+    name  = request.args.get("file", "")
+    lines = min(int(request.args.get("lines", 100)), 2000)
+    path  = _LOG_FILES.get(name)
+    if not path:
+        available = [k for k, p in _LOG_FILES.items() if p.exists()]
+        return jsonify({"ok": False, "error": f"Unknown log '{name}'", "available": available})
+    if not path.exists():
+        return jsonify({"ok": True, "file": name, "lines": [], "exists": False})
+    try:
+        from collections import deque
+        with open(path, "r", encoding="utf-8", errors="replace") as fh:
+            tail = list(deque(fh, maxlen=lines))
+        size_kb = round(path.stat().st_size / 1024, 1)
+        return jsonify({"ok": True, "file": name, "path": str(path), "lines": tail,
+                        "total_lines": len(tail), "size_kb": size_kb})
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+
+@app.route("/api/logs/list")
+def api_log_list():
+    """List all known log files and whether they exist."""
+    result = []
+    for name, path in _LOG_FILES.items():
+        exists = path.exists()
+        size_kb = round(path.stat().st_size / 1024, 1) if exists else None
+        result.append({"name": name, "path": str(path), "exists": exists, "size_kb": size_kb})
+    return jsonify({"ok": True, "logs": result})
+
+
 @app.route("/api/scheduler/logs")
 def api_scheduler_logs():
     job_filter = request.args.get("job")
@@ -2091,7 +2156,7 @@ def api_ticker_forecast():
 
         # ── Current prices via yfinance batch ────────────────────────────────
         try:
-            raw = yf.download(tickers, period="1d", auto_adjust=True, progress=False)
+            raw = yf.download(tickers, period="5d", interval="1d", auto_adjust=True, progress=False)
             close = raw["Close"] if "Close" in raw else raw
             current_prices = {t: float(close[t].dropna().iloc[-1])
                               for t in tickers if t in close.columns and not close[t].dropna().empty}
@@ -2613,7 +2678,7 @@ def api_quotes():
         return jsonify({})
     try:
         import yfinance as yf
-        data = yf.download(tickers, period="1d", interval="1m",
+        data = yf.download(tickers, period="5d", interval="1d",
                            progress=False, auto_adjust=True)
         prices = {}
         if len(tickers) == 1:

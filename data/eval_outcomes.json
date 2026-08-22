@@ -223,5 +223,315 @@
     "actual_return_pct": 271.52,
     "outcome": "win",
     "closed_at": "2026-08-14T21:01:13.502771+00:00"
+  },
+  "20260810AM_IWM_PDS_2": {
+    "actual_return_pct": -100.0,
+    "outcome": "loss",
+    "closed_at": "2026-08-17T21:01:22.418030+00:00"
+  },
+  "20260810AM_XLE_CDS_3": {
+    "actual_return_pct": 105.4,
+    "outcome": "win",
+    "closed_at": "2026-08-18T21:01:57.752906+00:00"
+  },
+  "20260804AM_QCOM_PCS_2": {
+    "actual_return_pct": 100.0,
+    "outcome": "win",
+    "closed_at": "2026-08-19T21:07:16.615728+00:00"
+  },
+  "20260811AM_MRNA_CDS_3": {
+    "actual_return_pct": 857.2,
+    "outcome": "win",
+    "closed_at": "2026-08-19T21:07:31.608025+00:00"
+  },
+  "20260811PM_MRNA_CDS_2": {
+    "actual_return_pct": 912.5,
+    "outcome": "win",
+    "closed_at": "2026-08-19T21:07:36.629071+00:00"
+  },
+  "20260812AM_GLD_CDS_1": {
+    "actual_return_pct": 140.0,
+    "outcome": "win",
+    "closed_at": "2026-08-19T21:07:37.378173+00:00"
+  },
+  "20260722AM_PFE_CDS_3": {
+    "actual_return_pct": 32.45,
+    "outcome": "win",
+    "closed_at": "2026-08-21T21:00:56.861820+00:00"
+  },
+  "20260722AM_LOW_CDS_1": {
+    "actual_return_pct": -5.07,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:00:56.737409+00:00"
+  },
+  "20260722PM_JNJ_PDS_1": {
+    "actual_return_pct": -100.0,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:00:57.256406+00:00"
+  },
+  "20260727PM_AXP_CDS_1": {
+    "actual_return_pct": -47.71,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:00:57.390735+00:00"
+  },
+  "20260727PM_SCHW_PDS_2": {
+    "actual_return_pct": -100.0,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:00:57.512246+00:00"
+  },
+  "20260727PM_JNJ_CDS_1": {
+    "actual_return_pct": -20.48,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:00:57.562118+00:00"
+  },
+  "20260727PM_MRK_PDS_2": {
+    "actual_return_pct": -100.0,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:00:57.746326+00:00"
+  },
+  "20260727PM_XLE_CDS_3": {
+    "actual_return_pct": 216.46,
+    "outcome": "win",
+    "closed_at": "2026-08-21T21:00:57.871070+00:00"
+  },
+  "20260728AM_LOW_PDS_1": {
+    "actual_return_pct": -42.92,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:00:57.907109+00:00"
+  },
+  "20260728AM_SCHW_PDS_2": {
+    "actual_return_pct": -100.0,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:00:57.985900+00:00"
+  },
+  "20260728PM_AXP_CDS_1": {
+    "actual_return_pct": -88.07,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:00:58.051053+00:00"
+  },
+  "20260728PM_SLB_CDS_3": {
+    "actual_return_pct": 145.71,
+    "outcome": "win",
+    "closed_at": "2026-08-21T21:00:58.223988+00:00"
+  },
+  "20260729PM_WFC_PDS_1": {
+    "actual_return_pct": -6.09,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:00:58.350693+00:00"
+  },
+  "20260729PM_SCHW_PDS_2": {
+    "actual_return_pct": -100.0,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:00:58.406655+00:00"
+  },
+  "20260729PM_NVDA_CDS_3": {
+    "actual_return_pct": 183.69,
+    "outcome": "win",
+    "closed_at": "2026-08-21T21:00:58.645375+00:00"
+  },
+  "20260730AM_NVDA_CDS_2": {
+    "actual_return_pct": 193.68,
+    "outcome": "win",
+    "closed_at": "2026-08-21T21:00:58.705684+00:00"
+  },
+  "20260731AM_NVDA_CDS_3": {
+    "actual_return_pct": 188.74,
+    "outcome": "win",
+    "closed_at": "2026-08-21T21:00:58.777166+00:00"
+  },
+  "20260731AM_NVDA_CDS_2": {
+    "actual_return_pct": 193.46,
+    "outcome": "win",
+    "closed_at": "2026-08-21T21:00:58.877205+00:00"
+  },
+  "20260804AM_IWM_CDS_2": {
+    "actual_return_pct": -53.53,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:00:59.009677+00:00"
+  },
+  "20260804AM_XLE_PDS_3": {
+    "actual_return_pct": -100.0,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:00:59.073086+00:00"
+  },
+  "20260804AM_IWM_CDS_1": {
+    "actual_return_pct": -52.97,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:00:59.145866+00:00"
+  },
+  "20260804AM_WMT_CDS_3": {
+    "actual_return_pct": -100.0,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:00:59.286622+00:00"
+  },
+  "20260804PM_JNJ_CDS_1": {
+    "actual_return_pct": 224.68,
+    "outcome": "win",
+    "closed_at": "2026-08-21T21:00:59.333769+00:00"
+  },
+  "20260804PM_LOW_CDS_2": {
+    "actual_return_pct": -100.0,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:00:59.407714+00:00"
+  },
+  "20260804PM_SLB_PDS_3": {
+    "actual_return_pct": -100.0,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:00:59.464751+00:00"
+  },
+  "20260805AM_TSLA_CDS_1": {
+    "actual_return_pct": 226.09,
+    "outcome": "win",
+    "closed_at": "2026-08-21T21:00:59.627494+00:00"
+  },
+  "20260805AM_NKE_CDS_2": {
+    "actual_return_pct": -100.0,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:00:59.803061+00:00"
+  },
+  "20260805AM_QCOM_COV_3": {
+    "actual_return_pct": 100.0,
+    "outcome": "win",
+    "closed_at": "2026-08-21T21:01:00.013237+00:00"
+  },
+  "20260805AM_JNJ_PDS_1": {
+    "actual_return_pct": -100.0,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:01:00.067047+00:00"
+  },
+  "20260805AM_UPS_PDS_2": {
+    "actual_return_pct": 139.97,
+    "outcome": "win",
+    "closed_at": "2026-08-21T21:01:00.202098+00:00"
+  },
+  "20260805AM_PFE_PDS_3": {
+    "actual_return_pct": -100.0,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:01:00.254540+00:00"
+  },
+  "20260805PM_AXP_PDS_1": {
+    "actual_return_pct": 122.42,
+    "outcome": "win",
+    "closed_at": "2026-08-21T21:01:00.317887+00:00"
+  },
+  "20260805PM_SLB_CDS_3": {
+    "actual_return_pct": 198.84,
+    "outcome": "win",
+    "closed_at": "2026-08-21T21:01:00.365520+00:00"
+  },
+  "20260806AM_LOW_COV_1": {
+    "actual_return_pct": 100.0,
+    "outcome": "win",
+    "closed_at": "2026-08-21T21:01:00.404732+00:00"
+  },
+  "20260806AM_UPS_CDS_2": {
+    "actual_return_pct": -100.0,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:01:00.444503+00:00"
+  },
+  "20260806PM_JNJ_PDS_1": {
+    "actual_return_pct": -100.0,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:01:00.600589+00:00"
+  },
+  "20260806PM_MRK_PDS_3": {
+    "actual_return_pct": -100.0,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:01:00.648851+00:00"
+  },
+  "20260807AM_TGT_PCS_1": {
+    "actual_return_pct": 100.0,
+    "outcome": "win",
+    "closed_at": "2026-08-21T21:01:00.782158+00:00"
+  },
+  "20260807AM_WMT_CDS_3": {
+    "actual_return_pct": -100.0,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:01:00.819385+00:00"
+  },
+  "20260810AM_TGT_CDS_1": {
+    "actual_return_pct": 229.27,
+    "outcome": "win",
+    "closed_at": "2026-08-21T21:01:00.867803+00:00"
+  },
+  "20260811AM_C_CDS_1": {
+    "actual_return_pct": -100.0,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:01:01.007832+00:00"
+  },
+  "20260811AM_VZ_CDS_2": {
+    "actual_return_pct": 194.12,
+    "outcome": "win",
+    "closed_at": "2026-08-21T21:01:01.062688+00:00"
+  },
+  "20260811AM_VST_CDS_1": {
+    "actual_return_pct": -100.0,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:01:01.214300+00:00"
+  },
+  "20260811AM_NKE_CDS_3": {
+    "actual_return_pct": -100.0,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:01:08.536996+00:00"
+  },
+  "20260811AM_VRT_COV_2": {
+    "actual_return_pct": 100.0,
+    "outcome": "win",
+    "closed_at": "2026-08-21T21:01:09.490089+00:00"
+  },
+  "20260811AM_INTU_COV_3": {
+    "actual_return_pct": -138.31,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:01:09.611191+00:00"
+  },
+  "20260811PM_C_CDS_1": {
+    "actual_return_pct": -100.0,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:01:09.650908+00:00"
+  },
+  "20260811PM_T_PDS_3": {
+    "actual_return_pct": -100.0,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:01:09.768640+00:00"
+  },
+  "20260812AM_NVO_CDS_3": {
+    "actual_return_pct": 17.74,
+    "outcome": "win",
+    "closed_at": "2026-08-21T21:01:10.745090+00:00"
+  },
+  "20260813AM_NEE_CDS_2": {
+    "actual_return_pct": -100.0,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:01:13.532319+00:00"
+  },
+  "20260813AM_PG_CDS_3": {
+    "actual_return_pct": -100.0,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:01:13.655544+00:00"
+  },
+  "20260813AM_LRCX_COV_3": {
+    "actual_return_pct": 100.0,
+    "outcome": "win",
+    "closed_at": "2026-08-21T21:01:15.235404+00:00"
+  },
+  "20260813AM_ABBV_PDS_1": {
+    "actual_return_pct": -100.0,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:01:15.436058+00:00"
+  },
+  "20260814AM_MU_CDS_2": {
+    "actual_return_pct": -100.0,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:01:17.617135+00:00"
+  },
+  "20260814AM_NVO_CDS_3": {
+    "actual_return_pct": 67.82,
+    "outcome": "win",
+    "closed_at": "2026-08-21T21:01:17.655297+00:00"
+  },
+  "20260814PM_MU_CDS_1": {
+    "actual_return_pct": -100.0,
+    "outcome": "loss",
+    "closed_at": "2026-08-21T21:01:17.694118+00:00"
   }
 }
