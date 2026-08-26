@@ -957,7 +957,9 @@ def enumerate_ds_repair_variants(
         if width <= 0:
             continue
         max_profit = round(width - debit, 3)
-        pop, ev = pop_ev_debit(long_row["delta"], debit, width, short_row["delta"])
+        breakeven = (float(long_row["strike"]) - debit) if option_type == "put" else (float(long_row["strike"]) + debit)
+        be_delta = _delta_at_price(chain, breakeven)
+        pop, ev = pop_ev_debit(long_row["delta"], debit, width, short_row["delta"], breakeven_delta=be_delta)
         meets_profit, profit_msg = profit_note(max_profit, min_profit_amount)
         meets_loss, loss_msg = loss_note(debit, width_target)
         _nd, _nth, _ngm, _nvg = _net_greeks(spot, T, long_row, short_row, option_type)
@@ -1043,6 +1045,26 @@ def find_long_strike_for_credit_spread(df, short_row, option_type, width_target,
     return _pick_closest(cand)
 
 
+def _delta_at_price(df, target_price):
+    """|delta| of the chain strike nearest target_price.
+
+    Used as a probability-of-profit proxy at a debit spread's true breakeven,
+    which sits further from the money than the long strike itself once the
+    premium paid is accounted for (breakeven = long_k - debit for puts,
+    long_k + debit for calls). Looking up the actual chain delta there is
+    more robust than a first-order gamma approximation, and doesn't require
+    threading extra Greeks through every call site.
+    """
+    if df is None or df.empty or target_price is None:
+        return None
+    try:
+        idx = (df["strike"] - target_price).abs().idxmin()
+        d = df.loc[idx, "delta"]
+        return abs(float(d)) if d is not None else None
+    except Exception:
+        return None
+
+
 def pop_ev_credit(short_delta, credit, width):
     """Approx probability of profit (short leg expires OTM) and expected value."""
     pop = max(0.0, min(1.0, 1 - abs(short_delta)))
@@ -1051,16 +1073,34 @@ def pop_ev_credit(short_delta, credit, width):
     return round(pop * 100, 1), round(ev, 3)
 
 
-def pop_ev_debit(long_delta, debit, width, short_delta=None):
-    """3-outcome analytical EV for debit spreads.
+def pop_ev_debit(long_delta, debit, width, short_delta=None, breakeven_delta=None):
+    """Analytical EV for debit spreads.
 
-    Uses both leg deltas when available:
-      P(full_win)    ≈ |delta_short|              — short expires ITM, max profit captured
-      P(loss)        ≈ 1 − |delta_long|            — long expires OTM, full debit lost
-      P(partial_win) ≈ |delta_long| − |delta_short| — long ITM but short not, partial profit
-      EV_partial     ≈ 0.5 × max_profit            — midpoint of partial zone
+    4-outcome model (used when breakeven_delta is supplied — the correct path):
+    zones by underlying price at expiry (put debit spread shown; call mirrors):
+      S_T >= long_k               : total loss    = -debit
+      breakeven <= S_T < long_k   : partial LOSS,  linear from -debit (at long_k) to 0 (at breakeven)
+      short_k <= S_T < breakeven  : partial WIN,   linear from 0 (at breakeven) to max_profit (at short_k)
+      S_T < short_k               : full win       = max_profit
+    Zone probabilities use |delta| as a P(ITM-at-that-price) proxy:
+      P(total_loss)=1-|delta_long|  P(partial_loss)=|delta_long|-|delta_be|
+      P(partial_win)=|delta_be|-|delta_short|  P(full_win)=|delta_short|
+    pop = P(price beyond breakeven) = P(partial_win) + P(full_win) — the actual
+    probability the SPREAD is profitable, not just that the long leg is ITM.
 
-    Falls back to binary formula when short_delta is unavailable.
+    breakeven_delta: |delta| looked up at the spread's true breakeven price
+      (see _delta_at_price) — long_k-debit for puts, long_k+debit for calls.
+      Without it, falls back to the old 3-outcome formula that used the long
+      leg's own strike delta as the profit-probability proxy. That formula
+      overstated POP because it ignored the "partial loss" zone entirely
+      (treating everything between the strikes as a uniform win at 0.5×max
+      profit) — the premium paid pushes the true breakeven inside that zone,
+      not at the long strike. Combined with debit_long_delta_grid extending to
+      0.65 (deep ITM), the optimizer was rewarded for picking long legs whose
+      spreads needed almost no adverse move to lose. Fixed 2026-08-24 after
+      tracing a near-100%-loss-rate cluster in live Put Debit Spread trades to
+      this exact mechanism — see [[project_put_debit_spread_ev_bug]].
+
     Probabilities are clamped to [0,1] and normalised to sum exactly to 1.
     """
     max_profit = width - debit
@@ -1069,20 +1109,41 @@ def pop_ev_debit(long_delta, debit, width, short_delta=None):
 
     p_long = max(0.0, min(1.0, abs(float(long_delta))))
 
-    if short_delta is not None:
+    if short_delta is not None and breakeven_delta is not None:
         p_short = max(0.0, min(1.0, abs(float(short_delta))))
-        # |delta_short| ≤ |delta_long| because short is further OTM
+        p_be    = max(0.0, min(1.0, abs(float(breakeven_delta))))
+        p_be    = max(p_short, min(p_long, p_be))  # enforce short <= breakeven <= long (chain-noise guard)
+
+        p_total_loss   = max(0.0, 1.0 - p_long)
+        p_partial_loss = max(0.0, p_long - p_be)
+        p_partial_win  = max(0.0, p_be - p_short)
+        p_full_win     = p_short
+        _total = p_total_loss + p_partial_loss + p_partial_win + p_full_win
+        if _total > 0:
+            p_total_loss   /= _total
+            p_partial_loss /= _total
+            p_partial_win  /= _total
+            p_full_win     /= _total
+        ev = (
+            p_full_win * max_profit
+            + p_partial_win * (0.5 * max_profit)
+            + p_partial_loss * (-0.5 * debit)
+            - p_total_loss * debit
+        )
+        pop = p_partial_win + p_full_win
+    elif short_delta is not None:
+        # Fallback (no breakeven delta available): old 3-outcome formula.
+        p_short = max(0.0, min(1.0, abs(float(short_delta))))
         p_full_win  = min(p_short, p_long)
         p_partial   = max(0.0, p_long - p_full_win)
         p_loss      = max(0.0, 1.0 - p_long)
-        # Normalise to guard against delta-input edge cases
         _total = p_full_win + p_partial + p_loss
         if _total > 0:
             p_full_win /= _total
             p_partial  /= _total
             p_loss     /= _total
         ev  = p_full_win * max_profit + p_partial * (0.5 * max_profit) - p_loss * debit
-        pop = p_long        # P(any profit) = P(long finishes ITM)
+        pop = p_long
     else:
         # Fallback: binary (preserves backward compat)
         pop = p_long
@@ -1752,7 +1813,9 @@ def optimize_debit_spread(df, option_type, min_oi=0, min_profit_amount=0, max_lo
             if debit <= 0 or width <= 0 or debit >= width:
                 continue
             max_loss = debit
-            pop, ev = pop_ev_debit(long_row["delta"], debit, width, short_row["delta"])
+            breakeven = (long_row["strike"] - debit) if option_type == "put" else (long_row["strike"] + debit)
+            be_delta = _delta_at_price(df, breakeven)
+            pop, ev = pop_ev_debit(long_row["delta"], debit, width, short_row["delta"], breakeven_delta=be_delta)
             entry = {"long": long_row, "short": short_row, "debit": debit,
                      "width": width, "pop": pop, "ev": ev, "max_loss": max_loss}
             if best_overall is None or ev > best_overall["ev"]:
@@ -2138,6 +2201,39 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
     _hv_fallback = result.get("hv20") or None
     calls = add_deltas(calls, spot, T, "call", fallback_vol=_hv_fallback)
     puts  = add_deltas(puts,  spot, T, "put",  fallback_vol=_hv_fallback)
+
+    # Ticker/expiry-level price distribution — computed ONCE here, independent
+    # of any structure's strikes, so it's available for every candidate this
+    # ticker produces, including ones later rejected at strikes_incomplete
+    # (Iron Condor/Butterfly's main obstacle — see
+    # [[project_mc_forecast_structure_eligibility]]). Previously this was only
+    # computed per surviving candidate in candidate_ranker.py's rank_candidates()
+    # (via monte_carlo.run_mc), much later in the pipeline after every cheaper
+    # gate — meaning rejected candidates never got a distribution at all, no
+    # matter what. Hoisting it here also means less repeated work: before, MC
+    # ran freshly per surviving repair variant; now every structure attempt for
+    # this ticker/expiry shares one simulation. Added 2026-08-25.
+    result["mc_expiry_mean"] = result["mc_expiry_median"] = None
+    result["mc_expiry_p10"] = result["mc_expiry_p25"] = result["mc_expiry_p50"] = None
+    result["mc_expiry_p75"] = result["mc_expiry_p90"] = None
+    result["mc_vol_source"] = None
+    try:
+        import numpy as _np
+        from scripts.monte_carlo import simulate_paths as _sim_paths
+        _mc_iv = atm_iv if atm_iv and atm_iv > 1e-3 else effective_iv
+        _S_T, _, _, _mc_vol_source = _sim_paths(ticker, spot, _mc_iv, dte, RISK_FREE_RATE, n_sims=2000)
+        if _S_T is not None:
+            _pcts = _np.percentile(_S_T, [10, 25, 50, 75, 90])
+            result["mc_expiry_mean"]   = round(float(_np.mean(_S_T)), 4)
+            result["mc_expiry_median"] = round(float(_np.median(_S_T)), 4)
+            result["mc_expiry_p10"]    = round(float(_pcts[0]), 4)
+            result["mc_expiry_p25"]    = round(float(_pcts[1]), 4)
+            result["mc_expiry_p50"]    = round(float(_pcts[2]), 4)
+            result["mc_expiry_p75"]    = round(float(_pcts[3]), 4)
+            result["mc_expiry_p90"]    = round(float(_pcts[4]), 4)
+            result["mc_vol_source"]    = _mc_vol_source
+    except Exception:
+        pass  # mc_expiry_* fields stay None — analyze.py doesn't use logging; matches existing file convention
 
     width_target = rules.CAPITAL * p["max_risk_pct"] / 100  # rough width in $ per contract
     min_oi = p["min_open_interest"]
@@ -2609,7 +2705,9 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
     elif long_call_d is not None and short_call_d is not None and short_call_d["strike"] > long_call_d["strike"]:
         debit = long_call_d["ask"] - short_call_d["bid"]
         width_d = short_call_d["strike"] - long_call_d["strike"]
-        pop, ev = pop_ev_debit(long_call_d["delta"], debit, width_d, short_call_d["delta"])
+        _be_call = long_call_d["strike"] + debit
+        _be_call_delta = _delta_at_price(calls, _be_call)
+        pop, ev = pop_ev_debit(long_call_d["delta"], debit, width_d, short_call_d["delta"], breakeven_delta=_be_call_delta)
         max_profit_d = width_d - debit
         meets_profit, profit_msg = profit_note(max_profit_d, min_profit_amount)
         meets_loss, loss_msg = loss_note(debit, width_target)
@@ -2649,7 +2747,9 @@ def analyze_ticker(ticker, params=None, regime: str = "chop"):
     elif long_put_d is not None and short_put_d is not None and short_put_d["strike"] < long_put_d["strike"]:
         debit = long_put_d["ask"] - short_put_d["bid"]
         width_d = long_put_d["strike"] - short_put_d["strike"]
-        pop, ev = pop_ev_debit(long_put_d["delta"], debit, width_d, short_put_d["delta"])
+        _be_put = long_put_d["strike"] - debit
+        _be_put_delta = _delta_at_price(puts, _be_put)
+        pop, ev = pop_ev_debit(long_put_d["delta"], debit, width_d, short_put_d["delta"], breakeven_delta=_be_put_delta)
         max_profit_d = width_d - debit
         meets_profit, profit_msg = profit_note(max_profit_d, min_profit_amount)
         meets_loss, loss_msg = loss_note(debit, width_target)

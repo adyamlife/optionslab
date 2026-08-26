@@ -34690,7 +34690,7 @@
     "signal_score": 65.01,
     "profit_target": 0.5427,
     "stop_loss": 1.809,
-    "status": "open",
+    "status": "expired_unknown",
     "snapshots": [
       {
         "ts": "2026-08-13T17:00:01.927778-04:00",
@@ -34763,7 +34763,14 @@
         "net_vega": -0.0072
       }
     ],
-    "exit": null,
+    "exit": {
+      "ts": "2026-08-24T09:34:46.455473-04:00",
+      "reason": "expired_unknown",
+      "ul_price": 49.79,
+      "pnl_per_share": null,
+      "pnl_total": null,
+      "win": null
+    },
     "iv_edge_vp": -1.98,
     "iv_edge_label": "fair",
     "kelly_fraction": null,
@@ -38082,6 +38089,36 @@
         "net_theta": 0.0422,
         "net_gamma": -0.054865,
         "net_vega": -0.0206
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 0.24,
+        "ul_price": 83.5525,
+        "unrealized": 0.315,
+        "net_delta": -0.1379,
+        "net_theta": 0.1076,
+        "net_gamma": -0.0571,
+        "net_vega": -0.0193
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 0.02,
+        "ul_price": 84.0990982055664,
+        "unrealized": 0.535,
+        "net_delta": -0.0235,
+        "net_theta": 0.0133,
+        "net_gamma": -0.029316,
+        "net_vega": -0.0049
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 0.03,
+        "ul_price": 84.2249984741211,
+        "unrealized": 0.525,
+        "net_delta": -0.0321,
+        "net_theta": 0.0239,
+        "net_gamma": -0.036532,
+        "net_vega": -0.0055
       }
     ],
     "exit": null,
@@ -38588,6 +38625,36 @@
         "net_theta": -0.2519,
         "net_gamma": -0.000685,
         "net_vega": 0.0229
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 20.525,
+        "ul_price": 306.82,
+        "unrealized": 7.425,
+        "net_delta": 0.6399,
+        "net_theta": -0.0661,
+        "net_gamma": 0.000597,
+        "net_vega": 0.0048
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 25.5,
+        "ul_price": 298.5299987792969,
+        "unrealized": 12.4,
+        "net_delta": 0.6528,
+        "net_theta": -0.4688,
+        "net_gamma": 0.013855,
+        "net_vega": 0.0699
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 17.975,
+        "ul_price": 310.57000732421875,
+        "unrealized": 4.875,
+        "net_delta": 0.7648,
+        "net_theta": 0.0607,
+        "net_gamma": -0.004849,
+        "net_vega": -0.0152
       }
     ],
     "exit": null,
@@ -40199,6 +40266,36 @@
         "net_theta": 0.1284,
         "net_gamma": -0.006174,
         "net_vega": -0.0571
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 8.85,
+        "ul_price": 355.3,
+        "unrealized": 1.975,
+        "net_delta": 0.1845,
+        "net_theta": 0.4692,
+        "net_gamma": -0.011618,
+        "net_vega": -0.0782
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 14.45,
+        "ul_price": 348.94000244140625,
+        "unrealized": 7.575,
+        "net_delta": 0.2297,
+        "net_theta": 0.2751,
+        "net_gamma": -0.014184,
+        "net_vega": -0.0686
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 15.3,
+        "ul_price": 350.1499938964844,
+        "unrealized": 8.425,
+        "net_delta": 0.196,
+        "net_theta": 0.2976,
+        "net_gamma": -0.017998,
+        "net_vega": -0.0616
       }
     ],
     "exit": null,
@@ -40693,6 +40790,36 @@
         "net_theta": 0.0127,
         "net_gamma": -0.005246,
         "net_vega": -0.0317
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 0.0,
+        "ul_price": 429.25,
+        "unrealized": -4.25,
+        "net_delta": 0.0291,
+        "net_theta": 0.1062,
+        "net_gamma": -0.004422,
+        "net_vega": -0.0276
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 0.205,
+        "ul_price": 426.7300109863281,
+        "unrealized": -4.045,
+        "net_delta": 0.0295,
+        "net_theta": 0.0145,
+        "net_gamma": -0.004003,
+        "net_vega": -0.0187
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 0.08,
+        "ul_price": 428.1000061035156,
+        "unrealized": -4.17,
+        "net_delta": 0.0284,
+        "net_theta": 0.083,
+        "net_gamma": -0.003882,
+        "net_vega": -0.0185
       }
     ],
     "exit": null,
@@ -40922,6 +41049,36 @@
         "net_theta": -0.0034,
         "net_gamma": -0.130854,
         "net_vega": -0.0028
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 0.01,
+        "ul_price": 25.57,
+        "unrealized": -0.405,
+        "net_delta": 0.0388,
+        "net_theta": 0.0019,
+        "net_gamma": -0.117731,
+        "net_vega": -0.0017
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 0.0,
+        "ul_price": 25.704999923706055,
+        "unrealized": -0.415,
+        "net_delta": 0.0052,
+        "net_theta": -0.0313,
+        "net_gamma": -0.089886,
+        "net_vega": -0.0001
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 0.0,
+        "ul_price": 25.75,
+        "unrealized": -0.415,
+        "net_delta": 0.0154,
+        "net_theta": -0.0161,
+        "net_gamma": -0.083979,
+        "net_vega": -0.0005
       }
     ],
     "exit": null,
@@ -41140,6 +41297,36 @@
         "net_theta": 0.2435,
         "net_gamma": -0.006707,
         "net_vega": -0.0637
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 1.3,
+        "ul_price": 306.515,
+        "unrealized": 3.45,
+        "net_delta": -0.0644,
+        "net_theta": 0.3229,
+        "net_gamma": -0.006176,
+        "net_vega": -0.0404
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 0.325,
+        "ul_price": 298.5299987792969,
+        "unrealized": 4.425,
+        "net_delta": -0.0238,
+        "net_theta": 0.1354,
+        "net_gamma": -0.002916,
+        "net_vega": -0.0175
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 0.425,
+        "ul_price": 310.57000732421875,
+        "unrealized": 4.325,
+        "net_delta": -0.0346,
+        "net_theta": 0.1953,
+        "net_gamma": -0.005032,
+        "net_vega": -0.0216
       }
     ],
     "exit": null,
@@ -41374,6 +41561,36 @@
         "net_theta": -0.2013,
         "net_gamma": 0.002261,
         "net_vega": 0.1029
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 0.0,
+        "ul_price": 459.615,
+        "unrealized": -8.5,
+        "net_delta": 0.1031,
+        "net_theta": -0.2419,
+        "net_gamma": 0.002474,
+        "net_vega": 0.0906
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 2.325,
+        "ul_price": 456.7607116699219,
+        "unrealized": -6.175,
+        "net_delta": 0.0901,
+        "net_theta": -0.2168,
+        "net_gamma": 0.002601,
+        "net_vega": 0.0875
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 4.725,
+        "ul_price": 479.25,
+        "unrealized": -3.775,
+        "net_delta": 0.1495,
+        "net_theta": -0.242,
+        "net_gamma": 0.002725,
+        "net_vega": 0.0899
       }
     ],
     "exit": null,
@@ -42063,6 +42280,36 @@
         "net_theta": -0.1071,
         "net_gamma": 0.03117,
         "net_vega": 0.0407
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 0.0,
+        "ul_price": 136.42,
+        "unrealized": -2.333,
+        "net_delta": 0.2741,
+        "net_theta": -0.2294,
+        "net_gamma": 0.043565,
+        "net_vega": 0.04
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 0.0,
+        "ul_price": 135.67999267578125,
+        "unrealized": -2.333,
+        "net_delta": 0.219,
+        "net_theta": -0.182,
+        "net_gamma": 0.04429,
+        "net_vega": 0.0359
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 0.0,
+        "ul_price": 139.0399932861328,
+        "unrealized": -2.333,
+        "net_delta": 0.4087,
+        "net_theta": -0.2965,
+        "net_gamma": 0.05926,
+        "net_vega": 0.0405
       }
     ],
     "exit": null,
@@ -42297,6 +42544,36 @@
         "net_theta": -0.0008,
         "net_gamma": -0.011087,
         "net_vega": -0.0274
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 6.245,
+        "ul_price": 310.51,
+        "unrealized": 2.08,
+        "net_delta": 0.3858,
+        "net_theta": 0.1215,
+        "net_gamma": -0.014044,
+        "net_vega": -0.0401
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 6.505,
+        "ul_price": 310.3500061035156,
+        "unrealized": 2.34,
+        "net_delta": 0.4036,
+        "net_theta": 0.0496,
+        "net_gamma": -0.01997,
+        "net_vega": -0.0372
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 6.44,
+        "ul_price": 309.8299865722656,
+        "unrealized": 2.275,
+        "net_delta": 0.4707,
+        "net_theta": 0.0373,
+        "net_gamma": -0.02485,
+        "net_vega": -0.0314
       }
     ],
     "exit": null,
@@ -42998,6 +43275,36 @@
         "net_theta": -0.0512,
         "net_gamma": 0.018352,
         "net_vega": 0.0236
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 2.185,
+        "ul_price": 145.7559,
+        "unrealized": 0.62,
+        "net_delta": 0.4424,
+        "net_theta": -0.0224,
+        "net_gamma": 0.001092,
+        "net_vega": 0.003
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 2.15,
+        "ul_price": 146.60000610351562,
+        "unrealized": 0.585,
+        "net_delta": 0.4441,
+        "net_theta": 0.0008,
+        "net_gamma": -0.035703,
+        "net_vega": -0.0103
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 1.8,
+        "ul_price": 145.4199981689453,
+        "unrealized": 0.235,
+        "net_delta": 0.4925,
+        "net_theta": -0.1099,
+        "net_gamma": 0.005782,
+        "net_vega": 0.0143
       }
     ],
     "exit": null,
@@ -43240,6 +43547,36 @@
         "net_theta": -0.1999,
         "net_gamma": 0.010472,
         "net_vega": 0.0897
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 7.33,
+        "ul_price": 397.51,
+        "unrealized": 1.305,
+        "net_delta": 0.4178,
+        "net_theta": 0.0134,
+        "net_gamma": -0.000826,
+        "net_vega": -0.0063
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 6.675,
+        "ul_price": 398.7699890136719,
+        "unrealized": 0.65,
+        "net_delta": 0.457,
+        "net_theta": -0.0363,
+        "net_gamma": -0.007147,
+        "net_vega": -0.0156
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 7.825,
+        "ul_price": 396.6199951171875,
+        "unrealized": 1.8,
+        "net_delta": 0.5441,
+        "net_theta": -0.1502,
+        "net_gamma": 0.001026,
+        "net_vega": 0.0157
       }
     ],
     "exit": null,
@@ -43461,6 +43798,36 @@
         "net_theta": 0.1543,
         "net_gamma": -0.001838,
         "net_vega": -0.0411
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 4.05,
+        "ul_price": 459.0149,
+        "unrealized": 4.625,
+        "net_delta": -0.0059,
+        "net_theta": 0.0645,
+        "net_gamma": -0.000542,
+        "net_vega": -0.008
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 0.055,
+        "ul_price": 456.7607116699219,
+        "unrealized": 8.62,
+        "net_delta": -0.0022,
+        "net_theta": 0.0247,
+        "net_gamma": -0.000251,
+        "net_vega": -0.0034
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 0.215,
+        "ul_price": 479.25,
+        "unrealized": 8.46,
+        "net_delta": -0.0089,
+        "net_theta": 0.1039,
+        "net_gamma": -0.000942,
+        "net_vega": -0.0105
       }
     ],
     "exit": null,
@@ -44459,6 +44826,36 @@
         "net_theta": 0.0344,
         "net_gamma": -0.001047,
         "net_vega": -0.0081
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 1.17,
+        "ul_price": 252.85,
+        "unrealized": 3.33,
+        "net_delta": -0.0011,
+        "net_theta": 0.0085,
+        "net_gamma": -0.000186,
+        "net_vega": -0.0009
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 0.055,
+        "ul_price": 254.9199981689453,
+        "unrealized": 4.445,
+        "net_delta": -0.0031,
+        "net_theta": 0.0248,
+        "net_gamma": -0.000455,
+        "net_vega": -0.0025
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 0.27,
+        "ul_price": 255.6199951171875,
+        "unrealized": 4.23,
+        "net_delta": -0.0117,
+        "net_theta": 0.1269,
+        "net_gamma": -0.001237,
+        "net_vega": -0.0071
       }
     ],
     "exit": null,
@@ -44712,6 +45109,36 @@
         "net_theta": -0.0165,
         "net_gamma": -0.005901,
         "net_vega": -0.0104
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 4.265,
+        "ul_price": 310.62,
+        "unrealized": 1.16,
+        "net_delta": 0.3075,
+        "net_theta": 0.0658,
+        "net_gamma": -0.007585,
+        "net_vega": -0.0222
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 4.505,
+        "ul_price": 310.3500061035156,
+        "unrealized": 1.4,
+        "net_delta": 0.3309,
+        "net_theta": 0.0063,
+        "net_gamma": -0.012462,
+        "net_vega": -0.0195
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 4.365,
+        "ul_price": 309.8299865722656,
+        "unrealized": 1.26,
+        "net_delta": 0.3989,
+        "net_theta": 0.0017,
+        "net_gamma": -0.013867,
+        "net_vega": -0.0153
       }
     ],
     "exit": null,
@@ -44946,6 +45373,36 @@
         "net_theta": -0.0324,
         "net_gamma": 0.002369,
         "net_vega": 0.0552
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 5.875,
+        "ul_price": 314.07,
+        "unrealized": -4.525,
+        "net_delta": 0.2575,
+        "net_theta": -0.069,
+        "net_gamma": 0.004736,
+        "net_vega": 0.0997
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 7.55,
+        "ul_price": 315.92999267578125,
+        "unrealized": -2.85,
+        "net_delta": 0.2395,
+        "net_theta": -0.0554,
+        "net_gamma": 0.002832,
+        "net_vega": 0.0697
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 11.6,
+        "ul_price": 331.8399963378906,
+        "unrealized": 1.2,
+        "net_delta": 0.2733,
+        "net_theta": 0.0119,
+        "net_gamma": -0.000255,
+        "net_vega": -0.0153
       }
     ],
     "exit": null,
@@ -45165,6 +45622,36 @@
         "net_theta": 0.018,
         "net_gamma": -0.051669,
         "net_vega": -0.0112
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 0.345,
+        "ul_price": 17.04,
+        "unrealized": 0.175,
+        "net_delta": -0.0969,
+        "net_theta": 0.0142,
+        "net_gamma": -0.042056,
+        "net_vega": -0.0076
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 0.125,
+        "ul_price": 16.3799991607666,
+        "unrealized": 0.395,
+        "net_delta": -0.0732,
+        "net_theta": 0.0111,
+        "net_gamma": -0.035172,
+        "net_vega": -0.006
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 0.125,
+        "ul_price": 16.940000534057617,
+        "unrealized": 0.395,
+        "net_delta": -0.0754,
+        "net_theta": 0.0113,
+        "net_gamma": -0.037544,
+        "net_vega": -0.0062
       }
     ],
     "exit": null,
@@ -45403,6 +45890,36 @@
         "net_theta": 0.0019,
         "net_gamma": -0.069806,
         "net_vega": -0.0016
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 0.66,
+        "ul_price": 18.6399,
+        "unrealized": 0.04,
+        "net_delta": 0.4872,
+        "net_theta": -0.0013,
+        "net_gamma": 0.022838,
+        "net_vega": 0.0003
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 0.455,
+        "ul_price": 18.225000381469727,
+        "unrealized": -0.165,
+        "net_delta": 0.4778,
+        "net_theta": -0.02,
+        "net_gamma": 0.19832,
+        "net_vega": 0.0034
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 0.895,
+        "ul_price": 19.0049991607666,
+        "unrealized": 0.275,
+        "net_delta": 0.544,
+        "net_theta": 0.0142,
+        "net_gamma": -0.155357,
+        "net_vega": -0.0021
       }
     ],
     "exit": null,
@@ -45590,7 +46107,7 @@
     "signal_score": 65.02,
     "profit_target": 0.81,
     "stop_loss": 2.7,
-    "status": "open",
+    "status": "closed_target",
     "snapshots": [
       {
         "ts": "2026-08-17T17:00:02.456672-04:00",
@@ -45641,9 +46158,33 @@
         "net_theta": -0.0108,
         "net_gamma": 0.041733,
         "net_vega": 0.0096
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 1.68,
+        "ul_price": 84.64,
+        "unrealized": 0.78,
+        "net_delta": 0.1283,
+        "net_theta": -0.0489,
+        "net_gamma": 0.06914,
+        "net_vega": 0.0144
       }
     ],
-    "exit": null,
+    "exit": {
+      "ts": "2026-08-24T17:05:17.413407-04:00",
+      "reason": "max_profit",
+      "spread_val": 2.0,
+      "ul_price": 84.7300033569336,
+      "pnl_per_share": 1.1,
+      "pnl_total": 110.0,
+      "pnl_pct_of_max": 100.0,
+      "win": true,
+      "hit_tp": true,
+      "hit_sl": false,
+      "mae_pct": 20.0,
+      "mfe_pct": 119.4,
+      "days_held": 7
+    },
     "iv_edge_vp": -0.1,
     "iv_edge_label": "fair",
     "kelly_fraction": null,
@@ -45856,6 +46397,36 @@
         "net_theta": -0.0069,
         "net_gamma": -0.005999,
         "net_vega": -0.0463
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 6.35,
+        "ul_price": 262.74,
+        "unrealized": 2.1,
+        "net_delta": 0.1947,
+        "net_theta": 0.0234,
+        "net_gamma": -0.006631,
+        "net_vega": -0.068
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 7.15,
+        "ul_price": 264.55999755859375,
+        "unrealized": 2.9,
+        "net_delta": 0.1464,
+        "net_theta": 0.0073,
+        "net_gamma": -0.005782,
+        "net_vega": -0.0512
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 7.675,
+        "ul_price": 265.67999267578125,
+        "unrealized": 3.425,
+        "net_delta": 0.1431,
+        "net_theta": 0.0117,
+        "net_gamma": -0.006225,
+        "net_vega": -0.0556
       }
     ],
     "exit": null,
@@ -46086,6 +46657,36 @@
         "net_theta": -0.0245,
         "net_gamma": -0.008996,
         "net_vega": -0.004
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 2.665,
+        "ul_price": 204.725,
+        "unrealized": 0.965,
+        "net_delta": 0.3007,
+        "net_theta": -0.0214,
+        "net_gamma": -0.001323,
+        "net_vega": 0.001
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 1.885,
+        "ul_price": 203.07000732421875,
+        "unrealized": 0.185,
+        "net_delta": 0.3289,
+        "net_theta": -0.0861,
+        "net_gamma": 0.014815,
+        "net_vega": 0.0209
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 0.79,
+        "ul_price": 199.91000366210938,
+        "unrealized": -0.91,
+        "net_delta": 0.233,
+        "net_theta": -0.1701,
+        "net_gamma": 0.050521,
+        "net_vega": 0.0406
       }
     ],
     "exit": null,
@@ -46314,6 +46915,36 @@
         "net_theta": -0.057,
         "net_gamma": 0.001083,
         "net_vega": 0.0828
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 6.8,
+        "ul_price": 551.155,
+        "unrealized": -1.2,
+        "net_delta": 0.1735,
+        "net_theta": -0.0612,
+        "net_gamma": 0.001194,
+        "net_vega": 0.08
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 9.65,
+        "ul_price": 559.1400146484375,
+        "unrealized": 1.65,
+        "net_delta": 0.1796,
+        "net_theta": -0.0437,
+        "net_gamma": 0.000534,
+        "net_vega": 0.0445
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 11.65,
+        "ul_price": 569.864990234375,
+        "unrealized": 3.65,
+        "net_delta": 0.1899,
+        "net_theta": -0.0083,
+        "net_gamma": -0.00014,
+        "net_vega": -0.0063
       }
     ],
     "exit": null,
@@ -46543,6 +47174,36 @@
         "net_theta": -0.0564,
         "net_gamma": -8.7e-05,
         "net_vega": 0.0132
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 3.39,
+        "ul_price": 204.74,
+        "unrealized": 0.61,
+        "net_delta": 0.4349,
+        "net_theta": -0.0935,
+        "net_gamma": 0.009966,
+        "net_vega": 0.018
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 2.285,
+        "ul_price": 203.07000732421875,
+        "unrealized": -0.495,
+        "net_delta": 0.4368,
+        "net_theta": -0.1603,
+        "net_gamma": 0.033814,
+        "net_vega": 0.0431
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 0.825,
+        "ul_price": 199.91000366210938,
+        "unrealized": -1.955,
+        "net_delta": 0.2401,
+        "net_theta": -0.1557,
+        "net_gamma": 0.057797,
+        "net_vega": 0.0426
       }
     ],
     "exit": null,
@@ -46771,6 +47432,36 @@
         "net_theta": -0.0455,
         "net_gamma": 0.006242,
         "net_vega": 0.0143
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 2.95,
+        "ul_price": 164.79,
+        "unrealized": -0.1,
+        "net_delta": 0.4808,
+        "net_theta": -0.0794,
+        "net_gamma": 0.015493,
+        "net_vega": 0.0162
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 2.62,
+        "ul_price": 164.07000732421875,
+        "unrealized": -0.43,
+        "net_delta": 0.5203,
+        "net_theta": -0.1331,
+        "net_gamma": 0.033757,
+        "net_vega": 0.0317
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 0.915,
+        "ul_price": 160.63999938964844,
+        "unrealized": -2.135,
+        "net_delta": 0.2982,
+        "net_theta": -0.1865,
+        "net_gamma": 0.072337,
+        "net_vega": 0.0412
       }
     ],
     "exit": null,
@@ -46999,6 +47690,36 @@
         "net_theta": -0.0624,
         "net_gamma": 0.001101,
         "net_vega": 0.0864
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 8.975,
+        "ul_price": 551.3951,
+        "unrealized": -1.2,
+        "net_delta": 0.2126,
+        "net_theta": -0.0638,
+        "net_gamma": 0.001228,
+        "net_vega": 0.0814
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 12.05,
+        "ul_price": 559.1400146484375,
+        "unrealized": 1.875,
+        "net_delta": 0.2168,
+        "net_theta": -0.0451,
+        "net_gamma": 0.000395,
+        "net_vega": 0.0388
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 14.55,
+        "ul_price": 569.864990234375,
+        "unrealized": 4.375,
+        "net_delta": 0.2262,
+        "net_theta": -0.0022,
+        "net_gamma": -0.000434,
+        "net_vega": -0.0228
       }
     ],
     "exit": null,
@@ -47227,6 +47948,36 @@
         "net_theta": -0.027,
         "net_gamma": 0.004816,
         "net_vega": 0.0365
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 3.375,
+        "ul_price": 164.805,
+        "unrealized": -0.28,
+        "net_delta": 0.2846,
+        "net_theta": -0.024,
+        "net_gamma": 0.00801,
+        "net_vega": 0.0378
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 3.15,
+        "ul_price": 164.07000732421875,
+        "unrealized": -0.505,
+        "net_delta": 0.2866,
+        "net_theta": -0.0321,
+        "net_gamma": 0.008627,
+        "net_vega": 0.0469
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 2.3,
+        "ul_price": 160.63999938964844,
+        "unrealized": -1.355,
+        "net_delta": 0.2612,
+        "net_theta": -0.0528,
+        "net_gamma": 0.012431,
+        "net_vega": 0.0709
       }
     ],
     "exit": null,
@@ -47445,6 +48196,36 @@
         "net_theta": 0.0194,
         "net_gamma": -0.06106,
         "net_vega": -0.0127
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 0.345,
+        "ul_price": 17.045,
+        "unrealized": 0.03,
+        "net_delta": -0.1317,
+        "net_theta": 0.0177,
+        "net_gamma": -0.052265,
+        "net_vega": -0.0095
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 0.14,
+        "ul_price": 16.3799991607666,
+        "unrealized": 0.235,
+        "net_delta": -0.0852,
+        "net_theta": 0.0117,
+        "net_gamma": -0.04193,
+        "net_vega": -0.0067
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 0.165,
+        "ul_price": 16.940000534057617,
+        "unrealized": 0.21,
+        "net_delta": -0.0978,
+        "net_theta": 0.0133,
+        "net_gamma": -0.04712,
+        "net_vega": -0.0075
       }
     ],
     "exit": null,
@@ -47663,6 +48444,36 @@
         "net_theta": -0.0622,
         "net_gamma": 0.003201,
         "net_vega": 0.0738
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 4.8,
+        "ul_price": 262.02,
+        "unrealized": -2.5,
+        "net_delta": 0.233,
+        "net_theta": -0.0744,
+        "net_gamma": 0.004528,
+        "net_vega": 0.085
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 4.18,
+        "ul_price": 259.05999755859375,
+        "unrealized": -3.12,
+        "net_delta": 0.2074,
+        "net_theta": -0.071,
+        "net_gamma": 0.004853,
+        "net_vega": 0.086
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 4.145,
+        "ul_price": 260.04998779296875,
+        "unrealized": -3.155,
+        "net_delta": 0.2156,
+        "net_theta": -0.0757,
+        "net_gamma": 0.004659,
+        "net_vega": 0.0838
       }
     ],
     "exit": null,
@@ -47862,6 +48673,36 @@
         "net_theta": 0.2226,
         "net_gamma": -0.005323,
         "net_vega": -0.1723
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 8.325,
+        "ul_price": 238.78,
+        "unrealized": -3.275,
+        "net_delta": -0.1256,
+        "net_theta": 0.1828,
+        "net_gamma": -0.004755,
+        "net_vega": -0.1291
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 2.785,
+        "ul_price": 238.8300018310547,
+        "unrealized": 2.265,
+        "net_delta": -0.1305,
+        "net_theta": 0.1906,
+        "net_gamma": -0.004792,
+        "net_vega": -0.1326
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 2.935,
+        "ul_price": 241.67999267578125,
+        "unrealized": 2.115,
+        "net_delta": -0.1376,
+        "net_theta": 0.2035,
+        "net_gamma": -0.005032,
+        "net_vega": -0.1363
       }
     ],
     "exit": null,
@@ -48072,6 +48913,36 @@
         "net_theta": 0.0132,
         "net_gamma": -0.012278,
         "net_vega": -0.0426
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 2.73,
+        "ul_price": 135.4,
+        "unrealized": -1.71,
+        "net_delta": 0.2984,
+        "net_theta": 0.0242,
+        "net_gamma": -0.016973,
+        "net_vega": -0.0557
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 3.635,
+        "ul_price": 133.35000610351562,
+        "unrealized": -0.805,
+        "net_delta": 0.3071,
+        "net_theta": 0.0095,
+        "net_gamma": -0.012173,
+        "net_vega": -0.0346
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 4.165,
+        "ul_price": 131.85000610351562,
+        "unrealized": -0.275,
+        "net_delta": 0.3233,
+        "net_theta": 0.0029,
+        "net_gamma": -0.008973,
+        "net_vega": -0.0223
       }
     ],
     "exit": null,
@@ -48282,6 +49153,36 @@
         "net_theta": -0.0967,
         "net_gamma": 0.00181,
         "net_vega": 0.2402
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 7.425,
+        "ul_price": 956.36,
+        "unrealized": -4.2,
+        "net_delta": 0.2005,
+        "net_theta": -0.111,
+        "net_gamma": 0.001869,
+        "net_vega": 0.229
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 12.175,
+        "ul_price": 971.3800048828125,
+        "unrealized": 0.55,
+        "net_delta": 0.2088,
+        "net_theta": -0.0683,
+        "net_gamma": 0.000463,
+        "net_vega": 0.0888
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 10.0,
+        "ul_price": 960.010009765625,
+        "unrealized": -1.625,
+        "net_delta": 0.214,
+        "net_theta": -0.1416,
+        "net_gamma": 0.001092,
+        "net_vega": 0.2073
       }
     ],
     "exit": null,
@@ -48492,6 +49393,36 @@
         "net_theta": -0.0187,
         "net_gamma": -0.04575,
         "net_vega": -0.0021
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 0.965,
+        "ul_price": 60.985,
+        "unrealized": 0.17,
+        "net_delta": 0.3388,
+        "net_theta": 0.0056,
+        "net_gamma": 0.001692,
+        "net_vega": -0.0008
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 0.73,
+        "ul_price": 60.11000061035156,
+        "unrealized": -0.065,
+        "net_delta": 0.3353,
+        "net_theta": -0.0415,
+        "net_gamma": 0.044794,
+        "net_vega": 0.0076
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 0.145,
+        "ul_price": 58.404998779296875,
+        "unrealized": -0.65,
+        "net_delta": 0.1081,
+        "net_theta": -0.0204,
+        "net_gamma": 0.098476,
+        "net_vega": 0.0066
       }
     ],
     "exit": null,
@@ -48702,6 +49633,36 @@
         "net_theta": 0.0022,
         "net_gamma": -0.027296,
         "net_vega": -0.0017
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 0.665,
+        "ul_price": 18.62,
+        "unrealized": 0.02,
+        "net_delta": 0.3326,
+        "net_theta": -0.0004,
+        "net_gamma": 0.003165,
+        "net_vega": 0.0
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 0.52,
+        "ul_price": 18.225000381469727,
+        "unrealized": -0.125,
+        "net_delta": 0.3348,
+        "net_theta": -0.0051,
+        "net_gamma": 0.057179,
+        "net_vega": 0.0024
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 0.825,
+        "ul_price": 19.0049991607666,
+        "unrealized": 0.18,
+        "net_delta": 0.3379,
+        "net_theta": 0.0042,
+        "net_gamma": -0.045192,
+        "net_vega": -0.0021
       }
     ],
     "exit": null,
@@ -48902,6 +49863,36 @@
         "net_theta": 0.0705,
         "net_gamma": -0.006397,
         "net_vega": -0.0998
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 0.0,
+        "ul_price": 429.33,
+        "unrealized": -6.5,
+        "net_delta": 0.1619,
+        "net_theta": 0.1485,
+        "net_gamma": -0.007617,
+        "net_vega": -0.1202
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 2.54,
+        "ul_price": 426.7300109863281,
+        "unrealized": -3.96,
+        "net_delta": 0.1472,
+        "net_theta": 0.0725,
+        "net_gamma": -0.007052,
+        "net_vega": -0.0872
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 1.965,
+        "ul_price": 428.1000061035156,
+        "unrealized": -4.535,
+        "net_delta": 0.1335,
+        "net_theta": 0.0751,
+        "net_gamma": -0.007913,
+        "net_vega": -0.0861
       }
     ],
     "exit": null,
@@ -49087,6 +50078,36 @@
         "net_theta": -0.0465,
         "net_gamma": 0.000556,
         "net_vega": 0.0356
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 8.175,
+        "ul_price": 314.84,
+        "unrealized": -0.575,
+        "net_delta": 0.2889,
+        "net_theta": -0.059,
+        "net_gamma": 0.003038,
+        "net_vega": 0.0714
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 8.2,
+        "ul_price": 315.92999267578125,
+        "unrealized": -0.55,
+        "net_delta": 0.2574,
+        "net_theta": -0.0392,
+        "net_gamma": 0.001991,
+        "net_vega": 0.0477
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 13.25,
+        "ul_price": 331.8399963378906,
+        "unrealized": 4.5,
+        "net_delta": 0.2616,
+        "net_theta": 0.0387,
+        "net_gamma": -0.001175,
+        "net_vega": -0.0439
       }
     ],
     "exit": null,
@@ -49287,6 +50308,36 @@
         "net_theta": -0.026,
         "net_gamma": 0.003068,
         "net_vega": 0.0306
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 1.335,
+        "ul_price": 158.92,
+        "unrealized": -0.255,
+        "net_delta": -0.089,
+        "net_theta": -0.0213,
+        "net_gamma": 0.003854,
+        "net_vega": 0.0274
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 1.355,
+        "ul_price": 158.5500030517578,
+        "unrealized": -0.275,
+        "net_delta": -0.0647,
+        "net_theta": 0.0007,
+        "net_gamma": 0.004427,
+        "net_vega": 0.0178
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 1.11,
+        "ul_price": 160.57000732421875,
+        "unrealized": -0.03,
+        "net_delta": -0.0795,
+        "net_theta": -0.0206,
+        "net_gamma": 0.004317,
+        "net_vega": 0.0277
       }
     ],
     "exit": null,
@@ -49487,6 +50538,36 @@
         "net_theta": -0.0329,
         "net_gamma": 0.000297,
         "net_vega": 0.0444
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 14.075,
+        "ul_price": 956.385,
+        "unrealized": 5.025,
+        "net_delta": 0.188,
+        "net_theta": -0.038,
+        "net_gamma": -0.00071,
+        "net_vega": -0.0245
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 15.375,
+        "ul_price": 971.3800048828125,
+        "unrealized": 6.325,
+        "net_delta": 0.1553,
+        "net_theta": 0.003,
+        "net_gamma": -0.001337,
+        "net_vega": -0.1178
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 13.775,
+        "ul_price": 960.010009765625,
+        "unrealized": 4.725,
+        "net_delta": 0.1747,
+        "net_theta": -0.0156,
+        "net_gamma": -0.000685,
+        "net_vega": -0.0472
       }
     ],
     "exit": null,
@@ -49687,6 +50768,36 @@
         "net_theta": -0.0304,
         "net_gamma": 0.004304,
         "net_vega": 0.0478
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 3.2,
+        "ul_price": 215.105,
+        "unrealized": -0.55,
+        "net_delta": 0.2036,
+        "net_theta": -0.0354,
+        "net_gamma": 0.00719,
+        "net_vega": 0.0592
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 1.625,
+        "ul_price": 214.75,
+        "unrealized": -2.125,
+        "net_delta": 0.1803,
+        "net_theta": -0.0248,
+        "net_gamma": 0.006883,
+        "net_vega": 0.0502
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 2.3,
+        "ul_price": 215.60000610351562,
+        "unrealized": -1.45,
+        "net_delta": 0.2014,
+        "net_theta": -0.0404,
+        "net_gamma": 0.004601,
+        "net_vega": 0.0498
       }
     ],
     "exit": null,
@@ -49877,6 +50988,36 @@
         "net_theta": -0.2766,
         "net_gamma": 0.005928,
         "net_vega": 0.0302
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 0.0,
+        "ul_price": 134.08,
+        "unrealized": -7.475,
+        "net_delta": 0.2073,
+        "net_theta": -0.5689,
+        "net_gamma": 0.01102,
+        "net_vega": 0.0314
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 2.85,
+        "ul_price": 138.88999938964844,
+        "unrealized": -4.625,
+        "net_delta": 0.2314,
+        "net_theta": -0.4573,
+        "net_gamma": 0.014001,
+        "net_vega": 0.033
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 9.76,
+        "ul_price": 158.8699951171875,
+        "unrealized": 2.285,
+        "net_delta": 0.5264,
+        "net_theta": -0.0629,
+        "net_gamma": 0.004119,
+        "net_vega": 0.0064
       }
     ],
     "exit": null,
@@ -50052,6 +51193,36 @@
         "net_theta": 0.001,
         "net_gamma": -0.006574,
         "net_vega": -0.0063
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 3.375,
+        "ul_price": 167.765,
+        "unrealized": 1.59,
+        "net_delta": 0.28,
+        "net_theta": 0.0981,
+        "net_gamma": -0.019089,
+        "net_vega": -0.0221
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 4.05,
+        "ul_price": 169.89999389648438,
+        "unrealized": 2.265,
+        "net_delta": 0.1892,
+        "net_theta": 0.0619,
+        "net_gamma": -0.030084,
+        "net_vega": -0.0245
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 1.905,
+        "ul_price": 163.39999389648438,
+        "unrealized": 0.12,
+        "net_delta": 0.3876,
+        "net_theta": -0.1161,
+        "net_gamma": 0.019084,
+        "net_vega": 0.017
       }
     ],
     "exit": null,
@@ -50227,6 +51398,36 @@
         "net_theta": -0.0051,
         "net_gamma": 0.04789,
         "net_vega": 0.0043
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 0.335,
+        "ul_price": 27.88,
+        "unrealized": 0.0,
+        "net_delta": 0.2859,
+        "net_theta": -0.0066,
+        "net_gamma": 0.122621,
+        "net_vega": 0.006
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 0.31,
+        "ul_price": 27.975000381469727,
+        "unrealized": -0.025,
+        "net_delta": 0.3108,
+        "net_theta": -0.0067,
+        "net_gamma": 0.110294,
+        "net_vega": 0.0058
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 0.54,
+        "ul_price": 28.56999969482422,
+        "unrealized": 0.205,
+        "net_delta": 0.325,
+        "net_theta": -0.0026,
+        "net_gamma": -0.064826,
+        "net_vega": -0.0011
       }
     ],
     "exit": null,
@@ -50402,6 +51603,36 @@
         "net_theta": -0.0311,
         "net_gamma": 0.001802,
         "net_vega": 0.0323
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 3.8,
+        "ul_price": 176.19,
+        "unrealized": -0.025,
+        "net_delta": 0.2892,
+        "net_theta": -0.017,
+        "net_gamma": 0.005418,
+        "net_vega": 0.0263
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 4.625,
+        "ul_price": 178.36500549316406,
+        "unrealized": 0.8,
+        "net_delta": 0.2999,
+        "net_theta": -0.0199,
+        "net_gamma": -0.001422,
+        "net_vega": 0.009
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 4.825,
+        "ul_price": 178.63999938964844,
+        "unrealized": 1.0,
+        "net_delta": 0.2984,
+        "net_theta": -0.0211,
+        "net_gamma": -0.002298,
+        "net_vega": 0.0066
       }
     ],
     "exit": null,
@@ -50592,6 +51823,36 @@
         "net_theta": -0.0267,
         "net_gamma": -0.00512,
         "net_vega": -0.0113
+      },
+      {
+        "ts": "2026-08-24T09:34:46.455473-04:00",
+        "mark": 4.45,
+        "ul_price": 215.15,
+        "unrealized": 0.2,
+        "net_delta": 0.2539,
+        "net_theta": 0.0032,
+        "net_gamma": -0.001056,
+        "net_vega": -0.0129
+      },
+      {
+        "ts": "2026-08-24T17:05:17.413407-04:00",
+        "mark": 4.85,
+        "ul_price": 214.75,
+        "unrealized": 0.6,
+        "net_delta": 0.2345,
+        "net_theta": -0.0086,
+        "net_gamma": -0.0021,
+        "net_vega": -0.0065
+      },
+      {
+        "ts": "2026-08-25T17:01:14.632399-04:00",
+        "mark": 4.375,
+        "ul_price": 215.60000610351562,
+        "unrealized": 0.125,
+        "net_delta": 0.2091,
+        "net_theta": -0.0158,
+        "net_gamma": -0.00356,
+        "net_vega": -0.0102
       }
     ],
     "exit": null,

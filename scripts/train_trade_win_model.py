@@ -65,6 +65,9 @@ _RAW_MARKET_FEATURES = [
 # collected before Phase 1 deployed to Ubuntu. Use DTE only for v1 experiment.
 _ENTRY_FEATURES = ["dte"]
 
+# F5: earnings features joined at training time (NaN if no earnings data available)
+from scripts.earnings_features import EARNINGS_FEATURE_COLS, load_earnings_join  # noqa: E402
+
 # ── Valid structures in system v2 (≥50 labeled rows post-Jul-13) ──────────────
 _VALID_STRUCTURES = [
     "Calendar Spread",
@@ -199,16 +202,42 @@ def build_dataset() -> pd.DataFrame:
     df = snaps.merge(meta_df, on=["ticker", "date"], how="inner")
     log.info("Dataset: %d labeled rows after join (snaps=%d, meta=%d)",
              len(df), len(snaps), len(meta_df))
+
+    # F5: add earnings features (NaN for rows without prior earnings data)
+    df = load_earnings_join(df)
     return df
 
 
-def _print_split_health(df: pd.DataFrame, i1: int, i2: int) -> None:
+def _week_stratified_split(df: pd.DataFrame, fractions: list[float]) -> list[pd.DataFrame]:
+    """Split df into len(fractions) folds, chronological *within* each ISO week but
+    stratified *across* weeks so every fold gets a proportional slice of every week.
+
+    A pure "last N% by date" split breaks badly when a labeling backlog (e.g. a
+    scheduler outage) gets backfilled in one batch: the newest fold ends up
+    dominated by a single narrow, previously-absent week, producing a spurious
+    train/test distribution shift that looks like model degradation rather than
+    the sampling artifact it actually is. Same fix applied to train_pop_model.py
+    after diagnosing its identical symptom (2026-08-22).
+    """
+    assert abs(sum(fractions) - 1.0) < 1e-6, "fractions must sum to 1.0"
+    df = df.sort_values("date")
+    week_key = df["date"].dt.isocalendar().year.astype(str) + "-W" + \
+               df["date"].dt.isocalendar().week.astype(str).str.zfill(2)
+
+    folds: list[list[pd.DataFrame]] = [[] for _ in fractions]
+    cum_fractions = np.cumsum(fractions)
+    for _, wk_df in df.groupby(week_key, sort=True):
+        n = len(wk_df)
+        cut_idxs = [0] + [int(round(n * f)) for f in cum_fractions]
+        for i in range(len(fractions)):
+            folds[i].append(wk_df.iloc[cut_idxs[i]:cut_idxs[i + 1]])
+
+    return [pd.concat(f).sort_values("date") if f else pd.DataFrame(columns=df.columns) for f in folds]
+
+
+def _print_split_health(train_df: pd.DataFrame, val_df: pd.DataFrame, test_df: pd.DataFrame) -> None:
     """Print date ranges and structure counts for each split."""
-    splits = [
-        ("train", df.iloc[:i1]),
-        ("val",   df.iloc[i1:i2]),
-        ("test",  df.iloc[i2:]),
-    ]
+    splits = [("train", train_df), ("val", val_df), ("test", test_df)]
     print(f"\n{'─'*60}")
     print("  Split health")
     print(f"{'─'*60}")
@@ -246,24 +275,28 @@ def run() -> None:
     struct_cols = sorted(structure_dummies.columns.tolist())
     df = pd.concat([df, structure_dummies[struct_cols]], axis=1)
 
-    # ── Chronological split: 60 / 20 / 20 ────────────────────────────────────
-    df = df.sort_values(["date", "ticker"]).reset_index(drop=True)
-    i1, i2 = int(n * 0.60), int(n * 0.80)
-    y_tr  = df["win"].values[:i1]
-    y_val = df["win"].values[i1:i2]
-    y_te  = df["win"].values[i2:]
+    # ── Week-stratified split: 60 / 20 / 20 ──────────────────────────────────
+    # Chronological *within* each ISO week, stratified *across* weeks — see
+    # _week_stratified_split docstring for why a pure "last 20% by date" split
+    # is unsafe on this dataset (same labeling-backfill artifact that broke
+    # the POP model's split on 2026-08-22).
+    train_df, val_df, test_df = _week_stratified_split(df, [0.60, 0.20, 0.20])
+    y_tr  = train_df["win"].values
+    y_val = val_df["win"].values
+    y_te  = test_df["win"].values
 
-    _print_split_health(df, i1, i2)
+    _print_split_health(train_df, val_df, test_df)
 
     def _split(cols):
         avail = [c for c in cols if c in df.columns]
-        X = df[avail].fillna(0)
-        return X.iloc[:i1], X.iloc[i1:i2], X.iloc[i2:]
+        return (train_df[avail].fillna(0), val_df[avail].fillna(0), test_df[avail].fillna(0))
 
     entry_cols  = _ENTRY_FEATURES + struct_cols   # DTE + structure one-hots
     trade_cols  = entry_cols + _RAW_MARKET_FEATURES
     market_cols = META_FEATURES
-    combined    = market_cols + entry_cols
+    # F5: add earnings features to the combined variant only (keep others clean for comparison)
+    ef_cols     = [c for c in EARNINGS_FEATURE_COLS if c in df.columns]
+    combined    = market_cols + entry_cols + ef_cols
 
     variants = [
         ("structure_only", _split(entry_cols)),

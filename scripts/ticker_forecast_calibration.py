@@ -39,6 +39,8 @@ import statistics
 import uuid
 from datetime import date, datetime, timezone, timedelta
 
+import pandas as pd
+
 _ROOT = __import__("pathlib").Path(__file__).resolve().parent.parent
 import sys
 sys.path.insert(0, str(_ROOT))
@@ -83,7 +85,11 @@ def _fetch_close(ticker: str, target_date: date) -> tuple[float | None, date | N
                          auto_adjust=True, progress=False, timeout=10)
         if df is None or df.empty:
             return None, None
-        # First available row on or after target_date
+        # yfinance returns MultiIndex columns (Price, Ticker) even for a single
+        # symbol — flatten to plain column names so "Close" indexing yields a
+        # scalar instead of a sub-Series (which silently broke float() below).
+        if isinstance(df.columns, pd.MultiIndex):
+            df.columns = df.columns.get_level_values(0)
         close_col = "Close"
         if close_col not in df.columns:
             return None, None

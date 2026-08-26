@@ -373,6 +373,18 @@ roi_low_iv          = 0.06    # paper-trade low-IV override
 min_liquidity_score = 0.30    # paper-trade override: collect diverse structures (live uses 0.60)
 max_trades_per_structure = 2  # cap any single structure from filling all slots; promotes diversity in training data
 
+# capital_gate_basis: TEMPORARY BRIDGE, added 2026-08-24. "cumulative" (correct
+# long-term default) gates each scan against true remaining capital across ALL
+# open positions. "per_scan" ignores the pre-existing backlog and caps only
+# THIS scan's own picks at [capital].amount — needed because the 2026-08-24
+# check_circuit_breakers() accounting fix correctly revealed a $141,926.50
+# backlog against $1,500 capital, which would otherwise block all new paper
+# trades until ~2026-09-18. See [[project_capital_accounting_bridge]] in
+# memory for the plan to revert this to "cumulative". Do not let this sit
+# unaddressed the way max_net_delta's TEMP override did (found stale 2026-08-22,
+# had been left at the wrong value for weeks).
+capital_gate_basis = "per_scan"
+
 [model]
 # IV scaling factor applied before every MC simulation.
 # Diagnostic-only for the first 4 weeks of calibration data — do not adjust until

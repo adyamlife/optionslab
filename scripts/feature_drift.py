@@ -43,6 +43,29 @@ MONITORED_FEATURES = [
     "momentum_pct_rank", "oi_pct_rank",
 ]
 
+# Market-wide features: one true value per trading day, broadcast identically
+# across every ticker's row. Computing PSI on the raw (duplicated) row-level
+# series massively inflates apparent drift — a single day's value moving bins
+# gets counted once per ticker (~100x), and PSI's log-ratio term explodes when
+# a bin flips from near-empty to holding a whole day's duplicated mass. These
+# must be deduplicated to one observation per date before PSI.
+MARKET_WIDE_FEATURES = {
+    "vix", "vvix", "vix_3m", "vix_term_slope",
+    "spy_rsi", "qqq_rsi", "iwm_rsi",
+    "yield_curve", "dollar_index",
+}
+
+# Event/calendar indicators: also one true value per date (same "is FOMC within
+# N days" flag applies to every ticker on a given day) — same dedup treatment.
+EVENT_FEATURES = {
+    "fed_within_dte", "cpi_within_dte", "ppi_within_dte",
+    "jobs_within_dte", "opex_within_dte", "is_opex_week",
+}
+
+# Everything else in MONITORED_FEATURES is ticker-level (genuinely one
+# independent observation per ticker per day) and keeps the row-level PSI.
+_DATE_LEVEL_FEATURES = MARKET_WIDE_FEATURES | EVENT_FEATURES
+
 _N_BINS = 10   # PSI bins
 
 
@@ -74,9 +97,18 @@ def _feature_stats(values: list[float | None]) -> dict:
     }
 
 
-def _psi(base_vals: list[float], recent_vals: list[float], n_bins: int = _N_BINS) -> float | None:
-    """Population Stability Index between baseline and recent distributions."""
-    if len(base_vals) < 10 or len(recent_vals) < 10:
+def _psi(base_vals: list[float], recent_vals: list[float], n_bins: int = _N_BINS,
+         min_n: int = 10) -> float | None:
+    """Population Stability Index between baseline and recent distributions.
+
+    min_n is the minimum sample size per side. The default (10) matches
+    n_bins=10 only nominally — 10 points across 10 bins is ~1/bin and produces
+    wildly unstable PSI. Callers with a smaller effective population (e.g.
+    date-deduplicated market-wide series) should lower n_bins and raise min_n
+    together so there are enough points per bin for the statistic to mean
+    anything, per standard PSI guidance (~5+ per bin at a minimum).
+    """
+    if len(base_vals) < min_n or len(recent_vals) < min_n:
         return None
     all_vals = base_vals + recent_vals
     vmin, vmax = min(all_vals), max(all_vals)
@@ -105,6 +137,20 @@ def _psi(base_vals: list[float], recent_vals: list[float], n_bins: int = _N_BINS
     return round(psi, 4)
 
 
+def _dedup_by_date(records: list[dict], feat: str) -> list[dict]:
+    """One record per collected_at date, keeping the first occurrence.
+    Used for market-wide/event features so PSI sees one independent
+    observation per trading day instead of one per (day x ticker)."""
+    seen_dates: set[str] = set()
+    out = []
+    for r in records:
+        d = (r.get("collected_at") or "")[:10]
+        if d and d not in seen_dates:
+            seen_dates.add(d)
+            out.append(r)
+    return out
+
+
 def compute_drift_report() -> dict:
     """
     Load recent snapshots, compute per-feature drift stats, write
@@ -131,15 +177,37 @@ def compute_drift_report() -> dict:
     flagged = []
 
     for feat in MONITORED_FEATURES:
+        is_date_level = feat in _DATE_LEVEL_FEATURES
+        granularity = "date-level" if is_date_level else "ticker-level"
+
         base_raw   = [_safe_float(r.get(feat)) for r in baseline_recs]
         recent_raw = [_safe_float(r.get(feat)) for r in recent_recs]
-
         base_clean   = [v for v in base_raw   if v is not None]
         recent_clean = [v for v in recent_raw if v is not None]
 
         base_stats   = _feature_stats(base_raw)
         recent_stats = _feature_stats(recent_raw)
-        psi          = _psi(base_clean, recent_clean)
+
+        # Row-level PSI: always computed, kept as an audit trail even when a
+        # date-level PSI supersedes it for flagging — lets a reader see that a
+        # "major_shift" alert was a duplicated-row artifact, not silently hide it.
+        psi_row_level = _psi(base_clean, recent_clean)
+
+        if is_date_level:
+            base_dated   = _dedup_by_date(baseline_recs, feat)
+            recent_dated = _dedup_by_date(recent_recs, feat)
+            base_dated_clean   = [v for v in (_safe_float(r.get(feat)) for r in base_dated)   if v is not None]
+            recent_dated_clean = [v for v in (_safe_float(r.get(feat)) for r in recent_dated) if v is not None]
+            # Date-deduplicated populations are small (a few dozen trading days
+            # at most, currently as few as 11-14) — 10 bins would leave ~1 point
+            # per bin and produce noise-driven PSI swings of 5-15+. Use 4 bins
+            # (~5+ points/bin at the current sample size) and require 20+ dates
+            # per side before trusting the statistic at all.
+            psi = _psi(base_dated_clean, recent_dated_clean, n_bins=4, min_n=20)
+            n_base_dates, n_recent_dates = len(base_dated_clean), len(recent_dated_clean)
+        else:
+            psi = psi_row_level
+            n_base_dates = n_recent_dates = None
 
         flag = "ok"
         if psi is None:
@@ -151,10 +219,14 @@ def compute_drift_report() -> dict:
             flag = "moderate_shift"
 
         feature_reports[feat] = {
-            "psi":          psi,
-            "flag":         flag,
-            "baseline":     base_stats,
-            "recent":       recent_stats,
+            "psi":            psi,
+            "psi_row_level":  psi_row_level,
+            "granularity":    granularity,
+            "n_base_dates":   n_base_dates,
+            "n_recent_dates": n_recent_dates,
+            "flag":           flag,
+            "baseline":       base_stats,
+            "recent":         recent_stats,
         }
 
     report = {

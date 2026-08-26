@@ -533,5 +533,10 @@
     "actual_return_pct": -100.0,
     "outcome": "loss",
     "closed_at": "2026-08-21T21:01:17.694118+00:00"
+  },
+  "20260817PM_WFC_PDS_1": {
+    "actual_return_pct": 100.0,
+    "outcome": "win",
+    "closed_at": "2026-08-24T21:07:33.288345+00:00"
   }
 }

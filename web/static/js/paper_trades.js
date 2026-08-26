@@ -1391,10 +1391,11 @@ async function loadRangeAnalysis() {
     _structStats[s].n++;
     // delta_implied_pop is already a percentage (0-100)
     _structStats[s].sumPred += (r.delta_implied_pop ?? 0);
-    const z = r.zone || "";
-    // Win = any positive outcome across all structure types
-    if (z === "full_win" || z === "partial_win" || z === "contained" || z === "expired_otm")
-      _structStats[s].wins++;
+    // Win = outcome_binary from the backend (authoritative — matches overall.correct_pct
+    // exactly). Previously re-derived from a hardcoded zone-name whitelist that missed
+    // multi-directional win zones like Long Strangle's win_call_side/win_put_side,
+    // silently showing 0% realized for those structures.
+    if (r.outcome_binary) _structStats[s].wins++;
   }
 
   const STRUCT_ORDER = [
@@ -1503,6 +1504,13 @@ async function loadRangeAnalysis() {
     const buckets = ovc.map(r => r.bucket);
     const errors  = ovc.map(r => r.calibration_error);
     const colors  = errors.map(e => e == null ? "#888" : e > 5 ? "#22c55e" : e < -5 ? "#ef4444" : "#94a3b8");
+    // Headroom for "outside" text labels — without an explicit range, Plotly
+    // autoranges tight to the data and the tallest bar's label gets clipped at
+    // the top of the plot, crowding into the title above it (matches Chart 1's
+    // explicit range: [0, 110] pattern, which avoids the same clipping there).
+    const validErrs = errors.filter(e => e != null);
+    const maxAbs = validErrs.length ? Math.max(...validErrs.map(Math.abs)) : 10;
+    const pad = maxAbs * 0.2 + 5;
     Plotly.newPlot(c2, [
       { name: "Calibration error (realized − predicted)",
         x: buckets, y: errors, type: "bar",
@@ -1511,7 +1519,7 @@ async function loadRangeAnalysis() {
         textposition: "outside" },
     ], _raLayout("Calibration Error by POP Bucket", {
       barmode: "relative",
-      yaxis: { gridcolor: _raTheme().grid, ticksuffix: "pp",
+      yaxis: { gridcolor: _raTheme().grid, ticksuffix: "pp", range: [-pad, maxAbs + pad],
                title: { text: "Error (pp)", font: { size: 11 } } },
       shapes: [{ type: "line", x0: -0.5, x1: buckets.length - 0.5, y0: 0, y1: 0,
                  line: { color: "#888", width: 1, dash: "dot" } }],
@@ -1664,7 +1672,155 @@ async function loadRangeAnalysis() {
       Positive (green) = model is conservative — trades won more often than predicted.
       Negative (red) = model is optimistic — trades won less than predicted.
       Buckets with n &lt; 5 are statistically unreliable.
-    </p>`;
+    </p>
+    <div id="pt-pnl-breakdown"></div>`;
+
+  _pnlBreakdownData = data.pnl_breakdown;
+  renderPnlBreakdown();
+}
+
+// ── Realized P&L breakdown — by ticker, ticker+structure, ticker+signal+structure ──
+// Sortable, same click-header pattern as renderOpenTradesTable(): one sort
+// state per table (col + direction), full re-render on click.
+
+let _pnlBreakdownData = null;
+
+const _PNL_TABLES = {
+  bySignal: {
+    dataKey: "by_signal_rating",
+    title:   "By Signal Rating",
+    cols:    [
+      { label: "Signal",     key: "k0",       type: "str" },
+      { label: "n",          key: "n",        type: "num" },
+      { label: "Total P&amp;L", key: "total_pnl", type: "num" },
+      { label: "Win Rate",   key: "win_pct",  type: "num" },
+    ],
+  },
+  byTicker: {
+    dataKey: "by_ticker",
+    title:   "By Ticker",
+    scroll:  true,
+    cols:    [
+      { label: "Ticker",     key: "k0",       type: "str" },
+      { label: "n",          key: "n",        type: "num" },
+      { label: "Total P&amp;L", key: "total_pnl", type: "num" },
+      { label: "Win Rate",   key: "win_pct",  type: "num" },
+    ],
+  },
+  byTickerStruct: {
+    dataKey: "by_ticker_structure",
+    title:   "By Ticker + Structure",
+    scroll:  true,
+    cols:    [
+      { label: "Ticker",     key: "k0",       type: "str" },
+      { label: "Structure",  key: "k1",       type: "str" },
+      { label: "n",          key: "n",        type: "num" },
+      { label: "Total P&amp;L", key: "total_pnl", type: "num" },
+      { label: "Win Rate",   key: "win_pct",  type: "num" },
+    ],
+  },
+  byTickerSignalStruct: {
+    dataKey: "by_ticker_signal_structure",
+    title:   "By Ticker + Signal + Structure",
+    scroll:  true,
+    cols:    [
+      { label: "Ticker",     key: "k0",       type: "str" },
+      { label: "Signal",     key: "k1",       type: "str" },
+      { label: "Structure",  key: "k2",       type: "str" },
+      { label: "n",          key: "n",        type: "num" },
+      { label: "Total P&amp;L", key: "total_pnl", type: "num" },
+      { label: "Win Rate",   key: "win_pct",  type: "num" },
+    ],
+  },
+};
+
+// col=null means "use backend's default sort" (total_pnl ascending, worst-first)
+const _pnlSortState = {
+  bySignal:             { col: null, dir: 1 },
+  byTicker:              { col: null, dir: 1 },
+  byTickerStruct:        { col: null, dir: 1 },
+  byTickerSignalStruct:  { col: null, dir: 1 },
+};
+
+// Flatten backend rows (key may be a string or a list) into named fields k0/k1/k2
+// so every column — including the composite key parts — can be sorted uniformly.
+function _pnlFlatten(rows) {
+  return (rows || []).map(r => {
+    const k = Array.isArray(r.key) ? r.key : [r.key];
+    const flat = { n: r.n, total_pnl: r.total_pnl, win_pct: r.win_pct };
+    k.forEach((v, i) => flat["k" + i] = v);
+    return flat;
+  });
+}
+
+function renderPnlBreakdown() {
+  const container = document.getElementById("pt-pnl-breakdown");
+  const pb = _pnlBreakdownData;
+  if (!container || !pb || !pb.total_trades) { if (container) container.innerHTML = ""; return; }
+
+  const totalCls = pb.total_pnl > 0 ? "pass" : pb.total_pnl < 0 ? "fail" : "na";
+
+  const sections = Object.entries(_PNL_TABLES).map(([tableId, def]) => {
+    let rows = _pnlFlatten(pb[def.dataKey]);
+    const st = _pnlSortState[tableId];
+    if (st.col !== null) {
+      const key = def.cols[st.col].key;
+      rows = [...rows].sort((a, b) => {
+        const av = a[key], bv = b[key];
+        return av < bv ? -st.dir : av > bv ? st.dir : 0;
+      });
+    } // else: keep backend order (total_pnl ascending, worst-first)
+
+    const thRow = def.cols.map((c, i) => {
+      const isSorted = st.col === i;
+      const arrow = isSorted ? (st.dir === 1 ? " ▲" : " ▼") : "";
+      const cls = c.type === "num" ? "num sortable-th" : "sortable-th";
+      return `<th class="${cls}" data-table="${tableId}" data-col="${i}" style="cursor:pointer;user-select:none">${c.label}${arrow}</th>`;
+    }).join("");
+
+    const bodyRows = rows.map(r => {
+      const cells = def.cols.map(c => {
+        if (c.key === "total_pnl") {
+          const cls = r.total_pnl > 0 ? "pass" : r.total_pnl < 0 ? "fail" : "na";
+          return `<td class="num ${cls}" style="font-weight:600">${r.total_pnl > 0 ? "+" : ""}${r.total_pnl.toFixed(2)}</td>`;
+        }
+        if (c.key === "win_pct") return `<td class="num muted">${r.win_pct}% win</td>`;
+        if (c.key === "n")       return `<td class="num">${r.n}</td>`;
+        return `<td>${esc(String(r[c.key]))}</td>`;
+      }).join("");
+      return `<tr>${cells}</tr>`;
+    }).join("");
+
+    const scrollStyle = def.scroll ? "max-height:420px;overflow-y:auto" : "";
+    return `
+      <h4 style="margin:1rem 0 0.5rem">${def.title}</h4>
+      <div class="table-scroll" style="margin-bottom:1.25rem;${scrollStyle}">
+        <table class="journal-table pt-trades-table" style="font-size:0.82rem">
+          <thead><tr>${thRow}</tr></thead>
+          <tbody>${bodyRows}</tbody>
+        </table>
+      </div>`;
+  }).join("");
+
+  container.innerHTML = `
+    <h3 style="margin:2rem 0 0.5rem">Realized P&amp;L Breakdown</h3>
+    <p class="hint" style="margin-bottom:0.75rem;font-size:0.78rem">
+      Actual dollar P&amp;L on closed trades (${pb.total_trades} trades, total
+      <span class="${totalCls}" style="font-weight:600">${pb.total_pnl > 0 ? "+" : ""}${pb.total_pnl.toFixed(2)}</span>) —
+      recomputed fresh from paper_trades.json every time this tab loads. Click any column header to sort.
+    </p>
+    ${sections}`;
+
+  container.querySelectorAll("th.sortable-th").forEach(th => {
+    th.addEventListener("click", () => {
+      const tableId = th.dataset.table;
+      const col = parseInt(th.dataset.col);
+      const st = _pnlSortState[tableId];
+      if (st.col === col) st.dir *= -1;
+      else { st.col = col; st.dir = 1; }
+      renderPnlBreakdown();
+    });
+  });
 }
 
 // ── Tab switching ─────────────────────────────────────────────────────────────

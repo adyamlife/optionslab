@@ -159,33 +159,56 @@ def load_labeled_dataframe(extra_data_path: Path | None = None) -> pd.DataFrame:
 load_dataset = load_labeled_dataframe
 
 
+def _week_stratified_split(df: pd.DataFrame, fractions: list[float]) -> list[pd.DataFrame]:
+    """Split df into len(fractions) folds, chronological *within* each ISO week but
+    stratified *across* weeks so every fold gets a proportional slice of every week.
+
+    A pure "last N% by collected_at" split breaks badly when a labeling backlog
+    (e.g. a scheduler outage) gets backfilled in one batch: the newest fold ends up
+    100% composed of a single narrow, previously-unseen week, producing a spurious
+    train/test distribution shift that looks like model degradation. Stratifying by
+    week keeps every fold's time coverage representative of the whole dataset while
+    still respecting chronology inside each week (no future-into-past leakage within
+    a week's own split point).
+    """
+    assert abs(sum(fractions) - 1.0) < 1e-6, "fractions must sum to 1.0"
+    df = df.sort_values("collected_at")
+    week_key = df["collected_at"].dt.isocalendar().year.astype(str) + "-W" + \
+               df["collected_at"].dt.isocalendar().week.astype(str).str.zfill(2)
+
+    folds: list[list[pd.DataFrame]] = [[] for _ in fractions]
+    cum_fractions = np.cumsum(fractions)
+    for _, wk_df in df.groupby(week_key, sort=True):
+        n = len(wk_df)
+        cut_idxs = [0] + [int(round(n * f)) for f in cum_fractions]
+        for i in range(len(fractions)):
+            folds[i].append(wk_df.iloc[cut_idxs[i]:cut_idxs[i + 1]])
+
+    return [pd.concat(f).sort_values("collected_at") if f else pd.DataFrame(columns=df.columns) for f in folds]
+
+
 def time_based_split(df: pd.DataFrame, test_fraction=0.2):
-    """Row-count chronological split → (train, test, cutoff_collected_at).
+    """Week-stratified split → (train, test, cutoff_collected_at).
     Returns 3 values for compatibility with calibrate_models / model_audit callers.
     """
     df = df.copy()
     df["collected_at"] = pd.to_datetime(df["collected_at"], format="mixed", utc=True)
-    df = df.sort_values("collected_at")
-    cutoff_idx = int(len(df) * (1 - test_fraction))
-    train = df.iloc[:cutoff_idx]
-    test  = df.iloc[cutoff_idx:]
-    cutoff_val = df["collected_at"].iloc[cutoff_idx] if cutoff_idx < len(df) else None
+    train, test = _week_stratified_split(df, [1 - test_fraction, test_fraction])
+    cutoff_val = test["collected_at"].iloc[0] if len(test) else None
     return train, test, cutoff_val
 
 
 def _three_way_time_split(df: pd.DataFrame, val_fraction=0.10, test_fraction=0.10):
-    """Row-count three-way chronological split: train / val / test.
-    val is used to fit the probability calibrator; test is the uncontaminated holdout.
+    """Week-stratified three-way split: train / val / test.
+    val is used to fit the probability calibrator; test is the holdout. Stratifying
+    by ISO week (see _week_stratified_split) prevents a labeling-backlog catch-up
+    batch from landing entirely in one fold and masking real model quality behind
+    a spurious distribution-shift artifact.
     """
     df = df.copy()
     df["collected_at"] = pd.to_datetime(df["collected_at"], format="mixed", utc=True)
-    df = df.sort_values("collected_at")
-    n = len(df)
-    val_idx  = int(n * (1 - val_fraction - test_fraction))
-    test_idx = int(n * (1 - test_fraction))
-    train = df.iloc[:val_idx]
-    val   = df.iloc[val_idx:test_idx]
-    test  = df.iloc[test_idx:]
+    train_fraction = 1 - val_fraction - test_fraction
+    train, val, test = _week_stratified_split(df, [train_fraction, val_fraction, test_fraction])
     return train, val, test
 
 

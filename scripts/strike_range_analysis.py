@@ -516,6 +516,50 @@ def _zone_summary(records: list[dict]) -> dict:
     }
 
 
+def _pnl_breakdown() -> dict:
+    """
+    Realized P&L grouped by ticker, ticker+structure, and ticker+signal+structure —
+    across ALL closed trades (unlike build_prediction_dataset(), not limited to
+    structures with a calibration builder, since P&L doesn't depend on having a
+    prediction model). Recomputed fresh every call from paper_trades.json, same as
+    the rest of this module — no separate storage, no staleness.
+    """
+    trades = json.loads(_TRADES_PATH.read_text(encoding="utf-8"))
+    closed = [t for t in trades if t.get("exit") and t["exit"].get("pnl_total") is not None]
+
+    def _group(records: list[dict], key_fn) -> list[dict]:
+        groups: dict[tuple, dict] = {}
+        for t in records:
+            key = key_fn(t)
+            g = groups.setdefault(key, {"n": 0, "pnl": 0.0, "wins": 0})
+            g["n"]   += 1
+            g["pnl"] += t["exit"]["pnl_total"]
+            if t["exit"]["pnl_total"] > 0:
+                g["wins"] += 1
+        rows = []
+        for key, g in groups.items():
+            rows.append({
+                "key":        key if isinstance(key, str) else list(key),
+                "n":          g["n"],
+                "total_pnl":  round(g["pnl"], 2),
+                "avg_pnl":    round(g["pnl"] / g["n"], 2),
+                "win_pct":    round(g["wins"] / g["n"] * 100.0, 1),
+            })
+        rows.sort(key=lambda r: r["total_pnl"])
+        return rows
+
+    return {
+        "total_trades": len(closed),
+        "total_pnl":    round(sum(t["exit"]["pnl_total"] for t in closed), 2),
+        "by_ticker":              _group(closed, lambda t: t.get("ticker") or "?"),
+        "by_ticker_structure":    _group(closed, lambda t: (t.get("ticker") or "?", t.get("structure") or "?")),
+        "by_ticker_signal_structure": _group(closed, lambda t: (
+            t.get("ticker") or "?", t.get("signal_rating") or "(missing)", t.get("structure") or "?",
+        )),
+        "by_signal_rating":       _group(closed, lambda t: t.get("signal_rating") or "(missing)"),
+    }
+
+
 # ── Public entry point ────────────────────────────────────────────────────────
 
 def build_prediction_dataset() -> list[dict]:
@@ -589,6 +633,7 @@ def compute_range_analysis() -> dict:
         "dte_calibration":       dte_calibration,
         "signal_calibration":    signal_calibration,
         "records":               records,
+        "pnl_breakdown":         _pnl_breakdown(),
     }
 
 

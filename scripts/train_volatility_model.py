@@ -48,6 +48,10 @@ NUMERIC_FEATURES = ["rsi", "adx", "hv20", "vix_close", "rel_strength_spy",
                     "fed_within_dte", "cpi_within_dte",
                     "garch_conditional_var"]   # P3: GARCH daily conditional variance
 
+# F5: earnings fundamentals + NLP + competitor signals (joined at training time)
+from scripts.earnings_features import EARNINGS_FEATURE_COLS, load_earnings_join  # noqa: E402
+NUMERIC_FEATURES = NUMERIC_FEATURES + EARNINGS_FEATURE_COLS
+
 _CATEGORICAL_COLS = ("macd_trend", "trend", "spy_trend", "qqq_trend", "iwm_trend",
                      "sector_etf", "sector_trend")
 
@@ -62,6 +66,7 @@ def load_labeled_data(path=None) -> pd.DataFrame:
     is always read from DuckDB (the authoritative source)."""
     from scripts.db import read_df, TABLE
     df = read_df(f"SELECT * FROM {TABLE} WHERE labeled = true")
+    df = load_earnings_join(df)   # F5: add ef_*, nlp_*, comp_* columns (NaN if no data)
     df = df.dropna(subset=_REQUIRED_COLS + [TARGET_COL])
     return df
 

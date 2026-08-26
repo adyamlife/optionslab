@@ -193,11 +193,20 @@ def simulate_paths(
 
     art = _load_garch_art(ticker) if ticker else None
     if art is not None:
-        try:
-            T, mn, mx = _simulate_garch(spot, art, dte, risk_free_rate, n_sims, rng=rng)
-            return T, mn, mx, "garch"
-        except Exception as e:
-            logger.warning("GARCH simulation failed for %s (%s) — falling back to GBM", ticker, e)
+        if art.get("model_type") == "EGARCH":
+            # EGARCH has different parameter semantics (log-variance recursion);
+            # the GARCH(1,1) simulation formula is incorrect for these models.
+            # Use cond_vol_ann from the EGARCH fit as a better vol estimate for GBM.
+            egarch_iv = art.get("cond_vol_ann")
+            if egarch_iv and egarch_iv > 0:
+                T, mn, mx = _simulate_gbm(spot, egarch_iv, dte, risk_free_rate, n_sims, n_steps, rng=rng)
+                return T, mn, mx, "egarch_gbm"
+        else:
+            try:
+                T, mn, mx = _simulate_garch(spot, art, dte, risk_free_rate, n_sims, rng=rng)
+                return T, mn, mx, "garch"
+            except Exception as e:
+                logger.warning("GARCH simulation failed for %s (%s) — falling back to GBM", ticker, e)
 
     if iv is None or iv <= 0:
         return None, None, None, "error"

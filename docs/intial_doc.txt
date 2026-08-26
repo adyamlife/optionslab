@@ -2,6 +2,7 @@ admin		admin		Iron@Condor77
 trader		trader 		Bull$Strike26
 analyst1	analyst		Analyst!2026
 observer1	observer	Observer!2026
+scrooge
 
 
 zyIMyIxUlw5ep0JV1kqjP7mdL6t3wC5tmSXjGIDxsgE

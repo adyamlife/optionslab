@@ -2308,6 +2308,21 @@ def _extract_trade_fields(candidate: dict | None, spot: float | None) -> dict:
     has_optimizer = any(v is not None for v in (pop, ev, quality_score))
     schema_version = 3 if has_optimizer else (2 if has_geometry else 1)
 
+    # Phase 2A: MC expiry-price distribution summary — computed by candidate_ranker
+    # (scripts/monte_carlo.run_mc) and stored on the candidate dict, but was never
+    # copied onto the snapshot row, leaving mc_expiry_* permanently NULL in
+    # training_snapshots (Task #22 blocked with 0 eligible rows).
+    mc_fields = {
+        f: c.get(f) for f in (
+            "mc_expiry_mean", "mc_expiry_median",
+            "mc_expiry_p10", "mc_expiry_p25", "mc_expiry_p50", "mc_expiry_p75", "mc_expiry_p90",
+            "distribution_model_version",
+            "mc_zone_below_long", "mc_zone_between", "mc_zone_above_short", "mc_zone_in_profit",
+            "mc_zone_below_put_long", "mc_zone_in_loss_put", "mc_zone_in_loss_call",
+            "mc_zone_above_call_long", "mc_zone_below_short",
+        )
+    }
+
     return {
         "expected_move":      expected_move,
         "risk_free_rate":     risk_free_rate,
@@ -2328,6 +2343,7 @@ def _extract_trade_fields(candidate: dict | None, spot: float | None) -> dict:
         "ev":                 ev,
         "quality_score":      quality_score,
         "feature_schema_version": schema_version,
+        **mc_fields,
     }
 
 

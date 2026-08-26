@@ -760,3 +760,63 @@ training data did not have the following fields: ef_gross_margin, ef_abnormal_re
 2026-08-21 17:03:05,759 INFO [FAILURES]   Put Credit Spread               37 trades  81% win  gap=0 theta=7
 2026-08-21 17:03:05,760 INFO [FAILURES]   Put Debit Spread                61 trades  31% win  gap=17 theta=25
 2026-08-21 17:03:05,761 INFO [FAILURES]   Short Call                      7 trades  71% win  gap=0 theta=2
+2026-08-24 17:05:16,858 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-08-24 17:07:31,424 INFO CLOSED (max profit) 20260817PM_WFC_PDS_1: mark=2.0  P&L=$110.00 (100.0% of max)
+2026-08-24 17:07:33,912 INFO [eval] trade 20260817PM_WFC_PDS_1 outcome recorded: win +100.0%
+2026-08-24 17:17:45,238 ERROR store_expiry_settlements failed: 'float' object is not subscriptable
+2026-08-25 17:01:14,550 WARNING [warmup] E*TRADE not authenticated — option chains will fall back to yfinance
+2026-08-25 17:01:56,759 ERROR store_expiry_settlements failed: 'float' object is not subscriptable
+2026-08-25 17:18:34,171 INFO [LABEL] label_pending_snapshots: {'labeled': 34, 'total_records': 54044}
+2026-08-25 17:22:57,735 INFO [forward_returns] 4611 snapshots labeled across 101 tickers
+2026-08-25 17:23:06,292 INFO [LABEL] label_rejected_candidates: {'labeled': 0, 'no_fwd_data': 78, 'skipped_future': 10604, 'total_attempted': 10682, 'direction_backfilled': 1}
+2026-08-25 17:23:12,806 INFO Labeling manifest written: C:\Project Y\data\labeling_manifests\manifest_2026-08-25T17-23-12.json
+2026-08-25 17:23:30,266 INFO [feature_drift] report written: 32843 recent / 21201 baseline snapshots; 4 flagged
+2026-08-25 17:23:37,818 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-25 17:23:38,310 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+2026-08-25 17:23:42,148 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-25 17:23:42,767 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: QQQ"}}}
+2026-08-25 17:23:44,720 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-25 17:23:45,301 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: TQQQ"}}}
+2026-08-25 17:26:42,385 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: ^VIX"}}}
+2026-08-25 17:26:42,989 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: ^VIX"}}}
+2026-08-25 17:26:44,398 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLF"}}}
+2026-08-25 17:26:44,946 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLF"}}}
+2026-08-25 17:26:46,677 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-08-25 17:26:47,239 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLE"}}}
+2026-08-25 17:26:49,023 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLK"}}}
+2026-08-25 17:26:49,698 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLK"}}}
+2026-08-25 17:26:51,398 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLV"}}}
+2026-08-25 17:26:52,023 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLV"}}}
+2026-08-25 17:26:53,621 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLY"}}}
+2026-08-25 17:26:54,147 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLY"}}}
+2026-08-25 17:26:55,733 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLP"}}}
+2026-08-25 17:26:56,317 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLP"}}}
+2026-08-25 17:26:57,770 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLI"}}}
+2026-08-25 17:26:58,329 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLI"}}}
+2026-08-25 17:26:59,854 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLB"}}}
+2026-08-25 17:27:00,374 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLB"}}}
+2026-08-25 17:27:02,151 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLU"}}}
+2026-08-25 17:27:02,761 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLU"}}}
+2026-08-25 17:27:04,159 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLRE"}}}
+2026-08-25 17:27:04,655 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLRE"}}}
+2026-08-25 17:27:06,305 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLC"}}}
+2026-08-25 17:27:06,918 ERROR HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: XLC"}}}
+2026-08-25 17:27:39,445 INFO [POP] 0 trade(s) + 34 snapshot(s) newly labeled — triggering POP model retrain.
+2026-08-25 17:27:55,732 INFO [POP] Loaded 173 extra records from C:\Project Y\data\etrade_labeled_trades.jsonl
+2026-08-25 17:28:13,130 INFO [POP] 17828 labeled rows loaded — 8064 enriched with chain Greeks
+2026-08-25 17:28:13,485 INFO [POP] etrade-only: kept 173 / 17828 rows
+2026-08-25 17:28:13,831 INFO [POP] Dropping 31 all-null columns: ['atm_iv', 'pcr', 'earnings_days_away', 'vol_oi_ratio', 'iv_skew', 'iv_term_slope', 'otm_pcr', 'sector_rsi', 'sector_iv_ratio', 'vvix', 'vix_3m', 'vix_term_slope', 'earnings_inside_expiry', 'news_sentiment_score', 'analyst_rec_change', 'short_interest_pct', 'iv_skew_20d', 'gex_proxy', 'max_pain_strike', 'oi_concentration', 'wings_iv_ratio', 'dollar_index', 'fed_within_dte', 'cpi_within_dte', 'pop', 'ev', 'net_delta', 'net_theta', 'net_gamma', 'net_vega', 'capital_required']
+2026-08-25 17:28:16,856 INFO [POP] Retrain complete — AUC=0.8438  acc=0.9167  threshold=0.40  rows=138
+2026-08-25 17:28:16,954 INFO [FAILURES] 362 trades  win=51.9%  gap=35  iv_crush=0  theta=139
+2026-08-25 17:28:16,954 INFO [FAILURES]   Call Credit Spread              5 trades  100% win  gap=0 theta=0
+2026-08-25 17:28:16,955 INFO [FAILURES]   Call Debit Spread               105 trades  45% win  gap=14 theta=44
+2026-08-25 17:28:16,956 INFO [FAILURES]   Complex-2leg                    15 trades  27% win  gap=0 theta=11
+2026-08-25 17:28:16,956 INFO [FAILURES]   Complex-4leg                    12 trades  58% win  gap=0 theta=5
+2026-08-25 17:28:16,956 INFO [FAILURES]   Complex-8leg                    5 trades  80% win  gap=0 theta=1
+2026-08-25 17:28:16,957 INFO [FAILURES]   Covered Call                    17 trades  88% win  gap=2 theta=0
+2026-08-25 17:28:16,957 INFO [FAILURES]   Iron Condor                     26 trades  88% win  gap=0 theta=3
+2026-08-25 17:28:16,957 INFO [FAILURES]   Long Call                       44 trades  20% win  gap=0 theta=35
+2026-08-25 17:28:16,957 INFO [FAILURES]   Long Strangle                   6 trades  33% win  gap=1 theta=3
+2026-08-25 17:28:16,958 INFO [FAILURES]   Put Credit Spread               37 trades  81% win  gap=0 theta=7
+2026-08-25 17:28:16,958 INFO [FAILURES]   Put Debit Spread                62 trades  32% win  gap=17 theta=25
+2026-08-25 17:28:16,958 INFO [FAILURES]   Short Call                      7 trades  71% win  gap=0 theta=2

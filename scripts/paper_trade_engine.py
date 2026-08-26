@@ -70,35 +70,86 @@ def _load_settings() -> dict:
             "max_daily_loss_pct":       float(risk.get("max_daily_loss_pct",        0.03)),
             "max_weekly_loss_pct":      float(risk.get("max_weekly_loss_pct",       0.06)),
             "circuit_breakers_enabled": bool(risk.get("circuit_breakers_enabled",  False)),
+            "paper_trades":             cfg.get("paper_trades", {}),
         }
     except Exception:
         return dict(_SETTINGS_DEFAULTS)
 
 
+def _open_capital(trades: list) -> float:
+    """Sum of capital committed to all currently-open positions, in dollars.
+
+    capital_required is already stored per-contract (confirmed: e.g. a trade
+    with entry_credit=1.44 has capital_required=144.0 — already ×100, not
+    ×1). max_loss is per-share and needs the ×100 conversion. Mixing these
+    with one blanket ×100 (pre-2026-08-24 behavior) inflated capital_required
+    entries 100x, e.g. capital_required=1420.0 became $142,000 instead of
+    $1,420 — the root cause of a reported -$140,426 "buying power" that was
+    actually a unit bug, not a real 94x over-leveraged book. This function is
+    intentionally unconditional (not gated by circuit_breakers_enabled) — see
+    check_circuit_breakers() docstring for why the two were wrongly coupled.
+    """
+    open_capital = 0.0
+    for t in trades:
+        if t.get("status") != "open":
+            continue
+        cr = t.get("capital_required")
+        if cr is not None:
+            open_capital += float(cr)                 # already per-contract
+        else:
+            open_capital += float(t.get("max_loss") or 0) * 100  # per-share -> per-contract
+    return open_capital
+
+
 def check_circuit_breakers(trades: list) -> dict:
     """
-    Check daily and weekly realized-loss circuit breakers against closed trades.
+    Check daily and weekly realized-loss circuit breakers against closed trades,
+    and report current buying power against all open positions.
+
+    circuit_breakers_enabled controls ONLY whether loss-breach enforcement is
+    active (the "ok"/"breaches" halt-new-trades behavior) — it must NOT affect
+    whether buying_power reflects real open-position capital. Prior to
+    2026-08-24, disabling circuit breakers made this function short-circuit
+    and return buying_power=capital_amount unconditionally, silently
+    disabling the capital-feasibility gate for every scan regardless of how
+    much capital was already committed — the book accumulated 42 open
+    positions with no effective cumulative cap.
 
     Returns:
       {
-        "ok": bool,               # False = halt new trades
+        "ok": bool,               # False = halt new trades (loss breach; always True when disabled)
+        "enabled": bool,          # whether breach enforcement is active
         "daily_loss":   float,    # realized P&L today (negative = loss)
         "weekly_loss":  float,    # realized P&L this Mon-today window
-        "daily_limit":  float,    # dollar threshold for daily halt
-        "weekly_limit": float,    # dollar threshold for weekly halt
+        "daily_limit":  float,    # dollar threshold for daily halt (0 when disabled)
+        "weekly_limit": float,    # dollar threshold for weekly halt (0 when disabled)
         "breaches":     [str],    # human-readable breach descriptions
-        "buying_power": float,    # capital_amount - sum of open capital_required
+        "buying_power": float,    # capital_amount - open_capital — ALWAYS computed live,
+                                   # regardless of circuit_breakers_enabled. Can go negative
+                                   # if the book is over-committed; callers must treat a
+                                   # negative value as "no capital available", not clamp it
+                                   # to 0 (clamping would silently readmit over-leveraged
+                                   # books to full capacity). Verified: downstream capital
+                                   # gates use `required > buying_power`, which correctly
+                                   # rejects every candidate when buying_power is negative
+                                   # without needing special-case handling.
       }
     """
-    s         = _load_settings()
-    if not s.get("circuit_breakers_enabled", False):
+    s       = _load_settings()
+    enabled = s.get("circuit_breakers_enabled", False)
+    capital = s.get("capital_amount", 1000.0)
+
+    open_capital = _open_capital(trades)
+    buying_power = capital - open_capital  # intentionally unclamped — see docstring
+
+    if not enabled:
         return {
             "ok": True, "enabled": False,
             "daily_loss": 0.0, "weekly_loss": 0.0,
             "daily_limit": 0.0, "weekly_limit": 0.0,
-            "breaches": [], "buying_power": s.get("capital_amount", 1000.0),
+            "breaches": [], "buying_power": round(buying_power, 2),
         }
-    capital   = s["capital_amount"]
+
     daily_lim = capital * s["max_daily_loss_pct"]
     week_lim  = capital * s["max_weekly_loss_pct"]
 
@@ -108,7 +159,6 @@ def check_circuit_breakers(trades: list) -> dict:
 
     daily_pnl  = 0.0
     weekly_pnl = 0.0
-    open_capital = 0.0
 
     for t in trades:
         exit_info = t.get("exit") or {}
@@ -122,10 +172,6 @@ def check_circuit_breakers(trades: list) -> dict:
                 daily_pnl += pnl
             if week_start <= exit_date <= today:
                 weekly_pnl += pnl
-        if t.get("status") == "open":
-            open_capital += float(
-                t.get("capital_required") or t.get("max_loss") or 0
-            ) * 100  # per-share → per-contract
 
     breaches = []
     if daily_pnl < 0 and abs(daily_pnl) >= daily_lim:
@@ -139,10 +185,9 @@ def check_circuit_breakers(trades: list) -> dict:
             f"({s['max_weekly_loss_pct']:.0%} of capital) — halting until Monday."
         )
 
-    buying_power = max(0.0, capital - open_capital)
-
     return {
         "ok":           len(breaches) == 0,
+        "enabled":      True,
         "daily_loss":   round(daily_pnl,  2),
         "weekly_loss":  round(weekly_pnl, 2),
         "daily_limit":  round(daily_lim,  2),
@@ -707,6 +752,14 @@ def _ml_scores_at_entry(candidate: dict, ml_snapshot: dict) -> dict:
         "pop_score":         ml.get("pop_score"),
         "pop_threshold":     ml.get("pop_threshold"),
         "meta_score":        ml.get("meta_score"),
+        # Added 2026-08-22: needed to run the composite-score ablation
+        # (meta_score in/out, return_classifier in/out) against real outcomes
+        # once enough trades close — previously missing, blocking that
+        # analysis entirely (only meta_score was captured, and even that on
+        # just 31/187 closed trades). See [[project_composite_ablation]].
+        "p_return_gt10":     ml.get("p_return_gt10"),
+        "composite_score":   ml.get("composite_score"),
+        "confidence_tier":   ml.get("confidence_tier"),
         "is_anomaly":        ml.get("is_anomaly"),
         "anomaly_score":     ml.get("anomaly_score"),
         "model_versions":    {},
@@ -871,8 +924,35 @@ def run_morning_scan(params=None, force=False, scan_time="morning"):
     else:
         log.debug("[circuit breaker] disabled — skipping loss/buying-power enforcement.")
 
+    # capital_gate_basis: "cumulative" (default, correct long-term behavior) gates
+    # each scan against TRUE remaining capital (cb["buying_power"] = capital_amount
+    # - all open positions' committed capital). "per_scan" is a TEMPORARY bridge —
+    # added 2026-08-24 alongside the check_circuit_breakers() accounting fix, which
+    # correctly revealed a $141,926.50 pre-existing backlog against $1,500 capital
+    # (buying_power = -$140,426.50), blocking all new trades until ~2026-09-18.
+    # "per_scan" explicitly ignores that backlog for gating purposes — ONLY this
+    # scan's own picks are capped at capital_amount — so trade flow (and the
+    # 2026-08-24 EV-formula fix in analyze.py) can be validated against fresh
+    # data without waiting three weeks. The true cumulative figure (cb["buying_power"])
+    # is still computed and logged above regardless of this setting — nothing here
+    # hides the real number, it only changes what basis new-trade gating uses.
+    # REVISIT: see [[project_capital_accounting_bridge]] — intended to be temporary,
+    # not a silent permanent fallback (same mistake as the max_net_delta TEMP comment
+    # found stale on 2026-08-22).
+    _cap_basis = _load_settings().get("paper_trades", {}).get("capital_gate_basis", "cumulative")
+    if _cap_basis == "per_scan":
+        _gate_buying_power = float(_load_settings().get("capital_amount", 1500.0))
+        log.warning(
+            "[capital gate] TEMPORARY per_scan basis active — gating against $%.2f "
+            "fresh allowance, ignoring true cumulative buying_power $%.2f. "
+            "See [[project_capital_accounting_bridge]] in memory.",
+            _gate_buying_power, cb["buying_power"],
+        )
+    else:
+        _gate_buying_power = cb["buying_power"]
+
     _decision_meta_out: list = []
-    candidates, _cap_rejected, _rank_items = _select_top3(rows, ml_snapshot=_ml_snapshot, open_positions=open_trades, buying_power=cb["buying_power"], _decision_meta_out=_decision_meta_out)
+    candidates, _cap_rejected, _rank_items = _select_top3(rows, ml_snapshot=_ml_snapshot, open_positions=open_trades, buying_power=_gate_buying_power, _decision_meta_out=_decision_meta_out)
     _persist_capital_rejected(_cap_rejected)
     today_str = date.today().strftime("%Y%m%d")
     scan_decision_id = f"{today_str}{scan_tag}"
@@ -1233,6 +1313,11 @@ def run_evening_check(force=False):
                 continue
             is_debit   = trade.get("structure", "") in ("Call Debit Spread", "Put Debit Spread",
                                                           "Long Strangle", "Calendar Spread", "Diagonal Spread")
+            # Clamp mark to spread width for defined-risk structures to guard against
+            # bad quotes (e.g. short-leg bid=$0 inflating mark beyond the true max).
+            _width = trade.get("width") or 0
+            if is_debit and _width > 0:
+                mark = min(mark, _width)
             # entry_credit always stores the actual entry price (debit paid or credit received),
             # so use it as entry_cost for both debit and credit structures.
             # (Old trades had max_loss swapped with max_profit for CDS/PDS, so don't use max_loss here.)
@@ -1362,13 +1447,19 @@ def get_performance_summary():
         if not subset:
             return {"count": 0}
         exits  = [t["exit"] for t in subset]
-        wins   = [e for e in exits if e.get("win")]
-        losses = [e for e in exits if not e.get("win")]
+        # win is None for unlabelable outcomes (e.g. expired_unknown — path-dependent
+        # structures like Diagonal/Calendar Spread whose payoff can't be computed from
+        # intrinsic value alone). Exclude those from win/loss stats entirely rather than
+        # letting `not None == True` silently count them as losses — and their
+        # pnl_per_share is also None, which crashed sum() with a raw dict index
+        # (unsupported operand type(s) for +: 'float' and 'NoneType'). Fixed 2026-08-24.
+        wins   = [e for e in exits if e.get("win") is True]
+        losses = [e for e in exits if e.get("win") is False]
         pnls   = [e["pnl_per_share"] for e in exits if e.get("pnl_per_share") is not None]
         totals = [e["pnl_total"]     for e in exits if e.get("pnl_total")     is not None]
-        avg_w  = round(sum(e["pnl_per_share"] for e in wins)   / len(wins),   4) if wins   else 0
-        avg_l  = round(sum(e["pnl_per_share"] for e in losses) / len(losses), 4) if losses else 0
-        wr     = len(wins) / len(subset) if subset else 0
+        avg_w  = round(sum(e.get("pnl_per_share") or 0 for e in wins)   / len(wins),   4) if wins   else 0
+        avg_l  = round(sum(e.get("pnl_per_share") or 0 for e in losses) / len(losses), 4) if losses else 0
+        wr     = len(wins) / (len(wins) + len(losses)) if (len(wins) + len(losses)) else 0
         return {
             "count":      len(subset),
             "wins":       len(wins),

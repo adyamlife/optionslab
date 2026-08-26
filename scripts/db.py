@@ -1553,3 +1553,273 @@ def load_chain_index_from_db() -> dict:
                     "vega":  s.get("vega"),
                 }
     return index
+
+
+# ---------------------------------------------------------------------------
+# Financial Results tables (F0)
+# ---------------------------------------------------------------------------
+
+_EARNINGS_FUNDAMENTALS_DDL = """
+CREATE TABLE IF NOT EXISTS earnings_fundamentals (
+    ticker                  VARCHAR NOT NULL,
+    earnings_date           DATE    NOT NULL,
+    earnings_available_date DATE,            -- BMO→same day, AMC/unknown→next trading day
+    fiscal_quarter          VARCHAR,
+    release_timing          VARCHAR,
+    revenue_actual          DOUBLE,
+    revenue_estimate        DOUBLE,
+    revenue_surprise        DOUBLE,
+    eps_actual              DOUBLE,
+    eps_estimate            DOUBLE,
+    eps_surprise            DOUBLE,
+    ebitda                  DOUBLE,
+    ebit                    DOUBLE,
+    net_income              DOUBLE,
+    free_cash_flow          DOUBLE,
+    operating_cash_flow     DOUBLE,
+    cash_and_equiv          DOUBLE,
+    total_debt              DOUBLE,
+    net_debt                DOUBLE,
+    gross_margin            DOUBLE,
+    operating_margin        DOUBLE,
+    net_margin              DOUBLE,
+    fcf_margin              DOUBLE,
+    guidance_direction      VARCHAR,
+    guidance_revenue_mid    DOUBLE,
+    guidance_eps_mid        DOUBLE,
+    eps_beat_rate_8q        DOUBLE,
+    rev_beat_rate_8q        DOUBLE,
+    avg_eps_surprise_8q     DOUBLE,
+    trailing_pe             DOUBLE,
+    forward_pe              DOUBLE,
+    ev_ebitda               DOUBLE,
+    price_to_sales          DOUBLE,
+    fcf_yield               DOUBLE,
+    peg_ratio               DOUBLE,
+    forward_pe_5y_pct       DOUBLE,
+    ev_ebitda_5y_pct        DOUBLE,
+    ps_5y_pct               DOUBLE,
+    forward_pe_sector_pct   DOUBLE,
+    ev_ebitda_sector_pct    DOUBLE,
+    median_impl_real_ratio_8q DOUBLE,
+    p25_impl_real_ratio_8q  DOUBLE,
+    p75_impl_real_ratio_8q  DOUBLE,
+    ret_1d                  DOUBLE,
+    ret_3d                  DOUBLE,
+    ret_5d                  DOUBLE,
+    ret_10d                 DOUBLE,
+    drift_30d               DOUBLE,
+    -- ── Sector context (raw) ────────────────────────────────
+    -- sector_etf_return_*: sector ETF log return over same window as ticker.
+    -- Used to derive abnormal_return_* without losing the raw signal.
+    sector_etf_return_1d        DOUBLE,
+    sector_etf_return_3d        DOUBLE,
+    sector_etf_return_5d        DOUBLE,
+
+    -- ── Sector context (cross-sectional, computed post-collection) ───────
+    -- NULL when sector_coverage_n < 5 — do NOT substitute market median here.
+    -- Use eps_surprise_vs_market if market-level comparison is needed.
+    sector_coverage_n           INTEGER,
+    sector_eps_surprise_mean    DOUBLE,
+    sector_eps_surprise_median  DOUBLE,
+    -- Rolling windows: peers who reported in the 7d / 14d before this event
+    sector_beat_rate_7d         DOUBLE,
+    sector_beat_rate_14d        DOUBLE,
+    sector_avg_eps_surprise_7d  DOUBLE,
+    sector_avg_eps_surprise_14d DOUBLE,
+    sector_avg_post_earnings_return_14d DOUBLE,
+
+    -- ── Derived: relative performance ───────────────────────
+    eps_surprise_vs_sector      DOUBLE,   -- eps_surprise - sector_eps_surprise_median (NULL if coverage < 5)
+    eps_surprise_vs_market      DOUBLE,   -- eps_surprise - market_eps_surprise_median (separate field; never conflated with sector)
+    abnormal_return_1d          DOUBLE,   -- ret_1d  - sector_etf_return_1d
+    abnormal_return_3d          DOUBLE,   -- ret_3d  - sector_etf_return_3d
+    abnormal_return_5d          DOUBLE,   -- ret_5d  - sector_etf_return_5d
+
+    point_in_time_verified  BOOLEAN NOT NULL DEFAULT FALSE,
+    source                  VARCHAR,
+    created_at              TIMESTAMP DEFAULT current_timestamp,
+    updated_at              TIMESTAMP DEFAULT current_timestamp,
+    PRIMARY KEY (ticker, earnings_date)
+)
+"""
+
+_TICKER_COMPETITORS_DDL = """
+CREATE TABLE IF NOT EXISTS ticker_competitors (
+    ticker              VARCHAR NOT NULL,
+    competitor          VARCHAR NOT NULL,
+    relationship_type   VARCHAR NOT NULL DEFAULT 'direct',
+    weight              DOUBLE  NOT NULL DEFAULT 1.0,
+    notes               VARCHAR,
+    created_at          TIMESTAMP DEFAULT current_timestamp,
+    PRIMARY KEY (ticker, competitor)
+)
+"""
+
+_EARNINGS_IV_TIMELINE_DDL = """
+CREATE TABLE IF NOT EXISTS earnings_iv_timeline (
+    ticker              VARCHAR  NOT NULL,
+    earnings_date       DATE     NOT NULL,
+    days_offset         INTEGER  NOT NULL,
+    snapshot_date       DATE     NOT NULL,
+    has_historical_iv   INTEGER  NOT NULL DEFAULT 0,
+    atm_iv              DOUBLE,
+    iv_rank_52w         DOUBLE,
+    expected_move_pct   DOUBLE,
+    implied_move_pct    DOUBLE,
+    iv_crush_pct        DOUBLE,
+    realized_move_pct   DOUBLE,
+    source              VARCHAR,
+    created_at          TIMESTAMP DEFAULT current_timestamp,
+    PRIMARY KEY (ticker, earnings_date, days_offset)
+)
+"""
+
+_EARNINGS_NLP_SIGNALS_DDL = """
+CREATE TABLE IF NOT EXISTS earnings_nlp_signals (
+    ticker                      VARCHAR NOT NULL,
+    earnings_date               DATE    NOT NULL,
+    total_words                 INTEGER,
+    positive_count              INTEGER,
+    negative_count              INTEGER,
+    uncertainty_count           INTEGER,
+    litigious_count             INTEGER,
+    constraining_count          INTEGER,
+    positive_pct                DOUBLE,
+    negative_pct                DOUBLE,
+    uncertainty_pct             DOUBLE,
+    litigious_pct               DOUBLE,
+    constraining_pct            DOUBLE,
+    positive_delta              DOUBLE,
+    negative_delta              DOUBLE,
+    uncertainty_delta           DOUBLE,
+    litigious_delta             DOUBLE,
+    constraining_delta          DOUBLE,
+    release_negative_pct        DOUBLE,
+    release_uncertainty_pct     DOUBLE,
+    release_positive_pct        DOUBLE,
+    release_negative_delta      DOUBLE,
+    release_uncertainty_delta   DOUBLE,
+    mda_negative_pct            DOUBLE,
+    mda_uncertainty_pct         DOUBLE,
+    mda_positive_pct            DOUBLE,
+    mda_negative_delta          DOUBLE,
+    mda_uncertainty_delta       DOUBLE,
+    guidance_negative_pct       DOUBLE,
+    guidance_uncertainty_pct    DOUBLE,
+    guidance_positive_pct       DOUBLE,
+    guidance_negative_delta     DOUBLE,
+    guidance_uncertainty_delta  DOUBLE,
+    overall_sentiment           DOUBLE,
+    management_sentiment        DOUBLE,
+    guidance_sentiment          DOUBLE,
+    risk_sentiment              DOUBLE,
+    management_sentiment_delta  DOUBLE,
+    guidance_sentiment_delta    DOUBLE,
+    nlp_scoring_method          VARCHAR,
+    filing_url                  VARCHAR,
+    lm_dict_version             VARCHAR,
+    sections_found              VARCHAR,
+    created_at                  TIMESTAMP DEFAULT current_timestamp,
+    PRIMARY KEY (ticker, earnings_date)
+)
+"""
+
+_CORPORATE_EVENTS_DDL = """
+CREATE TABLE IF NOT EXISTS corporate_events (
+    id                  VARCHAR  NOT NULL,
+    ticker              VARCHAR  NOT NULL,
+    event_date          DATE     NOT NULL,
+    event_type          VARCHAR  NOT NULL,
+    magnitude_pct       DOUBLE,
+    magnitude_usd_m     DOUBLE,
+    description         VARCHAR,
+    source              VARCHAR,
+    created_at          TIMESTAMP DEFAULT current_timestamp,
+    PRIMARY KEY (id)
+)
+"""
+
+_financial_results_ready = False
+
+
+def ensure_financial_results_tables() -> None:
+    global _financial_results_ready
+    if _financial_results_ready:
+        return
+    with connect() as con:
+        con.execute(_EARNINGS_FUNDAMENTALS_DDL)
+        con.execute(_EARNINGS_IV_TIMELINE_DDL)
+        con.execute(_EARNINGS_NLP_SIGNALS_DDL)
+        con.execute(_CORPORATE_EVENTS_DDL)
+        con.execute(_TICKER_COMPETITORS_DDL)
+        # Migrate: add new sector + abnormal return columns to existing table
+        existing_cols = {
+            row[0]
+            for row in con.execute(
+                "SELECT column_name FROM information_schema.columns "
+                "WHERE table_name = 'earnings_fundamentals'"
+            ).fetchall()
+        }
+        new_cols = {
+            "earnings_available_date":            "DATE",
+            "sector_etf_return_1d":               "DOUBLE",
+            "sector_etf_return_3d":               "DOUBLE",
+            "sector_etf_return_5d":               "DOUBLE",
+            "sector_coverage_n":                  "INTEGER",
+            "sector_eps_surprise_mean":           "DOUBLE",
+            "sector_eps_surprise_median":         "DOUBLE",
+            "sector_beat_rate_7d":                "DOUBLE",
+            "sector_beat_rate_14d":               "DOUBLE",
+            "sector_avg_eps_surprise_7d":         "DOUBLE",
+            "sector_avg_eps_surprise_14d":        "DOUBLE",
+            "sector_avg_post_earnings_return_14d":"DOUBLE",
+            "eps_surprise_vs_sector":             "DOUBLE",
+            "eps_surprise_vs_market":             "DOUBLE",
+            "abnormal_return_1d":                 "DOUBLE",
+            "abnormal_return_3d":                 "DOUBLE",
+            "abnormal_return_5d":                 "DOUBLE",
+        }
+        for col, dtype in new_cols.items():
+            if col not in existing_cols:
+                con.execute(
+                    f"ALTER TABLE earnings_fundamentals ADD COLUMN {col} {dtype}"
+                )
+        con.execute(
+            "CREATE INDEX IF NOT EXISTS idx_ef_ticker "
+            "ON earnings_fundamentals (ticker)"
+        )
+        con.execute(
+            "CREATE INDEX IF NOT EXISTS idx_ef_date "
+            "ON earnings_fundamentals (earnings_date)"
+        )
+        con.execute(
+            "CREATE INDEX IF NOT EXISTS idx_ef_pit "
+            "ON earnings_fundamentals (point_in_time_verified)"
+        )
+        con.execute(
+            "CREATE INDEX IF NOT EXISTS idx_eit_ticker "
+            "ON earnings_iv_timeline (ticker, earnings_date)"
+        )
+        con.execute(
+            "CREATE INDEX IF NOT EXISTS idx_eit_iv_avail "
+            "ON earnings_iv_timeline (has_historical_iv)"
+        )
+        con.execute(
+            "CREATE INDEX IF NOT EXISTS idx_nlp_ticker "
+            "ON earnings_nlp_signals (ticker)"
+        )
+        con.execute(
+            "CREATE INDEX IF NOT EXISTS idx_ce_ticker_date "
+            "ON corporate_events (ticker, event_date)"
+        )
+        con.execute(
+            "CREATE INDEX IF NOT EXISTS idx_tc_ticker "
+            "ON ticker_competitors (ticker)"
+        )
+        con.execute(
+            "CREATE INDEX IF NOT EXISTS idx_tc_competitor "
+            "ON ticker_competitors (competitor)"
+        )
+        con.commit()
+    _financial_results_ready = True

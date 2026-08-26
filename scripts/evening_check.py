@@ -26,14 +26,61 @@ logging.basicConfig(
 )
 
 from scripts.paper_trade_engine import run_evening_check
+from scripts import training_data_collector as tdc
 
 result = run_evening_check()
 print(json.dumps(result, indent=2, default=str))
 
-if result.get("newly_labeled", 0) > 0:
+# ── Feature-snapshot labeling (moved here from web/app.py's disabled
+#    APScheduler _daily_label() — that path stopped firing once
+#    [scheduler] enabled=false moved jobs to system cron). ─────────────────
+try:
+    tdc.store_expiry_settlements()
+except Exception as e:
+    logging.error(f"store_expiry_settlements failed: {e}")
+
+_label_r1, _label_r2 = {}, {}
+try:
+    _label_r1 = tdc.label_pending_snapshots()
+    logging.info("[LABEL] label_pending_snapshots: %s", _label_r1)
+except Exception as e:
+    logging.error(f"label_pending_snapshots failed: {e}")
+try:
+    tdc.label_snapshots_with_forward_returns()
+except Exception as e:
+    logging.error(f"label_snapshots_with_forward_returns failed: {e}")
+try:
+    _label_r2 = tdc.label_rejected_candidates()
+    logging.info("[LABEL] label_rejected_candidates: %s", _label_r2)
+except Exception as e:
+    logging.error(f"label_rejected_candidates failed: {e}")
+try:
+    tdc.write_labeling_manifest({"executed_trades": _label_r1, "rejected_candidates": _label_r2})
+except Exception as e:
+    logging.error(f"write_labeling_manifest failed: {e}")
+try:
+    _v = tdc.validate_labels()
+    if not _v["ok"]:
+        logging.warning(f"Label invariant violations after daily label: {len(_v['violations'])}")
+except Exception as e:
+    logging.error(f"validate_labels failed: {e}")
+try:
+    from scripts import feature_drift as fd
+    fd.compute_drift_report()
+except Exception as e:
+    logging.error(f"daily feature_drift report failed: {e}")
+try:
+    from scripts import regime_backfill as rb
+    rb.update_regime_dataset()
+    rb.label_pending_regime_rows()
+except Exception as e:
+    logging.error(f"daily regime dataset update/label failed: {e}")
+
+_snapshot_labeled = (_label_r1.get("labeled", 0) if isinstance(_label_r1, dict) else 0)
+if result.get("newly_labeled", 0) > 0 or _snapshot_labeled > 0:
     logging.info(
-        "[POP] %d trade(s) newly labeled — triggering POP model retrain.",
-        result["newly_labeled"],
+        "[POP] %d trade(s) + %d snapshot(s) newly labeled — triggering POP model retrain.",
+        result.get("newly_labeled", 0), _snapshot_labeled,
     )
     try:
         from pathlib import Path

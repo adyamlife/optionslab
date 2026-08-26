@@ -22,6 +22,7 @@ Accuracy is reported but secondary — class imbalance makes it misleading.
 Run standalone: python -m scripts.train_return_classifier
 Output: data/models/return_classifier.joblib
 """
+import logging
 import sys
 from pathlib import Path
 
@@ -35,6 +36,8 @@ from sklearn.metrics import (
 from sklearn.model_selection import TimeSeriesSplit
 from sklearn.utils.class_weight import compute_sample_weight
 from xgboost import XGBClassifier
+
+log = logging.getLogger(__name__)
 
 _ROOT       = Path(__file__).resolve().parent.parent
 _MODEL_PATH = _ROOT / "data" / "models" / "return_classifier.joblib"
@@ -124,12 +127,40 @@ def compute_lag_features(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def _week_stratified_split(df: pd.DataFrame, fractions: list[float]) -> list[pd.DataFrame]:
+    """Split df into len(fractions) folds, chronological *within* each ISO week but
+    stratified *across* weeks so every fold gets a proportional slice of every week.
+
+    A pure "last N% by date" split breaks badly when a labeling backlog (e.g. a
+    scheduler outage) gets backfilled in one batch: the newest fold ends up
+    dominated by a single narrow, previously-absent week, producing a spurious
+    train/test distribution shift that looks like model degradation rather than
+    the sampling artifact it actually is. Same fix applied to train_pop_model.py
+    and train_trade_win_model.py after diagnosing this pattern (2026-08-22) —
+    this table (regime_training) shares the same labeling-backlog history.
+    """
+    assert abs(sum(fractions) - 1.0) < 1e-6, "fractions must sum to 1.0"
+    df = df.sort_values("date")
+    week_key = df["date"].dt.isocalendar().year.astype(str) + "-W" + \
+               df["date"].dt.isocalendar().week.astype(str).str.zfill(2)
+
+    folds: list[list[pd.DataFrame]] = [[] for _ in fractions]
+    cum_fractions = np.cumsum(fractions)
+    for _, wk_df in df.groupby(week_key, sort=True):
+        n = len(wk_df)
+        cut_idxs = [0] + [int(round(n * f)) for f in cum_fractions]
+        for i in range(len(fractions)):
+            folds[i].append(wk_df.iloc[cut_idxs[i]:cut_idxs[i + 1]])
+
+    return [pd.concat(f).sort_values("date") if f else pd.DataFrame(columns=df.columns) for f in folds]
+
+
 def time_based_split(df: pd.DataFrame, test_fraction=TEST_FRACTION):
     df = df.copy()
     df["date"] = pd.to_datetime(df["date"])
-    unique_dates = np.sort(df["date"].unique())
-    cutoff = unique_dates[int(len(unique_dates) * (1 - test_fraction))]
-    return df[df["date"] < cutoff].copy(), df[df["date"] >= cutoff].copy(), cutoff
+    train, test = _week_stratified_split(df, [1 - test_fraction, test_fraction])
+    cutoff = test["date"].iloc[0] if len(test) else None
+    return train, test, cutoff
 
 
 # ── Feature matrix ────────────────────────────────────────────────────────────
@@ -308,8 +339,19 @@ def _walk_forward_metrics(proba: np.ndarray, y_true: np.ndarray,
 
 # ── Per-target trainer ────────────────────────────────────────────────────────
 
-def _train_one(X_train, y_train, X_test, y_test, label: str, tuned: dict) -> dict:
-    """Train XGBClassifier for one binary target, return metrics + model."""
+def _train_one(X_train, y_train, X_val, y_val, X_test, y_test, label: str, tuned: dict) -> dict:
+    """Train XGBClassifier for one binary target, return metrics + model.
+
+    Calibration is fit on the validation fold only (X_val/y_val — held out from
+    training but distinct from the test fold), then evaluated on the untouched
+    test fold. Fitting-and-evaluating the calibrator on the same data (the
+    prior behavior here: `cal.fit(X_test, y_test)` then reporting metrics on
+    that same X_test) is leakage — it can't reveal whether the calibrator
+    generalizes. Raw score is preserved for ranking (isotonic is monotonic, so
+    AUC/precision@K are unaffected by calibration) while the calibrated score
+    is what should feed any downstream use of raw magnitude (composite score,
+    threshold gates) — see [[project_return_classifier_calibration]].
+    """
     if y_train.sum() < 20:
         return {"error": f"Too few positive examples ({int(y_train.sum())}) for target '{label}'"}
 
@@ -341,12 +383,12 @@ def _train_one(X_train, y_train, X_test, y_test, label: str, tuned: dict) -> dic
     except Exception:
         pass
 
-    if _cb_model is not None:
-        proba_xgb = model.predict_proba(X_test)[:, 1]
-        proba_cb  = _cb_model.predict_proba(X_test.values)[:, 1]
-        proba = 0.5 * proba_xgb + 0.5 * proba_cb
-    else:
-        proba = model.predict_proba(X_test)[:, 1]
+    def _blend_proba(X):
+        if _cb_model is not None:
+            return 0.5 * model.predict_proba(X)[:, 1] + 0.5 * _cb_model.predict_proba(X.values)[:, 1]
+        return model.predict_proba(X)[:, 1]
+
+    proba = _blend_proba(X_test)
     pred  = (proba >= 0.5).astype(int)
 
     try:
@@ -362,16 +404,34 @@ def _train_one(X_train, y_train, X_test, y_test, label: str, tuned: dict) -> dic
     # Wrap into blended model before calibration (so calibration wraps the ensemble)
     final_model = _BlendedBinaryClassifier(model, _cb_model) if _cb_model is not None else model
 
-    cal_model = final_model
-    brier_cal = brier_raw
+    cal_model   = final_model
+    brier_cal   = brier_raw
+    proba_cal   = proba
+    cal_fitted  = False
+    cal_error   = None
     try:
-        cal = CalibratedClassifierCV(final_model, method="isotonic", cv="prefit")
-        cal.fit(X_test, y_test)
-        proba_cal = cal.predict_proba(X_test)[:, 1]
+        # sklearn >=1.6 removed cv="prefit" in favor of wrapping the fitted
+        # estimator in FrozenEstimator; older sklearn only has cv="prefit".
+        # Support both so this doesn't silently break again on the next
+        # dependency upgrade — the previous failure (missing classes_ on
+        # BlendedBinaryClassifier, cv="prefit" no longer accepted) went
+        # unnoticed because the except block below used to be a bare `pass`.
+        try:
+            from sklearn.frozen import FrozenEstimator
+            cal = CalibratedClassifierCV(FrozenEstimator(final_model), method="isotonic")
+        except ImportError:
+            cal = CalibratedClassifierCV(final_model, method="isotonic", cv="prefit")
+        cal.fit(X_val, y_val)          # fit on VAL only — never seen by model.fit or by test eval
+        proba_cal = cal.predict_proba(X_test)[:, 1]   # evaluated on untouched TEST
         brier_cal = round(float(brier_score_loss(y_test, proba_cal)), 4)
         cal_model = cal
-    except Exception:
-        pass
+        cal_fitted = True
+    except Exception as e:
+        # Previously a silent `pass` here masked a real bug for an unknown
+        # length of time (BlendedBinaryClassifier missing classes_, fixed
+        # 2026-08-22) — surface it instead of hiding a fallback-to-raw.
+        cal_error = f"{type(e).__name__}: {e}"
+        log.warning("[%s] Calibration fit failed, falling back to raw: %s", label, cal_error)
 
     report = classification_report(y_test, pred, output_dict=True, zero_division=0)
 
@@ -382,13 +442,18 @@ def _train_one(X_train, y_train, X_test, y_test, label: str, tuned: dict) -> dic
         "auc":            auc,
         "brier_raw":      brier_raw,
         "brier_cal":      brier_cal,
+        "cal_fitted_on_val": cal_fitted,
+        "cal_error":      cal_error,
         "accuracy":       round(float(accuracy_score(y_test, pred)), 4),
         "pos_rate_train": pos_rate_train,
         "pos_rate_test":  pos_rate_test,
         "report":         report,
         "feature_importances": fi,
-        # proba stored so train() can compute portfolio metrics with actual returns
-        "_proba": proba,
+        # Both stored so train() can report calibration before/after on the
+        # same untouched test fold, and compute ranking metrics from the raw
+        # (rank-preserving) score.
+        "_proba":     proba,
+        "_proba_cal": proba_cal,
     }
 
 
@@ -404,12 +469,14 @@ def train(out_path=_MODEL_PATH) -> dict:
     if df.empty:
         return {"ok": False, "error": "No rows remain after computing lag features"}
 
-    train_df, test_df, cutoff = time_based_split(df)
-    if train_df.empty or test_df.empty:
-        return {"ok": False, "error": f"Split produced empty train/test (cutoff={cutoff})"}
+    train_df, val_df, test_df = _week_stratified_split(df, [0.60, 0.20, 0.20])
+    if train_df.empty or val_df.empty or test_df.empty:
+        return {"ok": False, "error": "Week-stratified split produced an empty fold"}
+    cutoff = test_df["date"].min()
 
     X_train, dummy_cols = build_feature_matrix(train_df, fit=True)
-    X_test,  _          = build_feature_matrix(test_df, dummy_cols=dummy_cols, fit=False)
+    X_val,   _          = build_feature_matrix(val_df,   dummy_cols=dummy_cols, fit=False)
+    X_test,  _          = build_feature_matrix(test_df,  dummy_cols=dummy_cols, fit=False)
 
     try:
         from scripts.tune_hyperparams import load_best_params as _lbp
@@ -418,10 +485,10 @@ def train(out_path=_MODEL_PATH) -> dict:
         tuned = {}
 
     targets = {
-        "positive": ("y_positive", train_df["y_positive"].values, test_df["y_positive"].values),
-        "gt5":      ("y_gt5",      train_df["y_gt5"].values,      test_df["y_gt5"].values),
-        "gt10":     ("y_gt10",     train_df["y_gt10"].values,     test_df["y_gt10"].values),
-        "top_decile": ("y_top_decile", train_df["y_top_decile"].values, test_df["y_top_decile"].values),
+        "positive": (train_df["y_positive"].values, val_df["y_positive"].values, test_df["y_positive"].values),
+        "gt5":      (train_df["y_gt5"].values,      val_df["y_gt5"].values,      test_df["y_gt5"].values),
+        "gt10":     (train_df["y_gt10"].values,     val_df["y_gt10"].values,     test_df["y_gt10"].values),
+        "top_decile": (train_df["y_top_decile"].values, val_df["y_top_decile"].values, test_df["y_top_decile"].values),
     }
 
     results = {}
@@ -429,16 +496,23 @@ def train(out_path=_MODEL_PATH) -> dict:
     test_returns = test_df[RETURN_COL].values.astype(float)
     test_dates   = test_df["date"].values
 
-    for name, (_, y_tr, y_te) in targets.items():
-        r = _train_one(X_train, y_tr, X_test, y_te, label=name, tuned=tuned)
+    for name, (y_tr, y_val, y_te) in targets.items():
+        r = _train_one(X_train, y_tr, X_val, y_val, X_test, y_te, label=name, tuned=tuned)
         if "model" in r:
             models[name] = r.pop("model")
-        proba = r.pop("_proba", None)
+        proba     = r.pop("_proba", None)
+        proba_cal = r.pop("_proba_cal", None)
         if proba is not None:
+            # Ranking metrics use the raw score (rank-preserving; the score this
+            # dataset's lift/precision@K numbers were validated against).
             r["precision_at_k"] = _precision_at_k(proba, y_te, returns=test_returns)
             if name == "gt10":
                 r["lift_curve"]         = _lift_curve(proba, y_te, test_returns)
-                r["calibration_deciles"] = _calibration_by_decile(proba, y_te)
+                # Calibration reported on the CALIBRATED score, not raw — this is
+                # the actual thing that changed and needs verifying.
+                r["calibration_deciles"] = _calibration_by_decile(
+                    proba_cal if proba_cal is not None else proba, y_te)
+                r["calibration_deciles_raw"] = _calibration_by_decile(proba, y_te)
                 r["walk_forward"]        = _walk_forward_metrics(
                     proba, y_te, test_returns, test_dates, top_k=25)
         results[name] = r
@@ -508,16 +582,31 @@ if __name__ == "__main__":
                   f"  {fmt(pf, '%8.2f')}"
                   f"  {fmt(sh, '%7.3f')}")
 
-    # ── Calibration by decile ──────────────────────────────────────────────────
+    # ── Calibration by decile (calibrated, fit on val / evaluated on test) ──────
     cal_dec = gt10.get("calibration_deciles") or []
     if cal_dec:
-        print(f"\nCalibration by decile (gt10) — predicted prob vs observed rate:")
+        print(f"\nCalibration by decile (gt10, CALIBRATED — cal fit on val, eval on test):")
         print(f"  {'Decile':>7}  {'Predicted':>10}  {'Observed':>9}  {'Gap':>6}  {'N':>6}")
         print("  " + "-" * 44)
         for d in cal_dec:
             gap_sign = "+" if d["gap"] >= 0 else ""
             print(f"  {d['decile']:>7}  {d['mean_pred']:>10.3f}  {d['obs_rate']:>9.3f}"
                   f"  {gap_sign}{d['gap']:>5.3f}  {d['n']:>6}")
+
+    # ── Same, on the raw (uncalibrated) score — before/after comparison ─────────
+    cal_dec_raw = gt10.get("calibration_deciles_raw") or []
+    if cal_dec_raw:
+        print(f"\nCalibration by decile (gt10, RAW — for comparison):")
+        print(f"  {'Decile':>7}  {'Predicted':>10}  {'Observed':>9}  {'Gap':>6}  {'N':>6}")
+        print("  " + "-" * 44)
+        for d in cal_dec_raw:
+            gap_sign = "+" if d["gap"] >= 0 else ""
+            print(f"  {d['decile']:>7}  {d['mean_pred']:>10.3f}  {d['obs_rate']:>9.3f}"
+                  f"  {gap_sign}{d['gap']:>5.3f}  {d['n']:>6}")
+
+    print(f"\nBrier score (gt10): raw={gt10.get('brier_raw')}  calibrated={gt10.get('brier_cal')}"
+          f"  (calibrator fit on val: {gt10.get('cal_fitted_on_val')})")
+    print(f"AUC (gt10, rank-preserving — should match pre-fix): {gt10.get('auc')}")
 
     # ── Walk-forward stability ──────────────────────────────────────────────────
     wf = gt10.get("walk_forward") or []

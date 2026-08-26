@@ -35,7 +35,10 @@ def archive_intraday_bars(tickers: list[str] | None = None) -> dict:
     ensure_archive_tables()
 
     targets  = tickers or WATCHLIST_ALL
-    yesterday = (date.today() - timedelta(days=1)).isoformat()
+    # Use last trading day (skip weekends) so weekend manual runs still archive Friday's bars
+    _today = date.today()
+    _offset = 3 if _today.weekday() == 0 else 1  # Monday→Friday, else→yesterday
+    yesterday = (_today - timedelta(days=_offset)).isoformat()
     collected, errors = [], []
 
     for ticker in targets:

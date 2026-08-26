@@ -54,6 +54,10 @@ NUMERIC_FEATURES = ["rsi", "adx", "hv20", "vix_close", "rel_strength_spy",
                     "yield_10y", "yield_3m", "yield_curve", "dollar_index",
                     "fed_within_dte", "cpi_within_dte"]
 
+# F5: earnings fundamentals + NLP + competitor signals (joined at training time)
+from scripts.earnings_features import EARNINGS_FEATURE_COLS, load_earnings_join  # noqa: E402
+NUMERIC_FEATURES = NUMERIC_FEATURES + EARNINGS_FEATURE_COLS
+
 
 def load_labeled_data(path=None) -> pd.DataFrame:
     """path is accepted for API compatibility with tune_hyperparams but ignored — data
@@ -62,6 +66,7 @@ def load_labeled_data(path=None) -> pd.DataFrame:
     df = read_df(f"SELECT * FROM {TABLE} WHERE labeled = true")
     if df.empty:
         return df
+    df = load_earnings_join(df)   # F5: add ef_*, nlp_*, comp_* columns (NaN if no data)
     for col in NUMERIC_FEATURES:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors="coerce")

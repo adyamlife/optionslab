@@ -428,13 +428,20 @@ def _composite_score(row, c, ev, ev_is_proxy: bool = False) -> float:
         s_meta = float(comp)
 
     # ── Component 4: POP — probability of profit ──────────────────────────────
+    # Prefer the calibrated ML model (structure-family, else pooled pop_score) over
+    # the naive delta-based candidate pop (c["pop"], a raw Black-Scholes 1-|delta|
+    # heuristic set unconditionally by every structure builder in analyze.py).
+    # Previously pop_c was checked first, so pop_m's branch never fired in
+    # practice — the calibrated model (AUC 0.83, see
+    # [[project_trade_win_calibration]]) was computed every scan and silently
+    # discarded in favor of the uncalibrated heuristic. Fixed 2026-08-26 to match
+    # this comment's original stated intent.
     pop_c = c.get("pop")           # candidate pop: 0-100
-    # Prefer structure-family model when available; fall back to pooled pop_score
     pop_m = c.get("_family_pop_score") or ml.get("pop_score")
-    if pop_c is not None:
-        s_pop = float(pop_c)
-    elif pop_m is not None:
+    if pop_m is not None:
         s_pop = float(pop_m) * 100
+    elif pop_c is not None:
+        s_pop = float(pop_c)
     else:
         s_pop = 50.0
 
@@ -740,9 +747,23 @@ def filter_candidates(rows, paper_trade: bool = False, buying_power: float | Non
     _rejections: list[dict] = []
 
     def _reject(ticker, struct, gate, threshold, actual):
+        # trend/expiry/mc_expiry_* captured via closure from the enclosing
+        # `for row in rows:` loop (row resolved at call time, not definition
+        # time). mc_expiry_p10-p90 now come from analyze_ticker()'s ticker/
+        # expiry-level simulation (2026-08-25, see
+        # [[project_mc_forecast_structure_eligibility]]) — computed once per
+        # ticker independent of any structure's strikes, so it's populated
+        # here even for strikes_incomplete rejections, unlike the old
+        # per-candidate MC (which only ran for survivors, much later).
         _rejections.append({
             "ticker": ticker, "structure": struct, "gate": gate,
             "threshold": threshold, "actual": actual,
+            "trend": row.get("trend"), "expiry": row.get("expiry"),
+            "mc_expiry_p10": row.get("mc_expiry_p10"),
+            "mc_expiry_p25": row.get("mc_expiry_p25"),
+            "mc_expiry_p50": row.get("mc_expiry_p50"),
+            "mc_expiry_p75": row.get("mc_expiry_p75"),
+            "mc_expiry_p90": row.get("mc_expiry_p90"),
         })
         log.debug(f"[gate:{gate}] {ticker} {struct} → rejected (threshold={threshold}, actual={actual})")
 
@@ -976,7 +997,13 @@ def filter_candidates(rows, paper_trade: bool = False, buying_power: float | Non
             # Gate 10: capital feasibility — skip trades that exceed the usable
             # fraction of available buying power. Runs only when buying_power is
             # supplied (paper-trade morning scan); live suggestions skip this gate.
-            if buying_power is not None and buying_power > 0:
+            # `> 0` here used to double as "buying_power was actually passed" —
+            # but that conflates "not supplied" (None, live suggestions) with
+            # "supplied and legitimately <=0" (an over-committed book), silently
+            # skipping this gate exactly when it matters most. Fixed 2026-08-24
+            # alongside the check_circuit_breakers() capital-accounting fix that
+            # made buying_power correctly go negative for the first time.
+            if buying_power is not None:
                 from scripts.candidate_provider import compute_capital_required as _ccr
                 _cap_needed = _ccr(c) or 0.0
                 _util_cap   = _g("gate", "max_capital_utilization", 1.0)
@@ -1185,12 +1212,27 @@ def filter_candidates(rows, paper_trade: bool = False, buying_power: float | Non
     # within-group dedup collapses them.  Stored fields are the minimal set needed
     # to reconstruct the decision state at entry: candidate identity, repair lineage,
     # gates passed, EV, POP, composite (not yet computed here), and rejection reason.
+    # trend + mc_expiry_p10-p90 added 2026-08-25: previously any analysis of
+    # structure eligibility vs. trend/forecast width needed a fuzzy day-level
+    # join against training_snapshots (imprecise — trend can change within a
+    # day) and had no MC distribution data for rejected candidates at all.
+    # trend is now the exact value active at rejection/survival time
+    # (closure-captured in _reject() above, or read directly off `row` here).
+    # mc_expiry_* now comes from analyze_ticker()'s ticker/expiry-level
+    # simulation (computed once, independent of any structure's strikes — see
+    # [[project_mc_forecast_structure_eligibility]]), so it's populated for
+    # BOTH survived and rejected entries, including strikes_incomplete, which
+    # was the whole point. Survived entries prefer the candidate-level value
+    # (set later in this pipeline via monte_carlo.run_mc with the candidate's
+    # own DTE, which can differ from row's for e.g. diagonal spreads) and fall
+    # back to the row-level ticker/expiry simulation if that's unavailable.
     decision_snapshot = [
         {
             "candidate_id":          _r["candidate"].get("candidate_id"),
             "structure":             _r["candidate"].get("structure"),
             "ticker":                _r["row"].get("ticker") or _r["candidate"].get("ticker"),
             "expiry":                _r["row"].get("expiry") or _r["candidate"].get("expiry"),
+            "trend":                 _r["row"].get("trend"),
             "repair_of":             _r["candidate"].get("repair_of"),
             "original_candidate_id": _r["original_candidate_id"],
             "ev":                    _r["ev"],
@@ -1201,6 +1243,11 @@ def filter_candidates(rows, paper_trade: bool = False, buying_power: float | Non
             "confidence_tier":       _r["confidence_tier"],
             "disposition":           "survived_filter",
             "rejection_reason":      None,
+            "mc_expiry_p10":         _r["candidate"].get("mc_expiry_p10") or _r["row"].get("mc_expiry_p10"),
+            "mc_expiry_p25":         _r["candidate"].get("mc_expiry_p25") or _r["row"].get("mc_expiry_p25"),
+            "mc_expiry_p50":         _r["candidate"].get("mc_expiry_p50") or _r["row"].get("mc_expiry_p50"),
+            "mc_expiry_p75":         _r["candidate"].get("mc_expiry_p75") or _r["row"].get("mc_expiry_p75"),
+            "mc_expiry_p90":         _r["candidate"].get("mc_expiry_p90") or _r["row"].get("mc_expiry_p90"),
         }
         for _r in result
     ] + [
@@ -1209,6 +1256,7 @@ def filter_candidates(rows, paper_trade: bool = False, buying_power: float | Non
             "structure":             _rej.get("structure"),
             "ticker":                _rej.get("ticker"),
             "expiry":                _rej.get("expiry"),
+            "trend":                 _rej.get("trend"),
             "repair_of":             _rej.get("repair_of"),
             "original_candidate_id": _rej.get("repair_of"),
             "ev":                    None,
@@ -1219,6 +1267,11 @@ def filter_candidates(rows, paper_trade: bool = False, buying_power: float | Non
             "confidence_tier":       None,
             "disposition":           "rejected",
             "rejection_reason":      _rej.get("gate"),
+            "mc_expiry_p10":         _rej.get("mc_expiry_p10"),
+            "mc_expiry_p25":         _rej.get("mc_expiry_p25"),
+            "mc_expiry_p50":         _rej.get("mc_expiry_p50"),
+            "mc_expiry_p75":         _rej.get("mc_expiry_p75"),
+            "mc_expiry_p90":         _rej.get("mc_expiry_p90"),
         }
         for _rej in _rejections
     ]
